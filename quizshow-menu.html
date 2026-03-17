@@ -575,10 +575,9 @@
       title: 'Jeopardy!',
       subtitle: 'Importiere ein fertiges Quiz oder erstelle dein eigenes mit Kategorien und Punktwerten.',
       accent: '#3a8ef6',
-      link: 'jeopardy.html',
       actions: [
-        { icon: '▶️', title: 'Spiel starten', sub: 'Quiz importieren & sofort losspielen', primary: true },
-        { icon: '✏️', title: 'Quiz erstellen', sub: 'Kategorien & Fragen selbst anlegen' },
+        { icon: '▶️', title: 'Spiel starten', sub: 'Quiz importieren & sofort losspielen', primary: true, link: 'jeopardy.html?action=play' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Kategorien & Fragen selbst anlegen', link: 'jeopardy.html?action=editor' },
       ]
     },
     millionaire: {
@@ -640,7 +639,7 @@
         </span>
         <span class="btn-chevron">›</span>
       `;
-      btn.onclick = () => window.location.href = g.link || '#';
+      btn.onclick = () => window.location.href = a.link || g.link || '#';
       actionsEl.appendChild(btn);
     });
 

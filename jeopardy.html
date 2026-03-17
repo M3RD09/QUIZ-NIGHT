@@ -902,6 +902,18 @@ function editorPlay(){
 // Init editor
 addCategory({name:'KATEGORIE 1',questions:[]});
 addCategory({name:'KATEGORIE 2',questions:[]});
+
+// ── URL ACTION HANDLER ──
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if(action === 'play'){
+    // Trigger file picker immediately
+    setTimeout(()=>document.getElementById('file-input').click(), 300);
+  } else if(action === 'editor'){
+    showView('view-editor');
+  }
+})();
 </script>
 </body>
 </html>
