@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUIZNIGHT — Hauptmenü</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: rgba(255,255,255,0.07);
+    --gold: #f5c842;
+    --gold2: #e8a020;
+    --red: #e8354a;
+    --blue: #3a8ef6;
+    --green: #2ecc71;
+    --purple: #9b59b6;
+    --text: #f0eee8;
+    --muted: rgba(240,238,232,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,200,66,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,200,66,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes gridDrift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(60px, 60px); }
+  }
+
+  /* Radial glow center */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse, rgba(245,200,66,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 16px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .eyebrow::after { background: linear-gradient(270deg, transparent, var(--gold)); }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    background: linear-gradient(160deg, #fffbe0 20%, var(--gold) 50%, var(--gold2) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    position: relative;
+    filter: drop-shadow(0 0 40px rgba(245,200,66,0.2));
+  }
+
+  .tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--muted);
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    max-width: 700px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
+    margin: 36px 0;
+    animation: fadeIn 1s ease 0.3s both;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+    text-align: center;
+    animation: fadeIn 0.8s ease 0.4s both;
+  }
+
+  /* GAME GRID */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  @media (max-width: 620px) {
+    .games-grid { grid-template-columns: 1fr; }
+  }
+
+  .game-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .game-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* Card accent colors */
+  .card-jeopardy { --accent: #3a8ef6; }
+  .card-millionaire { --accent: #f5c842; }
+  .card-hotzones { --accent: #e8354a; }
+  .card-horl { --accent: #2ecc71; }
+
+  .game-card:hover { border-color: var(--accent); }
+  .game-card:hover::before { opacity: 1; background: radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%); }
+
+  .card-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    color: var(--accent);
+  }
+
+  .card-icon {
+    font-size: 42px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .card-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .card-arrow {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .game-card:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .card-arrow::after {
+    content: '→';
+    font-size: 16px;
+  }
+
+  /* BOTTOM BAR */
+  .bottom-bar {
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    animation: fadeUp 0.8s ease 0.8s both;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+  }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: #16161f;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+
+  .modal-overlay.open .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+  .modal-icon { font-size: 48px; margin-bottom: 16px; }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .modal-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .btn-icon { font-size: 22px; }
+
+  .btn-content { flex: 1; }
+
+  .btn-title { font-weight: 600; font-size: 14px; }
+
+  .btn-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .btn-chevron { color: var(--muted); font-size: 18px; }
+
+  .btn:hover {
+    border-color: var(--modal-accent, var(--gold));
+    background: color-mix(in srgb, var(--modal-accent, var(--gold)) 8%, transparent);
+    transform: translateX(4px);
+  }
+
+  .btn-primary {
+    background: var(--modal-accent, var(--gold));
+    border-color: transparent;
+    color: #0a0a0f;
+    font-weight: 700;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateX(4px);
+    background: var(--modal-accent, var(--gold));
+    border-color: transparent;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1e1e2a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 200;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Card staggered animation */
+  .game-card:nth-child(1) { animation: fadeUp 0.6s ease 0.5s both; }
+  .game-card:nth-child(2) { animation: fadeUp 0.6s ease 0.65s both; }
+  .game-card:nth-child(3) { animation: fadeUp 0.6s ease 0.8s both; }
+  .game-card:nth-child(4) { animation: fadeUp 0.6s ease 0.95s both; }
+
+  /* Scanline overlay for retro feel */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<div class="wrapper">
+
+  <div class="header">
+    <div class="eyebrow">Discord Quiz Night</div>
+    <div class="logo">QUIZNIGHT</div>
+    <div class="tagline">Wähle dein Spiel — die anderen spielen mit.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Verfügbare Spiele</div>
+
+  <div class="games-grid">
+
+    <!-- Jeopardy -->
+    <div class="game-card card-jeopardy" onclick="openModal('jeopardy')">
+      <div class="card-badge">Klassiker</div>
+      <div class="card-icon">🎯</div>
+      <div class="card-number">01 /</div>
+      <div class="card-title">Jeopardy!</div>
+      <div class="card-desc">Antworten werden gegeben, die Fragen müssen gefunden werden. Kategorien, Punkte, Drama.</div>
+      <div class="card-arrow">Spielen</div>
+    </div>
+
+    <!-- Wer wird Millionär -->
+    <div class="game-card card-millionaire" onclick="openModal('millionaire')">
+      <div class="card-badge">Fan-Favorit</div>
+      <div class="card-icon">💰</div>
+      <div class="card-number">02 /</div>
+      <div class="card-title">Wer wird Millionär?</div>
+      <div class="card-desc">50:50, Telefonjoker, Publikum. Steigende Schwierigkeit, ein Gewinner, viel Spannung.</div>
+      <div class="card-arrow">Spielen</div>
+    </div>
+
+    <!-- Hot Zones -->
+    <div class="game-card card-hotzones" onclick="openModal('hotzones')">
+      <div class="card-badge">Neu</div>
+      <div class="card-icon">🔥</div>
+      <div class="card-number">03 /</div>
+      <div class="card-title">Hot Zones</div>
+      <div class="card-desc">Schnelle Runden, heiße Zonen. Wer überleben will muss schnell und richtig antworten.</div>
+      <div class="card-arrow">Spielen</div>
+    </div>
+
+    <!-- Higher or Lower -->
+    <div class="game-card card-horl" onclick="openModal('horl')">
+      <div class="card-badge">Multiplayer</div>
+      <div class="card-icon">📈</div>
+      <div class="card-number">04 /</div>
+      <div class="card-title">Higher or Lower</div>
+      <div class="card-desc">Größer oder kleiner? Zahlen, Fakten, Überraschungen. Einfache Regeln — schwieriger als gedacht.</div>
+      <div class="card-arrow">Spielen</div>
+    </div>
+
+  </div>
+
+  <!-- Stats bar -->
+  <div class="bottom-bar">
+    <div class="stat-item">
+      <div class="stat-value">4</div>
+      <div class="stat-label">Spiele</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">∞</div>
+      <div class="stat-label">Fragen</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">Live</div>
+      <div class="stat-label">Multiplayer</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value">📱</div>
+      <div class="stat-label">Handy-freundlich</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-icon" id="modal-icon"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-subtitle" id="modal-subtitle"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const games = {
+    jeopardy: {
+      icon: '🎯',
+      title: 'Jeopardy!',
+      subtitle: 'Importiere ein fertiges Quiz oder erstelle dein eigenes mit Kategorien und Punktwerten.',
+      accent: '#3a8ef6',
+      actions: [
+        { icon: '▶️', title: 'Spiel starten', sub: 'Direkt loslegen mit vorhandenem Quiz', primary: true },
+        { icon: '📥', title: 'Quiz importieren', sub: 'JSON-Datei laden (.quiz)' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Eigene Kategorien & Fragen anlegen' },
+        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelles Quiz als Datei speichern' },
+      ]
+    },
+    millionaire: {
+      icon: '💰',
+      title: 'Wer wird Millionär?',
+      subtitle: 'Erstelle dein Frageset mit 15 Fragen in aufsteigender Schwierigkeit und spiele live.',
+      accent: '#f5c842',
+      actions: [
+        { icon: '▶️', title: 'Spiel starten', sub: 'Mit geladenem Quiz spielen', primary: true },
+        { icon: '📥', title: 'Quiz importieren', sub: 'JSON-Datei laden (.quiz)' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: '15 Fragen mit 4 Antworten anlegen' },
+        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelles Quiz als Datei speichern' },
+      ]
+    },
+    hotzones: {
+      icon: '🔥',
+      title: 'Hot Zones',
+      subtitle: 'Schnelles Multiplayer-Buzzerspiel. Wer als erstes richtig antwortet gewinnt die Zone.',
+      accent: '#e8354a',
+      actions: [
+        { icon: '▶️', title: 'Spiel starten', sub: 'Room erstellen & Spieler einladen', primary: true },
+        { icon: '📥', title: 'Quiz importieren', sub: 'JSON-Datei laden (.quiz)' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Fragen & Zeitlimits festlegen' },
+        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelles Quiz als Datei speichern' },
+      ]
+    },
+    horl: {
+      icon: '📈',
+      title: 'Higher or Lower',
+      subtitle: 'Zahlenbasiertes Ratespiel. Die Gruppe schätzt zusammen — oder gegeneinander.',
+      accent: '#2ecc71',
+      actions: [
+        { icon: '▶️', title: 'Spiel starten', sub: 'Sofort spielen mit vorhandenen Daten', primary: true },
+        { icon: '📥', title: 'Quiz importieren', sub: 'Eigene Vergleiche laden (.quiz)' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Eigene Vergleichspaare anlegen' },
+        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelle Daten als Datei speichern' },
+      ]
+    }
+  };
+
+  function openModal(id) {
+    const g = games[id];
+    document.getElementById('modal-icon').textContent = g.icon;
+    document.getElementById('modal-title').textContent = g.title;
+    document.getElementById('modal-subtitle').textContent = g.subtitle;
+
+    const actionsEl = document.getElementById('modal-actions');
+    actionsEl.innerHTML = '';
+    document.querySelector('.modal').style.setProperty('--modal-accent', g.accent);
+
+    g.actions.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'btn' + (a.primary ? ' btn-primary' : '');
+      btn.innerHTML = `
+        <span class="btn-icon">${a.icon}</span>
+        <span class="btn-content">
+          <div class="btn-title">${a.title}</div>
+          <div class="btn-sub">${a.sub}</div>
+        </span>
+        <span class="btn-chevron">›</span>
+      `;
+      btn.onclick = () => showToast(`„${a.title}" für ${g.title} — kommt bald! 🚀`);
+      actionsEl.appendChild(btn);
+    });
+
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal')) closeModal();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+</body>
+</html>
