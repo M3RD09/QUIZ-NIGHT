@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeopardy! — Quiz Games by Mert</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.08);
+    --accent: #3a8ef6;
+    --accent-dim: rgba(58,142,246,0.12);
+    --gold: #f5c842;
+    --red: #e8354a;
+    --green: #2ecc71;
+    --text: #f0eee8;
+    --muted: rgba(240,238,232,0.45);
+    --muted2: rgba(240,238,232,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── VIEWS ── */
+  .view { display: none; min-height: 100vh; }
+  .view.active { display: flex; flex-direction: column; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .btn-back {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+  .topbar-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    flex: 1;
+  }
+
+  .topbar-actions { display: flex; gap: 8px; }
+
+  /* ── MAIN MENU VIEW ── */
+  #view-menu {
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  .menu-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .menu-icon { font-size: 64px; margin-bottom: 16px; }
+
+  .menu-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    letter-spacing: 0.06em;
+    background: linear-gradient(160deg, #fff 30%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .menu-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .big-btn {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    width: 100%;
+  }
+
+  .big-btn-icon { font-size: 32px; flex-shrink: 0; }
+
+  .big-btn-text { flex: 1; }
+
+  .big-btn-title {
+    font-size: 18px;
+    font-weight: 700;
+    display: block;
+  }
+
+  .big-btn-sub {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-top: 3px;
+  }
+
+  .big-btn-arrow { font-size: 22px; color: var(--muted2); }
+
+  .big-btn.primary {
+    background: var(--accent);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .big-btn.primary .big-btn-sub { color: rgba(255,255,255,0.7); }
+  .big-btn.primary .big-btn-arrow { color: rgba(255,255,255,0.5); }
+
+  .big-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .big-btn.primary:hover { filter: brightness(1.1); }
+  .big-btn:not(.primary):hover { border-color: var(--accent); }
+
+  /* hidden file input */
+  #file-input { display: none; }
+
+  /* ── EDITOR VIEW ── */
+  #view-editor { padding: 0; }
+
+  .editor-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Quiz title input */
+  .quiz-title-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .field-input {
+    width: 100%;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.06em;
+  }
+
+  .field-input::placeholder { color: var(--muted2); }
+
+  /* Category */
+  .category-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .category-name-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .category-name-input::placeholder { color: var(--muted); }
+
+  .btn-icon-sm {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .btn-icon-sm:hover { color: var(--red); }
+
+  /* Question row */
+  .questions-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .question-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    position: relative;
+  }
+
+  .points-badge {
+    background: var(--accent-dim);
+    border: 1px solid rgba(58,142,246,0.3);
+    color: var(--accent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    padding: 2px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 2px;
+  }
+  .points-badge:hover { background: var(--accent); color: #fff; }
+
+  .q-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+  .q-input {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 4px 0;
+  }
+  .q-input::placeholder { color: var(--muted2); }
+  .q-input:last-child { border-bottom: none; }
+  .q-input:focus { border-bottom-color: var(--accent); }
+
+  .btn-del-q {
+    background: none;
+    border: none;
+    color: var(--muted2);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px;
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .btn-del-q:hover { color: var(--red); }
+
+  .btn-add-question {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    margin: 0 16px 14px;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    background: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-add-question:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+  /* Add category */
+  .btn-add-category {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    background: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-add-category:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+  /* Bottom action bar */
+  .editor-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    gap: 12px;
+  }
+
+  .footer-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .footer-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .footer-btn.export {
+    background: var(--gold);
+    border-color: transparent;
+    color: #0a0a0f;
+  }
+  .footer-btn.export:hover { filter: brightness(1.1); color: #0a0a0f; border-color: transparent; }
+
+  /* ── GAME VIEW ── */
+  #view-game { padding: 0; }
+
+  .game-body { flex: 1; padding: 16px; overflow-y: auto; }
+
+  .game-title-bar {
+    text-align: center;
+    padding: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  /* Board */
+  .board-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+
+  .board {
+    display: grid;
+    min-width: max-content;
+    gap: 6px;
+    padding: 16px;
+  }
+
+  .board-cell {
+    width: 110px;
+    height: 75px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-align: center;
+    padding: 6px;
+    cursor: default;
+  }
+
+  .board-cat {
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+  }
+
+  .board-point {
+    background: #1a2a4a;
+    border: 1px solid rgba(58,142,246,0.2);
+    color: var(--gold);
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .board-point:hover { background: var(--accent); color: #fff; transform: scale(1.04); }
+
+  .board-point.used {
+    background: var(--surface2);
+    color: var(--muted2);
+    cursor: default;
+    transform: none;
+  }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    gap: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .player-score {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .player-name { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .player-pts { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--gold); line-height: 1.1; }
+
+  .btn-add-player {
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    min-width: 50px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .btn-add-player:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── QUESTION MODAL ── */
+  .q-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .q-overlay.open { display: flex; }
+
+  .q-modal {
+    background: #0d1a2e;
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    padding: 36px 28px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .q-points-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .q-category-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .q-answer-text {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 28px;
+    color: var(--text);
+  }
+
+  .q-reveal-btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  .q-reveal-btn:hover { filter: brightness(1.15); }
+
+  .q-question-text {
+    font-size: 16px;
+    color: var(--gold);
+    font-style: italic;
+    margin-bottom: 24px;
+    display: none;
+    line-height: 1.5;
+  }
+
+  .q-score-btns {
+    display: flex;
+    gap: 10px;
+    display: none;
+  }
+
+  .q-score-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .q-score-btn.correct { background: var(--green); color: #fff; }
+  .q-score-btn.wrong { background: var(--red); color: #fff; }
+  .q-score-btn.skip { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+  .q-score-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .q-player-select {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .q-player-select-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .player-btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .player-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .player-btn.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 13px;
+    z-index: 300;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     VIEW 1: HAUPTMENÜ
+══════════════════════════════════ -->
+<div class="view active" id="view-menu">
+  <div class="menu-header">
+    <div class="menu-icon">🎯</div>
+    <div class="menu-title">JEOPARDY!</div>
+    <div class="menu-sub">Quiz Games by Mert</div>
+  </div>
+
+  <div class="menu-buttons">
+
+    <!-- Spiel starten = Import + Play -->
+    <button class="big-btn primary" onclick="document.getElementById('file-input').click()">
+      <span class="big-btn-icon">▶️</span>
+      <span class="big-btn-text">
+        <span class="big-btn-title">Spiel starten</span>
+        <span class="big-btn-sub">Quiz-Datei importieren & sofort spielen</span>
+      </span>
+      <span class="big-btn-arrow">›</span>
+    </button>
+    <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)">
+
+    <!-- Quiz erstellen -->
+    <button class="big-btn" onclick="showView('view-editor')">
+      <span class="big-btn-icon">✏️</span>
+      <span class="big-btn-text">
+        <span class="big-btn-title">Quiz erstellen</span>
+        <span class="big-btn-sub">Kategorien & Fragen selbst anlegen</span>
+      </span>
+      <span class="big-btn-arrow">›</span>
+    </button>
+
+    <!-- Zurück -->
+    <button class="big-btn" onclick="goHome()" style="margin-top:8px; opacity:0.6;">
+      <span class="big-btn-icon">🏠</span>
+      <span class="big-btn-text">
+        <span class="big-btn-title">Hauptmenü</span>
+        <span class="big-btn-sub">Zurück zur Spielauswahl</span>
+      </span>
+      <span class="big-btn-arrow">›</span>
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     VIEW 2: QUIZ EDITOR
+══════════════════════════════════ -->
+<div class="view" id="view-editor">
+  <div class="topbar">
+    <button class="btn-back" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">🎯 Quiz erstellen</div>
+  </div>
+
+  <div class="editor-body" id="editor-body">
+
+    <!-- Quiz Name -->
+    <div class="quiz-title-wrap">
+      <span class="field-label">Quiz-Name</span>
+      <input class="field-input" id="quiz-name" placeholder="Mein Jeopardy Quiz" maxlength="50">
+    </div>
+
+    <!-- Categories container -->
+    <div id="categories-container"></div>
+
+    <!-- Add category button -->
+    <button class="btn-add-category" onclick="addCategory()">
+      ＋ Neue Kategorie hinzufügen
+    </button>
+
+  </div>
+
+  <div class="editor-footer">
+    <button class="footer-btn export" onclick="exportQuiz()">
+      💾 Speichern & Exportieren
+    </button>
+    <button class="footer-btn" onclick="previewPlay()">
+      ▶ Spielen
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     VIEW 3: SPIEL
+══════════════════════════════════ -->
+<div class="view" id="view-game">
+  <div class="topbar">
+    <button class="btn-back" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title" id="game-title-bar">🎯 Jeopardy!</div>
+    <div class="topbar-actions">
+      <button class="btn-back" onclick="resetGame()" title="Neu starten" style="font-size:14px;">🔄</button>
+    </div>
+  </div>
+
+  <div class="board-scroll">
+    <div class="board" id="game-board"></div>
+  </div>
+
+  <div class="score-bar" id="score-bar">
+    <button class="btn-add-player" onclick="addPlayer()" title="Spieler hinzufügen">＋</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     QUESTION MODAL
+══════════════════════════════════ -->
+<div class="q-overlay" id="q-overlay">
+  <div class="q-modal">
+    <div class="q-points-label" id="qm-points">200</div>
+    <div class="q-category-label" id="qm-cat">KATEGORIE</div>
+
+    <!-- Frage wird sofort gezeigt -->
+    <div class="q-answer-text" id="qm-question-text">Frage erscheint hier.</div>
+
+    <!-- Antwort aufdecken -->
+    <button class="q-reveal-btn" id="qm-reveal-btn" onclick="revealAnswer()">
+      🔍 Antwort aufdecken
+    </button>
+
+    <!-- Antwort (versteckt bis aufgedeckt) -->
+    <div class="q-question-text" id="qm-answer-text"></div>
+
+    <div class="q-player-select" id="qm-player-select">
+      <div class="q-player-select-label">Wer hat richtig geantwortet?</div>
+      <div id="qm-player-list"></div>
+    </div>
+
+    <div class="q-score-btns" id="qm-score-btns">
+      <button class="q-score-btn correct" onclick="scorePlayer(true)">✓ Richtig</button>
+      <button class="q-score-btn wrong" onclick="scorePlayer(false)">✗ Falsch</button>
+      <button class="q-score-btn skip" onclick="closeQuestion()">— Weiter</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────
+//  UTILS (zuerst definieren!)
+// ─────────────────────────────────────
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────
+let quizData = null;       // { name, categories: [{name, questions:[{answer,question,points}]}] }
+let players = [];          // [{name, score}]
+let currentCell = null;    // {catIdx, qIdx}
+let selectedPlayer = null;
+
+const POINT_VALUES = [200, 400, 600, 800, 1000];
+
+// ─────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  window.location.href = 'quizshow-menu.html';
+}
+
+// ─────────────────────────────────────
+//  IMPORT & PLAY
+// ─────────────────────────────────────
+function importAndPlay(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      quizData = JSON.parse(e.target.result);
+      if (!quizData.categories || !Array.isArray(quizData.categories)) throw new Error();
+      players = [];
+      startGame();
+    } catch(err) {
+      showToast('❌ Ungültige Quiz-Datei!');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ─────────────────────────────────────
+//  EDITOR
+// ─────────────────────────────────────
+let catCount = 0;
+
+function addCategory(catData = null) {
+  const id = catCount++;
+  const container = document.getElementById('categories-container');
+
+  const block = document.createElement('div');
+  block.className = 'category-block';
+  block.dataset.catId = id;
+
+  block.innerHTML = `
+    <div class="category-header">
+      <input class="category-name-input" placeholder="Kategoriename (z.B. SPORT)" maxlength="30"
+        value="${catData ? escHtml(catData.name) : ''}">
+      <button class="btn-icon-sm" onclick="removeCategory(${id})" title="Kategorie löschen">🗑</button>
+    </div>
+    <div class="questions-list" id="qlist-${id}"></div>
+    <button class="btn-add-question" onclick="addQuestion(${id})">＋ Frage hinzufügen</button>
+  `;
+
+  container.appendChild(block);
+
+  if (catData && catData.questions) {
+    catData.questions.forEach((q, i) => addQuestion(id, q, i));
+  } else {
+    // Add 5 default point rows
+    POINT_VALUES.forEach((pts, i) => addQuestion(id, null, i, pts));
+  }
+}
+
+function removeCategory(id) {
+  document.querySelector(`[data-cat-id="${id}"]`).remove();
+}
+
+let qCount = 0;
+
+function addQuestion(catId, qData = null, index = null, defaultPts = null) {
+  const list = document.getElementById(`qlist-${catId}`);
+  if (!list) return;
+  const qid = qCount++;
+  const pts = qData ? qData.points : (defaultPts || 200);
+
+  const row = document.createElement('div');
+  row.className = 'question-row';
+  row.dataset.qid = qid;
+
+  row.innerHTML = `
+    <span class="points-badge" onclick="cyclePoints(this)">${pts}</span>
+    <div class="q-fields">
+      <input class="q-input" placeholder="❓ Frage (was der Spieler sieht)" maxlength="200"
+        value="${qData ? escHtml(qData.question) : ''}">
+      <input class="q-input" placeholder="✅ Antwort (zum Aufdecken)" maxlength="200"
+        value="${qData ? escHtml(qData.answer) : ''}">
+    </div>
+    <button class="btn-del-q" onclick="this.closest('.question-row').remove()">✕</button>
+  `;
+
+  list.appendChild(row);
+}
+
+function cyclePoints(badge) {
+  const current = parseInt(badge.textContent);
+  const idx = POINT_VALUES.indexOf(current);
+  badge.textContent = POINT_VALUES[(idx + 1) % POINT_VALUES.length];
+}
+
+function collectQuizData() {
+  const name = document.getElementById('quiz-name').value.trim() || 'Mein Jeopardy Quiz';
+  const categories = [];
+
+  document.querySelectorAll('.category-block').forEach(block => {
+    const catName = block.querySelector('.category-name-input').value.trim() || 'Kategorie';
+    const questions = [];
+    block.querySelectorAll('.question-row').forEach(row => {
+      const inputs = row.querySelectorAll('.q-input');
+      const question = inputs[0].value.trim();
+      const answer = inputs[1].value.trim();
+      const points = parseInt(row.querySelector('.points-badge').textContent);
+      if (question) questions.push({ question, answer, points });
+    });
+    if (questions.length > 0) categories.push({ name: catName, questions });
+  });
+
+  return { name, categories };
+}
+
+function exportQuiz() {
+  const data = collectQuizData();
+  if (data.categories.length === 0) { showToast('⚠️ Füge zuerst Kategorien & Fragen hinzu!'); return; }
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (data.name.replace(/\s+/g, '_') || 'jeopardy') + '.quiz';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Quiz gespeichert!');
+}
+
+function previewPlay() {
+  const data = collectQuizData();
+  if (data.categories.length === 0) { showToast('⚠️ Füge zuerst Fragen hinzu!'); return; }
+  quizData = data;
+  players = [];
+  startGame();
+}
+
+// ─────────────────────────────────────
+//  GAME BOARD
+// ─────────────────────────────────────
+function startGame() {
+  document.getElementById('game-title-bar').textContent = '🎯 ' + quizData.name;
+  buildBoard();
+  buildScoreBar();
+  showView('view-game');
+}
+
+function buildBoard() {
+  const board = document.getElementById('game-board');
+  const cats = quizData.categories;
+  board.style.gridTemplateColumns = `repeat(${cats.length}, 130px)`;
+  board.innerHTML = '';
+
+  // Header row
+  cats.forEach(cat => {
+    const cell = document.createElement('div');
+    cell.className = 'board-cell board-cat';
+    cell.textContent = cat.name.toUpperCase();
+    board.appendChild(cell);
+  });
+
+  // Find max questions
+  const maxQ = Math.max(...cats.map(c => c.questions.length));
+
+  // Question rows
+  for (let qi = 0; qi < maxQ; qi++) {
+    cats.forEach((cat, ci) => {
+      const cell = document.createElement('div');
+      const q = cat.questions[qi];
+      if (q) {
+        cell.className = 'board-cell board-point';
+        cell.textContent = q.points;
+        cell.dataset.ci = ci;
+        cell.dataset.qi = qi;
+        cell.onclick = () => openQuestion(ci, qi, cell);
+      } else {
+        cell.className = 'board-cell';
+        cell.style.background = 'transparent';
+      }
+      board.appendChild(cell);
+    });
+  }
+}
+
+function resetGame() {
+  if (!quizData) return;
+  buildBoard();
+  showToast('🔄 Spiel zurückgesetzt!');
+}
+
+// ─────────────────────────────────────
+//  PLAYERS
+// ─────────────────────────────────────
+function addPlayer() {
+  const name = prompt('Spielername:');
+  if (!name || !name.trim()) return;
+  players.push({ name: name.trim(), score: 0 });
+  buildScoreBar();
+}
+
+function buildScoreBar() {
+  const bar = document.getElementById('score-bar');
+  bar.innerHTML = '';
+
+  players.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'player-score';
+    el.id = `player-${i}`;
+    el.innerHTML = `<div class="player-name">${escHtml(p.name)}</div><div class="player-pts">${p.score}</div>`;
+    bar.appendChild(el);
+  });
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'btn-add-player';
+  addBtn.textContent = '＋';
+  addBtn.title = 'Spieler hinzufügen';
+  addBtn.onclick = addPlayer;
+  bar.appendChild(addBtn);
+}
+
+function updateScoreDisplay() {
+  players.forEach((p, i) => {
+    const el = document.getElementById(`player-${i}`);
+    if (el) el.querySelector('.player-pts').textContent = p.score;
+  });
+}
+
+// ─────────────────────────────────────
+//  QUESTION MODAL
+// ─────────────────────────────────────
+function openQuestion(ci, qi, cell) {
+  if (cell.classList.contains('used')) return;
+  currentCell = { ci, qi, cell };
+  selectedPlayer = null;
+
+  const q = quizData.categories[ci].questions[qi];
+
+  document.getElementById('qm-points').textContent = q.points;
+  document.getElementById('qm-cat').textContent = quizData.categories[ci].name.toUpperCase();
+
+  // Frage sofort anzeigen
+  document.getElementById('qm-question-text').textContent = q.question;
+
+  // Antwort vorbereiten aber verstecken
+  document.getElementById('qm-answer-text').textContent = q.answer ? `✅ ${q.answer}` : '';
+  document.getElementById('qm-answer-text').style.display = 'none';
+
+  // Reset modal state
+  document.getElementById('qm-reveal-btn').style.display = q.answer ? 'block' : 'none';
+  document.getElementById('qm-score-btns').style.display = 'none';
+  document.getElementById('qm-player-select').style.display = 'none';
+
+  // Build player list
+  const list = document.getElementById('qm-player-list');
+  list.innerHTML = '';
+  players.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'player-btn';
+    btn.textContent = `${p.name} (${p.score} Pts)`;
+    btn.onclick = () => selectPlayer(i, btn);
+    list.appendChild(btn);
+  });
+
+  document.getElementById('q-overlay').classList.add('open');
+}
+
+function selectPlayer(idx, btn) {
+  selectedPlayer = idx;
+  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function revealAnswer() {
+  document.getElementById('qm-reveal-btn').style.display = 'none';
+  document.getElementById('qm-answer-text').style.display = 'block';
+
+  if (players.length > 0) {
+    document.getElementById('qm-player-select').style.display = 'flex';
+  }
+  document.getElementById('qm-score-btns').style.display = 'flex';
+}
+
+function scorePlayer(correct) {
+  const q = quizData.categories[currentCell.ci].questions[currentCell.qi];
+  if (selectedPlayer !== null) {
+    players[selectedPlayer].score += correct ? q.points : -q.points;
+    updateScoreDisplay();
+    showToast(correct
+      ? `✅ +${q.points} für ${players[selectedPlayer].name}!`
+      : `❌ -${q.points} für ${players[selectedPlayer].name}`
+    );
+  }
+  markUsed();
+  closeQuestion();
+}
+
+function markUsed() {
+  if (currentCell && currentCell.cell) {
+    currentCell.cell.classList.add('used');
+    currentCell.cell.textContent = '—';
+    currentCell.cell.onclick = null;
+  }
+}
+
+function closeQuestion() {
+  markUsed();
+  document.getElementById('q-overlay').classList.remove('open');
+  currentCell = null;
+  selectedPlayer = null;
+}
+
+// Close on backdrop click
+document.getElementById('q-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('q-overlay')) closeQuestion();
+});
+
+// ─────────────────────────────────────
+//  INIT — start with 2 default categories
+// ─────────────────────────────────────
+addCategory({ name: 'KATEGORIE 1', questions: [] });
+addCategory({ name: 'KATEGORIE 2', questions: [] });
+</script>
+</body>
+</html>
