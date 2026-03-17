@@ -66,7 +66,55 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .info-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.8;}
 .info-box-title{font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
 
-/* BOARD */
+/* GAME LAYOUT */
+.game-layout{display:flex;flex:1;overflow:hidden;min-height:0;}
+.game-left{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;align-items:flex-start;justify-content:center;}
+.game-sidebar{width:220px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+@media(max-width:600px){
+  .game-layout{flex-direction:column;}
+  .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:340px;}
+  .game-left{justify-content:flex-start;}
+}
+
+/* CURRENT TURN */
+.sidebar-turn{padding:16px;border-bottom:1px solid var(--border);text-align:center;background:var(--surface2);}
+.st-label{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.st-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#1a5cd8);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;box-shadow:0 0 16px rgba(58,142,246,.4);}
+.st-name{font-size:15px;font-weight:700;color:var(--text);}
+.st-team{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* SCORES */
+.sidebar-scores{padding:12px;border-bottom:1px solid var(--border);}
+.sidebar-section-label{font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.score-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;margin-bottom:6px;background:var(--surface2);}
+.score-row.leading{background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(245,200,66,.03));border:1px solid rgba(245,200,66,.15);}
+.score-rank{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted2);width:14px;flex-shrink:0;}
+.score-row.leading .score-rank{color:var(--gold);}
+.score-info{flex:1;min-width:0;}
+.score-tname{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.score-dots{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap;}
+.score-dot{width:8px;height:8px;border-radius:50%;opacity:.7;}
+.score-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);flex-shrink:0;}
+
+/* HISTORY */
+.sidebar-history{padding:12px;flex:1;}
+.history-empty{font-size:11px;color:var(--muted2);text-align:center;padding:12px 0;font-style:italic;}
+.history-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:10px;margin-bottom:6px;background:var(--surface2);border-left:3px solid transparent;animation:slideIn .3s ease;}
+.history-item.correct{border-left-color:var(--green);}
+.history-item.wrong{border-left-color:var(--red);}
+.history-item.skip{border-left-color:var(--muted2);}
+.hi-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0;}
+.hi-body{flex:1;min-width:0;}
+.hi-player{font-size:11px;font-weight:700;color:var(--text);}
+.hi-team{font-size:9px;color:var(--muted);margin-bottom:2px;}
+.hi-cat{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hi-pts{font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0;margin-top:2px;}
+.hi-pts.correct{color:var(--green);}
+.hi-pts.wrong{color:var(--red);}
+.hi-pts.skip{color:var(--muted2);}
+
+@keyframes slideIn{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);}}
 .turn-banner{padding:12px 16px;text-align:center;font-size:14px;font-weight:700;letter-spacing:.05em;}
 .turn-banner.t1{background:linear-gradient(90deg,rgba(58,142,246,.0),rgba(58,142,246,.18),rgba(58,142,246,.0));color:var(--team1);border-bottom:2px solid var(--team1);}
 .turn-banner.t2{background:linear-gradient(90deg,rgba(232,53,74,.0),rgba(232,53,74,.18),rgba(232,53,74,.0));color:var(--team2);border-bottom:2px solid var(--team2);}
@@ -348,9 +396,54 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="topbar-title" id="game-title">🎯 Jeopardy!</div>
     <button class="btn-icon" onclick="resetBoard()">🔄</button>
   </div>
-  <div class="turn-banner t1" id="turn-banner">Team Blau — Spieler 1 ist dran</div>
-  <div class="board-scroll"><div class="board" id="game-board"></div></div>
-  <div class="score-area" id="score-area"></div>
+
+  <div class="game-layout">
+
+    <!-- LEFT: Board -->
+    <div class="game-left">
+      <div class="board-scroll"><div class="board" id="game-board"></div></div>
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <div class="game-sidebar">
+
+      <!-- Current Turn -->
+      <div class="sidebar-turn" id="sidebar-turn">
+        <div class="st-label">AKTUELL DRAN</div>
+        <div class="st-avatar" id="st-avatar">M</div>
+        <div class="st-name" id="st-name">Spieler</div>
+        <div class="st-team" id="st-team">Team Blau</div>
+      </div>
+
+      <!-- Scores -->
+      <div class="sidebar-scores">
+        <div class="sidebar-section-label">🏆 SCORES</div>
+        <div class="score-row" id="score-row-0">
+          <div class="score-rank">1</div>
+          <div class="score-info">
+            <div class="score-tname" id="sname-0">Team Blau</div>
+            <div class="score-dots" id="sdots-0"></div>
+          </div>
+          <div class="score-num" id="spts-0">0</div>
+        </div>
+        <div class="score-row" id="score-row-1">
+          <div class="score-rank">2</div>
+          <div class="score-info">
+            <div class="score-tname" id="sname-1">Team Rot</div>
+            <div class="score-dots" id="sdots-1"></div>
+          </div>
+          <div class="score-num" id="spts-1">0</div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="sidebar-history">
+        <div class="sidebar-section-label">📋 VERLAUF</div>
+        <div id="history-list"><div class="history-empty">Noch keine Fragen gespielt</div></div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <!-- ══ WINNER ══ -->
@@ -507,9 +600,16 @@ function currentTurn(){return turnOrder[turnIdx%turnOrder.length];}
 
 function updateTurnBanner(){
   const t=currentTurn();
-  const banner=document.getElementById('turn-banner');
-  banner.className='turn-banner '+(t.ti===0?'t1':'t2');
-  banner.textContent=teams[t.ti].name+' — '+teams[t.ti].players[t.pi]+' ist dran 👆';
+  const name=teams[t.ti].players[t.pi];
+  document.getElementById('st-avatar').textContent=name.charAt(0).toUpperCase();
+  document.getElementById('st-avatar').style.background=t.ti===0
+    ?'linear-gradient(135deg,#3a8ef6,#1a5cd8)'
+    :'linear-gradient(135deg,#e8354a,#c0293b)';
+  document.getElementById('st-avatar').style.boxShadow=t.ti===0
+    ?'0 0 16px rgba(58,142,246,.4)':'0 0 16px rgba(232,53,74,.4)';
+  document.getElementById('st-name').textContent=name;
+  document.getElementById('st-team').textContent=teams[t.ti].name;
+  document.getElementById('st-team').style.color=t.ti===0?'var(--team1)':'var(--team2)';
 }
 
 // ── BOARD ──
@@ -546,6 +646,7 @@ function resetBoard(){
   if(!quizData)return;
   turnIdx=0;
   teams[0].score=0;teams[1].score=0;
+  gameHistory=[];
   buildTurnOrder();
   buildBoard();
   buildScoreArea();
@@ -553,25 +654,51 @@ function resetBoard(){
   showView('view-game');
 }
 
-// ── SCORES ──
+// ── SCORES & HISTORY ──
+let gameHistory=[];
+
 function buildScoreArea(){
-  const area=document.getElementById('score-area');
-  area.innerHTML='';
-  teams.forEach((team,ti)=>{
-    const el=document.createElement('div');
-    el.className='score-team '+(ti===0?'t1':'t2');
-    el.id='score-team-'+ti;
-    el.innerHTML='<div class="score-team-name">'+escHtml(team.name)+'</div>'
-      +'<div class="score-pts" id="score-pts-'+ti+'">'+team.score+'</div>'
-      +'<div class="score-players">'+team.players.map(escHtml).join(' · ')+'</div>';
-    area.appendChild(el);
-  });
+  gameHistory=[];
+  document.getElementById('history-list').innerHTML='<div class="history-empty">Noch keine Fragen gespielt</div>';
+  updateScores();
 }
 
 function updateScores(){
   teams.forEach((team,ti)=>{
-    const el=document.getElementById('score-pts-'+ti);
-    if(el)el.textContent=team.score;
+    document.getElementById('sname-'+ti).textContent=team.name;
+    document.getElementById('spts-'+ti).textContent=team.score;
+    const dotsEl=document.getElementById('sdots-'+ti);
+    dotsEl.innerHTML='';
+    team.players.forEach(()=>{
+      const d=document.createElement('div');
+      d.className='score-dot';
+      d.style.background=ti===0?'var(--team1)':'var(--team2)';
+      dotsEl.appendChild(d);
+    });
+    const row=document.getElementById('score-row-'+ti);
+    const isLeading=team.score>teams[1-ti].score;
+    if(isLeading)row.classList.add('leading');
+    else row.classList.remove('leading');
+  });
+}
+
+function addToHistory(playerName,teamIdx,category,points,result){
+  gameHistory.unshift({playerName,teamIdx,category,points,result});
+  const list=document.getElementById('history-list');
+  list.innerHTML='';
+  gameHistory.slice(0,30).forEach(h=>{
+    const el=document.createElement('div');
+    el.className='history-item '+h.result;
+    const color=h.teamIdx===0?'#3a8ef6':'#e8354a';
+    const ptsText=h.result==='correct'?'+'+h.points:h.result==='wrong'?'-'+h.points:'—';
+    el.innerHTML='<div class="hi-avatar" style="background:'+color+'">'+escHtml(h.playerName.charAt(0).toUpperCase())+'</div>'
+      +'<div class="hi-body">'
+        +'<div class="hi-team" style="color:'+(h.teamIdx===0?'var(--team1)':'var(--team2)')+'">'+escHtml(teams[h.teamIdx].name)+'</div>'
+        +'<div class="hi-player">'+escHtml(h.playerName)+'</div>'
+        +'<div class="hi-cat">'+escHtml(h.category)+' · '+h.points+'</div>'
+      +'</div>'
+      +'<div class="hi-pts '+h.result+'">'+ptsText+'</div>';
+    list.appendChild(el);
   });
 }
 
@@ -620,8 +747,11 @@ function updateTimerUI(s){
 
 function timeUp(){
   const t=currentTurn();
+  const catName=quizData.categories[currentQ.ci].name;
+  const playerName=teams[t.ti].players[t.pi];
   teams[t.ti].score-=currentQ.points;
   updateScores();
+  addToHistory(playerName,t.ti,catName,currentQ.points,'wrong');
   document.getElementById('time-up-box').style.display='block';
   document.getElementById('btn-reveal').style.display='none';
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
@@ -641,6 +771,11 @@ function revealAnswer(){
 function verdict(correct){
   stopTimer();
   const t=currentTurn();
+  const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
+  const catName=quizData.categories[currentQ.ci].name;
+  const playerName=teams[t.ti].players[t.pi];
+  const result=correct===true?'correct':correct===false?'wrong':'skip';
+
   if(correct===true){
     teams[t.ti].score+=currentQ.points;
     updateScores();
@@ -650,6 +785,9 @@ function verdict(correct){
     updateScores();
     showToast('❌ -'+currentQ.points+' für '+teams[t.ti].name,2500);
   }
+
+  addToHistory(playerName,t.ti,catName,currentQ.points,result);
+
   currentQ.cell.classList.add('used');
   currentQ.cell.textContent='—';
   currentQ.cell.onclick=null;
