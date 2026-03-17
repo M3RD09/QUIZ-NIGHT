@@ -36,7 +36,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .btn-gold:hover{filter:brightness(1.1);}
 
 /* MENU */
-#view-menu{align-items:center;justify-content:center;padding:40px 20px;}
+#view-menu, #view-play-landing{align-items:center;justify-content:center;padding:40px 20px;}
 .menu-logo{text-align:center;margin-bottom:40px;}
 .menu-logo-icon{font-size:60px;margin-bottom:12px;}
 .menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:60px;letter-spacing:.06em;background:linear-gradient(160deg,#fff 30%,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -365,9 +365,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       📂 Quiz-Datei auswählen
       <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
-    <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px;">Wähle eine .quiz Datei von deinem Gerät</div>
-    <button class="btn-secondary" onclick="showView('view-editor')" style="margin-top:8px;">✏️ Lieber Quiz erstellen</button>
-    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;">🏠 Hauptmenü</button>
   </div>
 </div>
 
