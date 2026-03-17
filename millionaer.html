@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wer wird Millionär? — Quiz Games by Mert</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#04080f;
+  --surface:#0d1520;
+  --surface2:#131f30;
+  --border:rgba(255,255,255,0.08);
+  --gold:#f5c842;
+  --gold2:#e8a020;
+  --blue:#2a5298;
+  --blue2:#1a3a6e;
+  --accent:#4a90d9;
+  --red:#e8354a;
+  --green:#2ecc71;
+  --orange:#f39c12;
+  --correct:#27ae60;
+  --wrong:#c0392b;
+  --text:#f0eee8;
+  --muted:rgba(240,238,232,0.5);
+  --muted2:rgba(240,238,232,0.2);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* BG EFFECT */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(42,82,152,.25),transparent 60%),
+             radial-gradient(ellipse at 50% 100%,rgba(42,82,152,.1),transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+.view{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:1;}
+.view.active{display:flex;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(13,21,32,.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+.btn-icon{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:9px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.btn-icon:hover{border-color:var(--accent);color:var(--accent);}
+.topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:var(--gold);flex:1;}
+
+.view-body{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,#2a5298,#1a3a6e);border:1px solid rgba(74,144,217,.4);border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(42,82,152,.3);}
+.btn-primary:hover{filter:brightness(1.2);transform:translateY(-1px);}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-gold{background:linear-gradient(135deg,#f5c842,#e8a020);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-gold:hover{filter:brightness(1.1);}
+
+/* ══ MENU ══ */
+#view-menu{align-items:center;justify-content:center;padding:40px 20px;}
+.menu-logo{text-align:center;margin-bottom:40px;}
+.menu-logo-icon{font-size:60px;margin-bottom:12px;}
+.menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.04em;background:linear-gradient(160deg,#fff 20%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.menu-logo-sub{font-size:13px;color:var(--muted);margin-top:8px;}
+.menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
+
+/* ══ PLAY LANDING ══ */
+#view-play-landing{align-items:center;justify-content:center;padding:40px 20px;}
+
+/* ══ SETUP ══ */
+.players-grid{display:flex;flex-direction:column;gap:8px;}
+.player-setup-row{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
+.player-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);width:24px;flex-shrink:0;}
+.player-setup-inp{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;}
+.player-setup-inp::placeholder{color:var(--muted2);}
+.btn-del-player{background:none;border:none;color:var(--muted2);font-size:16px;cursor:pointer;transition:color .15s;}
+.btn-del-player:hover{color:var(--red);}
+.btn-add-player-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border:1px dashed var(--border);border-radius:10px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
+.btn-add-player-row:hover{border-color:var(--accent);color:var(--accent);}
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.8;}
+.info-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+
+/* ══ GAME ══ */
+.game-layout{display:flex;flex:1;overflow:hidden;min-height:0;}
+.game-main{flex:1;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.game-sidebar{width:200px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+
+@media(max-width:640px){
+  .game-layout{flex-direction:column;}
+  .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:280px;}
+}
+
+/* Question area */
+.q-area{padding:20px 16px;display:flex;flex-direction:column;gap:16px;}
+
+.q-progress-bar{display:flex;gap:4px;margin-bottom:4px;}
+.q-prog-dot{flex:1;height:4px;border-radius:2px;background:var(--surface2);}
+.q-prog-dot.done{background:var(--gold);}
+.q-prog-dot.current{background:var(--accent);}
+
+.q-header{display:flex;align-items:center;justify-content:space-between;}
+.q-num-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.q-pts-label{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
+
+.q-text-box{
+  background:linear-gradient(135deg,rgba(42,82,152,.2),rgba(26,58,110,.1));
+  border:1px solid rgba(74,144,217,.25);
+  border-radius:16px;padding:22px 20px;
+  font-size:18px;font-weight:600;line-height:1.55;
+  text-align:center;
+  box-shadow:0 0 40px rgba(42,82,152,.1);
+}
+
+/* Answer buttons */
+.answers-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ans-btn{
+  background:linear-gradient(135deg,var(--blue2),rgba(26,58,110,.6));
+  border:1px solid rgba(74,144,217,.3);
+  border-radius:12px;padding:14px 12px;
+  color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  text-align:left;display:flex;align-items:center;gap:10px;
+  line-height:1.4;
+}
+.ans-letter{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  color:var(--gold);flex-shrink:0;width:18px;
+}
+.ans-btn:hover:not(:disabled){
+  border-color:var(--accent);
+  background:linear-gradient(135deg,rgba(74,144,217,.3),rgba(42,82,152,.2));
+  transform:translateY(-1px);
+}
+.ans-btn:disabled{cursor:default;}
+.ans-btn.correct{background:linear-gradient(135deg,rgba(39,174,96,.3),rgba(39,174,96,.1));border-color:var(--correct);color:var(--green);}
+.ans-btn.wrong{background:linear-gradient(135deg,rgba(192,57,43,.3),rgba(192,57,43,.1));border-color:var(--wrong);color:var(--red);}
+.ans-btn.hidden{opacity:.25;pointer-events:none;}
+.ans-btn.risiko-active{border-color:var(--orange);box-shadow:0 0 12px rgba(243,156,18,.3);}
+
+/* JOKERS */
+.jokers-bar{display:flex;gap:10px;padding:0 16px;}
+.joker-btn{
+  flex:1;padding:10px 8px;border-radius:10px;
+  border:1px solid var(--border);background:var(--surface2);
+  color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;
+  transition:all .2s;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.joker-icon{font-size:20px;}
+.joker-btn:hover:not(:disabled):not(.used){border-color:var(--gold);color:var(--gold);}
+.joker-btn.used{opacity:.3;cursor:not-allowed;filter:grayscale(1);}
+.joker-btn.risiko-pending{border-color:var(--orange);color:var(--orange);box-shadow:0 0 10px rgba(243,156,18,.25);animation:pulse .8s ease infinite;}
+.joker-btn.spy-disabled{opacity:.3;cursor:not-allowed;}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(243,156,18,.2);}50%{box-shadow:0 0 18px rgba(243,156,18,.5);}}
+
+/* RISIKO MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(16px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.overlay.open{display:flex;}
+.modal-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:400px;text-align:center;}
+.modal-icon{font-size:48px;margin-bottom:12px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.06em;margin-bottom:8px;}
+.modal-body{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.modal-btns{display:flex;flex-direction:column;gap:10px;}
+.btn-danger{background:linear-gradient(135deg,#e8354a,#c0293b);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:14px;cursor:pointer;transition:all .2s;}
+.btn-danger:hover{filter:brightness(1.1);}
+
+/* Next question btn */
+.next-btn{margin:0 16px 16px;padding:14px;background:linear-gradient(135deg,#2a5298,#1a3a6e);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:none;}
+.next-btn:hover{filter:brightness(1.2);}
+
+/* SIDEBAR */
+.sb-section{padding:12px;}
+.sb-label{font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;}
+.sb-player{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;margin-bottom:5px;background:var(--surface2);transition:all .3s;}
+.sb-player.active{background:linear-gradient(135deg,rgba(74,144,217,.15),rgba(42,82,152,.08));border:1px solid rgba(74,144,217,.3);}
+.sb-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-family:'Bebas Neue',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-info{flex:1;min-width:0;}
+.sb-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-score{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);}
+.sb-q{font-size:9px;color:var(--muted);margin-top:1px;}
+.sb-eliminated{opacity:.4;filter:grayscale(.8);}
+
+/* Money ladder */
+.money-ladder{padding:0 12px 12px;}
+.ladder-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;font-size:11px;margin-bottom:2px;}
+.ladder-item.current{background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.25);}
+.ladder-item.done{color:var(--gold);}
+.ladder-item.todo{color:var(--muted2);}
+.ladder-num{font-family:'Bebas Neue',sans-serif;font-size:13px;width:24px;}
+.ladder-pts{font-weight:600;font-size:11px;}
+
+/* ══ WINNER ══ */
+#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
+.trophy{font-size:80px;margin-bottom:14px;animation:bounce .6s ease;}
+@keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:.06em;color:var(--gold);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:8px;}
+.winner-score{font-size:15px;color:var(--muted);margin-bottom:28px;}
+.final-podium{display:flex;gap:10px;width:100%;max-width:380px;margin-bottom:28px;align-items:flex-end;}
+.podium-card{flex:1;border-radius:14px;padding:14px 10px;text-align:center;border-top:3px solid var(--border);}
+.podium-card.p1{background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(245,200,66,.05));border-color:var(--gold);}
+.podium-card.p2{background:var(--surface);}
+.podium-card.p3{background:var(--surface);}
+.pod-rank{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);}
+.pod-name{font-size:11px;font-weight:700;color:var(--text);margin:4px 0;}
+.pod-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+
+/* ══ EDITOR ══ */
+.field-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
+.field-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.field-input{width:100%;background:none;border:none;outline:none;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;}
+.field-input::placeholder{color:var(--muted2);}
+.field-num{width:100%;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;}
+
+.q-editor-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.q-editor-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.q-editor-num{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);flex-shrink:0;}
+.q-editor-pts{font-size:11px;color:var(--muted);margin-left:auto;}
+.q-editor-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+.q-editor-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;}
+.q-editor-inp:focus{border-color:var(--accent);}
+.q-editor-inp::placeholder{color:var(--muted2);}
+.answers-editor{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.ans-editor-wrap{position:relative;}
+.ans-editor-letter{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--gold);}
+.ans-editor-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px 8px 28px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;}
+.ans-editor-inp:focus{border-color:var(--accent);}
+.ans-editor-inp::placeholder{color:var(--muted2);}
+.ans-editor-inp.correct-ans{border-color:var(--correct);background:rgba(39,174,96,.08);}
+.correct-mark{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:4px;}
+.correct-mark input{accent-color:var(--correct);}
+.btn-del-q-ed{background:none;border:none;color:var(--muted2);font-size:15px;cursor:pointer;transition:color .15s;}
+.btn-del-q-ed:hover{color:var(--red);}
+.btn-add-q-ed{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:1px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
+.btn-add-q-ed:hover{border-color:var(--accent);color:var(--accent);}
+.editor-footer{padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;position:sticky;bottom:0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;z-index:500;transition:transform .3s ease;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ══ MENU ══ -->
+<div class="view active" id="view-menu">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">💰</div>
+    <div class="menu-logo-title">Wer wird Millionär?</div>
+    <div class="menu-logo-sub">Quiz Games by Mert</div>
+  </div>
+  <div class="menu-btns">
+    <label class="btn-primary" style="cursor:pointer;">
+      ▶ Spiel starten — Quiz importieren
+      <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    </label>
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ PLAY LANDING ══ -->
+<div class="view" id="view-play-landing" style="align-items:center;justify-content:center;padding:40px 20px;">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">💰</div>
+    <div class="menu-logo-title">Wer wird Millionär?</div>
+    <div class="menu-logo-sub">Quiz importieren & spielen</div>
+  </div>
+  <div class="menu-btns">
+    <label class="btn-primary" style="cursor:pointer;">
+      📂 Quiz-Datei auswählen
+      <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    </label>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ SETUP ══ -->
+<div class="view" id="view-setup">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">💰 Spieler eintragen</div>
+  </div>
+  <div class="view-body">
+    <div class="info-box">
+      <div class="info-title">Spielmodus</div>
+      Alle Spieler sehen dieselben Fragen gleichzeitig und antworten unabhängig voneinander.
+      Am Ende gewinnt wer die meisten Punkte hat.
+    </div>
+    <div class="players-grid" id="players-grid"></div>
+    <button class="btn-add-player-row" onclick="addPlayerRow()">＋ Spieler hinzufügen</button>
+    <button class="btn-primary" onclick="startGame()" style="margin-top:8px;">▶ Spiel starten!</button>
+  </div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div class="view" id="view-game">
+  <div class="topbar">
+    <button class="btn-icon" onclick="confirmQuit()">←</button>
+    <div class="topbar-title" id="game-title">💰 Millionär</div>
+    <div id="q-counter" style="font-size:12px;color:var(--muted);">Frage 1/15</div>
+  </div>
+
+  <div class="game-layout">
+    <div class="game-main">
+      <div class="q-area">
+        <div class="q-progress-bar" id="q-progress-bar"></div>
+        <div class="q-header">
+          <span class="q-num-label" id="q-num-label">Frage 1</span>
+          <span class="q-pts-label" id="q-pts-label">100 Punkte</span>
+        </div>
+        <div class="q-text-box" id="q-text-box">Frage wird geladen...</div>
+        <div class="jokers-bar">
+          <button class="joker-btn" id="joker-5050" onclick="use5050()">
+            <span class="joker-icon">✂️</span>
+            <span>50:50</span>
+          </button>
+          <button class="joker-btn spy-disabled" id="joker-spy" title="Verfügbar mit Multiplayer">
+            <span class="joker-icon">🕵️</span>
+            <span>SPY</span>
+          </button>
+          <button class="joker-btn" id="joker-risiko" onclick="useRisiko()">
+            <span class="joker-icon">🎲</span>
+            <span>RISIKO</span>
+          </button>
+        </div>
+        <div class="answers-grid" id="answers-grid"></div>
+      </div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Nächste Frage →</button>
+    </div>
+
+    <div class="game-sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Spieler</div>
+        <div id="sb-players"></div>
+      </div>
+      <div class="money-ladder" id="money-ladder"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WINNER ══ -->
+<div class="view" id="view-winner">
+  <div class="trophy">🏆</div>
+  <div class="winner-title">GEWINNER!</div>
+  <div class="winner-name" id="winner-name">Spieler</div>
+  <div class="winner-score" id="winner-score">0 Punkte</div>
+  <div class="final-podium" id="final-podium"></div>
+  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;">🔄 Nochmal spielen</button>
+  <button class="btn-secondary" onclick="showView('view-menu')" style="max-width:300px;margin-top:10px;">🏠 Hauptmenü</button>
+</div>
+
+<!-- ══ EDITOR ══ -->
+<div class="view" id="view-editor">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">✏️ Quiz erstellen</div>
+  </div>
+  <div class="view-body" style="padding-bottom:90px;">
+    <div class="field-wrap">
+      <span class="field-label">Quiz-Name</span>
+      <input class="field-input" id="quiz-name" placeholder="Mein Millionär Quiz" maxlength="40">
+    </div>
+    <div id="q-editor-container"></div>
+    <button class="btn-add-q-ed" onclick="addEditorQuestion()">＋ Frage hinzufügen</button>
+  </div>
+  <div class="editor-footer">
+    <button class="btn-gold" onclick="exportQuiz()">💾 Exportieren</button>
+    <button class="btn-primary" onclick="editorPlay()">▶ Spielen</button>
+  </div>
+</div>
+
+<!-- RISIKO MODAL -->
+<div class="overlay" id="risiko-overlay">
+  <div class="modal-card">
+    <div class="modal-icon">🎲</div>
+    <div class="modal-title" style="color:var(--orange);">RISIKO JOKER</div>
+    <div class="modal-body">
+      Bist du sicher?<br><br>
+      <strong style="color:var(--green);">Richtig → Doppelte Punkte ✓</strong><br>
+      <strong style="color:var(--red);">Falsch → Minuspunkte ✗</strong><br><br>
+      Dieser Joker gilt für <strong>alle Spieler</strong> gleichzeitig.
+    </div>
+    <div class="modal-btns">
+      <button class="btn-danger" onclick="confirmRisiko()">🎲 Risiko eingehen!</button>
+      <button class="btn-secondary" onclick="closeRisiko()">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── UTILS ──
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2800);}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){window.location.href='quizshow-menu.html';}
+function confirmQuit(){if(confirm('Spiel beenden?'))showView('view-menu');}
+
+// ── STATE ──
+let quizData=null;
+let players=[];        // [{name, score, jokers:{r:true,f:true}, eliminated:false}]
+let currentQIdx=0;
+let risikoActive=false;
+let answered=false;
+let correctIdx=-1;
+const LETTERS=['A','B','C','D'];
+
+// ── IMPORT ──
+function importAndPlay(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.questions||!Array.isArray(d.questions))throw new Error();
+      quizData=d;
+      document.getElementById('game-title').textContent='💰 '+quizData.name;
+      goToSetup();
+    }catch(err){showToast('❌ Ungültige Datei!');}
+  };
+  r.readAsText(file);
+  ev.target.value='';
+}
+
+// ── SETUP ──
+function goToSetup(){
+  players=[];
+  const grid=document.getElementById('players-grid');
+  grid.innerHTML='';
+  addPlayerRow();
+  addPlayerRow();
+  showView('view-setup');
+}
+
+function addPlayerRow(){
+  const grid=document.getElementById('players-grid');
+  const idx=grid.children.length;
+  const row=document.createElement('div');
+  row.className='player-setup-row';
+  row.innerHTML='<div class="player-num">'+(idx+1)+'</div>'
+    +'<input class="player-setup-inp" placeholder="Spielername..." maxlength="20">'
+    +'<button class="btn-del-player" onclick="this.closest(\'.player-setup-row\').remove();renumberPlayers()">✕</button>';
+  grid.appendChild(row);
+}
+
+function renumberPlayers(){
+  document.querySelectorAll('.player-setup-row').forEach((row,i)=>{
+    row.querySelector('.player-num').textContent=i+1;
+  });
+}
+
+function startGame(){
+  players=[];
+  document.querySelectorAll('.player-setup-inp').forEach((inp,i)=>{
+    const name=inp.value.trim()||(i===0?'Spieler 1':'Spieler '+(i+1));
+    players.push({name,score:0,jokers:{r:true,f:true},eliminated:false,qAnswered:0});
+  });
+  if(!players.length){showToast('⚠️ Mindestens 1 Spieler!');return;}
+  currentQIdx=0;
+  risikoActive=false;
+  buildSidebar();
+  buildLadder();
+  loadQuestion();
+  showView('view-game');
+}
+
+// ── GAME ──
+function loadQuestion(){
+  if(currentQIdx>=quizData.questions.length){showWinner();return;}
+  const q=quizData.questions[currentQIdx];
+  answered=false;
+  risikoActive=false;
+
+  // Reset joker buttons
+  const jf=document.getElementById('joker-5050');
+  const jr=document.getElementById('joker-risiko');
+  const anAllUsed5050=players.every(p=>p.jokers.f===false);
+  const anAllUsedR=players.every(p=>p.jokers.r===false);
+  jf.classList.toggle('used',anAllUsed5050);
+  jr.classList.toggle('used',anAllUsedR);
+  jr.classList.remove('risiko-pending');
+
+  // Progress bar
+  const bar=document.getElementById('q-progress-bar');
+  bar.innerHTML='';
+  quizData.questions.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='q-prog-dot'+(i<currentQIdx?' done':i===currentQIdx?' current':'');
+    bar.appendChild(d);
+  });
+
+  document.getElementById('q-num-label').textContent='Frage '+(currentQIdx+1);
+  document.getElementById('q-pts-label').textContent=q.points+' Punkte';
+  document.getElementById('q-counter').textContent='Frage '+(currentQIdx+1)+'/'+quizData.questions.length;
+  document.getElementById('q-text-box').textContent=q.question;
+  document.getElementById('next-btn').style.display='none';
+
+  // Answers
+  const grid=document.getElementById('answers-grid');
+  grid.innerHTML='';
+  correctIdx=q.correct;
+  q.answers.forEach((ans,i)=>{
+    const btn=document.createElement('button');
+    btn.className='ans-btn';
+    btn.id='ans-'+i;
+    btn.innerHTML='<span class="ans-letter">'+LETTERS[i]+'</span><span>'+escHtml(ans)+'</span>';
+    btn.onclick=()=>selectAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  updateSidebar();
+}
+
+function selectAnswer(idx){
+  if(answered)return;
+  answered=true;
+  const q=quizData.questions[currentQIdx];
+  const isCorrect=idx===correctIdx;
+
+  // Show correct/wrong
+  document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===correctIdx)btn.classList.add('correct');
+    else if(i===idx&&!isCorrect)btn.classList.add('wrong');
+  });
+
+  // Score all active players
+  const mult=risikoActive?2:1;
+  players.forEach(p=>{
+    if(p.eliminated)return;
+    if(isCorrect){
+      p.score+=q.points*mult;
+      p.qAnswered++;
+    } else {
+      if(risikoActive) p.score-=q.points;
+    }
+  });
+
+  if(risikoActive){
+    showToast(isCorrect?'🎲 RISIKO gewonnen! Doppelte Punkte!':'🎲 RISIKO verloren! Minuspunkte!',3000);
+    // Mark risiko used for all
+    players.forEach(p=>p.jokers.r=false);
+    document.getElementById('joker-risiko').classList.add('used');
+    document.getElementById('joker-risiko').classList.remove('risiko-pending');
+  } else {
+    showToast(isCorrect?'✅ Richtig!':'❌ Falsch!',2000);
+  }
+
+  updateSidebar();
+  document.getElementById('next-btn').style.display='block';
+}
+
+function nextQuestion(){
+  currentQIdx++;
+  if(currentQIdx>=quizData.questions.length){showWinner();}
+  else{loadQuestion();}
+}
+
+// ── JOKERS ──
+function use5050(){
+  if(document.getElementById('joker-5050').classList.contains('used'))return;
+  if(answered)return;
+  const q=quizData.questions[currentQIdx];
+
+  // Hide 2 wrong answers
+  let wrongHidden=0;
+  const btns=document.querySelectorAll('.ans-btn');
+  for(let i=0;i<4;i++){
+    if(i!==correctIdx&&wrongHidden<2){
+      btns[i].classList.add('hidden');
+      wrongHidden++;
+    }
+  }
+  players.forEach(p=>p.jokers.f=false);
+  document.getElementById('joker-5050').classList.add('used');
+  showToast('✂️ 50:50 — 2 falsche Antworten entfernt!',2500);
+}
+
+function useRisiko(){
+  if(document.getElementById('joker-risiko').classList.contains('used'))return;
+  if(answered)return;
+  document.getElementById('risiko-overlay').classList.add('open');
+}
+
+function confirmRisiko(){
+  document.getElementById('risiko-overlay').classList.remove('open');
+  risikoActive=true;
+  document.getElementById('joker-risiko').classList.add('risiko-pending');
+  showToast('🎲 RISIKO aktiv! Antworte jetzt!',3000);
+  // Highlight all answer buttons
+  document.querySelectorAll('.ans-btn:not(.hidden)').forEach(b=>b.classList.add('risiko-active'));
+}
+
+function closeRisiko(){
+  document.getElementById('risiko-overlay').classList.remove('open');
+}
+
+// ── SIDEBAR ──
+function buildSidebar(){
+  updateSidebar();
+}
+
+function updateSidebar(){
+  const container=document.getElementById('sb-players');
+  container.innerHTML='';
+  const sorted=[...players].sort((a,b)=>b.score-a.score);
+  sorted.forEach((p,rank)=>{
+    const orig=players.indexOf(p);
+    const el=document.createElement('div');
+    el.className='sb-player'+(rank===0?' active':'');
+    const colors=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c'];
+    const color=colors[orig%colors.length];
+    el.innerHTML='<div class="sb-avatar" style="background:'+color+'">'+escHtml(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="sb-info"><div class="sb-name">'+escHtml(p.name)+'</div>'
+      +'<div class="sb-q">'+p.qAnswered+' richtig</div></div>'
+      +'<div class="sb-score">'+p.score+'</div>';
+    container.appendChild(el);
+  });
+}
+
+function buildLadder(){
+  const ladder=document.getElementById('money-ladder');
+  ladder.innerHTML='<div class="sb-label" style="padding:12px 0 6px;">Punkteleiter</div>';
+  const questions=[...quizData.questions].reverse();
+  questions.forEach((q,i)=>{
+    const realIdx=quizData.questions.length-1-i;
+    const el=document.createElement('div');
+    el.className='ladder-item'+(realIdx===currentQIdx?' current':realIdx<currentQIdx?' done':' todo');
+    el.id='ladder-'+realIdx;
+    el.innerHTML='<span class="ladder-num">'+(realIdx+1)+'</span><span class="ladder-pts">'+q.points+'</span>';
+    ladder.appendChild(el);
+  });
+}
+
+function updateLadder(){
+  document.querySelectorAll('.ladder-item').forEach((el,i)=>{
+    const realIdx=quizData.questions.length-1-i;
+    el.className='ladder-item'+(realIdx===currentQIdx?' current':realIdx<currentQIdx?' done':' todo');
+  });
+}
+
+// ── WINNER ──
+function showWinner(){
+  const sorted=[...players].sort((a,b)=>b.score-a.score);
+  const winner=sorted[0];
+  const tied=sorted.length>1&&sorted[0].score===sorted[1].score;
+
+  document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':winner.name;
+  document.getElementById('winner-score').textContent=winner.score+' Punkte';
+
+  const podium=document.getElementById('final-podium');
+  podium.innerHTML='';
+  const colors=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6'];
+  const classes=['p1','p2','p3'];
+  sorted.slice(0,3).forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='podium-card '+(classes[i]||'');
+    el.innerHTML='<div class="pod-rank">'+(i===0?'🥇':i===1?'🥈':'🥉')+'</div>'
+      +'<div class="pod-name">'+escHtml(p.name)+'</div>'
+      +'<div class="pod-pts">'+p.score+'</div>';
+    podium.appendChild(el);
+  });
+
+  showView('view-winner');
+}
+
+// ── EDITOR ──
+let editorQCount=0;
+const DEFAULT_PTS=[100,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,25000,50000];
+
+function addEditorQuestion(qData){
+  const con=document.getElementById('q-editor-container');
+  const idx=editorQCount++;
+  const pts=qData?qData.points:(DEFAULT_PTS[idx]||idx*100+100);
+  const el=document.createElement('div');
+  el.className='q-editor-block';
+  el.dataset.qidx=idx;
+
+  const answersHtml=LETTERS.map((l,i)=>`
+    <div class="ans-editor-wrap">
+      <span class="ans-editor-letter">${l}</span>
+      <input class="ans-editor-inp" placeholder="Antwort ${l}" maxlength="100"
+        value="${qData?escHtml(qData.answers[i]):''}">
+    </div>
+  `).join('');
+
+  el.innerHTML=`
+    <div class="q-editor-head">
+      <span class="q-editor-num">Frage ${idx+1}</span>
+      <input class="field-num" style="width:80px;text-align:right;" value="${pts}" min="1" type="number" placeholder="Punkte">
+      <span class="q-editor-pts">Punkte</span>
+      <button class="btn-del-q-ed" onclick="this.closest('.q-editor-block').remove()">🗑</button>
+    </div>
+    <div class="q-editor-body">
+      <input class="q-editor-inp" placeholder="❓ Frage eingeben..." maxlength="300"
+        value="${qData?escHtml(qData.question):''}">
+      <div class="answers-editor">${answersHtml}</div>
+      <div class="correct-mark">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+          Richtige Antwort:
+        </label>
+        <select class="q-editor-inp" style="padding:6px 8px;width:auto;cursor:pointer;">
+          ${LETTERS.map((l,i)=>`<option value="${i}" ${qData&&qData.correct===i?'selected':''}>Antwort ${l}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+  con.appendChild(el);
+}
+
+function collectEditorData(){
+  const name=document.getElementById('quiz-name').value.trim()||'Millionär Quiz';
+  const questions=[];
+  document.querySelectorAll('.q-editor-block').forEach(block=>{
+    const question=block.querySelector('.q-editor-inp').value.trim();
+    const answers=[...block.querySelectorAll('.ans-editor-inp')].map(i=>i.value.trim());
+    const correct=parseInt(block.querySelector('select').value);
+    const points=parseInt(block.querySelector('.field-num').value)||100;
+    if(question&&answers[0])questions.push({question,answers,correct,points});
+  });
+  return{name,questions};
+}
+
+function exportQuiz(){
+  const data=collectEditorData();
+  if(!data.questions.length){showToast('⚠️ Erst Fragen hinzufügen!');return;}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=data.name.replace(/\s+/g,'_')+'.quiz';
+  a.click();URL.revokeObjectURL(url);
+  showToast('✅ Quiz gespeichert!');
+}
+
+function editorPlay(){
+  const data=collectEditorData();
+  if(!data.questions.length){showToast('⚠️ Erst Fragen hinzufügen!');return;}
+  quizData=data;
+  document.getElementById('game-title').textContent='💰 '+data.name;
+  goToSetup();
+}
+
+// Init editor with 5 default questions
+for(let i=0;i<5;i++) addEditorQuestion();
+
+// ── URL ACTION HANDLER ──
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const action=params.get('action');
+  if(action==='play') showView('view-play-landing');
+  else if(action==='editor') showView('view-editor');
+})();
+</script>
+</body>
+</html>
