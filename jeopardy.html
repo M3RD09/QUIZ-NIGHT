@@ -344,9 +344,29 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="menu-logo-sub">Quiz Games by Mert</div>
   </div>
   <div class="menu-btns">
-    <button class="btn-primary" onclick="document.getElementById('file-input').click()">▶ Spiel starten — Quiz importieren</button>
-    <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    <label class="btn-primary" style="cursor:pointer;justify-content:center;">
+      ▶ Spiel starten — Quiz importieren
+      <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    </label>
     <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ PLAY LANDING (von Hauptmenü: Spiel starten) ══ -->
+<div class="view" id="view-play-landing">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">🎯</div>
+    <div class="menu-logo-title">JEOPARDY!</div>
+    <div class="menu-logo-sub">Quiz importieren & spielen</div>
+  </div>
+  <div class="menu-btns">
+    <label class="btn-primary" style="cursor:pointer;justify-content:center;">
+      📂 Quiz-Datei auswählen
+      <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    </label>
+    <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px;">Wähle eine .quiz Datei von deinem Gerät</div>
+    <button class="btn-secondary" onclick="showView('view-editor')" style="margin-top:8px;">✏️ Lieber Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -908,8 +928,7 @@ addCategory({name:'KATEGORIE 2',questions:[]});
   const params = new URLSearchParams(window.location.search);
   const action = params.get('action');
   if(action === 'play'){
-    // Trigger file picker immediately
-    setTimeout(()=>document.getElementById('file-input').click(), 300);
+    showView('view-play-landing');
   } else if(action === 'editor'){
     showView('view-editor');
   }
