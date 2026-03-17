@@ -583,13 +583,11 @@
     millionaire: {
       icon: '💰',
       title: 'Wer wird Millionär?',
-      subtitle: 'Erstelle dein Frageset mit 15 Fragen in aufsteigender Schwierigkeit und spiele live.',
+      subtitle: 'Alle spielen gleichzeitig — am Ende gewinnt wer die meisten Punkte hat.',
       accent: '#f5c842',
       actions: [
-        { icon: '▶️', title: 'Spiel starten', sub: 'Mit geladenem Quiz spielen', primary: true },
-        { icon: '📥', title: 'Quiz importieren', sub: 'JSON-Datei laden (.quiz)' },
-        { icon: '✏️', title: 'Quiz erstellen', sub: '15 Fragen mit 4 Antworten anlegen' },
-        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelles Quiz als Datei speichern' },
+        { icon: '▶️', title: 'Spiel starten', sub: 'Quiz importieren & sofort losspielen', primary: true, link: 'millionaer.html?action=play' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Fragen & Antworten selbst anlegen', link: 'millionaer.html?action=editor' },
       ]
     },
     hotzones: {
