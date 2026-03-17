@@ -6,1145 +6,764 @@
 <title>Jeopardy! — Quiz Games by Mert</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface2: #1a1a26;
-    --border: rgba(255,255,255,0.08);
-    --accent: #3a8ef6;
-    --accent-dim: rgba(58,142,246,0.12);
-    --gold: #f5c842;
-    --red: #e8354a;
-    --green: #2ecc71;
-    --text: #f0eee8;
-    --muted: rgba(240,238,232,0.45);
-    --muted2: rgba(240,238,232,0.2);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* ── VIEWS ── */
-  .view { display: none; min-height: 100vh; }
-  .view.active { display: flex; flex-direction: column; }
-
-  /* ── TOP BAR ── */
-  .topbar {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .btn-back {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .btn-back:hover { border-color: var(--accent); color: var(--accent); }
-
-  .topbar-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    flex: 1;
-  }
-
-  .topbar-actions { display: flex; gap: 8px; }
-
-  /* ── MAIN MENU VIEW ── */
-  #view-menu {
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
-  }
-
-  .menu-header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-
-  .menu-icon { font-size: 64px; margin-bottom: 16px; }
-
-  .menu-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 64px;
-    letter-spacing: 0.06em;
-    background: linear-gradient(160deg, #fff 30%, var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-  }
-
-  .menu-sub {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 10px;
-  }
-
-  .menu-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    max-width: 420px;
-  }
-
-  .big-btn {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 22px 24px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    text-align: left;
-    width: 100%;
-  }
-
-  .big-btn-icon { font-size: 32px; flex-shrink: 0; }
-
-  .big-btn-text { flex: 1; }
-
-  .big-btn-title {
-    font-size: 18px;
-    font-weight: 700;
-    display: block;
-  }
-
-  .big-btn-sub {
-    font-size: 12px;
-    color: var(--muted);
-    display: block;
-    margin-top: 3px;
-  }
-
-  .big-btn-arrow { font-size: 22px; color: var(--muted2); }
-
-  .big-btn.primary {
-    background: var(--accent);
-    border-color: transparent;
-    color: #fff;
-  }
-
-  .big-btn.primary .big-btn-sub { color: rgba(255,255,255,0.7); }
-  .big-btn.primary .big-btn-arrow { color: rgba(255,255,255,0.5); }
-
-  .big-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-  .big-btn.primary:hover { filter: brightness(1.1); }
-  .big-btn:not(.primary):hover { border-color: var(--accent); }
-
-  /* hidden file input */
-  #file-input { display: none; }
-
-  /* ── EDITOR VIEW ── */
-  #view-editor { padding: 0; }
-
-  .editor-body {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  /* Quiz title input */
-  .quiz-title-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-  }
-
-  .field-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-    display: block;
-  }
-
-  .field-input {
-    width: 100%;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.06em;
-  }
-
-  .field-input::placeholder { color: var(--muted2); }
-
-  /* Category */
-  .category-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-
-  .category-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-
-  .category-name-input {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .category-name-input::placeholder { color: var(--muted); }
-
-  .btn-icon-sm {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    transition: all 0.15s;
-  }
-  .btn-icon-sm:hover { color: var(--red); }
-
-  /* Question row */
-  .questions-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
-
-  .question-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    position: relative;
-  }
-
-  .points-badge {
-    background: var(--accent-dim);
-    border: 1px solid rgba(58,142,246,0.3);
-    color: var(--accent);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 15px;
-    letter-spacing: 0.05em;
-    padding: 2px 10px;
-    border-radius: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-top: 2px;
-  }
-  .points-badge:hover { background: var(--accent); color: #fff; }
-
-  .q-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-
-  .q-input {
-    width: 100%;
-    background: none;
-    border: none;
-    border-bottom: 1px solid var(--border);
-    outline: none;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    padding: 4px 0;
-  }
-  .q-input::placeholder { color: var(--muted2); }
-  .q-input:last-child { border-bottom: none; }
-  .q-input:focus { border-bottom-color: var(--accent); }
-
-  .btn-del-q {
-    background: none;
-    border: none;
-    color: var(--muted2);
-    font-size: 16px;
-    cursor: pointer;
-    padding: 2px;
-    flex-shrink: 0;
-    transition: color 0.15s;
-  }
-  .btn-del-q:hover { color: var(--red); }
-
-  .btn-add-question {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    margin: 0 16px 14px;
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    background: none;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-add-question:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-  /* Add category */
-  .btn-add-category {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 16px;
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-    background: none;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-  }
-  .btn-add-category:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-  /* Bottom action bar */
-  .editor-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    display: flex;
-    gap: 12px;
-  }
-
-  .footer-btn {
-    flex: 1;
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .footer-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .footer-btn.export {
-    background: var(--gold);
-    border-color: transparent;
-    color: #0a0a0f;
-  }
-  .footer-btn.export:hover { filter: brightness(1.1); color: #0a0a0f; border-color: transparent; }
-
-  /* ── GAME VIEW ── */
-  #view-game { padding: 0; }
-
-  .game-body { flex: 1; padding: 16px; overflow-y: auto; }
-
-  .game-title-bar {
-    text-align: center;
-    padding: 16px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  /* Board */
-  .board-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
-
-  .board {
-    display: grid;
-    min-width: max-content;
-    gap: 6px;
-    padding: 16px;
-  }
-
-  .board-cell {
-    width: 110px;
-    height: 75px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    text-align: center;
-    padding: 6px;
-    cursor: default;
-  }
-
-  .board-cat {
-    background: var(--accent);
-    color: #fff;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    line-height: 1.3;
-  }
-
-  .board-point {
-    background: #1a2a4a;
-    border: 1px solid rgba(58,142,246,0.2);
-    color: var(--gold);
-    font-size: 28px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .board-point:hover { background: var(--accent); color: #fff; transform: scale(1.04); }
-
-  .board-point.used {
-    background: var(--surface2);
-    color: var(--muted2);
-    cursor: default;
-    transform: none;
-  }
-
-  /* Score bar */
-  .score-bar {
-    display: flex;
-    gap: 10px;
-    padding: 14px 16px;
-    overflow-x: auto;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  .player-score {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 8px 14px;
-    text-align: center;
-    min-width: 80px;
-    flex-shrink: 0;
-  }
-
-  .player-name { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .player-pts { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--gold); line-height: 1.1; }
-
-  .btn-add-player {
-    background: none;
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    padding: 8px 14px;
-    color: var(--muted);
-    font-size: 20px;
-    cursor: pointer;
-    min-width: 50px;
-    flex-shrink: 0;
-    transition: all 0.2s;
-  }
-  .btn-add-player:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* ── QUESTION MODAL ── */
-  .q-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(10px);
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-  .q-overlay.open { display: flex; }
-
-  .q-modal {
-    background: #0d1a2e;
-    border: 2px solid var(--accent);
-    border-radius: 20px;
-    padding: 36px 28px;
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .q-points-label {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    color: var(--gold);
-    letter-spacing: 0.05em;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .q-category-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 24px;
-  }
-
-  .q-answer-text {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.5;
-    margin-bottom: 28px;
-    color: var(--text);
-  }
-
-  .q-reveal-btn {
-    background: var(--accent);
-    border: none;
-    border-radius: 12px;
-    padding: 14px 28px;
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 16px;
-    width: 100%;
-  }
-  .q-reveal-btn:hover { filter: brightness(1.15); }
-
-  .q-question-text {
-    font-size: 16px;
-    color: var(--gold);
-    font-style: italic;
-    margin-bottom: 24px;
-    display: none;
-    line-height: 1.5;
-  }
-
-  .q-score-btns {
-    display: flex;
-    gap: 10px;
-    display: none;
-  }
-
-  .q-score-btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .q-score-btn.correct { background: var(--green); color: #fff; }
-  .q-score-btn.wrong { background: var(--red); color: #fff; }
-  .q-score-btn.skip { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
-
-  .q-score-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-
-  .q-player-select {
-    display: none;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .q-player-select-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-
-  .player-btn {
-    padding: 10px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-  }
-  .player-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
-  .player-btn.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 13px;
-    z-index: 300;
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+:root {
+  --bg:#0a0a0f; --surface:#12121a; --surface2:#1a1a26;
+  --border:rgba(255,255,255,0.08);
+  --blue:#3a8ef6; --blue-dim:rgba(58,142,246,0.12);
+  --gold:#f5c842; --red:#e8354a; --green:#2ecc71; --orange:#f39c12;
+  --team1:#3a8ef6; --team2:#e8354a;
+  --text:#f0eee8; --muted:rgba(240,238,232,0.45); --muted2:rgba(240,238,232,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.view{display:none;min-height:100vh;flex-direction:column;}
+.view.active{display:flex;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:50;}
+.btn-icon{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:9px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.btn-icon:hover{border-color:var(--blue);color:var(--blue);}
+.topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:var(--blue);flex:1;}
+
+.view-body{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
+
+/* BUTTONS */
+.btn-primary{background:var(--blue);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+.btn-gold{background:var(--gold);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-gold:hover{filter:brightness(1.1);}
+
+/* MENU */
+#view-menu{align-items:center;justify-content:center;padding:40px 20px;}
+.menu-logo{text-align:center;margin-bottom:40px;}
+.menu-logo-icon{font-size:60px;margin-bottom:12px;}
+.menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:60px;letter-spacing:.06em;background:linear-gradient(160deg,#fff 30%,var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.menu-logo-sub{font-size:13px;color:var(--muted);margin-top:6px;}
+.menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
+
+/* SETUP */
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.team-card{background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);}
+.team-card.t1{--tc:var(--team1);}
+.team-card.t2{--tc:var(--team2);}
+.team-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em;color:var(--tc);margin-bottom:10px;}
+.team-name-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:10px;}
+.team-name-inp:focus{border-color:var(--tc);}
+.player-list{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
+.player-row{display:flex;align-items:center;gap:6px;background:var(--surface2);border-radius:8px;padding:5px 9px;font-size:12px;font-weight:500;}
+.player-row-name{flex:1;}
+.btn-del-p{background:none;border:none;color:var(--muted2);font-size:13px;cursor:pointer;transition:color .15s;}
+.btn-del-p:hover{color:var(--red);}
+.btn-add-p{background:none;border:1px dashed var(--border);border-radius:8px;color:var(--muted);font-size:11px;font-weight:600;padding:6px;cursor:pointer;transition:all .2s;width:100%;text-align:center;}
+.btn-add-p:hover{border-color:var(--tc);color:var(--tc);}
+.player-add-row{display:flex;gap:6px;margin-top:4px;}
+.player-add-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;min-width:0;}
+.player-add-inp:focus{border-color:var(--tc);}
+.btn-add-p-inline{background:var(--tc);border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:700;width:34px;height:34px;cursor:pointer;flex-shrink:0;transition:all .2s;}
+.btn-add-p-inline:hover{filter:brightness(1.15);}
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.8;}
+.info-box-title{font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+
+/* BOARD */
+.turn-banner{padding:12px 16px;text-align:center;font-size:14px;font-weight:700;letter-spacing:.05em;}
+.turn-banner.t1{background:linear-gradient(90deg,rgba(58,142,246,.0),rgba(58,142,246,.18),rgba(58,142,246,.0));color:var(--team1);border-bottom:2px solid var(--team1);}
+.turn-banner.t2{background:linear-gradient(90deg,rgba(232,53,74,.0),rgba(232,53,74,.18),rgba(232,53,74,.0));color:var(--team2);border-bottom:2px solid var(--team2);}
+
+.board-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;display:flex;justify-content:center;}
+.board{display:grid;gap:6px;padding:14px;min-width:max-content;}
+
+.board-cell{
+  width:108px;height:72px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;text-align:center;padding:8px;
+}
+
+/* Category header cells — herausstechen! */
+.board-cat{
+  background:linear-gradient(135deg,#1e3a6e,#0d2244);
+  border:2px solid var(--blue);
+  color:#fff;
+  font-size:11px;font-family:'DM Sans',sans-serif;font-weight:800;
+  text-transform:uppercase;letter-spacing:.08em;line-height:1.3;
+  box-shadow:0 0 18px rgba(58,142,246,.3), inset 0 1px 0 rgba(255,255,255,.08);
+  height:60px;
+}
+
+/* Point cells */
+.board-point{
+  background:linear-gradient(160deg,#0f2040,#091628);
+  border:1px solid rgba(58,142,246,.2);
+  color:var(--gold);font-size:28px;
+  cursor:pointer;
+  transition:all .18s;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+  position:relative;
+  overflow:hidden;
+}
+.board-point::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(245,200,66,.08),transparent 70%);
+  pointer-events:none;
+}
+.board-point:hover{
+  background:linear-gradient(160deg,#1a3a6a,#0d2244);
+  border-color:rgba(58,142,246,.6);
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 8px 24px rgba(58,142,246,.25);
+  color:#fff;
+}
+.board-point:active{transform:scale(.96);}
+.board-point.used{
+  background:var(--surface2);color:var(--muted2);
+  cursor:default;border-color:transparent;font-size:20px;
+  box-shadow:none;transform:none;
+}
+.board-point.used::after{display:none;}
+
+/* Score area */
+.score-area{
+  padding:12px;border-top:1px solid var(--border);
+  background:var(--surface);display:flex;gap:10px;flex-shrink:0;
+}
+.score-team{
+  flex:1;border-radius:12px;padding:12px 14px;min-width:0;
+  position:relative;overflow:hidden;
+}
+.score-team.t1{
+  background:linear-gradient(135deg,rgba(58,142,246,.12),rgba(58,142,246,.04));
+  border:1px solid rgba(58,142,246,.25);
+}
+.score-team.t2{
+  background:linear-gradient(135deg,rgba(232,53,74,.12),rgba(232,53,74,.04));
+  border:1px solid rgba(232,53,74,.25);
+}
+.score-team-name{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--tc);}
+.score-team.t1{--tc:var(--team1);}
+.score-team.t2{--tc:var(--team2);}
+.score-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1.05;margin:2px 0;}
+.score-players{font-size:10px;color:var(--muted);line-height:1.5;}
+
+/* QUESTION OVERLAY */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(5,10,20,.94);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  z-index:200;display:none;
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 16px;overflow-y:auto;
+}
+.overlay.open{display:flex;}
+
+.q-card{
+  background:linear-gradient(160deg,#0d1f3a,#07111f);
+  border:1px solid rgba(58,142,246,.35);
+  border-radius:24px;
+  padding:28px 24px;
+  width:100%;max-width:500px;
+  text-align:center;
+  box-shadow:0 0 60px rgba(58,142,246,.12), 0 24px 60px rgba(0,0,0,.6);
+  position:relative;overflow:hidden;
+}
+.q-card::before{
+  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(58,142,246,.08),transparent 70%);
+  pointer-events:none;
+}
+
+.q-cat{
+  font-size:10px;font-weight:800;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--blue);
+  background:rgba(58,142,246,.1);border:1px solid rgba(58,142,246,.2);
+  border-radius:20px;padding:4px 14px;display:inline-block;margin-bottom:8px;
+}
+.q-pts{
+  font-family:'Bebas Neue',sans-serif;font-size:60px;
+  color:var(--gold);line-height:1;
+  text-shadow:0 0 30px rgba(245,200,66,.3);
+  margin-bottom:4px;
+}
+.q-whose{font-size:12px;color:var(--muted);margin-bottom:20px;}
+
+/* Timer */
+.timer-wrap{position:relative;width:84px;height:84px;margin:0 auto 20px;}
+.timer-wrap svg{transform:rotate(-90deg);}
+.timer-wrap circle{fill:none;stroke-width:6;}
+.t-bg{stroke:rgba(255,255,255,.06);}
+.t-fg{stroke:var(--green);stroke-dasharray:220;stroke-dashoffset:0;stroke-linecap:round;transition:stroke-dashoffset .95s linear,stroke .3s;filter:drop-shadow(0 0 6px currentColor);}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:30px;}
+
+.q-text{
+  font-size:19px;font-weight:600;line-height:1.6;
+  margin-bottom:22px;color:var(--text);
+}
+
+.time-up-box{
+  background:rgba(232,53,74,.12);border:1px solid rgba(232,53,74,.35);
+  border-radius:12px;padding:11px;margin-bottom:12px;
+  font-size:13px;font-weight:700;color:var(--red);display:none;
+}
+.btn-reveal-ans{
+  background:linear-gradient(135deg,#2a6ef0,#1a5cd8);
+  border:none;border-radius:12px;color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;
+  padding:14px 20px;cursor:pointer;transition:all .2s;width:100%;margin-bottom:10px;
+  box-shadow:0 4px 16px rgba(42,110,240,.35);
+}
+.btn-reveal-ans:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.ans-box{
+  background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.25);
+  border-radius:12px;padding:14px;margin-bottom:14px;
+  font-size:16px;font-weight:600;color:var(--green);display:none;
+  box-shadow:0 0 20px rgba(46,204,113,.1);
+}
+.verdict-wrap{display:none;flex-direction:column;gap:8px;}
+.btn-correct{
+  background:linear-gradient(135deg,#27ae60,#1e8c4e);
+  border:none;border-radius:12px;color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+  padding:14px;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 14px rgba(39,174,96,.3);
+}
+.btn-wrong{
+  background:linear-gradient(135deg,#e8354a,#c0293b);
+  border:none;border-radius:12px;color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+  padding:14px;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 14px rgba(232,53,74,.3);
+}
+.btn-skip{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px;cursor:pointer;transition:all .2s;}
+.btn-correct:hover,.btn-wrong:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-skip:hover{border-color:var(--blue);color:var(--blue);}
+
+/* WINNER */
+#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
+.trophy{font-size:80px;margin-bottom:14px;}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:.06em;color:var(--gold);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:30px;margin-bottom:24px;}
+.final-grid{display:flex;gap:12px;width:100%;max-width:340px;margin-bottom:28px;}
+.final-card{flex:1;background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);}
+.final-card.t1{--tc:var(--team1);}
+.final-card.t2{--tc:var(--team2);}
+.fc-name{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tc);}
+.fc-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);}
+
+/* EDITOR */
+.field-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
+.field-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.field-input{width:100%;background:none;border:none;outline:none;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;}
+.field-input::placeholder{color:var(--muted2);}
+.cat-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.cat-head{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.cat-inp{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.cat-inp::placeholder{color:var(--muted);}
+.btn-del-cat{background:none;border:none;color:var(--muted2);font-size:16px;cursor:pointer;transition:color .15s;}
+.btn-del-cat:hover{color:var(--red);}
+.q-rows{padding:10px 14px;display:flex;flex-direction:column;gap:7px;}
+.q-row{display:flex;gap:8px;align-items:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 11px;}
+.pts-badge{background:var(--blue-dim);border:1px solid rgba(58,142,246,.3);color:var(--blue);font-family:'Bebas Neue',sans-serif;font-size:13px;padding:2px 8px;border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-top:2px;transition:all .15s;}
+.pts-badge:hover{background:var(--blue);color:#fff;}
+.q-fields{flex:1;display:flex;flex-direction:column;gap:5px;}
+.q-inp{width:100%;background:none;border:none;border-bottom:1px solid var(--border);outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:3px 0;}
+.q-inp::placeholder{color:var(--muted2);}
+.q-inp:focus{border-bottom-color:var(--blue);}
+.q-inp:last-child{border-bottom:none;}
+.btn-del-q{background:none;border:none;color:var(--muted2);font-size:13px;cursor:pointer;flex-shrink:0;transition:color .15s;}
+.btn-del-q:hover{color:var(--red);}
+.btn-add-q{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;margin:0 14px 11px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-add-q:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.btn-add-cat{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:1px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
+.btn-add-cat:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
+.editor-footer{padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;position:sticky;bottom:0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;z-index:500;transition:transform .3s ease;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════
-     VIEW 1: HAUPTMENÜ
-══════════════════════════════════ -->
+<!-- ══ MENU ══ -->
 <div class="view active" id="view-menu">
-  <div class="menu-header">
-    <div class="menu-icon">🎯</div>
-    <div class="menu-title">JEOPARDY!</div>
-    <div class="menu-sub">Quiz Games by Mert</div>
+  <div class="menu-logo">
+    <div class="menu-logo-icon">🎯</div>
+    <div class="menu-logo-title">JEOPARDY!</div>
+    <div class="menu-logo-sub">Quiz Games by Mert</div>
   </div>
-
-  <div class="menu-buttons">
-
-    <!-- Spiel starten = Import + Play -->
-    <button class="big-btn primary" onclick="document.getElementById('file-input').click()">
-      <span class="big-btn-icon">▶️</span>
-      <span class="big-btn-text">
-        <span class="big-btn-title">Spiel starten</span>
-        <span class="big-btn-sub">Quiz-Datei importieren & sofort spielen</span>
-      </span>
-      <span class="big-btn-arrow">›</span>
-    </button>
-    <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)">
-
-    <!-- Quiz erstellen -->
-    <button class="big-btn" onclick="showView('view-editor')">
-      <span class="big-btn-icon">✏️</span>
-      <span class="big-btn-text">
-        <span class="big-btn-title">Quiz erstellen</span>
-        <span class="big-btn-sub">Kategorien & Fragen selbst anlegen</span>
-      </span>
-      <span class="big-btn-arrow">›</span>
-    </button>
-
-    <!-- Zurück -->
-    <button class="big-btn" onclick="goHome()" style="margin-top:8px; opacity:0.6;">
-      <span class="big-btn-icon">🏠</span>
-      <span class="big-btn-text">
-        <span class="big-btn-title">Hauptmenü</span>
-        <span class="big-btn-sub">Zurück zur Spielauswahl</span>
-      </span>
-      <span class="big-btn-arrow">›</span>
-    </button>
+  <div class="menu-btns">
+    <button class="btn-primary" onclick="document.getElementById('file-input').click()">▶ Spiel starten — Quiz importieren</button>
+    <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════
-     VIEW 2: QUIZ EDITOR
-══════════════════════════════════ -->
-<div class="view" id="view-editor">
+<!-- ══ SETUP ══ -->
+<div class="view" id="view-setup">
   <div class="topbar">
-    <button class="btn-back" onclick="showView('view-menu')">←</button>
-    <div class="topbar-title">🎯 Quiz erstellen</div>
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">🎯 Teams aufstellen</div>
   </div>
-
-  <div class="editor-body" id="editor-body">
-
-    <!-- Quiz Name -->
-    <div class="quiz-title-wrap">
-      <span class="field-label">Quiz-Name</span>
-      <input class="field-input" id="quiz-name" placeholder="Mein Jeopardy Quiz" maxlength="50">
+  <div class="view-body">
+    <div class="team-grid">
+      <div class="team-card t1">
+        <div class="team-label">TEAM 1</div>
+        <input class="team-name-inp" id="t1-name" placeholder="Teamname" value="Team Blau" maxlength="16">
+        <div class="player-list" id="t1-players"></div>
+        <div class="player-add-row">
+          <input class="player-add-inp" id="t1-new-player" placeholder="Spielername..." maxlength="20"
+            onkeydown="if(event.key==='Enter')addPlayer(1)">
+          <button class="btn-add-p-inline" onclick="addPlayer(1)">＋</button>
+        </div>
+      </div>
+      <div class="team-card t2">
+        <div class="team-label">TEAM 2</div>
+        <input class="team-name-inp" id="t2-name" placeholder="Teamname" value="Team Rot" maxlength="16">
+        <div class="player-list" id="t2-players"></div>
+        <div class="player-add-row">
+          <input class="player-add-inp" id="t2-new-player" placeholder="Spielername..." maxlength="20"
+            onkeydown="if(event.key==='Enter')addPlayer(2)">
+          <button class="btn-add-p-inline" onclick="addPlayer(2)">＋</button>
+        </div>
+      </div>
     </div>
-
-    <!-- Categories container -->
-    <div id="categories-container"></div>
-
-    <!-- Add category button -->
-    <button class="btn-add-category" onclick="addCategory()">
-      ＋ Neue Kategorie hinzufügen
-    </button>
-
-  </div>
-
-  <div class="editor-footer">
-    <button class="footer-btn export" onclick="exportQuiz()">
-      💾 Speichern & Exportieren
-    </button>
-    <button class="footer-btn" onclick="previewPlay()">
-      ▶ Spielen
-    </button>
+    <div class="info-box">
+      <div class="info-box-title">Spielreihenfolge</div>
+      Team 1 Spieler 1 → Team 2 Spieler 1 → Team 1 Spieler 2 → Team 2 Spieler 2 → ...<br>
+      Jeder wählt Kategorie & Punktzahl. 30 Sek. Zeit — danach automatisch Falsch.
+    </div>
+    <button class="btn-primary" onclick="startGame()">▶ Spiel starten!</button>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════
-     VIEW 3: SPIEL
-══════════════════════════════════ -->
+<!-- ══ GAME ══ -->
 <div class="view" id="view-game">
   <div class="topbar">
-    <button class="btn-back" onclick="showView('view-menu')">←</button>
-    <div class="topbar-title" id="game-title-bar">🎯 Jeopardy!</div>
-    <div class="topbar-actions">
-      <button class="btn-back" onclick="resetGame()" title="Neu starten" style="font-size:14px;">🔄</button>
+    <button class="btn-icon" onclick="confirmQuit()">←</button>
+    <div class="topbar-title" id="game-title">🎯 Jeopardy!</div>
+    <button class="btn-icon" onclick="resetBoard()">🔄</button>
+  </div>
+  <div class="turn-banner t1" id="turn-banner">Team Blau — Spieler 1 ist dran</div>
+  <div class="board-scroll"><div class="board" id="game-board"></div></div>
+  <div class="score-area" id="score-area"></div>
+</div>
+
+<!-- ══ WINNER ══ -->
+<div class="view" id="view-winner">
+  <div class="trophy">🏆</div>
+  <div class="winner-title">GEWINNER!</div>
+  <div class="winner-name" id="winner-name">Team Blau</div>
+  <div class="final-grid" id="final-grid"></div>
+  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;">🔄 Nochmal spielen</button>
+  <button class="btn-secondary" onclick="showView('view-menu')" style="max-width:300px;margin-top:10px;">🏠 Hauptmenü</button>
+</div>
+
+<!-- ══ EDITOR ══ -->
+<div class="view" id="view-editor">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">✏️ Quiz erstellen</div>
+  </div>
+  <div class="view-body" style="padding-bottom:90px;">
+    <div class="field-wrap">
+      <span class="field-label">Quiz-Name</span>
+      <input class="field-input" id="quiz-name" placeholder="Mein Jeopardy" maxlength="40">
     </div>
+    <div id="cat-container"></div>
+    <button class="btn-add-cat" onclick="addCategory()">＋ Kategorie hinzufügen</button>
   </div>
-
-  <div class="board-scroll">
-    <div class="board" id="game-board"></div>
-  </div>
-
-  <div class="score-bar" id="score-bar">
-    <button class="btn-add-player" onclick="addPlayer()" title="Spieler hinzufügen">＋</button>
+  <div class="editor-footer">
+    <button class="btn-gold" onclick="exportQuiz()">💾 Exportieren</button>
+    <button class="btn-primary" onclick="editorPlay()">▶ Spielen</button>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════
-     QUESTION MODAL
-══════════════════════════════════ -->
-<div class="q-overlay" id="q-overlay">
-  <div class="q-modal">
-    <div class="q-points-label" id="qm-points">200</div>
-    <div class="q-category-label" id="qm-cat">KATEGORIE</div>
-
-    <!-- Frage wird sofort gezeigt -->
-    <div class="q-answer-text" id="qm-question-text">Frage erscheint hier.</div>
-
-    <!-- Antwort aufdecken -->
-    <button class="q-reveal-btn" id="qm-reveal-btn" onclick="revealAnswer()">
-      🔍 Antwort aufdecken
-    </button>
-
-    <!-- Antwort (versteckt bis aufgedeckt) -->
-    <div class="q-question-text" id="qm-answer-text"></div>
-
-    <div class="q-player-select" id="qm-player-select">
-      <div class="q-player-select-label">Wer hat richtig geantwortet?</div>
-      <div id="qm-player-list"></div>
+<!-- ══ QUESTION OVERLAY ══ -->
+<div class="overlay" id="q-overlay">
+  <div class="q-card">
+    <div class="q-cat" id="qo-cat">KATEGORIE</div>
+    <div class="q-pts" id="qo-pts">400</div>
+    <div class="q-whose" id="qo-whose">Team Blau — Spieler 1 ist dran</div>
+    <div class="timer-wrap">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle class="t-bg" cx="40" cy="40" r="35"/>
+        <circle class="t-fg" id="t-fg" cx="40" cy="40" r="35"/>
+      </svg>
+      <div class="timer-num" id="timer-num">30</div>
     </div>
-
-    <div class="q-score-btns" id="qm-score-btns">
-      <button class="q-score-btn correct" onclick="scorePlayer(true)">✓ Richtig</button>
-      <button class="q-score-btn wrong" onclick="scorePlayer(false)">✗ Falsch</button>
-      <button class="q-score-btn skip" onclick="closeQuestion()">— Weiter</button>
+    <div class="q-text" id="qo-text">Frage</div>
+    <div class="time-up-box" id="time-up-box">⏰ Zeit abgelaufen! Falsch gewertet.</div>
+    <button class="btn-reveal-ans" id="btn-reveal" onclick="revealAnswer()">🔍 Antwort aufdecken</button>
+    <div class="ans-box" id="ans-box"></div>
+    <div class="verdict-wrap" id="verdict-wrap">
+      <button class="btn-correct" onclick="verdict(true)">✓ Richtig</button>
+      <button class="btn-wrong"   onclick="verdict(false)">✗ Falsch</button>
+      <button class="btn-skip"    onclick="verdict(null)">— Weiter ohne Wertung</button>
     </div>
   </div>
 </div>
-
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─────────────────────────────────────
-//  UTILS (zuerst definieren!)
-// ─────────────────────────────────────
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
+// ── UTILS ──
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2800);}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){window.location.href='quizshow-menu.html';}
+function confirmQuit(){if(confirm('Spiel beenden?'))showView('view-menu');}
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
+// ── STATE ──
+let quizData=null;
+let teams=[{name:'Team Blau',players:[],score:0},{name:'Team Rot',players:[],score:0}];
+let turnOrder=[];
+let turnIdx=0;
+let timerInt=null;
+let timerSecs=30;
+let currentQ=null;
+const CIRC=2*Math.PI*35;
 
-// ─────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────
-let quizData = null;       // { name, categories: [{name, questions:[{answer,question,points}]}] }
-let players = [];          // [{name, score}]
-let currentCell = null;    // {catIdx, qIdx}
-let selectedPlayer = null;
-
-const POINT_VALUES = [200, 400, 600, 800, 1000];
-
-// ─────────────────────────────────────
-//  NAVIGATION
-// ─────────────────────────────────────
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-function goHome() {
-  window.location.href = 'quizshow-menu.html';
-}
-
-// ─────────────────────────────────────
-//  IMPORT & PLAY
-// ─────────────────────────────────────
-function importAndPlay(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      quizData = JSON.parse(e.target.result);
-      if (!quizData.categories || !Array.isArray(quizData.categories)) throw new Error();
-      players = [];
-      startGame();
-    } catch(err) {
-      showToast('❌ Ungültige Quiz-Datei!');
-    }
+// ── IMPORT ──
+function importAndPlay(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.categories||!Array.isArray(d.categories))throw new Error();
+      quizData=d;
+      document.getElementById('game-title').textContent='🎯 '+quizData.name;
+      goToSetup();
+    }catch(err){showToast('❌ Ungültige Datei!');}
   };
-  reader.readAsText(file);
-  event.target.value = '';
+  r.readAsText(file);
+  ev.target.value='';
 }
 
-// ─────────────────────────────────────
-//  EDITOR
-// ─────────────────────────────────────
-let catCount = 0;
-
-function addCategory(catData = null) {
-  const id = catCount++;
-  const container = document.getElementById('categories-container');
-
-  const block = document.createElement('div');
-  block.className = 'category-block';
-  block.dataset.catId = id;
-
-  block.innerHTML = `
-    <div class="category-header">
-      <input class="category-name-input" placeholder="Kategoriename (z.B. SPORT)" maxlength="30"
-        value="${catData ? escHtml(catData.name) : ''}">
-      <button class="btn-icon-sm" onclick="removeCategory(${id})" title="Kategorie löschen">🗑</button>
-    </div>
-    <div class="questions-list" id="qlist-${id}"></div>
-    <button class="btn-add-question" onclick="addQuestion(${id})">＋ Frage hinzufügen</button>
-  `;
-
-  container.appendChild(block);
-
-  if (catData && catData.questions) {
-    catData.questions.forEach((q, i) => addQuestion(id, q, i));
-  } else {
-    // Add 5 default point rows
-    POINT_VALUES.forEach((pts, i) => addQuestion(id, null, i, pts));
-  }
+// ── SETUP ──
+function goToSetup(){
+  teams[0].players=[];teams[1].players=[];
+  teams[0].score=0;teams[1].score=0;
+  renderPlayers(1);renderPlayers(2);
+  showView('view-setup');
 }
 
-function removeCategory(id) {
-  document.querySelector(`[data-cat-id="${id}"]`).remove();
-}
-
-let qCount = 0;
-
-function addQuestion(catId, qData = null, index = null, defaultPts = null) {
-  const list = document.getElementById(`qlist-${catId}`);
-  if (!list) return;
-  const qid = qCount++;
-  const pts = qData ? qData.points : (defaultPts || 200);
-
-  const row = document.createElement('div');
-  row.className = 'question-row';
-  row.dataset.qid = qid;
-
-  row.innerHTML = `
-    <span class="points-badge" onclick="cyclePoints(this)">${pts}</span>
-    <div class="q-fields">
-      <input class="q-input" placeholder="❓ Frage (was der Spieler sieht)" maxlength="200"
-        value="${qData ? escHtml(qData.question) : ''}">
-      <input class="q-input" placeholder="✅ Antwort (zum Aufdecken)" maxlength="200"
-        value="${qData ? escHtml(qData.answer) : ''}">
-    </div>
-    <button class="btn-del-q" onclick="this.closest('.question-row').remove()">✕</button>
-  `;
-
-  list.appendChild(row);
-}
-
-function cyclePoints(badge) {
-  const current = parseInt(badge.textContent);
-  const idx = POINT_VALUES.indexOf(current);
-  badge.textContent = POINT_VALUES[(idx + 1) % POINT_VALUES.length];
-}
-
-function collectQuizData() {
-  const name = document.getElementById('quiz-name').value.trim() || 'Mein Jeopardy Quiz';
-  const categories = [];
-
-  document.querySelectorAll('.category-block').forEach(block => {
-    const catName = block.querySelector('.category-name-input').value.trim() || 'Kategorie';
-    const questions = [];
-    block.querySelectorAll('.question-row').forEach(row => {
-      const inputs = row.querySelectorAll('.q-input');
-      const question = inputs[0].value.trim();
-      const answer = inputs[1].value.trim();
-      const points = parseInt(row.querySelector('.points-badge').textContent);
-      if (question) questions.push({ question, answer, points });
-    });
-    if (questions.length > 0) categories.push({ name: catName, questions });
+function renderPlayers(t){
+  const list=document.getElementById('t'+t+'-players');
+  list.innerHTML='';
+  teams[t-1].players.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='player-row';
+    el.innerHTML='<span class="player-row-name">'+escHtml(p)+'</span><button class="btn-del-p" onclick="removePlayer('+t+','+i+')">✕</button>';
+    list.appendChild(el);
   });
-
-  return { name, categories };
 }
 
-function exportQuiz() {
-  const data = collectQuizData();
-  if (data.categories.length === 0) { showToast('⚠️ Füge zuerst Kategorien & Fragen hinzu!'); return; }
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = (data.name.replace(/\s+/g, '_') || 'jeopardy') + '.quiz';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✅ Quiz gespeichert!');
+function addPlayer(t){
+  const inp=document.getElementById('t'+t+'-new-player');
+  const name=inp.value.trim();
+  if(!name)return;
+  teams[t-1].players.push(name);
+  inp.value='';
+  inp.focus();
+  renderPlayers(t);
 }
 
-function previewPlay() {
-  const data = collectQuizData();
-  if (data.categories.length === 0) { showToast('⚠️ Füge zuerst Fragen hinzu!'); return; }
-  quizData = data;
-  players = [];
-  startGame();
+function removePlayer(t,i){
+  teams[t-1].players.splice(i,1);
+  renderPlayers(t);
 }
 
-// ─────────────────────────────────────
-//  GAME BOARD
-// ─────────────────────────────────────
-function startGame() {
-  document.getElementById('game-title-bar').textContent = '🎯 ' + quizData.name;
+function startGame(){
+  teams[0].name=document.getElementById('t1-name').value.trim()||'Team Blau';
+  teams[1].name=document.getElementById('t2-name').value.trim()||'Team Rot';
+  teams[0].score=0;teams[1].score=0;
+  if(!teams[0].players.length)teams[0].players=['Spieler 1'];
+  if(!teams[1].players.length)teams[1].players=['Spieler 1'];
+  buildTurnOrder();
+  turnIdx=0;
   buildBoard();
-  buildScoreBar();
+  buildScoreArea();
+  updateTurnBanner();
   showView('view-game');
 }
 
-function buildBoard() {
-  const board = document.getElementById('game-board');
-  const cats = quizData.categories;
-  board.style.gridTemplateColumns = `repeat(${cats.length}, 130px)`;
-  board.innerHTML = '';
+function buildTurnOrder(){
+  turnOrder=[];
+  const max=Math.max(teams[0].players.length,teams[1].players.length);
+  for(let i=0;i<max;i++){
+    if(i<teams[0].players.length)turnOrder.push({ti:0,pi:i});
+    if(i<teams[1].players.length)turnOrder.push({ti:1,pi:i});
+  }
+}
 
-  // Header row
-  cats.forEach(cat => {
-    const cell = document.createElement('div');
-    cell.className = 'board-cell board-cat';
-    cell.textContent = cat.name.toUpperCase();
-    board.appendChild(cell);
+function currentTurn(){return turnOrder[turnIdx%turnOrder.length];}
+
+function updateTurnBanner(){
+  const t=currentTurn();
+  const banner=document.getElementById('turn-banner');
+  banner.className='turn-banner '+(t.ti===0?'t1':'t2');
+  banner.textContent=teams[t.ti].name+' — '+teams[t.ti].players[t.pi]+' ist dran 👆';
+}
+
+// ── BOARD ──
+function buildBoard(){
+  const board=document.getElementById('game-board');
+  const cats=quizData.categories;
+  board.style.gridTemplateColumns='repeat('+cats.length+', 100px)';
+  board.innerHTML='';
+  cats.forEach(cat=>{
+    const c=document.createElement('div');
+    c.className='board-cell board-cat';
+    c.textContent=cat.name.toUpperCase();
+    board.appendChild(c);
   });
-
-  // Find max questions
-  const maxQ = Math.max(...cats.map(c => c.questions.length));
-
-  // Question rows
-  for (let qi = 0; qi < maxQ; qi++) {
-    cats.forEach((cat, ci) => {
-      const cell = document.createElement('div');
-      const q = cat.questions[qi];
-      if (q) {
-        cell.className = 'board-cell board-point';
-        cell.textContent = q.points;
-        cell.dataset.ci = ci;
-        cell.dataset.qi = qi;
-        cell.onclick = () => openQuestion(ci, qi, cell);
-      } else {
-        cell.className = 'board-cell';
-        cell.style.background = 'transparent';
+  const maxQ=Math.max(...cats.map(c=>c.questions.length));
+  for(let qi=0;qi<maxQ;qi++){
+    cats.forEach((cat,ci)=>{
+      const c=document.createElement('div');
+      const q=cat.questions[qi];
+      if(q){
+        c.className='board-cell board-point';
+        c.textContent=q.points;
+        c.onclick=()=>openQuestion(ci,qi,c);
+      }else{
+        c.className='board-cell';
+        c.style.background='transparent';
       }
-      board.appendChild(cell);
+      board.appendChild(c);
     });
   }
 }
 
-function resetGame() {
-  if (!quizData) return;
+function resetBoard(){
+  if(!quizData)return;
+  turnIdx=0;
+  teams[0].score=0;teams[1].score=0;
+  buildTurnOrder();
   buildBoard();
-  showToast('🔄 Spiel zurückgesetzt!');
+  buildScoreArea();
+  updateTurnBanner();
+  showView('view-game');
 }
 
-// ─────────────────────────────────────
-//  PLAYERS
-// ─────────────────────────────────────
-function addPlayer() {
-  const name = prompt('Spielername:');
-  if (!name || !name.trim()) return;
-  players.push({ name: name.trim(), score: 0 });
-  buildScoreBar();
-}
-
-function buildScoreBar() {
-  const bar = document.getElementById('score-bar');
-  bar.innerHTML = '';
-
-  players.forEach((p, i) => {
-    const el = document.createElement('div');
-    el.className = 'player-score';
-    el.id = `player-${i}`;
-    el.innerHTML = `<div class="player-name">${escHtml(p.name)}</div><div class="player-pts">${p.score}</div>`;
-    bar.appendChild(el);
-  });
-
-  const addBtn = document.createElement('button');
-  addBtn.className = 'btn-add-player';
-  addBtn.textContent = '＋';
-  addBtn.title = 'Spieler hinzufügen';
-  addBtn.onclick = addPlayer;
-  bar.appendChild(addBtn);
-}
-
-function updateScoreDisplay() {
-  players.forEach((p, i) => {
-    const el = document.getElementById(`player-${i}`);
-    if (el) el.querySelector('.player-pts').textContent = p.score;
+// ── SCORES ──
+function buildScoreArea(){
+  const area=document.getElementById('score-area');
+  area.innerHTML='';
+  teams.forEach((team,ti)=>{
+    const el=document.createElement('div');
+    el.className='score-team '+(ti===0?'t1':'t2');
+    el.id='score-team-'+ti;
+    el.innerHTML='<div class="score-team-name">'+escHtml(team.name)+'</div>'
+      +'<div class="score-pts" id="score-pts-'+ti+'">'+team.score+'</div>'
+      +'<div class="score-players">'+team.players.map(escHtml).join(' · ')+'</div>';
+    area.appendChild(el);
   });
 }
 
-// ─────────────────────────────────────
-//  QUESTION MODAL
-// ─────────────────────────────────────
-function openQuestion(ci, qi, cell) {
-  if (cell.classList.contains('used')) return;
-  currentCell = { ci, qi, cell };
-  selectedPlayer = null;
-
-  const q = quizData.categories[ci].questions[qi];
-
-  document.getElementById('qm-points').textContent = q.points;
-  document.getElementById('qm-cat').textContent = quizData.categories[ci].name.toUpperCase();
-
-  // Frage sofort anzeigen
-  document.getElementById('qm-question-text').textContent = q.question;
-
-  // Antwort vorbereiten aber verstecken
-  document.getElementById('qm-answer-text').textContent = q.answer ? `✅ ${q.answer}` : '';
-  document.getElementById('qm-answer-text').style.display = 'none';
-
-  // Reset modal state
-  document.getElementById('qm-reveal-btn').style.display = q.answer ? 'block' : 'none';
-  document.getElementById('qm-score-btns').style.display = 'none';
-  document.getElementById('qm-player-select').style.display = 'none';
-
-  // Build player list
-  const list = document.getElementById('qm-player-list');
-  list.innerHTML = '';
-  players.forEach((p, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'player-btn';
-    btn.textContent = `${p.name} (${p.score} Pts)`;
-    btn.onclick = () => selectPlayer(i, btn);
-    list.appendChild(btn);
+function updateScores(){
+  teams.forEach((team,ti)=>{
+    const el=document.getElementById('score-pts-'+ti);
+    if(el)el.textContent=team.score;
   });
+}
+
+// ── QUESTION ──
+function openQuestion(ci,qi,cell){
+  if(cell.classList.contains('used'))return;
+  const q=quizData.categories[ci].questions[qi];
+  currentQ={ci,qi,cell,points:q.points};
+  const t=currentTurn();
+
+  document.getElementById('qo-cat').textContent=quizData.categories[ci].name.toUpperCase();
+  document.getElementById('qo-pts').textContent=q.points;
+  document.getElementById('qo-whose').textContent=teams[t.ti].name+' — '+teams[t.ti].players[t.pi]+' ist dran';
+  document.getElementById('qo-text').textContent=q.question;
+  document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
+  document.getElementById('ans-box').style.display='none';
+  document.getElementById('btn-reveal').style.display=q.answer?'block':'none';
+  document.getElementById('verdict-wrap').style.display='none';
+  document.getElementById('time-up-box').style.display='none';
 
   document.getElementById('q-overlay').classList.add('open');
+  startTimer();
 }
 
-function selectPlayer(idx, btn) {
-  selectedPlayer = idx;
-  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
+// ── TIMER ──
+function startTimer(){
+  stopTimer();
+  timerSecs=30;
+  updateTimerUI(30);
+  timerInt=setInterval(()=>{
+    timerSecs--;
+    updateTimerUI(timerSecs);
+    if(timerSecs<=0){stopTimer();timeUp();}
+  },1000);
 }
 
-function revealAnswer() {
-  document.getElementById('qm-reveal-btn').style.display = 'none';
-  document.getElementById('qm-answer-text').style.display = 'block';
+function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null;}}
 
-  if (players.length > 0) {
-    document.getElementById('qm-player-select').style.display = 'flex';
+function updateTimerUI(s){
+  const fg=document.getElementById('t-fg');
+  const num=document.getElementById('timer-num');
+  fg.style.strokeDashoffset=CIRC*(1-s/30);
+  num.textContent=s;
+  fg.style.stroke=s>15?'var(--green)':s>7?'var(--orange)':'var(--red)';
+}
+
+function timeUp(){
+  const t=currentTurn();
+  teams[t.ti].score-=currentQ.points;
+  updateScores();
+  document.getElementById('time-up-box').style.display='block';
+  document.getElementById('btn-reveal').style.display='none';
+  const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
+  if(q.answer){document.getElementById('ans-box').style.display='block';}
+  document.getElementById('verdict-wrap').style.display='flex';
+  showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
+}
+
+// ── REVEAL & VERDICT ──
+function revealAnswer(){
+  stopTimer();
+  document.getElementById('btn-reveal').style.display='none';
+  document.getElementById('ans-box').style.display='block';
+  document.getElementById('verdict-wrap').style.display='flex';
+}
+
+function verdict(correct){
+  stopTimer();
+  const t=currentTurn();
+  if(correct===true){
+    teams[t.ti].score+=currentQ.points;
+    updateScores();
+    showToast('✅ +'+currentQ.points+' für '+teams[t.ti].name+'!',2500);
+  } else if(correct===false){
+    teams[t.ti].score-=currentQ.points;
+    updateScores();
+    showToast('❌ -'+currentQ.points+' für '+teams[t.ti].name,2500);
   }
-  document.getElementById('qm-score-btns').style.display = 'flex';
-}
-
-function scorePlayer(correct) {
-  const q = quizData.categories[currentCell.ci].questions[currentCell.qi];
-  if (selectedPlayer !== null) {
-    players[selectedPlayer].score += correct ? q.points : -q.points;
-    updateScoreDisplay();
-    showToast(correct
-      ? `✅ +${q.points} für ${players[selectedPlayer].name}!`
-      : `❌ -${q.points} für ${players[selectedPlayer].name}`
-    );
-  }
-  markUsed();
-  closeQuestion();
-}
-
-function markUsed() {
-  if (currentCell && currentCell.cell) {
-    currentCell.cell.classList.add('used');
-    currentCell.cell.textContent = '—';
-    currentCell.cell.onclick = null;
-  }
-}
-
-function closeQuestion() {
-  markUsed();
+  currentQ.cell.classList.add('used');
+  currentQ.cell.textContent='—';
+  currentQ.cell.onclick=null;
+  turnIdx++;
+  updateTurnBanner();
   document.getElementById('q-overlay').classList.remove('open');
-  currentCell = null;
-  selectedPlayer = null;
+  currentQ=null;
+  checkGameOver();
 }
 
-// Close on backdrop click
-document.getElementById('q-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('q-overlay')) closeQuestion();
-});
+function checkGameOver(){
+  const open=document.querySelectorAll('.board-point:not(.used)');
+  if(open.length===0)showWinner();
+}
 
-// ─────────────────────────────────────
-//  INIT — start with 2 default categories
-// ─────────────────────────────────────
-addCategory({ name: 'KATEGORIE 1', questions: [] });
-addCategory({ name: 'KATEGORIE 2', questions: [] });
+function showWinner(){
+  const tied=teams[0].score===teams[1].score;
+  const winner=teams[0].score>teams[1].score?teams[0]:teams[1];
+  document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':winner.name;
+  const fg=document.getElementById('final-grid');
+  fg.innerHTML='';
+  teams.forEach((team,ti)=>{
+    const el=document.createElement('div');
+    el.className='final-card '+(ti===0?'t1':'t2');
+    el.innerHTML='<div class="fc-name">'+escHtml(team.name)+'</div><div class="fc-pts">'+team.score+'</div>';
+    fg.appendChild(el);
+  });
+  showView('view-winner');
+}
+
+// ── EDITOR ──
+let catCount=0,qCount=0;
+const PTS=[200,400,600,800,1000];
+
+function addCategory(catData){
+  const id=catCount++;
+  const con=document.getElementById('cat-container');
+  const el=document.createElement('div');
+  el.className='cat-block';
+  el.dataset.catId=id;
+  el.innerHTML='<div class="cat-head">'
+    +'<input class="cat-inp" placeholder="KATEGORIENAME" maxlength="28" value="'+(catData?escHtml(catData.name):'')+'">'
+    +'<button class="btn-del-cat" onclick="this.closest(\'.cat-block\').remove()">🗑</button>'
+    +'</div>'
+    +'<div class="q-rows" id="qrows-'+id+'"></div>'
+    +'<button class="btn-add-q" onclick="addQuestion('+id+')">＋ Frage hinzufügen</button>';
+  con.appendChild(el);
+  if(catData&&catData.questions){
+    catData.questions.forEach((q,i)=>addQuestion(id,q,PTS[i]||200));
+  } else {
+    PTS.forEach(p=>addQuestion(id,null,p));
+  }
+}
+
+function addQuestion(catId,qData,defaultPts){
+  const list=document.getElementById('qrows-'+catId);
+  if(!list)return;
+  const pts=qData?qData.points:(defaultPts||200);
+  const row=document.createElement('div');
+  row.className='q-row';
+  row.innerHTML='<span class="pts-badge" onclick="cyclePts(this)">'+pts+'</span>'
+    +'<div class="q-fields">'
+    +'<input class="q-inp" placeholder="❓ Frage" maxlength="200" value="'+(qData?escHtml(qData.question):'')+'">'
+    +'<input class="q-inp" placeholder="✅ Antwort (optional, zum Aufdecken)" maxlength="200" value="'+(qData&&qData.answer?escHtml(qData.answer):'')+'">'
+    +'</div>'
+    +'<button class="btn-del-q" onclick="this.closest(\'.q-row\').remove()">✕</button>';
+  list.appendChild(row);
+}
+
+function cyclePts(badge){
+  const i=PTS.indexOf(parseInt(badge.textContent));
+  badge.textContent=PTS[(i+1)%PTS.length];
+}
+
+function collectData(){
+  const name=document.getElementById('quiz-name').value.trim()||'Jeopardy Quiz';
+  const categories=[];
+  document.querySelectorAll('.cat-block').forEach(block=>{
+    const catName=block.querySelector('.cat-inp').value.trim()||'Kategorie';
+    const questions=[];
+    block.querySelectorAll('.q-row').forEach(row=>{
+      const ins=row.querySelectorAll('.q-inp');
+      const question=ins[0].value.trim();
+      const answer=ins[1].value.trim();
+      const points=parseInt(row.querySelector('.pts-badge').textContent);
+      if(question)questions.push({question,answer,points});
+    });
+    if(questions.length)categories.push({name:catName,questions});
+  });
+  return{name,categories};
+}
+
+function exportQuiz(){
+  const data=collectData();
+  if(!data.categories.length){showToast('⚠️ Erst Fragen hinzufügen!');return;}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=data.name.replace(/\s+/g,'_')+'.quiz';
+  a.click();URL.revokeObjectURL(url);
+  showToast('✅ Quiz gespeichert!');
+}
+
+function editorPlay(){
+  const data=collectData();
+  if(!data.categories.length){showToast('⚠️ Erst Fragen hinzufügen!');return;}
+  quizData=data;
+  document.getElementById('game-title').textContent='🎯 '+data.name;
+  goToSetup();
+}
+
+// Init editor
+addCategory({name:'KATEGORIE 1',questions:[]});
+addCategory({name:'KATEGORIE 2',questions:[]});
 </script>
 </body>
 </html>
