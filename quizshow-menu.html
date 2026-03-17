@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QUIZNIGHT — Hauptmenü</title>
+<title>Quiz Games by Mert</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -83,32 +83,11 @@
     animation: fadeDown 0.7s ease both;
   }
 
-  .eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
 
-  .eyebrow::before,
-  .eyebrow::after {
-    content: '';
-    width: 40px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold));
-  }
-  .eyebrow::after { background: linear-gradient(270deg, transparent, var(--gold)); }
 
   .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(72px, 12vw, 130px);
+    font-size: clamp(42px, 8vw, 90px);
     line-height: 0.9;
     letter-spacing: 0.04em;
     background: linear-gradient(160deg, #fffbe0 20%, var(--gold) 50%, var(--gold2) 80%);
@@ -498,9 +477,8 @@
 <div class="wrapper">
 
   <div class="header">
-    <div class="eyebrow">Discord Quiz Night</div>
-    <div class="logo">QUIZNIGHT</div>
-    <div class="tagline">Wähle dein Spiel — die anderen spielen mit.</div>
+    <div class="logo">Quiz Games by Mert</div>
+    <div class="tagline">Wähle dein Spiel — lad Familie & Freunde ein!</div>
   </div>
 
   <div class="divider"></div>
@@ -515,7 +493,7 @@
       <div class="card-icon">🎯</div>
       <div class="card-number">01 /</div>
       <div class="card-title">Jeopardy!</div>
-      <div class="card-desc">Antworten werden gegeben, die Fragen müssen gefunden werden. Kategorien, Punkte, Drama.</div>
+
       <div class="card-arrow">Spielen</div>
     </div>
 
@@ -525,7 +503,7 @@
       <div class="card-icon">💰</div>
       <div class="card-number">02 /</div>
       <div class="card-title">Wer wird Millionär?</div>
-      <div class="card-desc">50:50, Telefonjoker, Publikum. Steigende Schwierigkeit, ein Gewinner, viel Spannung.</div>
+
       <div class="card-arrow">Spielen</div>
     </div>
 
@@ -535,7 +513,7 @@
       <div class="card-icon">🔥</div>
       <div class="card-number">03 /</div>
       <div class="card-title">Hot Zones</div>
-      <div class="card-desc">Schnelle Runden, heiße Zonen. Wer überleben will muss schnell und richtig antworten.</div>
+
       <div class="card-arrow">Spielen</div>
     </div>
 
@@ -545,7 +523,7 @@
       <div class="card-icon">📈</div>
       <div class="card-number">04 /</div>
       <div class="card-title">Higher or Lower</div>
-      <div class="card-desc">Größer oder kleiner? Zahlen, Fakten, Überraschungen. Einfache Regeln — schwieriger als gedacht.</div>
+
       <div class="card-arrow">Spielen</div>
     </div>
 
@@ -597,11 +575,10 @@
       title: 'Jeopardy!',
       subtitle: 'Importiere ein fertiges Quiz oder erstelle dein eigenes mit Kategorien und Punktwerten.',
       accent: '#3a8ef6',
+      link: 'jeopardy.html',
       actions: [
-        { icon: '▶️', title: 'Spiel starten', sub: 'Direkt loslegen mit vorhandenem Quiz', primary: true },
-        { icon: '📥', title: 'Quiz importieren', sub: 'JSON-Datei laden (.quiz)' },
-        { icon: '✏️', title: 'Quiz erstellen', sub: 'Eigene Kategorien & Fragen anlegen' },
-        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelles Quiz als Datei speichern' },
+        { icon: '▶️', title: 'Spiel starten', sub: 'Quiz importieren & sofort losspielen', primary: true },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Kategorien & Fragen selbst anlegen' },
       ]
     },
     millionaire: {
@@ -663,7 +640,7 @@
         </span>
         <span class="btn-chevron">›</span>
       `;
-      btn.onclick = () => showToast(`„${a.title}" für ${g.title} — kommt bald! 🚀`);
+      btn.onclick = () => window.location.href = g.link || '#';
       actionsEl.appendChild(btn);
     });
 
