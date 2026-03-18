@@ -890,19 +890,18 @@ function addToHistory(playerName,teamIdx,category,points,result){
 // ── QUESTION ──
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
-  // In multiplayer: only the active player OR host can open
   if(mpRoom){
     const t=currentTurn();
-    const isActive=mpMyName===teams[t.ti].players[t.pi];
-    if(!mpIsHost&&!isActive)return;
+    const isActivePlayer=mpMyName===teams[t.ti].players[t.pi];
+    // Only active player can click — host watches, others can't click
+    if(!isActivePlayer)return;
   }
+  const t=currentTurn();
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
-  const t=currentTurn();
-  showQuestionOverlay(ci,qi,t.ti,t.pi,true);
+  renderOverlay(ci,qi,t.ti,t.pi);
   startTimer();
-  // Broadcast to all
-  if(mpRoom) mpSend('open_q',{ci,qi,points:q.points,ti:t.ti,pi:t.pi});
+  if(mpRoom) mpSend('open_q',{ci,qi,ti:t.ti,pi:t.pi});
 }
 
 // ── TIMER ──
@@ -928,8 +927,10 @@ function updateTimerUI(s){
 }
 
 function timeUp(){
+  if(!currentQ)return;
   const t=currentTurn();
   const catName=quizData.categories[currentQ.ci].name;
+  const {ci:tci,qi:tqi}=currentQ;
   const playerName=teams[t.ti].players[t.pi];
   teams[t.ti].score-=currentQ.points;
   updateScores();
@@ -952,7 +953,7 @@ function timeUp(){
   // Broadcast time_up to clients
   if(mpRoom&&mpIsHost){
     turnIdx++;
-    mpSend('time_up',{ti:t.ti,points:currentQ.points,
+    mpSend('time_up',{ti:t.ti,points:currentQ.points,ci:tci,qi:tqi,
       newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
     setTimeout(()=>{
       document.getElementById('q-overlay').classList.remove('open');
@@ -965,7 +966,9 @@ function timeUp(){
 function revealAnswer(){
   if(mpRoom&&!mpIsHost)return;
   stopTimer();
+  const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
   document.getElementById('btn-reveal').style.display='none';
+  document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
   document.getElementById('ans-box').style.display='block';
   document.getElementById('verdict-wrap').style.display='flex';
   if(mpRoom) mpSend('reveal',{});
@@ -1000,7 +1003,8 @@ function verdict(correct){
 
   // Broadcast verdict to all
   if(mpRoom){
-    mpSend('verdict',{correct,result,ti:t.ti,points:q.points,
+    const {ci:vci,qi:vqi}=currentQ;
+    mpSend('verdict',{correct,result,ti:t.ti,points:q.points,ci:vci,qi:vqi,
       newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
   }
 
@@ -1012,64 +1016,53 @@ function verdict(correct){
 // JEOPARDY MULTIPLAYER — STATE SYNC
 // ══════════════════════════════════════
 
-// Called when server fires game_started
-function mpOnGameStart(receivedQuizData) {
+function mpOnGameStart(receivedQuizData){
   mpClose();
-  if(receivedQuizData){
-    quizData=receivedQuizData;
-    mpQuizDataForMultiplayer=receivedQuizData;
+  if(mpIsHost){
+    // Host builds game from imported quizData, then pushes everything to clients
+    if(!quizData){showToast('❌ Erst Quiz importieren!');return;}
+    setupMpGame();
+    setTimeout(()=>syncState(true),500);
+  } else {
+    // Clients wait for host state — show loading
+    showView('view-game');
+    document.getElementById('game-board').innerHTML=
+      '<div style="color:var(--muted);font-size:14px;padding:60px;text-align:center;grid-column:1/-1;">⏳ Warte auf Host...</div>';
   }
-  if(!mpRoom||!mpRoom.players||!mpRoom.players.length){goToSetup();return;}
+}
 
-  // Host is moderator only — exclude from player list
-  const hostName=mpRoom.hostName||mpRoom.players.find(p=>p.isHost)?.name||'';
-  const playerNames=mpRoom.players
-    .filter(p=>!p.isHost)  // exclude host
-    .map(p=>p.name);
-
-  if(playerNames.length===0){
-    // Fallback: if only host in room, play solo
-    playerNames.push(...mpRoom.players.map(p=>p.name));
-  }
-
+function setupMpGame(){
+  const playerNames=mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
+  if(!playerNames.length) playerNames.push('Spieler 1');
   // Shuffle
   for(let i=playerNames.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [playerNames[i],playerNames[j]]=[playerNames[j],playerNames[i]];
   }
-
-  // Split evenly — team 1 gets ceil(n/2), team 2 gets floor(n/2)
   const half=Math.ceil(playerNames.length/2);
   teams[0]={name:'Team Blau',players:playerNames.slice(0,half),score:0};
-  teams[1]={name:'Team Rot', players:playerNames.slice(half).length?playerNames.slice(half):['Team Rot'],score:0};
-
+  const t2=playerNames.slice(half);
+  teams[1]={name:'Team Rot',players:t2.length?t2:['—'],score:0};
   buildTurnOrder();
-  turnIdx=0;
-  gameHistory=[];
+  turnIdx=0; gameHistory=[];
   document.getElementById('game-title').textContent='🎯 '+(quizData.name||'Jeopardy');
-  buildBoard();
-  buildScoreArea();
-  updateTurnBanner();
-  updateTeamsSidebar();
+  buildBoard(); buildScoreArea(); updateTurnBanner(); updateTeamsSidebar();
   showView('view-game');
-
-  // Host syncs state to all clients
-  if(mpIsHost) setTimeout(syncState, 300);
 }
 
-// ── SYNC: Host pushes full game state to all ──
-function syncState(){
+// Host pushes full state (with quiz on first call) to all clients
+function syncState(includeQuiz){
   if(!mpRoom||!mpIsHost)return;
   const state={
     teams:[
-      {name:teams[0].name,players:teams[0].players,score:teams[0].score},
-      {name:teams[1].name,players:teams[1].players,score:teams[1].score}
+      {name:teams[0].name,players:[...teams[0].players],score:teams[0].score},
+      {name:teams[1].name,players:[...teams[1].players],score:teams[1].score}
     ],
-    turnIdx,
+    turnIdx, gameHistory:[...gameHistory],
     usedCells:getUsedCells(),
-    gameHistory,
-    quizName:quizData?.name||''
+    quizName:(quizData?quizData.name:'')||''
   };
+  if(includeQuiz) state.quizData=quizData;
   mpSend('state',state);
 }
 
@@ -1077,116 +1070,105 @@ function getUsedCells(){
   const used=[];
   document.querySelectorAll('.board-point.used').forEach(c=>{
     used.push({ci:parseInt(c.dataset.ci),qi:parseInt(c.dataset.qi),
-      html:c.innerHTML, classes:[...c.classList]});
+      html:c.innerHTML,classes:[...c.classList]});
   });
   return used;
 }
 
-// ── mpOnAction: receive actions from host ──
+// Clients receive all actions from host
 function mpOnAction(action,payload){
-  if(mpIsHost)return; // host doesn't process own events
+  if(mpIsHost)return;
 
   if(action==='state'){
-    // First time receiving state: build board if not yet built
-    const firstSync=!document.getElementById('game-board').children.length;
-
-    teams[0]={...teams[0],...payload.teams[0]};
-    teams[1]={...teams[1],...payload.teams[1]};
-    turnIdx=payload.turnIdx;
-    gameHistory=payload.gameHistory||[];
-
-    if(firstSync){
-      document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData?.name||'Jeopardy');
-      buildBoard();
-      buildScoreArea();
-      showView('view-game');
+    if(payload.quizData) quizData=payload.quizData;
+    if(!quizData)return;
+    teams[0]={name:payload.teams[0].name,players:payload.teams[0].players,score:payload.teams[0].score};
+    teams[1]={name:payload.teams[1].name,players:payload.teams[1].players,score:payload.teams[1].score};
+    turnIdx=payload.turnIdx; gameHistory=payload.gameHistory||[];
+    const board=document.getElementById('game-board');
+    if(!board.querySelector('.board-point')){
+      document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData.name||'Jeopardy');
+      buildBoard(); buildScoreArea(); showView('view-game');
     }
-
-    updateScores();
-    updateTurnBanner();
-    updateTeamsSidebar();
-
-    // Restore used cells
-    if(payload.usedCells){
-      payload.usedCells.forEach(({ci,qi,html,classes})=>{
-        const c=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
-        if(c){c.innerHTML=html;classes.forEach(cl=>c.classList.add(cl));c.onclick=null;}
-      });
-    }
+    updateScores(); updateTurnBanner(); updateTeamsSidebar();
+    (payload.usedCells||[]).forEach(({ci,qi,html,classes})=>{
+      const c=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
+      if(c){c.innerHTML=html;classes.forEach(cl=>c.classList.add(cl));c.onclick=null;}
+    });
+    return;
   }
 
-  else if(action==='open_q'){
-    // Show question overlay to all
-    const {ci,qi,points,ti,pi}=payload;
-    const q=quizData.categories[ci].questions[qi];
-    currentQ={ci,qi,cell:document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`),points};
-    showQuestionOverlay(ci,qi,ti,pi,false);
+  if(action==='open_q'){
+    if(!quizData)return;
+    const {ci,qi,ti,pi}=payload;
+    const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
+    currentQ={ci,qi,cell,points:quizData.categories[ci].questions[qi].points};
+    renderOverlay(ci,qi,ti,pi);
     startTimer();
+    return;
   }
 
-  else if(action==='answer_submitted'){
-    // Show what the active player typed
-    const box=document.getElementById('submitted-answer-box');
-    box.style.display='block';
-    box.textContent='💬 '+payload.playerName+': "'+payload.answer+'"';
+  if(action==='answer_in'){
+    document.getElementById('submitted-answer-box').style.display='block';
+    document.getElementById('submitted-answer-box').textContent='💬 '+payload.playerName+': "'+payload.answer+'"';
     stopTimer();
+    return;
   }
 
-  else if(action==='reveal'){
+  if(action==='reveal'){
+    if(!currentQ)return;
     const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
     document.getElementById('btn-reveal').style.display='none';
     document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
     document.getElementById('ans-box').style.display='block';
+    return;
   }
 
-  else if(action==='verdict'){
-    const {correct,ti,points,newTurnIdx,scores,playerName,result}=payload;
+  if(action==='verdict'){
+    const {correct,result,ti,points,newTurnIdx,scores,playerName,ci,qi}=payload;
     stopTimer();
-    teams[0].score=scores[0];teams[1].score=scores[1];
-    updateScores();
-    if(currentQ&&currentQ.cell){
-      const c=currentQ.cell;
-      c.classList.add('used','res-'+result);c.onclick=null;
+    teams[0].score=scores[0];teams[1].score=scores[1]; updateScores();
+    const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
+    if(cell){
+      cell.classList.add('used','res-'+result);cell.onclick=null;
       const icon=correct===true?'✓':correct===false?'✗':'—';
-      const iconColor=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
+      const ic=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
       const tc=ti===0?'var(--team1)':'var(--team2)';
-      c.innerHTML=`<span class="cell-icon" style="color:${iconColor}">${icon}</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
+      cell.innerHTML=`<span class="cell-icon" style="color:${ic}">${icon}</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
     }
+    addToHistory(playerName,ti,quizData.categories[ci].name,points,result);
     turnIdx=newTurnIdx;
     document.getElementById('q-overlay').classList.remove('open');
-    currentQ=null;
-    updateTurnBanner();updateTeamsSidebar();
-    const ptsText=(correct===true?'+':correct===false?'-':'')+(correct!==null?points:'—');
-    showToast((correct===true?'✅':correct===false?'❌':'—')+' '+ptsText+' für '+teams[ti].name,2500);
+    currentQ=null; updateTurnBanner(); updateTeamsSidebar();
+    showToast((correct===true?'✅ +':correct===false?'❌ -':'—')+points+' für '+teams[ti].name,2500);
     checkGameOver();
+    return;
   }
 
-  else if(action==='time_up'){
-    // Time ran out - host already processed, clients just update
-    const {ti,points,newTurnIdx,scores,playerName}=payload;
-    teams[0].score=scores[0];teams[1].score=scores[1];
-    updateScores();
-    document.getElementById('time-up-box').style.display='block';
-    if(currentQ&&currentQ.cell){
-      const c=currentQ.cell;
-      c.classList.add('used','res-wrong');c.onclick=null;
+  if(action==='time_up'){
+    const {ti,points,newTurnIdx,scores,playerName,ci,qi}=payload;
+    stopTimer();
+    teams[0].score=scores[0];teams[1].score=scores[1]; updateScores();
+    const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
+    if(cell){
+      cell.classList.add('used','res-wrong');cell.onclick=null;
       const tc=ti===0?'var(--team1)':'var(--team2)';
-      c.innerHTML=`<span class="cell-icon" style="color:var(--red)">✗</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
+      cell.innerHTML=`<span class="cell-icon" style="color:var(--red)">✗</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
     }
+    document.getElementById('time-up-box').style.display='block';
     setTimeout(()=>{
-      turnIdx=newTurnIdx;
       document.getElementById('q-overlay').classList.remove('open');
-      currentQ=null;
-      updateTurnBanner();updateTeamsSidebar();
-      checkGameOver();
-    },2000);
+      turnIdx=newTurnIdx; currentQ=null;
+      updateTurnBanner(); updateTeamsSidebar(); checkGameOver();
+    },2500);
+    return;
   }
 
-  else if(action==='game_over'){showWinner();}
+  if(action==='game_over'){showWinner();}
 }
 
 // ── Show question overlay ──
-function showQuestionOverlay(ci,qi,ti,pi,isActive){
+function renderOverlay(ci,qi,ti,pi,isActive){
   const q=quizData.categories[ci].questions[qi];
   document.getElementById('qo-cat').textContent=quizData.categories[ci].name.toUpperCase();
   document.getElementById('qo-pts').textContent=q.points;
@@ -1225,7 +1207,7 @@ function submitAnswer(){
   box.textContent='💬 '+mpMyName+': "'+answer+'"';
 
   // Send to host & everyone
-  if(mpRoom) mpSend('answer_submitted',{playerName:mpMyName,answer});
+  if(mpRoom) mpSend('answer_in',{playerName:mpMyName,answer});
   stopTimer();
 }
 
@@ -1375,7 +1357,7 @@ addCategory({name:'KATEGORIE 2',questions:[]});
     showView('view-play-landing');
   } else if(action === 'editor'){
     showView('view-editor');
-  } else if(action==='online'||a==='online'){
+  } else if(action==='online'){
     // Show menu view first (needed for layout), then open MP overlay on top
     showView('view-menu');
     mpTab='create';
