@@ -376,50 +376,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 
 /* ── MULTIPLAYER ── */
-.mp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;}
 .mp-overlay.hidden{display:none;}
-.mp-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:mpIn .3s cubic-bezier(.34,1.56,.64,1);}
 @keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-.mp-header{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border);}
-.mp-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;flex:1;}
-.mp-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;}
-.mp-body{padding:16px;display:flex;flex-direction:column;gap:10px;}
-.mp-tabs{display:flex;gap:8px;}
-.mp-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
 .mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
-.mp-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
-.mp-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
 .mp-input:focus{border-color:var(--green,#2ecc71);}
 .mp-input::placeholder{color:var(--muted2);}
-.mp-code-input{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.2em;text-align:center;text-transform:uppercase;}
-.mp-btn{width:100%;padding:13px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
-.mp-btn-green{background:linear-gradient(135deg,#27ae60,#1e8c4e);color:#fff;}
-.mp-btn-blue{background:linear-gradient(135deg,#2980b9,#1a5276);color:#fff;}
-.mp-btn-ghost{background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
-.mp-room-code-wrap{text-align:center;padding:16px;background:var(--surface2);border-radius:14px;}
-.mp-room-code-lbl{font-size:10px;color:var(--muted);margin-bottom:4px;}
-.mp-room-code-val{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.15em;color:var(--gold,#f5c842);text-shadow:0 0 30px rgba(245,200,66,.3);}
-.mp-share{font-size:10px;color:var(--muted);margin-top:4px;word-break:break-all;cursor:pointer;}
-.mp-section-lbl{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);}
-.mp-players{display:flex;flex-direction:column;gap:7px;}
-.mp-player-row{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--surface2);border-radius:10px;}
-.mp-player-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0;}
-.mp-player-name{flex:1;font-size:13px;font-weight:700;}
-.mp-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
-.mp-badge-host{background:rgba(245,200,66,.15);color:var(--gold,#f5c842);border:1px solid rgba(245,200,66,.3);}
-.mp-badge-ready{background:rgba(46,204,113,.15);color:var(--green,#2ecc71);border:1px solid rgba(46,204,113,.3);}
-.mp-status{padding:9px 13px;border-radius:10px;font-size:12px;display:none;}
 .mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
 .mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
-.mp-waiting{text-align:center;color:var(--muted);font-size:12px;}
-.mp-reaction-wrap{position:fixed;bottom:120px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:820;pointer-events:none;}
-.mp-reaction-toast{background:var(--surface,#0f1118);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;animation:rtIn .3s ease,rtOut .3s ease 2.5s both;}
-@keyframes rtIn{from{opacity:0;transform:translateX(15px);}to{opacity:1;}}
-@keyframes rtOut{to{opacity:0;transform:translateX(15px);}}
+to{opacity:1;}}
+}
 
 
 
-.btn-multiplayer{background:linear-gradient(135deg,#1a5276,#2980b9);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(41,128,185,.25);}
 .btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
 </style>
@@ -438,8 +406,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       ▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
-    <button class="btn-multiplayer" onclick="mpOpen()">🌐 Multiplayer — Online spielen</button>
-    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -507,9 +474,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   </div>
 
   <div class="game-layout">
-
-    <!-- Host confirm bar: shown when active player selects a field -->
-    <div id="host-confirm-bar" style="display:none;align-items:center;gap:8px;padding:10px 14px;background:rgba(245,200,66,.1);border-bottom:2px solid rgba(245,200,66,.3);flex-shrink:0;grid-column:1/-1;"></div>
 
     <!-- LEFT: Board -->
     <div class="game-left">
@@ -626,19 +590,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
     <div class="q-text" id="qo-text">Frage</div>
     <div class="time-up-box" id="time-up-box">⏰ Zeit abgelaufen!</div>
-
-    <!-- Answer input: shown to active player -->
-    <div id="answer-input-wrap" style="display:none;margin:12px 0;">
-      <input id="player-answer-inp" placeholder="Deine Antwort eingeben..."
-        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
-        onkeydown="if(event.key==='Enter')submitAnswer()">
-      <button onclick="submitAnswer()" style="width:100%;margin-top:8px;padding:12px;border-radius:10px;background:var(--blue);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">
-        ✓ Antwort abschicken
-      </button>
-    </div>
-
-    <!-- Submitted answer: shown to all after player submits -->
-    <div id="submitted-answer-box" style="display:none;margin:12px 0;padding:12px 14px;background:rgba(58,142,246,.1);border:1px solid rgba(58,142,246,.3);border-radius:10px;font-size:14px;color:var(--blue);"></div>
 
     <button class="btn-reveal-ans" id="btn-reveal" onclick="revealAnswer()">🔍 Antwort aufdecken</button>
     <div class="ans-box" id="ans-box"></div>
@@ -893,23 +844,6 @@ function addToHistory(playerName,teamIdx,category,points,result){
 // ── QUESTION ──
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
-  if(mpRoom){
-    // MULTIPLAYER: strict turn enforcement
-    if(mpIsHost) return; // host never clicks board
-    const t=currentTurn();
-    if(!t)return;
-    const isActivePlayer=mpMyName===teams[t.ti].players[t.pi];
-    if(!isActivePlayer){
-      showToast('⏳ Du bist nicht dran!',1500);
-      return;
-    }
-    // Active player sends field selection to host for approval
-    mpSend('select_field',{ci,qi,ti:t.ti,pi:t.pi});
-    cell.style.opacity='0.5';
-    showToast('⏳ Warte auf Host...',2000);
-    return;
-  }
-  // LOCAL PLAY
   const t=currentTurn();
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
@@ -917,26 +851,7 @@ function openQuestion(ci,qi,cell){
   startTimer();
 }
 
-// Host approves field selection
-function hostApproveField(ci,qi,ti,pi){
-  const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
-  if(!cell||cell.classList.contains('used'))return;
-  const q=quizData.categories[ci].questions[qi];
-  currentQ={ci,qi,cell,points:q.points};
-  renderOverlay(ci,qi,ti,pi);
-  startTimer();
-  mpSend('open_q',{ci,qi,ti,pi});
-  document.getElementById('host-confirm-bar').style.display='none';
-}
 
-function hostRejectField(){
-  document.getElementById('host-confirm-bar').style.display='none';
-  // Reset pending cell opacity
-  document.querySelectorAll('.board-point').forEach(c=>c.style.opacity='');
-  mpSend('field_rejected',{});
-}
-
-// ── TIMER ──
 function startTimer(){
   stopTimer();
   timerSecs=30;
@@ -979,35 +894,22 @@ function timeUp(){
   document.getElementById('btn-reveal').style.display='none';
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
   if(q.answer){document.getElementById('ans-box').style.display='block';}
-  document.getElementById('verdict-wrap').style.display=(!mpRoom||mpIsHost)?'flex':'none';
+  document.getElementById('verdict-wrap').style.display=true?'flex':'none';
   showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
 
-  // Broadcast time_up to clients
-  if(mpRoom&&mpIsHost){
-    turnIdx++;
-    mpSend('time_up',{ti:t.ti,points:currentQ.points,ci:tci,qi:tqi,
-      newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
-    setTimeout(()=>{
-      document.getElementById('q-overlay').classList.remove('open');
-      currentQ=null;updateTurnBanner();updateTeamsSidebar();checkGameOver();
-    },2500);
-  }
 }
 
 // ── REVEAL & VERDICT ──
 function revealAnswer(){
-  if(mpRoom&&!mpIsHost)return;
   stopTimer();
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
   document.getElementById('btn-reveal').style.display='none';
   document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
   document.getElementById('ans-box').style.display='block';
   document.getElementById('verdict-wrap').style.display='flex';
-  if(mpRoom) mpSend('reveal',{});
 }
 
 function verdict(correct){
-  if(mpRoom&&!mpIsHost)return;
   stopTimer();
   const t=currentTurn();
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
@@ -1033,292 +935,11 @@ function verdict(correct){
   updateTurnBanner();updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
 
-  // Broadcast verdict to all
-  if(mpRoom){
-    const {ci:vci,qi:vqi}=currentQ;
-    mpSend('verdict',{correct,result,ti:t.ti,points:q.points,ci:vci,qi:vqi,
-      newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
-  }
-
   currentQ=null;
   checkGameOver();
 }
 
-// ══════════════════════════════════════
-// JEOPARDY MULTIPLAYER — STATE SYNC
-// ══════════════════════════════════════
 
-function mpOnGameStart(receivedQuizData){
-  mpClose();
-  if(mpIsHost){
-    // Use whichever quizData source is available
-    const qd = quizData || mpQuizDataForMultiplayer;
-    if(!qd){
-      mpOpen();
-      setTimeout(()=>mpShowStatus('❌ Bitte erst ein Quiz importieren!','err'),200);
-      return;
-    }
-    quizData = qd;
-    setupMpGame();
-    setTimeout(()=>syncState(true),600); // give DOM time to render
-  } else {
-    // Clients wait for host state — show loading
-    showView('view-game');
-    document.getElementById('game-board').innerHTML=
-      '<div style="color:var(--muted);font-size:14px;padding:60px;text-align:center;grid-column:1/-1;">⏳ Warte auf Host...</div>';
-  }
-}
-
-function setupMpGame(){
-  // DEBUG: show what mpRoom.players contains
-  const allNames = mpRoom.players.map(p=>p.name+(p.isHost?'(H)':''));
-  showToast('Players: '+allNames.join(', '), 4000);
-  
-  const playerNames=mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
-  if(!playerNames.length) playerNames.push('Spieler 1');
-  // Shuffle
-  for(let i=playerNames.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [playerNames[i],playerNames[j]]=[playerNames[j],playerNames[i]];
-  }
-  const half=Math.ceil(playerNames.length/2);
-  teams[0]={name:'Team Blau',players:playerNames.slice(0,half),score:0};
-  const t2=playerNames.slice(half);
-  teams[1]={name:'Team Rot',players:t2.length?t2:['—'],score:0};
-  buildTurnOrder();
-  turnIdx=0; gameHistory=[];
-  document.getElementById('game-title').textContent='🎯 '+(quizData.name||'Jeopardy');
-  buildBoard(); buildScoreArea(); updateTurnBanner(); updateTeamsSidebar();
-  showView('view-game');
-}
-
-// Host pushes full state (with quiz on first call) to all clients
-function syncState(includeQuiz){
-  if(!mpRoom||!mpIsHost)return;
-  const state={
-    teams:[
-      {name:teams[0].name,players:[...teams[0].players],score:teams[0].score},
-      {name:teams[1].name,players:[...teams[1].players],score:teams[1].score}
-    ],
-    turnOrder:[...turnOrder],
-    turnIdx, gameHistory:[...gameHistory],
-    usedCells:getUsedCells(),
-    quizName:(quizData?quizData.name:'')||''
-  };
-  if(includeQuiz) state.quizData=quizData;
-  mpSend('state',state);
-}
-
-function getUsedCells(){
-  const used=[];
-  document.querySelectorAll('.board-point.used').forEach(c=>{
-    used.push({ci:parseInt(c.dataset.ci),qi:parseInt(c.dataset.qi),
-      html:c.innerHTML,classes:[...c.classList]});
-  });
-  return used;
-}
-
-// Clients receive all actions from host
-function mpOnAction(action,payload){
-
-  // HOST handles: select_field only
-  if(action==='select_field'){
-    if(!mpIsHost)return;
-    const {ci,qi,ti,pi}=payload;
-    const bar=document.getElementById('host-confirm-bar');
-    if(!bar)return;
-    bar.style.display='flex';
-    bar.innerHTML=`<span style="flex:1;font-size:13px;font-weight:600;">
-      <b style="color:var(--gold)">${escHtml(teams[ti].players[pi])}</b> wählt 
-      <b>${escHtml(quizData.categories[ci].name)}</b> für 
-      <b style="color:var(--gold)">${quizData.categories[ci].questions[qi].points} Pkt</b>
-    </span>
-    <button onclick="hostApproveField(${ci},${qi},${ti},${pi})" 
-      style="padding:8px 16px;background:var(--green);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-right:8px;">✓ Starten</button>
-    <button onclick="hostRejectField()" 
-      style="padding:8px 16px;background:var(--red);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;">✗ Ablehnen</button>`;
-    return;
-  }
-
-  // CLIENTS handle everything else
-  if(mpIsHost)return;
-
-  if(action==='state'){
-    if(payload.quizData){
-      quizData=payload.quizData;
-      // Ensure categories is a proper array (survives JSON serialization)
-      if(quizData.categories && !Array.isArray(quizData.categories)){
-        quizData.categories=Object.values(quizData.categories);
-      }
-      if(quizData.categories){
-        quizData.categories=quizData.categories.map(cat=>({
-          ...cat,
-          questions:Array.isArray(cat.questions)?cat.questions:Object.values(cat.questions||{})
-        }));
-      }
-    }
-    if(!quizData)return;
-    teams[0]={name:payload.teams[0].name,players:payload.teams[0].players,score:payload.teams[0].score};
-    teams[1]={name:payload.teams[1].name,players:payload.teams[1].players,score:payload.teams[1].score};
-    turnIdx=payload.turnIdx; gameHistory=payload.gameHistory||[];
-    const board=document.getElementById('game-board');
-    if(!board.querySelector('.board-point')){
-      document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData.name||'Jeopardy');
-      buildBoard(); buildScoreArea(); showView('view-game');
-    }
-    // Use EXACT turnOrder from host — never rebuild locally
-    if(payload.turnOrder && payload.turnOrder.length) turnOrder=payload.turnOrder;
-    else buildTurnOrder(); // fallback
-    updateScores();
-    // Use setTimeout to ensure DOM is updated before rendering teams
-    setTimeout(()=>{updateTurnBanner(); updateTeamsSidebar();},50);
-    (payload.usedCells||[]).forEach(({ci,qi,html,classes})=>{
-      const c=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
-      if(c){c.innerHTML=html;classes.forEach(cl=>c.classList.add(cl));c.onclick=null;}
-    });
-    return;
-  }
-
-  if(action==='open_q'){
-    // Clients receive open_q to show the overlay
-    if(!quizData)return;
-    const {ci,qi,ti,pi}=payload;
-    const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
-    currentQ={ci,qi,cell,points:quizData.categories[ci].questions[qi].points};
-    // Reset answer area
-    document.getElementById('player-answer-inp').value='';
-    document.getElementById('player-answer-inp').disabled=false;
-    document.getElementById('submitted-answer-box').style.display='none';
-    renderOverlay(ci,qi,ti,pi);
-    startTimer();
-    return;
-  }
-
-  if(action==='field_rejected'){
-    // Reset pending cell
-    document.querySelectorAll('.board-point').forEach(c=>c.style.opacity='');
-    showToast('❌ Host hat abgelehnt',2000);
-    return;
-  }
-
-  if(action==='answer_in'){
-    document.getElementById('submitted-answer-box').style.display='block';
-    document.getElementById('submitted-answer-box').textContent='💬 '+payload.playerName+': "'+payload.answer+'"';
-    stopTimer();
-    return;
-  }
-
-  if(action==='reveal'){
-    if(!currentQ)return;
-    const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
-    document.getElementById('btn-reveal').style.display='none';
-    document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
-    document.getElementById('ans-box').style.display='block';
-    return;
-  }
-
-  if(action==='verdict'){
-    const {correct,result,ti,points,newTurnIdx,scores,playerName,ci,qi}=payload;
-    stopTimer();
-    teams[0].score=scores[0];teams[1].score=scores[1]; updateScores();
-    const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
-    if(cell){
-      cell.classList.add('used','res-'+result);cell.onclick=null;
-      cell.style.opacity='';
-      const icon=correct===true?'✓':correct===false?'✗':'—';
-      const ic=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
-      const tc=ti===0?'var(--team1)':'var(--team2)';
-      cell.innerHTML=`<span class="cell-icon" style="color:${ic}">${icon}</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
-    }
-    addToHistory(playerName,ti,quizData.categories[ci].name,points,result);
-    turnIdx=newTurnIdx;
-    // Reset input for next round
-    document.getElementById('player-answer-inp').value='';
-    document.getElementById('player-answer-inp').disabled=false;
-    document.getElementById('submitted-answer-box').style.display='none';
-    document.getElementById('answer-input-wrap').style.display='none';
-    // Close overlay — this is the key fix
-    document.getElementById('q-overlay').classList.remove('open');
-    currentQ=null; updateTurnBanner(); updateTeamsSidebar();
-    showToast((correct===true?'✅ +':correct===false?'❌ -':'—')+points+' für '+teams[ti].name,2500);
-    checkGameOver();
-    return;
-  }
-
-  if(action==='time_up'){
-    const {ti,points,newTurnIdx,scores,playerName,ci,qi}=payload;
-    stopTimer();
-    teams[0].score=scores[0];teams[1].score=scores[1]; updateScores();
-    const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
-    if(cell){
-      cell.classList.add('used','res-wrong');cell.onclick=null;
-      const tc=ti===0?'var(--team1)':'var(--team2)';
-      cell.innerHTML=`<span class="cell-icon" style="color:var(--red)">✗</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
-    }
-    document.getElementById('time-up-box').style.display='block';
-    setTimeout(()=>{
-      document.getElementById('q-overlay').classList.remove('open');
-      turnIdx=newTurnIdx; currentQ=null;
-      updateTurnBanner(); updateTeamsSidebar(); checkGameOver();
-    },2500);
-    return;
-  }
-
-  if(action==='game_over'){showWinner();}
-}
-
-// ── Show question overlay ──
-function renderOverlay(ci,qi,ti,pi,isActive){
-  const q=quizData.categories[ci].questions[qi];
-  document.getElementById('qo-cat').textContent=quizData.categories[ci].name.toUpperCase();
-  document.getElementById('qo-pts').textContent=q.points;
-  document.getElementById('qo-whose').textContent=teams[ti].name+' — '+teams[ti].players[pi]+' ist dran';
-  document.getElementById('qo-text').textContent=q.question;
-  document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
-  document.getElementById('ans-box').style.display='none';
-  document.getElementById('time-up-box').style.display='none';
-  document.getElementById('submitted-answer-box').style.display='none';
-  document.getElementById('submitted-answer-box').textContent='';
-  document.getElementById('player-answer-inp').value='';
-
-  // Answer input: ONLY active player gets it
-  const isActivePlayer=mpRoom&&!mpIsHost&&mpMyName===teams[ti].players[pi];
-  const inp=document.getElementById('answer-input-wrap');
-  inp.style.display=isActivePlayer?'block':'none';
-  inp.querySelector('input').disabled=false;
-  inp.querySelector('button').disabled=false;
-
-  // Reveal + verdict: ONLY host (or local play)
-  const showControls=!mpRoom||mpIsHost;
-  document.getElementById('btn-reveal').style.display=showControls&&q.answer?'block':'none';
-  document.getElementById('verdict-wrap').style.display=showControls?'flex':'none';
-
-  document.getElementById('q-overlay').classList.add('open');
-}
-
-// ── Active player submits answer ──
-function submitAnswer(){
-  const inp=document.getElementById('player-answer-inp');
-  const answer=inp.value.trim();
-  if(!answer){showToast('⚠️ Bitte Antwort eingeben!',1500);return;}
-  
-  // Hide input wrap, show submitted answer
-  document.getElementById('answer-input-wrap').style.display='none';
-  const box=document.getElementById('submitted-answer-box');
-  box.style.display='block';
-  box.textContent='💬 '+mpMyName+': "'+answer+'"';
-  
-  // Send to all (host + spectators see the answer)
-  if(mpRoom) mpSend('answer_in',{playerName:mpMyName,answer});
-}
-
-function checkGameOver(){
-  const open=document.querySelectorAll('.board-point:not(.used)');
-  if(open.length===0){
-    if(mpRoom&&mpIsHost)mpSend('game_over',{});
-    showWinner();
-  }
-}
 
 function showWinner(){
   const tied=teams[0].score===teams[1].score;
@@ -1458,11 +1079,6 @@ addCategory({name:'KATEGORIE 2',questions:[]});
     showView('view-play-landing');
   } else if(action === 'editor'){
     showView('view-editor');
-  } else if(action==='online'){
-    // Show menu view first (needed for layout), then open MP overlay on top
-    showView('view-menu');
-    mpTab='create';
-    setTimeout(mpOpen, 200);
   }
 })();
 
@@ -1539,316 +1155,11 @@ document.addEventListener('click',function(e){
     </div>
   </div>
 </div>
-<div class="mp-reaction-wrap" id="mp-reaction-wrap"></div>
+
 
 
 <script>
-const GAME_TYPE = 'jeopardy';
 
-// ══════════════════════════════════════════
-// MULTIPLAYER SYSTEM
-// ══════════════════════════════════════════
-const SERVER_URL = 'https://quiz-server-production-9398.up.railway.app';
-const COLORS_MP = ['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
-
-let mpSocket = null;
-let mpRoom = null;
-let mpMyName = '';
-let mpIsHost = false;
-let mpTab = 'create'; // create | join
-
-function mpOpen() {
-  document.getElementById('mp-overlay').classList.remove('hidden');
-  mpRenderEntry();
-}
-function mpClose() {
-  document.getElementById('mp-overlay').classList.add('hidden');
-}
-
-// ── CONNECT TO SERVER ──
-function mpConnect(cb) {
-  if (mpSocket && mpSocket.connected) { cb(); return; }
-  if (typeof io === 'undefined') {
-    const s = document.createElement('script');
-    s.src = SERVER_URL + '/socket.io/socket.io.js';
-    s.onload = () => { mpSocket = io(SERVER_URL); mpBindEvents(); cb(); };
-    s.onerror = () => mpShowStatus('❌ Server nicht erreichbar!', 'err');
-    document.head.appendChild(s);
-  } else {
-    mpSocket = io(SERVER_URL);
-    mpBindEvents();
-    cb();
-  }
-}
-
-function mpBindEvents() {
-  mpSocket.on('room_created', ({ code, room }) => {
-    mpRoom = room; mpRoom.code = code;
-    mpRenderLobby();
-    mpShowStatus('✅ Raum erstellt! Teile den Code mit deinen Freunden.', 'ok');
-  });
-  mpSocket.on('room_joined', ({ code, room, yourName }) => {
-    mpRoom = room; mpRoom.code = code; mpMyName = yourName;
-    mpRenderLobby();
-    mpShowStatus('✅ Beigetreten!', 'ok');
-  });
-  mpSocket.on('player_joined', ({ room, newPlayer }) => {
-    mpRoom = room;
-    mpRenderLobbyPlayers();
-    mpShowReaction(newPlayer + ' ist beigetreten 👋');
-  });
-  mpSocket.on('player_left', ({ name, room }) => {
-    mpRoom = room;
-    mpRenderLobbyPlayers();
-    mpShowReaction(name + ' hat verlassen 👋');
-  });
-  mpSocket.on('host_changed', ({ newHost }) => {
-    if (mpMyName === newHost) { mpIsHost = true; }
-    mpRenderLobbyPlayers();
-  });
-  mpSocket.on('room_update', ({ room }) => {
-    mpRoom = room;
-    mpRenderLobbyPlayers();
-  });
-  mpSocket.on('game_started', ({ quizData, room }) => {
-    mpClose();
-    // Update mpRoom with the final player list before game starts
-    if (room) mpRoom = room;
-    if (typeof mpOnGameStart === 'function') mpOnGameStart(quizData);
-  });
-  mpSocket.on('game_action', ({ action, payload, from, fromId }) => {
-    if (typeof mpOnAction === 'function') mpOnAction(action, payload, from, fromId);
-  });
-  mpSocket.on('host_sync', ({ gameState }) => {
-    if (!mpIsHost && typeof mpOnHostSync === 'function') mpOnHostSync(gameState);
-  });
-  mpSocket.on('reaction', ({ name, emoji }) => {
-    mpShowReaction(name + ' ' + emoji);
-  });
-  mpSocket.on('error', ({ msg }) => {
-    mpShowStatus('❌ ' + msg, 'err');
-  });
-  mpSocket.on('game_ended', () => {
-    if (typeof mpOnGameEnd === 'function') mpOnGameEnd();
-  });
-}
-
-// ── SEND ACTION ──
-function mpSend(action, payload) {
-  if (!mpSocket || !mpRoom) return;
-  mpSocket.emit('game_action', { code: mpRoom.code, action, payload });
-}
-function mpSendSync(gameState) {
-  if (!mpSocket || !mpRoom || !mpIsHost) return;
-  mpSocket.emit('host_sync', { code: mpRoom.code, gameState });
-}
-
-// ── RENDER ENTRY (create / join tabs) ──
-function mpRenderEntry() {
-  document.getElementById('mp-body').innerHTML = `
-    <div class="mp-tabs">
-      <button class="mp-tab ${mpTab==='create'?'active':''}" onclick="mpSetTab('create')">🎮 Erstellen</button>
-      <button class="mp-tab ${mpTab==='join'?'active':''}" onclick="mpSetTab('join')">🔗 Beitreten</button>
-    </div>
-    ${mpTab==='create' ? mpHtmlCreate() : mpHtmlJoin()}
-    <div class="mp-status" id="mp-status"></div>
-  `;
-}
-
-function mpSetTab(t) { mpTab = t; mpRenderEntry(); }
-
-function mpHtmlCreate() {
-  const hasQuiz = (typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer) || (typeof quizData !== 'undefined' && quizData);
-  const quizName = (mpQuizDataForMultiplayer && mpQuizDataForMultiplayer.name) || (quizData && quizData.name) || 'Quiz';
-  return `
-    <div>
-      <label class="mp-label">Dein Name</label>
-      <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
-    </div>
-    ${hasQuiz
-      ? '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + quizName + '</div>'
-      : '<label class="mp-label" style="margin-top:4px;">Quiz importieren</label><label style="cursor:pointer;"><div style="padding:12px;background:var(--surface2);border:1px dashed var(--border);border-radius:10px;text-align:center;font-size:13px;color:var(--muted);">📂 Quiz-Datei auswählen<br><small style="font-size:10px;">(.quiz Datei)</small></div><input type="file" accept=".quiz,.json" style="display:none" onchange="mpLoadQuiz(event)"></label>'
-    }
-    <button class="mp-btn mp-btn-green" onclick="mpCreate()">🎮 Raum erstellen</button>
-    <button class="mp-btn mp-btn-ghost" onclick="mpClose()">Abbrechen</button>
-  `;
-}
-
-function mpHtmlJoin() {
-  // Auto-fill code from URL param
-  const urlCode = new URLSearchParams(window.location.search).get('room') || '';
-  return `
-    <div>
-      <label class="mp-label">Dein Name</label>
-      <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
-    </div>
-    <div>
-      <label class="mp-label">Raum-Code</label>
-      <input class="mp-input mp-code-input" id="mp-code-inp" placeholder="ABC123" maxlength="6" value="${urlCode}">
-    </div>
-    <button class="mp-btn mp-btn-blue" onclick="mpJoin()">🔗 Beitreten</button>
-    <button class="mp-btn mp-btn-ghost" onclick="mpClose()">Abbrechen</button>
-  `;
-}
-
-// ── LOAD QUIZ FILE ──
-let mpQuizDataForMultiplayer = null;
-function mpLoadQuiz(ev) {
-  const file = ev.target.files[0]; if (!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    try {
-      mpQuizDataForMultiplayer = JSON.parse(e.target.result);
-      mpRenderEntry();
-    } catch(e) { mpShowStatus('❌ Ungültige Datei!', 'err'); }
-  };
-  r.readAsText(file);
-}
-
-// ── CREATE ROOM ──
-function mpCreate() {
-  const name = (document.getElementById('mp-name-inp')||{}).value.trim();
-  if (!name) { mpShowStatus('❌ Bitte Namen eingeben!', 'err'); return; }
-  mpMyName = name; mpIsHost = true;
-  const gameType = typeof GAME_TYPE !== 'undefined' ? GAME_TYPE : 'unknown';
-  const quizData = mpQuizDataForMultiplayer || (typeof quizData !== 'undefined' ? quizData : null);
-  mpConnect(() => {
-    mpSocket.emit('create_room', { game: gameType, playerName: name, quizData });
-  });
-}
-
-// ── JOIN ROOM ──
-function mpJoin() {
-  const name = (document.getElementById('mp-name-inp')||{}).value.trim();
-  const code = (document.getElementById('mp-code-inp')||{}).value.trim().toUpperCase();
-  if (!name) { mpShowStatus('❌ Bitte Namen eingeben!', 'err'); return; }
-  if (code.length < 4) { mpShowStatus('❌ Bitte Code eingeben!', 'err'); return; }
-  mpMyName = name; mpIsHost = false;
-  mpConnect(() => {
-    mpSocket.emit('join_room', { code, playerName: name });
-  });
-}
-
-// ── RENDER LOBBY ──
-function mpRenderLobby() {
-  const isHost = mpIsHost;
-  const code = mpRoom.code;
-  const link = window.location.origin + window.location.pathname + '?room=' + code;
-  
-  document.getElementById('mp-body').innerHTML = `
-    <div class="mp-room-code-wrap">
-      <div class="mp-room-code-lbl">RAUM-CODE</div>
-      <div class="mp-room-code-val">${code}</div>
-      <div class="mp-share" onclick="mpCopyLink('${link}')">🔗 Link kopieren: ${link}</div>
-    </div>
-    <div>
-      <div class="mp-section-lbl" style="margin-bottom:8px;">Spieler (${mpRoom.players.length})</div>
-      <div class="mp-players" id="mp-players-list"></div>
-      <div class="mp-waiting" id="mp-waiting">Warte auf Spieler...</div>
-    </div>
-    ${isHost ? `<button class="mp-btn mp-btn-green" onclick="mpStartGame()">▶ Spiel starten</button>` : `<div class="mp-waiting">Host startet das Spiel...</div>`}
-    <button class="mp-btn mp-btn-ghost" onclick="mpLeave()">Verlassen</button>
-    <div class="mp-status" id="mp-status"></div>
-  `;
-  mpRenderLobbyPlayers();
-}
-
-function mpRenderLobbyPlayers() {
-  const list = document.getElementById('mp-players-list');
-  const waiting = document.getElementById('mp-waiting');
-  if (!list || !mpRoom) return;
-  list.innerHTML = mpRoom.players.map((p,i) => `
-    <div class="mp-player-row">
-      <div class="mp-player-avatar" style="background:${COLORS_MP[i%COLORS_MP.length]}">${p.name.charAt(0).toUpperCase()}</div>
-      <div class="mp-player-name">${p.name}${p.name===mpMyName?' (du)':''}</div>
-      ${p.isHost ? '<span class="mp-badge mp-badge-host">HOST</span>' : ''}
-    </div>
-  `).join('');
-  if (waiting) waiting.style.display = mpRoom.players.length > 1 ? 'none' : 'block';
-}
-
-// ── START GAME ──
-function mpStartGame() {
-  if (!mpIsHost) return;
-  // Use locally loaded quizData OR uploaded quiz from lobby
-  const qd = mpQuizDataForMultiplayer || quizData;
-  if (!qd) {
-    mpShowStatus('❌ Erst Quiz importieren!', 'err');
-    return;
-  }
-  // Make sure both are set
-  quizData = qd;
-  mpQuizDataForMultiplayer = qd;
-  mpSocket.emit('start_game', { code: mpRoom.code });
-}
-
-// ── HELPERS ──
-function mpCopyLink(link) {
-  navigator.clipboard.writeText(link).then(() => mpShowStatus('✅ Link kopiert!', 'ok'));
-}
-
-function mpLeave() {
-  if (mpSocket) mpSocket.disconnect();
-  mpRoom = null; mpIsHost = false; mpMyName = '';
-  mpClose();
-}
-
-function mpShowStatus(msg, type) {
-  const el = document.getElementById('mp-status');
-  if (!el) return;
-  el.textContent = msg;
-  el.className = 'mp-status ' + type;
-}
-
-function mpShowReaction(text) {
-  const wrap = document.getElementById('mp-reaction-wrap');
-  if (!wrap) return;
-  const el = document.createElement('div');
-  el.className = 'mp-reaction-toast';
-  el.textContent = text;
-  wrap.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
-
-
-// ── CALLED WHEN HOST STARTS MULTIPLAYER GAME ──
-function mpOnGameStart(receivedQuizData) {
-  mpClose();
-  if (receivedQuizData) {
-    quizData = receivedQuizData;
-    mpQuizDataForMultiplayer = receivedQuizData;
-  }
-  // Auto-split players from lobby into 2 teams randomly
-  if (mpRoom && mpRoom.players && mpRoom.players.length > 0) {
-    const playerNames = [...mpRoom.players.map(p => p.name)];
-    // Shuffle
-    for (let i = playerNames.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [playerNames[i], playerNames[j]] = [playerNames[j], playerNames[i]];
-    }
-    const half = Math.ceil(playerNames.length / 2);
-    teams[0].players = playerNames.slice(0, half);
-    teams[1].players = playerNames.slice(half);
-    if (!teams[0].players.length) teams[0].players = ['Team 1'];
-    if (!teams[1].players.length) teams[1].players = ['Team 2'];
-    teams[0].name = 'Team Blau';
-    teams[1].name = 'Team Rot';
-    teams[0].score = 0;
-    teams[1].score = 0;
-    buildTurnOrder();
-    turnIdx = 0;
-    gameHistory = [];
-    buildBoard();
-    showView('view-game');
-  } else {
-    goToSetup();
-  }
-}
-// Auto-open lobby if ?room= in URL
-window.addEventListener('DOMContentLoaded', () => {
-  const code = new URLSearchParams(window.location.search).get('room');
-  if (code) { mpTab = 'join'; setTimeout(mpOpen, 500); }
-});
 
 </script>
 

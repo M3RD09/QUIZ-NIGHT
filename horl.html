@@ -336,50 +336,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 
 /* ── MULTIPLAYER ── */
-.mp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;}
 .mp-overlay.hidden{display:none;}
-.mp-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:mpIn .3s cubic-bezier(.34,1.56,.64,1);}
 @keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-.mp-header{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border);}
-.mp-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;flex:1;}
-.mp-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;}
-.mp-body{padding:16px;display:flex;flex-direction:column;gap:10px;}
-.mp-tabs{display:flex;gap:8px;}
-.mp-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
 .mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
-.mp-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
-.mp-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
 .mp-input:focus{border-color:var(--green,#2ecc71);}
 .mp-input::placeholder{color:var(--muted2);}
-.mp-code-input{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.2em;text-align:center;text-transform:uppercase;}
-.mp-btn{width:100%;padding:13px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
-.mp-btn-green{background:linear-gradient(135deg,#27ae60,#1e8c4e);color:#fff;}
-.mp-btn-blue{background:linear-gradient(135deg,#2980b9,#1a5276);color:#fff;}
-.mp-btn-ghost{background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
-.mp-room-code-wrap{text-align:center;padding:16px;background:var(--surface2);border-radius:14px;}
-.mp-room-code-lbl{font-size:10px;color:var(--muted);margin-bottom:4px;}
-.mp-room-code-val{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.15em;color:var(--gold,#f5c842);text-shadow:0 0 30px rgba(245,200,66,.3);}
-.mp-share{font-size:10px;color:var(--muted);margin-top:4px;word-break:break-all;cursor:pointer;}
-.mp-section-lbl{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);}
-.mp-players{display:flex;flex-direction:column;gap:7px;}
-.mp-player-row{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--surface2);border-radius:10px;}
-.mp-player-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0;}
-.mp-player-name{flex:1;font-size:13px;font-weight:700;}
-.mp-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
-.mp-badge-host{background:rgba(245,200,66,.15);color:var(--gold,#f5c842);border:1px solid rgba(245,200,66,.3);}
-.mp-badge-ready{background:rgba(46,204,113,.15);color:var(--green,#2ecc71);border:1px solid rgba(46,204,113,.3);}
-.mp-status{padding:9px 13px;border-radius:10px;font-size:12px;display:none;}
 .mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
 .mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
-.mp-waiting{text-align:center;color:var(--muted);font-size:12px;}
-.mp-reaction-wrap{position:fixed;bottom:120px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:820;pointer-events:none;}
-.mp-reaction-toast{background:var(--surface,#0f1118);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;animation:rtIn .3s ease,rtOut .3s ease 2.5s both;}
-@keyframes rtIn{from{opacity:0;transform:translateX(15px);}to{opacity:1;}}
-@keyframes rtOut{to{opacity:0;transform:translateX(15px);}}
+to{opacity:1;}}
+}
 
 
 
-.btn-multiplayer{background:linear-gradient(135deg,#1a5276,#2980b9);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(41,128,185,.25);}
 .btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
 </style>
@@ -397,8 +365,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <label class="btn-primary" style="cursor:pointer;">▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
-    <button class="btn-multiplayer" onclick="mpOpen()">🌐 Multiplayer — Online spielen</button>
-    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -1065,292 +1032,11 @@ document.addEventListener('click',function(e){
     </div>
   </div>
 </div>
-<div class="mp-reaction-wrap" id="mp-reaction-wrap"></div>
+
 
 
 <script>
-const GAME_TYPE = 'horl';
 
-// ══════════════════════════════════════════
-// MULTIPLAYER SYSTEM
-// ══════════════════════════════════════════
-const SERVER_URL = 'https://quiz-server-production-9398.up.railway.app';
-const COLORS_MP = ['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
-
-let mpSocket = null;
-let mpRoom = null;
-let mpMyName = '';
-let mpIsHost = false;
-let mpTab = 'create'; // create | join
-
-function mpOpen() {
-  document.getElementById('mp-overlay').classList.remove('hidden');
-  mpRenderEntry();
-}
-function mpClose() {
-  document.getElementById('mp-overlay').classList.add('hidden');
-}
-
-// ── CONNECT TO SERVER ──
-function mpConnect(cb) {
-  if (mpSocket && mpSocket.connected) { cb(); return; }
-  if (typeof io === 'undefined') {
-    const s = document.createElement('script');
-    s.src = SERVER_URL + '/socket.io/socket.io.js';
-    s.onload = () => { mpSocket = io(SERVER_URL); mpBindEvents(); cb(); };
-    s.onerror = () => mpShowStatus('❌ Server nicht erreichbar!', 'err');
-    document.head.appendChild(s);
-  } else {
-    mpSocket = io(SERVER_URL);
-    mpBindEvents();
-    cb();
-  }
-}
-
-function mpBindEvents() {
-  mpSocket.on('room_created', ({ code, room }) => {
-    mpRoom = room; mpRoom.code = code;
-    mpRenderLobby();
-    mpShowStatus('✅ Raum erstellt! Teile den Code mit deinen Freunden.', 'ok');
-  });
-  mpSocket.on('room_joined', ({ code, room, yourName }) => {
-    mpRoom = room; mpRoom.code = code; mpMyName = yourName;
-    mpRenderLobby();
-    mpShowStatus('✅ Beigetreten!', 'ok');
-  });
-  mpSocket.on('player_joined', ({ room, newPlayer }) => {
-    mpRoom = room;
-    mpRenderLobbyPlayers();
-    mpShowReaction(newPlayer + ' ist beigetreten 👋');
-  });
-  mpSocket.on('player_left', ({ name, room }) => {
-    mpRoom = room;
-    mpRenderLobbyPlayers();
-    mpShowReaction(name + ' hat verlassen 👋');
-  });
-  mpSocket.on('host_changed', ({ newHost }) => {
-    if (mpMyName === newHost) { mpIsHost = true; }
-    mpRenderLobbyPlayers();
-  });
-  mpSocket.on('room_update', ({ room }) => {
-    mpRoom = room;
-    mpRenderLobbyPlayers();
-  });
-  mpSocket.on('game_started', ({ quizData }) => {
-    mpClose();
-    if (typeof mpOnGameStart === 'function') mpOnGameStart(quizData);
-  });
-  mpSocket.on('game_action', ({ action, payload, from, fromId }) => {
-    if (typeof mpOnAction === 'function') mpOnAction(action, payload, from, fromId);
-  });
-  mpSocket.on('host_sync', ({ gameState }) => {
-    if (!mpIsHost && typeof mpOnHostSync === 'function') mpOnHostSync(gameState);
-  });
-  mpSocket.on('reaction', ({ name, emoji }) => {
-    mpShowReaction(name + ' ' + emoji);
-  });
-  mpSocket.on('error', ({ msg }) => {
-    mpShowStatus('❌ ' + msg, 'err');
-  });
-  mpSocket.on('game_ended', () => {
-    if (typeof mpOnGameEnd === 'function') mpOnGameEnd();
-  });
-}
-
-// ── SEND ACTION ──
-function mpSend(action, payload) {
-  if (!mpSocket || !mpRoom) return;
-  mpSocket.emit('game_action', { code: mpRoom.code, action, payload });
-}
-function mpSendSync(gameState) {
-  if (!mpSocket || !mpRoom || !mpIsHost) return;
-  mpSocket.emit('host_sync', { code: mpRoom.code, gameState });
-}
-
-// ── RENDER ENTRY (create / join tabs) ──
-function mpRenderEntry() {
-  document.getElementById('mp-body').innerHTML = `
-    <div class="mp-tabs">
-      <button class="mp-tab ${mpTab==='create'?'active':''}" onclick="mpSetTab('create')">🎮 Erstellen</button>
-      <button class="mp-tab ${mpTab==='join'?'active':''}" onclick="mpSetTab('join')">🔗 Beitreten</button>
-    </div>
-    ${mpTab==='create' ? mpHtmlCreate() : mpHtmlJoin()}
-    <div class="mp-status" id="mp-status"></div>
-  `;
-}
-
-function mpSetTab(t) { mpTab = t; mpRenderEntry(); }
-
-function mpHtmlCreate() {
-  return `
-    <div>
-      <label class="mp-label">Dein Name</label>
-      <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
-    </div>
-    ${typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer ? 
-      '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + (mpQuizDataForMultiplayer.name||'Quiz') + '</div>'
-      : '<label class="mp-label" style="margin-top:4px;">Quiz importieren</label><label style="cursor:pointer;"><div style="padding:12px;background:var(--surface2);border:1px dashed var(--border);border-radius:10px;text-align:center;font-size:13px;color:var(--muted);">📂 Quiz-Datei auswählen<br><small style="font-size:10px;">(.quiz Datei)</small></div><input type="file" accept=".quiz,.json" style="display:none" onchange="mpLoadQuiz(event)"></label>'
-    }
-    <button class="mp-btn mp-btn-green" onclick="mpCreate()">🎮 Raum erstellen</button>
-    <button class="mp-btn mp-btn-ghost" onclick="mpClose()">Abbrechen</button>
-  `;
-}
-
-function mpHtmlJoin() {
-  // Auto-fill code from URL param
-  const urlCode = new URLSearchParams(window.location.search).get('room') || '';
-  return `
-    <div>
-      <label class="mp-label">Dein Name</label>
-      <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
-    </div>
-    <div>
-      <label class="mp-label">Raum-Code</label>
-      <input class="mp-input mp-code-input" id="mp-code-inp" placeholder="ABC123" maxlength="6" value="${urlCode}">
-    </div>
-    <button class="mp-btn mp-btn-blue" onclick="mpJoin()">🔗 Beitreten</button>
-    <button class="mp-btn mp-btn-ghost" onclick="mpClose()">Abbrechen</button>
-  `;
-}
-
-// ── LOAD QUIZ FILE ──
-let mpQuizDataForMultiplayer = null;
-function mpLoadQuiz(ev) {
-  const file = ev.target.files[0]; if (!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    try {
-      mpQuizDataForMultiplayer = JSON.parse(e.target.result);
-      mpRenderEntry();
-    } catch(e) { mpShowStatus('❌ Ungültige Datei!', 'err'); }
-  };
-  r.readAsText(file);
-}
-
-// ── CREATE ROOM ──
-function mpCreate() {
-  const name = (document.getElementById('mp-name-inp')||{}).value.trim();
-  if (!name) { mpShowStatus('❌ Bitte Namen eingeben!', 'err'); return; }
-  mpMyName = name; mpIsHost = true;
-  const gameType = typeof GAME_TYPE !== 'undefined' ? GAME_TYPE : 'unknown';
-  const quizData = mpQuizDataForMultiplayer || (typeof quizData !== 'undefined' ? quizData : null);
-  mpConnect(() => {
-    mpSocket.emit('create_room', { game: gameType, playerName: name, quizData });
-  });
-}
-
-// ── JOIN ROOM ──
-function mpJoin() {
-  const name = (document.getElementById('mp-name-inp')||{}).value.trim();
-  const code = (document.getElementById('mp-code-inp')||{}).value.trim().toUpperCase();
-  if (!name) { mpShowStatus('❌ Bitte Namen eingeben!', 'err'); return; }
-  if (code.length < 4) { mpShowStatus('❌ Bitte Code eingeben!', 'err'); return; }
-  mpMyName = name; mpIsHost = false;
-  mpConnect(() => {
-    mpSocket.emit('join_room', { code, playerName: name });
-  });
-}
-
-// ── RENDER LOBBY ──
-function mpRenderLobby() {
-  const isHost = mpIsHost;
-  const code = mpRoom.code;
-  const link = window.location.origin + window.location.pathname + '?room=' + code;
-  
-  document.getElementById('mp-body').innerHTML = `
-    <div class="mp-room-code-wrap">
-      <div class="mp-room-code-lbl">RAUM-CODE</div>
-      <div class="mp-room-code-val">${code}</div>
-      <div class="mp-share" onclick="mpCopyLink('${link}')">🔗 Link kopieren: ${link}</div>
-    </div>
-    <div>
-      <div class="mp-section-lbl" style="margin-bottom:8px;">Spieler (${mpRoom.players.length})</div>
-      <div class="mp-players" id="mp-players-list"></div>
-      <div class="mp-waiting" id="mp-waiting">Warte auf Spieler...</div>
-    </div>
-    ${isHost ? `<button class="mp-btn mp-btn-green" onclick="mpStartGame()">▶ Spiel starten</button>` : `<div class="mp-waiting">Host startet das Spiel...</div>`}
-    <button class="mp-btn mp-btn-ghost" onclick="mpLeave()">Verlassen</button>
-    <div class="mp-status" id="mp-status"></div>
-  `;
-  mpRenderLobbyPlayers();
-}
-
-function mpRenderLobbyPlayers() {
-  const list = document.getElementById('mp-players-list');
-  const waiting = document.getElementById('mp-waiting');
-  if (!list || !mpRoom) return;
-  list.innerHTML = mpRoom.players.map((p,i) => `
-    <div class="mp-player-row">
-      <div class="mp-player-avatar" style="background:${COLORS_MP[i%COLORS_MP.length]}">${p.name.charAt(0).toUpperCase()}</div>
-      <div class="mp-player-name">${p.name}${p.name===mpMyName?' (du)':''}</div>
-      ${p.isHost ? '<span class="mp-badge mp-badge-host">HOST</span>' : ''}
-    </div>
-  `).join('');
-  if (waiting) waiting.style.display = mpRoom.players.length > 1 ? 'none' : 'block';
-}
-
-// ── START GAME ──
-function mpStartGame() {
-  if (!mpIsHost) return;
-  const quizData = mpQuizDataForMultiplayer;
-  mpSocket.emit('start_game', { code: mpRoom.code });
-}
-
-// ── HELPERS ──
-function mpCopyLink(link) {
-  navigator.clipboard.writeText(link).then(() => mpShowStatus('✅ Link kopiert!', 'ok'));
-}
-
-function mpLeave() {
-  if (mpSocket) mpSocket.disconnect();
-  mpRoom = null; mpIsHost = false; mpMyName = '';
-  mpClose();
-}
-
-function mpShowStatus(msg, type) {
-  const el = document.getElementById('mp-status');
-  if (!el) return;
-  el.textContent = msg;
-  el.className = 'mp-status ' + type;
-}
-
-function mpShowReaction(text) {
-  const wrap = document.getElementById('mp-reaction-wrap');
-  if (!wrap) return;
-  const el = document.createElement('div');
-  el.className = 'mp-reaction-toast';
-  el.textContent = text;
-  wrap.appendChild(el);
-  setTimeout(() => el.remove(), 3000);
-}
-
-
-// ── CALLED WHEN HOST STARTS MULTIPLAYER GAME ──
-function mpOnGameStart(receivedQuizData) {
-  mpClose();
-  if (receivedQuizData) {
-    quizData = receivedQuizData;
-    mpQuizDataForMultiplayer = receivedQuizData;
-  }
-  if (mpRoom && mpRoom.players && mpRoom.players.length > 0) {
-    maxHearts = 3;
-    players = mpRoom.players.map((p, i) => ({
-      name: p.name, hearts: maxHearts, score: 0,
-      eliminated: false, color: COLORS[i % COLORS.length]
-    }));
-    currentRound = 0;
-    currentPlayerIdx = 0;
-    loadRound();
-    showView('view-game');
-  } else {
-    goToSetup();
-  }
-}
-// Auto-open lobby if ?room= in URL
-window.addEventListener('DOMContentLoaded', () => {
-  const code = new URLSearchParams(window.location.search).get('room');
-  if (code) { mpTab = 'join'; setTimeout(mpOpen, 500); }
-});
 
 </script>
 
