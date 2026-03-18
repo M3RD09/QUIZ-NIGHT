@@ -865,7 +865,7 @@ function renderBuzzedPhase(main,q,isSteal){
   const buzzedPlayer=bbState.players.find(p=>p.name===bbState.buzzedBy);
   const pColor=buzzedPlayer?buzzedPlayer.color:COLORS[0];
   const headerText=isSteal
-    ?'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+'</div><div class="buzz-sub">will abstauben! ('+bbState.buzzedBy===myName?'Du bist dran — antworte mündlich!':'Warte auf Antwort...')+'</div>'
+    ?'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+'</div><div class="buzz-sub">will abstauben! ('+(bbState.buzzedBy===myName?'Du bist dran — antworte mündlich!':'Warte auf Antwort...')+')</div>'
     :'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+' hat den Buzzer betätigt!</div><div class="buzz-sub">'+(bbState.buzzedBy===myName?'Du bist dran — gib deine Antwort mündlich!':'Warte auf die Antwort...')+'</div>';
   const judgeBlock=isHost
     ?'<div class="host-judge-btns">'
