@@ -793,7 +793,7 @@ function renderReadyPhase(main,q,total){
   const playersHtml=bbState.players.map(p=>{
     const ready=bbState.readyPlayers.includes(p.name);
     return '<div class="ready-player">'
-      +'<div class="ready-dot" style="background:'+(ready?'var(--green)':'var(--muted2))+'"></div>'
+      +'<div class="ready-dot" style="background:'+(ready?'var(--green)':'var(--muted2)')+'"></div>'
       +'<span>'+esc(p.name)+'</span>'
       +(ready?'<span style="color:var(--green);font-size:11px;margin-left:auto;">Bereit!</span>':'')
       +'</div>';
