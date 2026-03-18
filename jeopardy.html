@@ -1160,6 +1160,8 @@ function mpOnAction(action,payload){
       document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData.name||'Jeopardy');
       buildBoard(); buildScoreArea(); showView('view-game');
     }
+    // CRITICAL: rebuild turn order from received team data
+    buildTurnOrder();
     updateScores();
     // Use setTimeout to ensure DOM is updated before rendering teams
     setTimeout(()=>{updateTurnBanner(); updateTeamsSidebar();},50);
