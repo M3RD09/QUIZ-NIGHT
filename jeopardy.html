@@ -800,6 +800,8 @@ function buildBoard(){
       if(q){
         c.className='board-cell board-point';
         c.textContent=q.points;
+        c.dataset.ci=ci;
+        c.dataset.qi=qi;
         c.onclick=()=>openQuestion(ci,qi,c);
       }else{
         c.className='board-cell';
@@ -874,6 +876,9 @@ function addToHistory(playerName,teamIdx,category,points,result){
 // ── QUESTION ──
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
+  // Only host can open questions in multiplayer
+  if(mpRoom && !mpIsHost) return;
+
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
   const t=currentTurn();
@@ -888,8 +893,19 @@ function openQuestion(ci,qi,cell){
   document.getElementById('verdict-wrap').style.display='none';
   document.getElementById('time-up-box').style.display='none';
 
+  // Hide verdict buttons for non-hosts
+  if(mpRoom && !mpIsHost){
+    document.getElementById('btn-reveal').style.display='none';
+    document.getElementById('verdict-wrap').style.display='none';
+  }
+
   document.getElementById('q-overlay').classList.add('open');
   startTimer();
+
+  // Sync to all clients
+  if(mpRoom && mpIsHost){
+    mpSend('open_question',{ci,qi,points:q.points,teamIdx:t.ti,playerIdx:t.pi});
+  }
 }
 
 // ── TIMER ──
@@ -940,13 +956,16 @@ function timeUp(){
 
 // ── REVEAL & VERDICT ──
 function revealAnswer(){
+  if(mpRoom && !mpIsHost) return;
   stopTimer();
   document.getElementById('btn-reveal').style.display='none';
   document.getElementById('ans-box').style.display='block';
   document.getElementById('verdict-wrap').style.display='flex';
+  if(mpRoom && mpIsHost) mpSend('reveal_answer',{});
 }
 
 function verdict(correct){
+  if(mpRoom && !mpIsHost) return;
   stopTimer();
   const t=currentTurn();
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
@@ -981,13 +1000,102 @@ function verdict(correct){
   updateTurnBanner();
   updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
+
+  // Sync verdict to all clients BEFORE clearing currentQ
+  if(mpRoom && mpIsHost){
+    mpSend('verdict',{correct,
+      result, teamIdx:t.ti, points:q.points, turnIdx,
+      scores:[teams[0].score, teams[1].score]
+    });
+  }
+
   currentQ=null;
   checkGameOver();
 }
 
+// ── MULTIPLAYER ACTION HANDLER (clients receive host actions) ──
+function mpOnAction(action, payload, from, fromId) {
+  // Only non-hosts process incoming actions
+  if(mpIsHost) return;
+
+  if(action === 'open_question'){
+    const {ci, qi, points, teamIdx, playerIdx} = payload;
+    const q = quizData.categories[ci].questions[qi];
+    // Find the cell on the board
+    const cells = document.querySelectorAll('.board-point');
+    let targetCell = null;
+    let idx = 0;
+    document.querySelectorAll('.board-point').forEach(c => {
+      if(parseInt(c.dataset.ci)===ci && parseInt(c.dataset.qi)===qi) targetCell=c;
+    });
+    currentQ = {ci, qi, cell: targetCell, points};
+    const t = {ti: teamIdx, pi: playerIdx};
+    document.getElementById('qo-cat').textContent = quizData.categories[ci].name.toUpperCase();
+    document.getElementById('qo-pts').textContent = points;
+    document.getElementById('qo-whose').textContent = teams[teamIdx].name+' — '+teams[teamIdx].players[playerIdx]+' ist dran';
+    document.getElementById('qo-text').textContent = q.question;
+    document.getElementById('ans-box').textContent = '';
+    document.getElementById('ans-box').style.display='none';
+    document.getElementById('btn-reveal').style.display='none'; // clients don't get reveal button
+    document.getElementById('verdict-wrap').style.display='none'; // clients don't get verdict buttons
+    document.getElementById('time-up-box').style.display='none';
+    document.getElementById('q-overlay').classList.add('open');
+    startTimer();
+  }
+
+  else if(action === 'reveal_answer'){
+    stopTimer();
+    document.getElementById('btn-reveal').style.display='none';
+    const q = quizData.categories[currentQ.ci].questions[currentQ.qi];
+    document.getElementById('ans-box').textContent = q.answer ? '✅ '+q.answer : '';
+    document.getElementById('ans-box').style.display='block';
+    // No verdict buttons for clients
+  }
+
+  else if(action === 'verdict'){
+    const {correct, result, teamIdx, points, turnIdx: newTurnIdx, scores} = payload;
+    stopTimer();
+
+    // Update scores
+    teams[0].score = scores[0];
+    teams[1].score = scores[1];
+    updateScores();
+
+    // Mark cell on board
+    if(currentQ && currentQ.cell){
+      const cell = currentQ.cell;
+      cell.classList.add('used','res-'+result);
+      cell.onclick = null;
+      const icon = correct===true?'✓':correct===false?'✗':'—';
+      const iconColor = correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
+      const teamColor = teamIdx===0?'var(--team1)':'var(--team2)';
+      const playerName = teams[teamIdx].players[turnOrder[newTurnIdx-1]?.pi||0]||'';
+      cell.innerHTML='<span class="cell-icon" style="color:'+iconColor+'">'+icon+'</span>'
+        +'<span class="cell-who" style="color:'+teamColor+'">'+escHtml(playerName)+'</span>';
+    }
+
+    turnIdx = newTurnIdx;
+    updateTurnBanner();
+    updateTeamsSidebar();
+    document.getElementById('q-overlay').classList.remove('open');
+    currentQ = null;
+
+    const pts = correct===true ? '+'+points : correct===false ? '-'+points : '—';
+    showToast((correct===true?'✅':'❌')+' '+pts+' für '+teams[teamIdx].name, 2500);
+    checkGameOver();
+  }
+
+  else if(action === 'game_over'){
+    showWinner();
+  }
+}
+
 function checkGameOver(){
   const open=document.querySelectorAll('.board-point:not(.used)');
-  if(open.length===0)showWinner();
+  if(open.length===0){
+    if(mpRoom && mpIsHost) mpSend('game_over',{});
+    showWinner();
+  }
 }
 
 function showWinner(){
