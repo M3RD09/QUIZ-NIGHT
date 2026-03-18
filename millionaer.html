@@ -463,13 +463,21 @@ function importAndPlay(ev){
     try{
       const d=JSON.parse(e.target.result);
       if(!d.questions||!Array.isArray(d.questions))throw new Error();
-      quizData=d;
-      document.getElementById('game-title').textContent='💰 '+quizData.name;
-      goToSetup();
+      loadIntoEditor(d);
+      showToast('✅ Quiz geladen — Änderungen möglich!',2500);
     }catch(err){showToast('❌ Ungültige Datei!');}
   };
   r.readAsText(file);
   ev.target.value='';
+}
+
+function loadIntoEditor(d){
+  if(d.name) document.getElementById('quiz-name').value=d.name;
+  document.getElementById('q-editor-container').innerHTML='';
+  editorQCount=0;
+  (d.questions||[]).forEach(q=>addEditorQuestion(q));
+  if(!d.questions||!d.questions.length) addEditorQuestion();
+  showView('view-editor');
 }
 
 // ── SETUP ──

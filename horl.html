@@ -509,10 +509,25 @@ function importAndPlay(ev){
     try{
       const d=JSON.parse(e.target.result);
       if(!d.rounds||!Array.isArray(d.rounds))throw new Error('bad');
-      quizData=d;goToSetup();
+      loadIntoEditor(d);
+      showToast('✅ Quiz geladen — Änderungen möglich!',2500);
     }catch(e){showToast('❌ Ungültige Datei!');}
   };
-  r.readAsText(file);ev.target.value='';
+  r.readAsText(file);
+  ev.target.value='';
+}
+
+function loadIntoEditor(d){
+  if(d.name) document.getElementById('quiz-name').value=d.name;
+  document.getElementById('rounds-container').innerHTML='';
+  roundCount=0;
+  (d.rounds||[]).forEach(round=>{
+    addEditorRound(round);
+    const rid=roundCount-1;
+    (round.items||[]).forEach(item=>addEditorItem(rid,item));
+  });
+  if(!d.rounds||!d.rounds.length) addEditorRound();
+  showView('view-editor');
 }
 
 // ── SETUP ──
