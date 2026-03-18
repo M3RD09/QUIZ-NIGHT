@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Buzzer Beater — Quiz Games by Mert</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080f;--surface:#0f1118;--surface2:#181c28;
+  --border:rgba(255,255,255,0.08);
+  --green:#2ecc71;--red:#e8354a;--gold:#f5c842;
+  --blue:#3a8ef6;--orange:#f39c12;--purple:#9b59b6;
+  --text:#f0eee8;--muted:rgba(240,238,232,.5);--muted2:rgba(240,238,232,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,53,74,.07),transparent 55%);pointer-events:none;z-index:0;}
+.view{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:1;}
+.view.active{display:flex;}
+#view-menu,#view-end,#view-editor{overflow-y:auto;}
+#view-game,#view-lobby{overflow-y:auto;}
+
+.btn-primary{background:linear-gradient(135deg,#27ae60,#1e8c4e);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-secondary:hover{border-color:var(--green);color:var(--green);}
+.btn-gold{background:linear-gradient(135deg,#f5c842,#e8a020);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-online{background:linear-gradient(135deg,#c0392b,#96281b);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-online:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-icon{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:9px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.btn-icon:hover{border-color:var(--green);color:var(--green);}
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(6,8,15,.97);position:sticky;top:0;z-index:50;}
+.topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:var(--red);flex:1;}
+.view-body{flex:1;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
+
+/* MENU */
+#view-menu{align-items:center;justify-content:center;padding:40px 20px;}
+.menu-logo{text-align:center;margin-bottom:40px;}
+.menu-logo-icon{font-size:60px;margin-bottom:12px;}
+.menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.04em;background:linear-gradient(135deg,#e8354a,#c0392b,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.menu-logo-sub{font-size:13px;color:var(--muted);margin-top:8px;}
+.menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
+
+/* OVERLAY */
+.bb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+.bb-overlay.hidden{display:none;}
+.bb-modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;overflow:hidden;animation:mpIn .2s ease;margin:auto;}
+@keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.bb-modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+.bb-modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:var(--red);}
+.bb-tabs{display:flex;gap:8px;padding:16px 20px 0;}
+.bb-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;}
+.bb-tab.active{background:var(--red);border-color:var(--red);color:#fff;}
+.bb-panel{padding:16px 20px;display:flex;flex-direction:column;gap:10px;}
+.bb-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+.bb-inp:focus{border-color:var(--red);}
+.bb-inp::placeholder{color:var(--muted2);}
+.bb-file-btn{background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;}
+.bb-file-btn:hover{border-color:var(--red);color:var(--red);}
+.bb-quiz-box{background:rgba(232,53,74,.08);border:1px solid rgba(232,53,74,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--red);display:flex;align-items:center;gap:8px;}
+.bb-status{padding:10px 14px;font-size:12px;border-radius:8px;margin:0 20px 12px;}
+.bb-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green);}
+.bb-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:var(--red);}
+.num-row{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
+.num-row-label{flex:1;font-size:13px;color:var(--muted);}
+.num-val{font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:32px;text-align:center;}
+
+/* LOBBY */
+.lbl-section{font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);}
+.lobby-player-list{display:flex;flex-direction:column;gap:8px;}
+.lobby-player{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
+.lobby-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lobby-player-name{flex:1;font-size:13px;font-weight:700;}
+.lobby-badge{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);background:var(--surface2);border-radius:6px;padding:3px 8px;}
+.team-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.team-chip.active{border-color:rgba(255,255,255,.4);}
+.bb-team-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+.bb-team-item{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);}
+.bb-team-name-inp{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;width:80px;}
+.bb-add-team{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border:1px dashed var(--border);border-radius:10px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.bb-add-team:hover{border-color:var(--red);color:var(--red);}
+.player-assign-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+.pa-name{flex:1;font-size:13px;font-weight:600;}
+.pa-btns{display:flex;gap:5px;flex-wrap:wrap;}
+.pa-btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.pa-btn:hover{border-color:rgba(255,255,255,.3);color:var(--text);}
+.pa-btn.selected{color:#fff;border-color:rgba(255,255,255,.4);}
+
+/* GAME */
+.game-topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:rgba(6,8,15,.97);position:sticky;top:0;z-index:50;}
+.round-badge{background:rgba(232,53,74,.15);border:1px solid rgba(232,53,74,.3);border-radius:20px;padding:4px 14px;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--red);flex-shrink:0;}
+.game-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;background:linear-gradient(135deg,#e8354a,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;text-align:center;}
+
+/* QUESTION CARD */
+.bb-question-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin:16px 16px 0;}
+.bb-q-label{font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
+.bb-q-text{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:700;line-height:1.5;color:var(--text);}
+.bb-answer-box{margin-top:14px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:10px 14px;}
+.bb-answer-label{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+.bb-answer-text{font-size:16px;font-weight:700;color:var(--green);}
+
+/* TIMER */
+.bb-timer-wrap{padding:16px 16px 8px;display:flex;align-items:center;gap:12px;}
+.bb-timer-bar{flex:1;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;}
+.bb-timer-fill{height:100%;border-radius:5px;transition:width .3s linear,background .3s;}
+.bb-timer-count{font-family:'Bebas Neue',sans-serif;font-size:32px;min-width:44px;text-align:right;line-height:1;}
+
+/* BUZZER */
+.buzzer-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;min-height:160px;}
+.buzzer-btn{width:180px;height:180px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff6b6b,#e8354a,#c0392b);border:6px solid rgba(255,80,80,.25);box-shadow:0 0 40px rgba(232,53,74,.4),0 8px 32px rgba(0,0,0,.5);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.08em;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.buzzer-btn:hover{transform:scale(1.06);box-shadow:0 0 70px rgba(232,53,74,.65),0 12px 40px rgba(0,0,0,.6);}
+.buzzer-btn:active{transform:scale(.94);}
+.buzzer-btn.pulsing{animation:buzzerPulse 1.2s ease-in-out infinite;}
+@keyframes buzzerPulse{0%,100%{box-shadow:0 0 40px rgba(232,53,74,.4),0 8px 32px rgba(0,0,0,.5);}50%{box-shadow:0 0 80px rgba(232,53,74,.7),0 8px 32px rgba(0,0,0,.5);}}
+.buzzer-btn:disabled,.buzzer-btn.disabled{opacity:.25;cursor:not-allowed;transform:none;animation:none;pointer-events:none;}
+
+/* BUZZ PANEL */
+.bb-buzz-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;gap:14px;}
+.buzz-icon{font-size:72px;animation:buzzIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes buzzIn{0%{transform:scale(0);}100%{transform:scale(1);}}
+.buzz-who{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.05em;color:var(--text);}
+.buzz-sub{font-size:13px;color:var(--muted);max-width:280px;}
+.host-judge-btns{display:flex;gap:12px;width:100%;max-width:320px;margin-top:8px;}
+.btn-correct{background:linear-gradient(135deg,#27ae60,#1e8c4e);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:14px 20px;cursor:pointer;transition:all .2s;flex:1;}
+.btn-correct:hover{filter:brightness(1.15);}
+.btn-wrong{background:linear-gradient(135deg,#e8354a,#c0392b);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;padding:14px 20px;cursor:pointer;transition:all .2s;flex:1;}
+.btn-wrong:hover{filter:brightness(1.15);}
+
+/* RESULT PANEL */
+.bb-result-panel{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:14px;}
+.result-icon{font-size:64px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{0%{transform:scale(0);}100%{transform:scale(1);}}
+.result-msg{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.05em;text-align:center;}
+.result-answer-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;width:100%;max-width:400px;}
+.result-answer-qlabel{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+.result-answer-qtext{font-size:14px;color:var(--muted);margin-bottom:12px;line-height:1.4;}
+.result-answer-alabel{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+.result-answer-atext{font-size:18px;font-weight:700;color:var(--green);}
+
+/* STEAL PANEL */
+.bb-steal-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;gap:12px;}
+.steal-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.08em;background:linear-gradient(135deg,#f39c12,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.steal-sub{font-size:13px;color:var(--muted);max-width:280px;}
+
+/* READY PANEL */
+.bb-ready-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;gap:16px;}
+.ready-icon{font-size:80px;}
+.ready-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:.06em;color:var(--text);}
+.ready-list{display:flex;flex-direction:column;gap:6px;width:100%;max-width:320px;}
+.ready-player{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;}
+.ready-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* SIDEBAR / SCORES */
+.bb-scores-sidebar{background:var(--surface);border-top:2px solid var(--border);flex-shrink:0;}
+.bb-scores-wrap{padding:8px 14px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.bb-score-card{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:10px;background:var(--surface2);flex-shrink:0;min-width:120px;}
+.bb-score-card.active-player{background:rgba(232,53,74,.12);border:1px solid rgba(232,53,74,.28);}
+.bb-score-avatar{width:30px;height:30px;border-radius:50%;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bb-score-name{font-size:12px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bb-score-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+
+/* END */
+#view-end{align-items:center;justify-content:center;padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
+.trophy{font-size:90px;margin-bottom:10px;animation:trophyBounce .8s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes trophyBounce{0%{transform:scale(0) rotate(-20deg);opacity:0;}60%{transform:scale(1.2) rotate(5deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.08em;color:var(--gold);animation:slideUp .5s ease .3s both;text-shadow:0 0 40px rgba(245,200,66,.4);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:28px;animation:slideUp .5s ease .5s both;color:var(--text);}
+.final-table{width:100%;max-width:400px;margin-bottom:28px;display:flex;flex-direction:column;gap:8px;}
+.final-row{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:12px;padding:12px 16px;opacity:0;animation:slideUp .4s ease both;border:1px solid var(--border);}
+.final-row:nth-child(1){animation-delay:.7s;}
+.final-row:nth-child(2){animation-delay:.85s;}
+.final-row:nth-child(3){animation-delay:1.0s;}
+.final-row:nth-child(4){animation-delay:1.15s;}
+.final-row:nth-child(5){animation-delay:1.3s;}
+.final-row.first-place{background:linear-gradient(135deg,rgba(245,200,66,.12),rgba(245,200,66,.04));border-color:rgba(245,200,66,.3);}
+.final-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);width:28px;}
+.final-name{flex:1;font-size:14px;font-weight:700;}
+.final-pts{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
+.winner-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;animation:slideUp .5s ease 1.2s both;}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:10;}
+
+/* EDITOR */
+.field-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
+.field-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.field-input{width:100%;background:none;border:none;outline:none;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;}
+.field-input::placeholder{color:var(--muted2);}
+.bb-q-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.bb-q-block-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.bb-q-num{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--red);}
+.bb-q-block-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+.bb-field{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;}
+.bb-field:focus{border-color:var(--red);}
+.bb-field::placeholder{color:var(--muted2);}
+.bb-field-label{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:3px;}
+.bb-add-q{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:1px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
+.bb-add-q:hover{border-color:var(--red);color:var(--red);}
+.editor-footer{padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;position:sticky;bottom:0;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;z-index:600;transition:transform .3s;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* THEMES */
+:root[data-theme="midnight"]{--bg:#06080f;--surface:#0f1118;--surface2:#181c28;--border:rgba(255,255,255,.08);--text:#f0eee8;--muted:rgba(240,238,232,.5);--muted2:rgba(240,238,232,.18);}
+:root[data-theme="neon"]{--bg:#08010f;--surface:#130820;--surface2:#1e0f32;--border:rgba(255,0,255,.15);--text:#f8f0ff;--muted:rgba(248,240,255,.5);--muted2:rgba(248,240,255,.2);}
+:root[data-theme="forest"]{--bg:#060e07;--surface:#0d1a0e;--surface2:#162518;--border:rgba(100,200,80,.12);--text:#e8f0e4;--muted:rgba(232,240,228,.5);--muted2:rgba(232,240,228,.2);}
+:root[data-theme="sunset"]{--bg:#0f0608;--surface:#1a0d10;--surface2:#271218;--border:rgba(255,100,50,.12);--text:#ffe8e0;--muted:rgba(255,232,224,.5);--muted2:rgba(255,232,224,.2);}
+:root[data-theme="arctic"]{--bg:#f0f4f8;--surface:#ffffff;--surface2:#e8edf2;--border:rgba(0,80,160,.12);--text:#0d1b2a;--muted:rgba(13,27,42,.5);--muted2:rgba(13,27,42,.2);}
+.theme-btn{position:fixed;bottom:80px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:999;transition:all .2s;}
+.theme-btn:hover{transform:scale(1.12);}
+.theme-panel{position:fixed;bottom:134px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;display:none;flex-direction:column;gap:7px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:999;width:158px;}
+.theme-panel.open{display:flex;}
+.theme-panel-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);}
+.theme-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:none;width:100%;text-align:left;}
+.theme-option:hover{background:var(--surface2);}
+.theme-option.active{background:var(--surface2);border-color:var(--red);}
+.theme-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
+</style>
+</head>
+<body>
+
+<!-- ══ MENU ══ -->
+<div class="view active" id="view-menu">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">🎯</div>
+    <div class="menu-logo-title">Buzzer Beater</div>
+    <div class="menu-logo-sub">Quiz Games by Mert</div>
+  </div>
+  <div class="menu-btns">
+    <button class="btn-online" onclick="bbShowOverlay()">🌐 Online spielen</button>
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ ONLINE OVERLAY ══ -->
+<div class="bb-overlay hidden" id="bb-overlay">
+  <div class="bb-modal">
+    <div class="bb-modal-head">
+      <span class="bb-modal-title">🎯 ONLINE SPIELEN</span>
+      <button class="btn-icon" onclick="bbCloseOverlay()">✕</button>
+    </div>
+    <div class="bb-tabs">
+      <button class="bb-tab active" id="bb-tab-btn-create" onclick="bbSwitchTab('create')">Raum erstellen</button>
+      <button class="bb-tab" id="bb-tab-btn-join" onclick="bbSwitchTab('join')">Beitreten</button>
+    </div>
+    <!-- CREATE -->
+    <div class="bb-panel" id="bb-tab-create">
+      <input class="bb-inp" id="bb-create-name" placeholder="Dein Name (Host)..." maxlength="20">
+      <label style="cursor:pointer;display:block;">
+        <div class="bb-file-btn">📂 Quiz importieren</div>
+        <input type="file" accept=".quiz,.json" style="display:none" onchange="bbOverlayLoadQuiz(event)">
+      </label>
+      <div id="bb-quiz-status" class="bb-quiz-box" style="display:none;">
+        <span style="flex:1;" id="bb-quiz-status-text">–</span>
+      </div>
+      <button id="bb-edit-btn" class="btn-secondary" onclick="bbOpenEditorFromOverlay()" style="display:none;padding:10px;">✏️ Quiz bearbeiten</button>
+      <div class="num-row">
+        <span class="num-row-label">Timer pro Frage</span>
+        <button class="btn-icon" onclick="bbChangeTimer(-5)">−</button>
+        <span class="num-val" id="bb-timer-disp">30</span>
+        <span style="font-size:12px;color:var(--muted);">s</span>
+        <button class="btn-icon" onclick="bbChangeTimer(5)">＋</button>
+      </div>
+      <button class="btn-primary" onclick="bbHostCreate()" style="background:linear-gradient(135deg,#c0392b,#96281b);">🚀 Raum erstellen</button>
+    </div>
+    <!-- JOIN -->
+    <div class="bb-panel" id="bb-tab-join" style="display:none;">
+      <input class="bb-inp" id="bb-join-name" placeholder="Dein Name..." maxlength="20">
+      <input class="bb-inp" id="bb-join-code" placeholder="RAUM-CODE" maxlength="8"
+        style="text-transform:uppercase;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.15em;text-align:center;">
+      <button class="btn-primary" onclick="bbPlayerJoin()" style="background:linear-gradient(135deg,#c0392b,#96281b);">🚪 Beitreten</button>
+    </div>
+    <div id="bb-overlay-status" class="bb-status" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ══ LOBBY ══ -->
+<div class="view" id="view-lobby">
+  <div class="topbar">
+    <button class="btn-icon" onclick="bbLobbyLeave()">←</button>
+    <div class="topbar-title">🎯 Raum: <span id="bb-lobby-code">–</span></div>
+    <button class="btn-icon" onclick="bbCopyCode()" title="Link kopieren">📋</button>
+  </div>
+  <div class="view-body">
+    <div class="lbl-section">Spieler</div>
+    <div class="lobby-player-list" id="bb-lobby-players"></div>
+
+    <!-- HOST ONLY -->
+    <div id="bb-lobby-host-sec" style="display:none;flex-direction:column;gap:14px;">
+
+      <!-- Quiz -->
+      <div id="bb-lobby-quiz-box" class="bb-quiz-box" style="display:none;">
+        <span style="flex:1;font-size:13px;font-weight:700;" id="bb-lobby-quiz-name">–</span>
+        <button class="btn-icon" onclick="bbOpenEditorFromLobby()" title="Bearbeiten" style="width:28px;height:28px;font-size:13px;">✏️</button>
+      </div>
+
+      <!-- Timer -->
+      <div class="num-row">
+        <span class="num-row-label">Timer pro Frage</span>
+        <button class="btn-icon" onclick="bbChangeLobbyTimer(-5)">−</button>
+        <span class="num-val" id="bb-lobby-timer">30</span>
+        <span style="font-size:12px;color:var(--muted);">s</span>
+        <button class="btn-icon" onclick="bbChangeLobbyTimer(5)">＋</button>
+      </div>
+
+      <!-- Teams -->
+      <div>
+        <div class="lbl-section" style="margin-bottom:8px;">Teams (optional)</div>
+        <div class="bb-team-list" id="bb-team-list"></div>
+        <button class="bb-add-team" onclick="bbAddTeam()" id="bb-add-team-btn">＋ Team hinzufügen</button>
+      </div>
+
+      <!-- Player assignments (shown only if teams exist) -->
+      <div id="bb-player-assign-sec" style="display:none;">
+        <div class="lbl-section" style="margin-bottom:8px;">Spieler zuweisen</div>
+        <div id="bb-player-assign-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+
+      <button class="btn-primary" id="bb-lobby-start-btn" onclick="bbStartGame()" disabled
+        style="background:linear-gradient(135deg,#c0392b,#96281b);">▶ Spiel starten</button>
+    </div>
+
+    <!-- NON-HOST -->
+    <div id="bb-lobby-wait" style="display:none;text-align:center;padding:24px;color:var(--muted);font-size:14px;">
+      ⏳ Warte auf Host...
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div class="view" id="view-game">
+  <div class="game-topbar">
+    <div class="round-badge" id="bb-round-badge">FRAGE 1</div>
+    <div class="game-title">BUZZER BEATER</div>
+    <button class="btn-icon" onclick="bbConfirmQuit()">✕</button>
+  </div>
+  <div id="bb-game-main" style="display:flex;flex-direction:column;flex:1;min-height:0;"></div>
+  <div class="bb-scores-sidebar">
+    <div class="bb-scores-wrap" id="bb-scores-wrap"></div>
+  </div>
+</div>
+
+<!-- ══ END ══ -->
+<div class="view" id="view-end">
+  <canvas id="confetti-canvas"></canvas>
+  <div class="trophy">🏆</div>
+  <div class="winner-title">SPIEL VORBEI!</div>
+  <div class="winner-name" id="bb-winner-name">–</div>
+  <div class="final-table" id="bb-final-table"></div>
+  <div class="winner-btns">
+    <button class="btn-secondary" onclick="bbLeaveGame()">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ EDITOR ══ -->
+<div class="view" id="view-editor">
+  <div class="topbar">
+    <button class="btn-icon" onclick="bbEditorBack()">←</button>
+    <div class="topbar-title">✏️ Quiz erstellen</div>
+  </div>
+  <div class="view-body" style="padding-bottom:90px;">
+    <div class="field-wrap">
+      <span class="field-label">Quiz-Name</span>
+      <input class="field-input" id="bb-quiz-name-inp" placeholder="Mein Buzzer Beater Quiz" maxlength="40">
+    </div>
+    <div id="bb-questions-container"></div>
+    <button class="bb-add-q" onclick="bbAddQuestion()">＋ Frage hinzufügen</button>
+  </div>
+  <div class="editor-footer">
+    <button class="btn-gold" onclick="bbExportQuiz()" style="flex:1;">💾 Exportieren</button>
+    <button id="bb-editor-done-btn" class="btn-primary" onclick="bbEditorSaveToLobby()" style="display:none;flex:1;">✔ Fertig</button>
+    <button id="bb-editor-play-btn" class="btn-primary" onclick="bbEditorToOverlay()" style="flex:1;background:linear-gradient(135deg,#c0392b,#96281b);">🌐 Online</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SERVER_URL = 'https://quiz-server-production-9398.up.railway.app';
+const COLORS = ['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
+const TEAM_COLORS = ['#3a8ef6','#e8354a','#2ecc71','#f39c12'];
+
+// ── GLOBALS ──
+let mpSocket = null;
+let mpRoom = null;
+let myName = '';
+let isHost = false;
+let quizData = null;
+let bbEditorFromLobby = false;
+let bbEditorFromOverlay = false;
+let bbState = null;
+let bbLobbyTimer = 30;
+let bbLobbyTeams = [];
+let bbPlayerTeams = {};
+let bbTimerInterval = null;
+let bbDisplayInterval = null;
+
+// ── UTILS ──
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2800);}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){window.location.href='quizshow-menu.html';}
+
+// ── OVERLAY ──
+function bbShowOverlay(){document.getElementById('bb-overlay').classList.remove('hidden');bbSwitchTab('create');}
+function bbCloseOverlay(){document.getElementById('bb-overlay').classList.add('hidden');}
+function bbSwitchTab(tab){
+  document.getElementById('bb-tab-create').style.display=tab==='create'?'flex':'none';
+  document.getElementById('bb-tab-join').style.display=tab==='join'?'flex':'none';
+  document.getElementById('bb-tab-btn-create').classList.toggle('active',tab==='create');
+  document.getElementById('bb-tab-btn-join').classList.toggle('active',tab==='join');
+  document.getElementById('bb-overlay-status').style.display='none';
+}
+function showOverlayStatus(type,msg){const s=document.getElementById('bb-overlay-status');s.textContent=msg;s.className='bb-status '+type;s.style.display='block';}
+function bbChangeTimer(d){
+  bbLobbyTimer=Math.max(10,Math.min(120,bbLobbyTimer+d));
+  document.getElementById('bb-timer-disp').textContent=bbLobbyTimer;
+}
+function bbOverlayLoadQuiz(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.questions||!Array.isArray(d.questions)||!d.questions.length)throw new Error();
+      quizData=d;
+      document.getElementById('bb-quiz-status').style.display='flex';
+      document.getElementById('bb-quiz-status-text').textContent='✅ '+(d.name||'Quiz')+' — '+d.questions.length+' Fragen';
+      document.getElementById('bb-edit-btn').style.display='block';
+    }catch(e){showOverlayStatus('err','❌ Ungültige Datei!');}
+  };
+  r.readAsText(file);ev.target.value='';
+}
+function bbOpenEditorFromOverlay(){
+  bbEditorFromOverlay=true;bbEditorFromLobby=false;
+  if(quizData)bbLoadIntoEditor(quizData);
+  document.getElementById('bb-editor-done-btn').style.display='flex';
+  document.getElementById('bb-editor-play-btn').style.display='none';
+  bbCloseOverlay();showView('view-editor');
+}
+
+// ── SOCKET ──
+function mpConnect(cb){
+  if(mpSocket&&mpSocket.connected){cb();return;}
+  const s=document.createElement('script');
+  s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
+  s.onload=()=>{
+    mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
+    mpSocket.on('connect',cb);
+    mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+    mpSocket.on('player_left',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+    mpSocket.on('room_update',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+    mpSocket.on('game_started', ({room})=>{if(room)mpRoom=room;});
+    mpSocket.on('game_action',({action,payload})=>{
+      if(action==='bb_state'){
+        bbState=payload;
+        if(!document.getElementById('view-game').classList.contains('active'))showView('view-game');
+        renderGameView();
+        return;
+      }
+      if(isHost)bbProcessAction(action,payload);
+    });
+    mpSocket.on('error',({msg})=>showOverlayStatus('err','❌ '+(msg||'Fehler')));
+    mpSocket.on('disconnect',()=>showToast('🔌 Verbindung getrennt'));
+  };
+  document.head.appendChild(s);
+}
+function mpSend(action,payload){if(!mpSocket||!mpRoom)return;mpSocket.emit('game_action',{code:mpRoom.code,action,payload});}
+function broadcastBBState(){mpSend('bb_state',bbState);}
+
+// ── HOST CREATE ──
+function bbHostCreate(){
+  const name=document.getElementById('bb-create-name').value.trim();
+  if(!name){showOverlayStatus('err','⚠️ Bitte Name eingeben.');return;}
+  if(!quizData){showOverlayStatus('err','⚠️ Bitte Quiz importieren.');return;}
+  myName=name;
+  showOverlayStatus('ok','🔌 Verbinde...');
+  mpConnect(()=>{
+    mpSocket.emit('create_room',{game:'buzzer',playerName:name,quizData:{}});
+    mpSocket.once('room_created',({code,room})=>{
+      mpRoom=room;mpRoom.code=code;isHost=true;
+      bbCloseOverlay();showView('view-lobby');renderLobby();
+    });
+    mpSocket.once('error',({msg})=>{showOverlayStatus('err','❌ '+(msg||'Fehler'));bbShowOverlay();});
+  });
+}
+
+// ── PLAYER JOIN ──
+function bbPlayerJoin(){
+  const name=document.getElementById('bb-join-name').value.trim();
+  const code=document.getElementById('bb-join-code').value.trim().toUpperCase();
+  if(!name){showOverlayStatus('err','⚠️ Bitte Name eingeben.');return;}
+  if(!code){showOverlayStatus('err','⚠️ Bitte Raum-Code eingeben.');return;}
+  myName=name;
+  showOverlayStatus('ok','🔌 Verbinde...');
+  mpConnect(()=>{
+    mpSocket.emit('join_room',{code,playerName:name});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{
+      mpRoom=room;mpRoom.code=c||code;myName=yourName||name;isHost=false;
+      bbCloseOverlay();showView('view-lobby');renderLobby();
+    });
+    mpSocket.once('error',({msg})=>{showOverlayStatus('err','❌ '+(msg||'Raum nicht gefunden'));bbShowOverlay();});
+  });
+}
+
+// ── LOBBY ──
+function renderLobby(){
+  if(!mpRoom)return;
+  document.getElementById('bb-lobby-code').textContent=mpRoom.code;
+  const players=mpRoom.players||[];
+  const list=document.getElementById('bb-lobby-players');
+  list.innerHTML='';
+  players.forEach((p,i)=>{
+    const color=COLORS[i%COLORS.length];
+    const el=document.createElement('div');
+    el.className='lobby-player';
+    el.innerHTML='<div class="lobby-avatar" style="background:'+color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="lobby-player-name">'+esc(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:11px;">(du)</span>':'')+'</div>'
+      +(p.isHost?'<div class="lobby-badge">HOST</div>':'<div class="lobby-badge">Bereit</div>');
+    list.appendChild(el);
+  });
+  const hostSec=document.getElementById('bb-lobby-host-sec');
+  const waitSec=document.getElementById('bb-lobby-wait');
+  if(isHost){
+    hostSec.style.display='flex';hostSec.style.flexDirection='column';hostSec.style.gap='14px';
+    waitSec.style.display='none';
+    // Quiz info
+    const qbox=document.getElementById('bb-lobby-quiz-box');
+    if(quizData){
+      qbox.style.display='flex';
+      document.getElementById('bb-lobby-quiz-name').textContent='📋 '+quizData.name+' ('+quizData.questions.length+' Fragen)';
+      document.getElementById('bb-lobby-start-btn').disabled=false;
+    } else {
+      qbox.style.display='none';
+      document.getElementById('bb-lobby-start-btn').disabled=true;
+    }
+    document.getElementById('bb-lobby-timer').textContent=bbLobbyTimer;
+    bbRenderTeams();
+    bbRenderPlayerAssignments(players.filter(p=>!p.isHost));
+  } else {
+    hostSec.style.display='none';waitSec.style.display='block';
+  }
+}
+
+function bbChangeLobbyTimer(d){
+  bbLobbyTimer=Math.max(10,Math.min(120,bbLobbyTimer+d));
+  document.getElementById('bb-lobby-timer').textContent=bbLobbyTimer;
+}
+
+function bbAddTeam(){
+  if(bbLobbyTeams.length>=4){showToast('⚠️ Maximal 4 Teams!');return;}
+  bbLobbyTeams.push({name:'Team '+(bbLobbyTeams.length+1),color:TEAM_COLORS[bbLobbyTeams.length]});
+  bbRenderTeams();
+  bbRenderPlayerAssignments((mpRoom?.players||[]).filter(p=>!p.isHost));
+}
+function bbRemoveTeam(idx){
+  // Re-assign any player on this team to null
+  Object.keys(bbPlayerTeams).forEach(k=>{if(bbPlayerTeams[k]===idx)bbPlayerTeams[k]=null;});
+  // Shift indices for players on higher teams
+  Object.keys(bbPlayerTeams).forEach(k=>{if(bbPlayerTeams[k]>idx)bbPlayerTeams[k]--;});
+  bbLobbyTeams.splice(idx,1);
+  bbRenderTeams();
+  bbRenderPlayerAssignments((mpRoom?.players||[]).filter(p=>!p.isHost));
+}
+function bbRenameTeam(idx,name){bbLobbyTeams[idx].name=name;}
+
+function bbRenderTeams(){
+  const con=document.getElementById('bb-team-list');
+  con.innerHTML='';
+  bbLobbyTeams.forEach((t,i)=>{
+    const el=document.createElement('div');
+    el.className='bb-team-item';
+    el.innerHTML='<div style="width:12px;height:12px;border-radius:50%;background:'+t.color+';flex-shrink:0;"></div>'
+      +'<input class="bb-team-name-inp" value="'+esc(t.name)+'" maxlength="15" oninput="bbRenameTeam('+i+',this.value)">'
+      +'<button class="btn-icon" style="width:24px;height:24px;font-size:12px;" onclick="bbRemoveTeam('+i+')">✕</button>';
+    con.appendChild(el);
+  });
+  const addBtn=document.getElementById('bb-add-team-btn');
+  if(addBtn)addBtn.style.display=bbLobbyTeams.length>=4?'none':'flex';
+}
+
+function bbRenderPlayerAssignments(players){
+  const sec=document.getElementById('bb-player-assign-sec');
+  if(!bbLobbyTeams.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  const con=document.getElementById('bb-player-assign-list');
+  con.innerHTML='';
+  players.forEach(p=>{
+    const cur=bbPlayerTeams[p.name]??null;
+    const el=document.createElement('div');
+    el.className='player-assign-row';
+    let btnsHtml='<button class="pa-btn'+(cur===null?' selected':'')+'" style="'+(cur===null?'background:var(--surface);':'')+'background:'+(cur===null?'rgba(255,255,255,.1)':'')+';" onclick="bbAssignPlayer(\''+esc(p.name)+'\',null)">Kein Team</button>';
+    bbLobbyTeams.forEach((t,i)=>{
+      const active=cur===i;
+      btnsHtml+='<button class="pa-btn'+(active?' selected':'')+'" style="'+(active?'background:'+t.color+'40;border-color:'+t.color+';color:'+t.color+';':'')+'" onclick="bbAssignPlayer(\''+esc(p.name)+'\','+i+')">'+esc(t.name)+'</button>';
+    });
+    el.innerHTML='<div class="pa-name">'+esc(p.name)+'</div><div class="pa-btns">'+btnsHtml+'</div>';
+    con.appendChild(el);
+  });
+}
+
+function bbAssignPlayer(playerName,teamIdx){
+  bbPlayerTeams[playerName]=teamIdx;
+  bbRenderPlayerAssignments((mpRoom?.players||[]).filter(p=>!p.isHost));
+}
+
+function bbLobbyLeave(){
+  if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+  mpRoom=null;isHost=false;bbLobbyTeams=[];bbPlayerTeams={};
+  history.replaceState(null,'',window.location.pathname);
+  showView('view-menu');
+}
+function bbCopyCode(){
+  if(!mpRoom)return;
+  const url=window.location.origin+window.location.pathname+'?room='+mpRoom.code;
+  navigator.clipboard.writeText(url).then(()=>showToast('📋 Link kopiert!')).catch(()=>showToast('Code: '+mpRoom.code));
+}
+
+// ── START GAME ──
+function bbStartGame(){
+  if(!quizData||!quizData.questions.length){showToast('⚠️ Quiz erforderlich!');return;}
+  const nonHost=(mpRoom.players||[]).filter(p=>!p.isHost);
+  if(!nonHost.length){showToast('⚠️ Mindestens 1 Spieler nötig!');return;}
+  bbState={
+    phase:'ready',
+    questions:quizData.questions,
+    currentQIdx:0,
+    timerDuration:bbLobbyTimer,
+    timerStart:null,
+    players:nonHost.map((p,i)=>({
+      name:p.name,
+      score:0,
+      teamIdx:bbPlayerTeams[p.name]??null,
+      color:COLORS[i%COLORS.length]
+    })),
+    teams:bbLobbyTeams.map(t=>({...t})),
+    buzzedBy:null,
+    stealExcluded:[],
+    alreadyStolenAttempted:false,
+    readyPlayers:[],
+    lastResult:null
+  };
+  mpSocket.emit('start_game',{code:mpRoom.code});
+  setTimeout(()=>{broadcastBBState();showView('view-game');renderGameView();},350);
+}
+
+// ── HOST PROCESSES PLAYER ACTIONS ──
+function bbProcessAction(action,payload){
+  if(!bbState)return;
+  if(action==='bb_ready'){
+    if(!bbState.readyPlayers.includes(payload.playerName))bbState.readyPlayers.push(payload.playerName);
+    broadcastBBState();
+  } else if(action==='bb_buzz'){
+    if(bbState.phase!=='question'&&bbState.phase!=='steal')return;
+    if(bbState.buzzedBy)return; // already buzzed
+    if(bbState.phase==='steal'&&bbState.stealExcluded.includes(payload.playerName))return;
+    bbState.buzzedBy=payload.playerName;
+    bbState.phase=bbState.phase==='steal'?'steal_buzzed':'buzzed';
+    clearInterval(bbTimerInterval);
+    broadcastBBState();
+  }
+}
+
+// ── HOST GAME CONTROLS ──
+function bbStartQuestion(){
+  if(!isHost||!bbState)return;
+  bbState.phase='question';
+  bbState.timerStart=Date.now();
+  bbState.buzzedBy=null;
+  bbState.stealExcluded=[];
+  bbState.alreadyStolenAttempted=false;
+  broadcastBBState();
+  startBBTimerWatch();
+  renderGameView();
+}
+
+function startBBTimerWatch(){
+  clearInterval(bbTimerInterval);
+  if(!isHost)return;
+  bbTimerInterval=setInterval(()=>{
+    if(!bbState||bbState.phase!=='question'){clearInterval(bbTimerInterval);return;}
+    if(getBBTimeRemaining()<=0){
+      clearInterval(bbTimerInterval);
+      bbTimeUp();
+    }
+  },300);
+}
+
+function getBBTimeRemaining(){
+  if(!bbState||!bbState.timerStart)return 0;
+  return Math.max(0,bbState.timerDuration-(Date.now()-bbState.timerStart)/1000);
+}
+
+function bbTimeUp(){
+  if(!isHost||!bbState)return;
+  bbState.phase='result';
+  bbState.buzzedBy=null;
+  bbState.lastResult={correct:null,pts:0,playerName:null,isSteal:false,timeUp:true,
+    question:bbState.questions[bbState.currentQIdx].question,
+    answer:bbState.questions[bbState.currentQIdx].answer,
+    id:(bbState.lastResult?.id||0)+1};
+  broadcastBBState();
+  renderGameView();
+}
+
+function bbJudge(correct){
+  if(!isHost||!bbState)return;
+  const isSteal=bbState.phase==='steal_buzzed';
+  const pts=correct?(isSteal?1:2):0;
+  if(correct&&bbState.buzzedBy){
+    const p=bbState.players.find(x=>x.name===bbState.buzzedBy);
+    if(p)p.score+=pts;
+  }
+  bbState.lastResult={correct,pts,playerName:bbState.buzzedBy,isSteal,timeUp:false,
+    question:bbState.questions[bbState.currentQIdx].question,
+    answer:bbState.questions[bbState.currentQIdx].answer,
+    id:(bbState.lastResult?.id||0)+1};
+  if(!correct&&!isSteal&&!bbState.alreadyStolenAttempted){
+    const wrongP=bbState.players.find(x=>x.name===bbState.buzzedBy);
+    const excl=[bbState.buzzedBy];
+    if(wrongP&&wrongP.teamIdx!==null){
+      bbState.players.forEach(x=>{if(x.teamIdx===wrongP.teamIdx)excl.push(x.name);});
+    }
+    bbState.stealExcluded=[...new Set(excl)];
+    bbState.alreadyStolenAttempted=true;
+    bbState.buzzedBy=null;
+    bbState.phase='steal';
+  } else {
+    bbState.buzzedBy=null;
+    bbState.phase='result';
+  }
+  broadcastBBState();
+  renderGameView();
+}
+
+function bbSkipSteal(){
+  if(!isHost||!bbState)return;
+  bbState.phase='result';
+  bbState.buzzedBy=null;
+  if(!bbState.lastResult){
+    bbState.lastResult={correct:null,pts:0,playerName:null,isSteal:false,timeUp:false,
+      question:bbState.questions[bbState.currentQIdx].question,
+      answer:bbState.questions[bbState.currentQIdx].answer,
+      id:1};
+  }
+  broadcastBBState();
+  renderGameView();
+}
+
+function bbNextQuestion(){
+  if(!isHost||!bbState)return;
+  bbState.currentQIdx++;
+  if(bbState.currentQIdx>=bbState.questions.length){
+    bbState.phase='end';
+    broadcastBBState();
+    renderGameView();
+    return;
+  }
+  bbStartQuestion();
+}
+
+// ── RENDER GAME ──
+function renderGameView(){
+  if(!bbState)return;
+  const main=document.getElementById('bb-game-main');
+  if(!main)return;
+  if(bbState.phase==='end'){showEnd();return;}
+  const q=bbState.questions[bbState.currentQIdx];
+  const total=bbState.questions.length;
+  document.getElementById('bb-round-badge').textContent='FRAGE '+(bbState.currentQIdx+1)+'/'+total;
+  // Scores sidebar
+  renderScoresSidebar();
+  // Main content based on phase
+  const phase=bbState.phase;
+  if(phase==='ready') renderReadyPhase(main,q,total);
+  else if(phase==='question') renderQuestionPhase(main,q);
+  else if(phase==='buzzed'||phase==='steal_buzzed') renderBuzzedPhase(main,q,phase==='steal_buzzed');
+  else if(phase==='steal') renderStealPhase(main,q);
+  else if(phase==='result') renderResultPhase(main);
+  // Start display timer if question phase
+  if(phase==='question') startBBDisplay();
+  else { clearInterval(bbDisplayInterval); bbDisplayInterval=null; }
+}
+
+function renderReadyPhase(main,q,total){
+  const readyCount=bbState.readyPlayers.length;
+  const playerCount=bbState.players.length;
+  const playersHtml=bbState.players.map(p=>{
+    const ready=bbState.readyPlayers.includes(p.name);
+    return '<div class="ready-player">'
+      +'<div class="ready-dot" style="background:'+(ready?'var(--green)':'var(--muted2))+'"></div>'
+      +'<span>'+esc(p.name)+'</span>'
+      +(ready?'<span style="color:var(--green);font-size:11px;margin-left:auto;">Bereit!</span>':'')
+      +'</div>';
+  }).join('');
+  const myPlayerObj=bbState.players.find(p=>p.name===myName);
+  const imReady=bbState.readyPlayers.includes(myName);
+  main.innerHTML='<div class="bb-ready-panel">'
+    +'<div class="ready-icon">🎯</div>'
+    +'<div class="ready-title">GLEICH GEHT\'S LOS!</div>'
+    +'<div style="font-size:13px;color:var(--muted);">'+readyCount+' von '+playerCount+' bereit</div>'
+    +'<div class="ready-list">'+playersHtml+'</div>'
+    +(isHost
+      ?'<button class="btn-primary" onclick="bbStartQuestion()" style="max-width:320px;background:linear-gradient(135deg,#c0392b,#96281b);">▶ Erste Frage starten</button>'
+      :(imReady
+        ?'<div style="color:var(--green);font-size:15px;font-weight:700;">✅ Du bist bereit!</div>'
+        :'<button class="btn-primary" onclick="bbSendReady()" style="max-width:320px;background:linear-gradient(135deg,#c0392b,#96281b);">✋ Ich bin bereit!</button>')
+    )
+    +'</div>';
+}
+
+function bbSendReady(){
+  mpSend('bb_ready',{playerName:myName});
+}
+
+function renderQuestionPhase(main,q){
+  const answerBlock=isHost?'<div class="bb-answer-box"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
+  const buzzerBlock=!isHost?'<div class="buzzer-wrap"><button class="buzzer-btn pulsing" onclick="bbLocalBuzz()">BUZZ!</button></div>':'<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">Warte auf Buzzer...</div>';
+  main.innerHTML='<div class="bb-question-card">'
+    +'<div class="bb-q-label">Frage</div>'
+    +'<div class="bb-q-text">'+esc(q.question)+'</div>'
+    +answerBlock
+    +'</div>'
+    +'<div class="bb-timer-wrap">'
+      +'<div class="bb-timer-bar"><div class="bb-timer-fill" id="bb-tfill" style="width:100%;background:var(--green);"></div></div>'
+      +'<div class="bb-timer-count" id="bb-tcount">'+bbState.timerDuration+'</div>'
+    +'</div>'
+    +buzzerBlock;
+  updateTimerDisplay();
+}
+
+function bbLocalBuzz(){
+  mpSend('bb_buzz',{playerName:myName});
+  // Disable buzzer immediately for responsive feel
+  const btn=document.querySelector('.buzzer-btn');
+  if(btn){btn.disabled=true;btn.classList.remove('pulsing');btn.classList.add('disabled');}
+}
+
+function startBBDisplay(){
+  clearInterval(bbDisplayInterval);
+  bbDisplayInterval=setInterval(()=>{
+    if(!bbState||bbState.phase!=='question'){clearInterval(bbDisplayInterval);return;}
+    updateTimerDisplay();
+  },200);
+}
+
+function updateTimerDisplay(){
+  const rem=getBBTimeRemaining();
+  const fill=document.getElementById('bb-tfill');
+  const count=document.getElementById('bb-tcount');
+  if(fill){
+    const pct=(rem/bbState.timerDuration)*100;
+    fill.style.width=pct+'%';
+    fill.style.background=pct>60?'var(--green)':pct>25?'var(--gold)':'var(--red)';
+  }
+  if(count)count.textContent=Math.ceil(rem);
+}
+
+function renderBuzzedPhase(main,q,isSteal){
+  const buzzedPlayer=bbState.players.find(p=>p.name===bbState.buzzedBy);
+  const pColor=buzzedPlayer?buzzedPlayer.color:COLORS[0];
+  const headerText=isSteal
+    ?'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+'</div><div class="buzz-sub">will abstauben! ('+bbState.buzzedBy===myName?'Du bist dran — antworte mündlich!':'Warte auf Antwort...')+'</div>'
+    :'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+' hat den Buzzer betätigt!</div><div class="buzz-sub">'+(bbState.buzzedBy===myName?'Du bist dran — gib deine Antwort mündlich!':'Warte auf die Antwort...')+'</div>';
+  const judgeBlock=isHost
+    ?'<div class="host-judge-btns">'
+      +'<button class="btn-correct" onclick="bbJudge(true)">✓ Richtig<br><span style="font-size:11px;opacity:.8;">'+(isSteal?'+1 Punkt':'+2 Punkte')+'</span></button>'
+      +'<button class="btn-wrong" onclick="bbJudge(false)">✕ Falsch</button>'
+    +'</div>'
+    :'<div style="font-size:13px;color:var(--muted);">Host bewertet...</div>';
+  const answerBlock=isHost?'<div class="bb-answer-box" style="margin:0;max-width:320px;width:100%"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
+  main.innerHTML='<div class="bb-buzz-panel">'
+    +'<div class="buzz-icon">🔔</div>'
+    +headerText
+    +answerBlock
+    +judgeBlock
+    +'</div>';
+}
+
+function renderStealPhase(main,q){
+  const excluded=bbState.stealExcluded||[];
+  const canBuzz=!isHost&&!excluded.includes(myName);
+  const excNames=excluded.map(n=>esc(n)).join(', ');
+  const buzzerOrMsg=canBuzz
+    ?'<div class="buzzer-wrap"><button class="buzzer-btn pulsing" onclick="bbLocalBuzz()">BUZZ!</button></div>'
+    :(isHost?'<div style="font-size:13px;color:var(--muted);">Warte auf Abstauber...</div>'
+      :'<div style="padding:16px;text-align:center;color:var(--muted2);font-size:13px;">❌ Du kannst nicht abstauben.</div>');
+  const answerBlock=isHost?'<div class="bb-answer-box" style="max-width:360px;width:100%;"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
+  const skipBlock=isHost?'<button class="btn-secondary" onclick="bbSkipSteal()" style="max-width:200px;">Überspringen →</button>':'';
+  main.innerHTML='<div class="bb-steal-panel">'
+    +'<div class="steal-title">⚡ ABSTAUBEN!</div>'
+    +'<div class="steal-sub">'+esc(excNames)+' darf'+(excluded.length>1?'en':'')+' nicht buzzern.</div>'
+    +'<div class="bb-question-card" style="max-width:400px;width:100%;margin:0;">'+
+      '<div class="bb-q-text">'+esc(q.question)+'</div>'
+    +'</div>'
+    +answerBlock
+    +buzzerOrMsg
+    +skipBlock
+    +'</div>';
+}
+
+function renderResultPhase(main){
+  const r=bbState.lastResult;
+  if(!r){main.innerHTML='';return;}
+  let icon,msg,color;
+  if(r.timeUp){icon='⏰';msg='Zeit abgelaufen!';color='var(--muted)';}
+  else if(r.correct){icon='✅';msg=esc(r.playerName)+' liegt richtig! +'+r.pts+' Punkt'+(r.pts!==1?'e':'');color='var(--green)';}
+  else{icon='❌';msg=r.playerName?esc(r.playerName)+' liegt falsch!':'Falsch!';color='var(--red)';}
+  const nextBlock=isHost
+    ?'<button class="btn-primary" onclick="bbNextQuestion()" style="max-width:280px;background:linear-gradient(135deg,#c0392b,#96281b);">Nächste Frage →</button>'
+    :'<div style="font-size:13px;color:var(--muted);">Warte auf Host...</div>';
+  main.innerHTML='<div class="bb-result-panel">'
+    +'<div class="result-icon">'+icon+'</div>'
+    +'<div class="result-msg" style="color:'+color+'">'+msg+'</div>'
+    +'<div class="result-answer-card">'
+      +'<div class="result-answer-qlabel">Frage</div>'
+      +'<div class="result-answer-qtext">'+esc(r.question||'')+'</div>'
+      +'<div class="result-answer-alabel">Richtige Antwort</div>'
+      +'<div class="result-answer-atext">'+esc(r.answer||'')+'</div>'
+    +'</div>'
+    +nextBlock
+    +'</div>';
+}
+
+function renderScoresSidebar(){
+  const wrap=document.getElementById('bb-scores-wrap');
+  if(!wrap||!bbState)return;
+  wrap.innerHTML='';
+  // If teams, show team totals first
+  if(bbState.teams&&bbState.teams.length){
+    bbState.teams.forEach((t,ti)=>{
+      const teamScore=bbState.players.filter(p=>p.teamIdx===ti).reduce((s,p)=>s+p.score,0);
+      const el=document.createElement('div');
+      el.className='bb-score-card';
+      el.style.borderLeft='3px solid '+t.color;
+      el.innerHTML='<div class="bb-score-avatar" style="background:'+t.color+'">'+esc(t.name.charAt(0).toUpperCase())+'</div>'
+        +'<div class="bb-score-name">'+esc(t.name)+'</div>'
+        +'<div class="bb-score-pts">'+teamScore+'</div>';
+      wrap.appendChild(el);
+    });
+    const div=document.createElement('div');
+    div.style.width='1px';div.style.background='var(--border)';div.style.flexShrink='0';
+    wrap.appendChild(div);
+  }
+  bbState.players.forEach(p=>{
+    const el=document.createElement('div');
+    el.className='bb-score-card';
+    el.innerHTML='<div class="bb-score-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="bb-score-name">'+esc(p.name)+'</div>'
+      +'<div class="bb-score-pts">'+p.score+'</div>';
+    wrap.appendChild(el);
+  });
+}
+
+// ── END ──
+function showEnd(){
+  if(document.getElementById('view-end').classList.contains('active'))return;
+  clearInterval(bbTimerInterval);clearInterval(bbDisplayInterval);
+  const players=[...bbState.players];
+  // If teams, rank by team score; else rank individually
+  let rows=[];
+  if(bbState.teams&&bbState.teams.length){
+    const teamTotals=bbState.teams.map((t,ti)=>({
+      name:t.name,color:t.color,
+      score:players.filter(p=>p.teamIdx===ti).reduce((s,p)=>s+p.score,0),
+      members:players.filter(p=>p.teamIdx===ti).map(p=>p.name).join(', ')
+    }));
+    rows=teamTotals.sort((a,b)=>b.score-a.score);
+  } else {
+    rows=[...players].sort((a,b)=>b.score-a.score);
+  }
+  const tied=rows.length>1&&rows[0].score===rows[1].score;
+  document.getElementById('bb-winner-name').textContent=tied?'Unentschieden! 🤝':rows[0].name;
+  const table=document.getElementById('bb-final-table');
+  table.innerHTML='';
+  rows.forEach((r,i)=>{
+    const el=document.createElement('div');
+    el.className='final-row'+(i===0?' first-place':'');
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+    el.innerHTML='<div class="final-rank">'+medal+'</div>'
+      +'<div class="final-name" style="color:'+(r.color||COLORS[i])+'">'+esc(r.name)+'</div>'
+      +(r.members?'<div style="font-size:10px;color:var(--muted);">'+esc(r.members)+'</div>':'')
+      +'<div class="final-pts">'+r.score+' Pkt</div>';
+    table.appendChild(el);
+  });
+  showView('view-end');
+  setTimeout(launchConfetti,400);
+}
+
+function bbConfirmQuit(){if(confirm('Spiel verlassen?'))bbLeaveGame();}
+function bbLeaveGame(){
+  clearInterval(bbTimerInterval);clearInterval(bbDisplayInterval);
+  if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+  bbState=null;mpRoom=null;isHost=false;bbLobbyTeams=[];bbPlayerTeams={};
+  history.replaceState(null,'',window.location.pathname);showView('view-menu');
+}
+
+// ── CONFETTI ──
+function launchConfetti(){
+  const canvas=document.getElementById('confetti-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const colors=['#f5c842','#2ecc71','#3a8ef6','#e8354a','#9b59b6','#f39c12','#1abc9c'];
+  const pieces=[];
+  for(let i=0;i<120;i++)pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.5,
+    w:8+Math.random()*8,h:5+Math.random()*5,r:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.15,
+    vx:(Math.random()-.5)*3,vy:2+Math.random()*4,color:colors[Math.floor(Math.random()*colors.length)],alpha:1});
+  let frame=0;
+  (function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.rv;p.vx*=.99;
+      if(frame>80)p.alpha=Math.max(0,p.alpha-.012);
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    });
+    frame++;if(frame<150)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);
+  })();
+}
+
+// ── EDITOR ──
+let bbQCount=0;
+
+function bbEditorBack(){
+  if(bbEditorFromLobby){
+    bbEditorFromLobby=false;
+    document.getElementById('bb-editor-done-btn').style.display='none';
+    document.getElementById('bb-editor-play-btn').style.display='flex';
+    showView('view-lobby');
+  } else if(bbEditorFromOverlay){
+    bbEditorFromOverlay=false;
+    document.getElementById('bb-editor-done-btn').style.display='none';
+    document.getElementById('bb-editor-play-btn').style.display='flex';
+    showView('view-menu');bbShowOverlay();
+  } else {showView('view-menu');}
+}
+function bbEditorSaveToLobby(){
+  const data=bbCollectData();
+  if(!data.questions.length){showToast('⚠️ Mindestens 1 Frage!');return;}
+  quizData=data;
+  const fromLobby=bbEditorFromLobby;
+  bbEditorFromLobby=false;bbEditorFromOverlay=false;
+  document.getElementById('bb-editor-done-btn').style.display='none';
+  document.getElementById('bb-editor-play-btn').style.display='flex';
+  document.getElementById('bb-quiz-status').style.display='flex';
+  document.getElementById('bb-quiz-status-text').textContent='✅ '+data.name+' — '+data.questions.length+' Fragen';
+  document.getElementById('bb-edit-btn').style.display='block';
+  if(fromLobby){showView('view-lobby');renderLobby();}else{showView('view-menu');bbShowOverlay();}
+  showToast('✅ Quiz gespeichert!');
+}
+function bbOpenEditorFromLobby(){
+  bbEditorFromLobby=true;bbEditorFromOverlay=false;
+  if(quizData)bbLoadIntoEditor(quizData);
+  document.getElementById('bb-editor-done-btn').style.display='flex';
+  document.getElementById('bb-editor-play-btn').style.display='none';
+  showView('view-editor');
+}
+function bbEditorToOverlay(){
+  const data=bbCollectData();
+  if(!data.questions.length){showToast('⚠️ Mindestens 1 Frage!');return;}
+  quizData=data;
+  document.getElementById('bb-quiz-status').style.display='flex';
+  document.getElementById('bb-quiz-status-text').textContent='✅ '+data.name+' — '+data.questions.length+' Fragen';
+  document.getElementById('bb-edit-btn').style.display='block';
+  showView('view-menu');bbShowOverlay();
+}
+function bbLoadIntoEditor(d){
+  if(d.name)document.getElementById('bb-quiz-name-inp').value=d.name;
+  document.getElementById('bb-questions-container').innerHTML='';
+  bbQCount=0;
+  (d.questions||[]).forEach(q=>bbAddQuestion(q));
+  if(!d.questions||!d.questions.length)bbAddQuestion();
+}
+function bbAddQuestion(qData){
+  const id=bbQCount++;
+  const con=document.getElementById('bb-questions-container');
+  const el=document.createElement('div');
+  el.className='bb-q-block';
+  el.innerHTML='<div class="bb-q-block-head">'
+    +'<span class="bb-q-num">FRAGE '+(con.children.length+1)+'</span>'
+    +'<button style="background:none;border:none;color:var(--muted2);font-size:14px;cursor:pointer;margin-left:auto;" onclick="this.closest(\'.bb-q-block\').remove()">🗑</button>'
+    +'</div>'
+    +'<div class="bb-q-block-body">'
+      +'<div><div class="bb-field-label">Frage</div>'
+      +'<textarea class="bb-field bb-q-field" placeholder="Wer war der erste Mensch auf dem Mond?" rows="2">'+(qData?esc(qData.question||''):'')+'</textarea></div>'
+      +'<div><div class="bb-field-label">Antwort (nur Host sieht diese)</div>'
+      +'<input class="bb-field" placeholder="Neil Armstrong" value="'+(qData?esc(qData.answer||''):'')+'"></div>'
+    +'</div>';
+  con.appendChild(el);
+}
+function bbCollectData(){
+  const name=document.getElementById('bb-quiz-name-inp').value.trim()||'Buzzer Beater Quiz';
+  const questions=[];
+  document.querySelectorAll('.bb-q-block').forEach(block=>{
+    const q=block.querySelector('.bb-q-field').value.trim();
+    const a=block.querySelectorAll('.bb-field')[1].value.trim();
+    if(q&&a)questions.push({question:q,answer:a});
+  });
+  return{name,questions};
+}
+function bbExportQuiz(){
+  const data=bbCollectData();
+  if(!data.questions.length){showToast('⚠️ Mindestens 1 Frage!');return;}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=data.name.replace(/\s+/g,'_')+'.quiz';
+  a.click();URL.revokeObjectURL(url);
+  showToast('✅ Quiz gespeichert!');
+}
+
+bbAddQuestion();
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  const p=new URLSearchParams(window.location.search);
+  const room=p.get('room');const action=p.get('action');
+  if(room){bbShowOverlay();bbSwitchTab('join');document.getElementById('bb-join-code').value=room.toUpperCase();}
+  else if(action==='editor')showView('view-editor');
+  else if(action==='play')bbShowOverlay();
+});
+</script>
+
+<!-- THEME SWITCHER -->
+<button class="theme-btn" onclick="toggleThemePanel()" title="Design wählen">🎨</button>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">Design wählen</div>
+  <button class="theme-option" onclick="setTheme('midnight')"><div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#e8354a)"></div>Midnight</button>
+  <button class="theme-option" onclick="setTheme('neon')"><div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon</button>
+  <button class="theme-option" onclick="setTheme('forest')"><div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest</button>
+  <button class="theme-option" onclick="setTheme('sunset')"><div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset</button>
+  <button class="theme-option" onclick="setTheme('arctic')"><div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic</button>
+</div>
+<script>
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('quizTheme',t);document.querySelectorAll('.theme-option').forEach(el=>{el.classList.toggle('active',el.textContent.trim().toLowerCase().startsWith(t));});var panel=document.getElementById('theme-panel');if(panel)panel.classList.remove('open');}
+function toggleThemePanel(){var panel=document.getElementById('theme-panel');if(panel)panel.classList.toggle('open');}
+document.addEventListener('click',function(e){var panel=document.getElementById('theme-panel');if(panel&&!panel.contains(e.target)&&!e.target.classList.contains('theme-btn'))panel.classList.remove('open');});
+(function(){setTheme(localStorage.getItem('quizTheme')||'midnight');})();
+</script>
+
+</body>
+</html>
