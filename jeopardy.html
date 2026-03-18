@@ -1019,8 +1019,14 @@ function verdict(correct){
 function mpOnGameStart(receivedQuizData){
   mpClose();
   if(mpIsHost){
-    // Host builds game from imported quizData, then pushes everything to clients
-    if(!quizData){showToast('❌ Erst Quiz importieren!');return;}
+    // Use whichever quizData source is available
+    const qd = quizData || mpQuizDataForMultiplayer;
+    if(!qd){
+      mpOpen();
+      setTimeout(()=>mpShowStatus('❌ Bitte erst ein Quiz importieren!','err'),200);
+      return;
+    }
+    quizData = qd;
     setupMpGame();
     setTimeout(()=>syncState(true),500);
   } else {
@@ -1555,13 +1561,15 @@ function mpRenderEntry() {
 function mpSetTab(t) { mpTab = t; mpRenderEntry(); }
 
 function mpHtmlCreate() {
+  const hasQuiz = (typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer) || (typeof quizData !== 'undefined' && quizData);
+  const quizName = (mpQuizDataForMultiplayer && mpQuizDataForMultiplayer.name) || (quizData && quizData.name) || 'Quiz';
   return `
     <div>
       <label class="mp-label">Dein Name</label>
       <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
     </div>
-    ${typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer ? 
-      '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + (mpQuizDataForMultiplayer.name||'Quiz') + '</div>'
+    ${hasQuiz
+      ? '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + quizName + '</div>'
       : '<label class="mp-label" style="margin-top:4px;">Quiz importieren</label><label style="cursor:pointer;"><div style="padding:12px;background:var(--surface2);border:1px dashed var(--border);border-radius:10px;text-align:center;font-size:13px;color:var(--muted);">📂 Quiz-Datei auswählen<br><small style="font-size:10px;">(.quiz Datei)</small></div><input type="file" accept=".quiz,.json" style="display:none" onchange="mpLoadQuiz(event)"></label>'
     }
     <button class="mp-btn mp-btn-green" onclick="mpCreate()">🎮 Raum erstellen</button>
@@ -1665,7 +1673,15 @@ function mpRenderLobbyPlayers() {
 // ── START GAME ──
 function mpStartGame() {
   if (!mpIsHost) return;
-  const quizData = mpQuizDataForMultiplayer;
+  // Use locally loaded quizData OR uploaded quiz from lobby
+  const qd = mpQuizDataForMultiplayer || quizData;
+  if (!qd) {
+    mpShowStatus('❌ Erst Quiz importieren!', 'err');
+    return;
+  }
+  // Make sure both are set
+  quizData = qd;
+  mpQuizDataForMultiplayer = qd;
   mpSocket.emit('start_game', { code: mpRoom.code });
 }
 
