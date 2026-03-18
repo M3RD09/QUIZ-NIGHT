@@ -508,6 +508,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
   <div class="game-layout">
 
+    <!-- Host confirm bar: shown when active player selects a field -->
+    <div id="host-confirm-bar" style="display:none;align-items:center;gap:8px;padding:10px 14px;background:rgba(245,200,66,.1);border-bottom:2px solid rgba(245,200,66,.3);flex-shrink:0;grid-column:1/-1;"></div>
+
     <!-- LEFT: Board -->
     <div class="game-left">
       <div class="board-scroll"><div class="board" id="game-board"></div></div>
@@ -803,7 +806,7 @@ function buildBoard(){
   cats.forEach(cat=>{
     const c=document.createElement('div');
     c.className='board-cell board-cat';
-    c.textContent=cat.name.toUpperCase();
+    c.textContent=(cat.name||'Kategorie').toUpperCase();
     board.appendChild(c);
   });
   const maxQ=Math.max(...cats.map(c=>c.questions.length));
@@ -893,15 +896,43 @@ function openQuestion(ci,qi,cell){
   if(mpRoom){
     const t=currentTurn();
     const isActivePlayer=mpMyName===teams[t.ti].players[t.pi];
-    // Only active player can click — host watches, others can't click
-    if(!isActivePlayer)return;
+    if(mpIsHost){
+      // Host: approve the selected field (after receiving select_field from player)
+      return; // host doesn't click board directly
+    }
+    if(!isActivePlayer) return; // only active player can select
+    // Player selects field → ask host to confirm
+    mpSend('select_field',{ci,qi,ti:t.ti,pi:t.pi});
+    // Show pending state on cell
+    cell.style.opacity='0.5';
+    showToast('⏳ Warte auf Host...',2000);
+    return;
   }
+  // LOCAL PLAY (no mpRoom)
   const t=currentTurn();
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
   renderOverlay(ci,qi,t.ti,t.pi);
   startTimer();
-  if(mpRoom) mpSend('open_q',{ci,qi,ti:t.ti,pi:t.pi});
+}
+
+// Host approves field selection
+function hostApproveField(ci,qi,ti,pi){
+  const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
+  if(!cell||cell.classList.contains('used'))return;
+  const q=quizData.categories[ci].questions[qi];
+  currentQ={ci,qi,cell,points:q.points};
+  renderOverlay(ci,qi,ti,pi);
+  startTimer();
+  mpSend('open_q',{ci,qi,ti,pi});
+  document.getElementById('host-confirm-bar').style.display='none';
+}
+
+function hostRejectField(){
+  document.getElementById('host-confirm-bar').style.display='none';
+  // Reset pending cell opacity
+  document.querySelectorAll('.board-point').forEach(c=>c.style.opacity='');
+  mpSend('field_rejected',{});
 }
 
 // ── TIMER ──
@@ -1019,10 +1050,16 @@ function verdict(correct){
 function mpOnGameStart(receivedQuizData){
   mpClose();
   if(mpIsHost){
-    // Host builds game from imported quizData, then pushes everything to clients
-    if(!quizData){showToast('❌ Erst Quiz importieren!');return;}
+    // Use whichever quizData source is available
+    const qd = quizData || mpQuizDataForMultiplayer;
+    if(!qd){
+      mpOpen();
+      setTimeout(()=>mpShowStatus('❌ Bitte erst ein Quiz importieren!','err'),200);
+      return;
+    }
+    quizData = qd;
     setupMpGame();
-    setTimeout(()=>syncState(true),500);
+    setTimeout(()=>syncState(true),600); // give DOM time to render
   } else {
     // Clients wait for host state — show loading
     showView('view-game');
@@ -1077,10 +1114,43 @@ function getUsedCells(){
 
 // Clients receive all actions from host
 function mpOnAction(action,payload){
+
+  // HOST handles: select_field only
+  if(action==='select_field'){
+    if(!mpIsHost)return;
+    const {ci,qi,ti,pi}=payload;
+    const bar=document.getElementById('host-confirm-bar');
+    if(!bar)return;
+    bar.style.display='flex';
+    bar.innerHTML=`<span style="flex:1;font-size:13px;font-weight:600;">
+      <b style="color:var(--gold)">${escHtml(teams[ti].players[pi])}</b> wählt 
+      <b>${escHtml(quizData.categories[ci].name)}</b> für 
+      <b style="color:var(--gold)">${quizData.categories[ci].questions[qi].points} Pkt</b>
+    </span>
+    <button onclick="hostApproveField(${ci},${qi},${ti},${pi})" 
+      style="padding:8px 16px;background:var(--green);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-right:8px;">✓ Starten</button>
+    <button onclick="hostRejectField()" 
+      style="padding:8px 16px;background:var(--red);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;">✗ Ablehnen</button>`;
+    return;
+  }
+
+  // CLIENTS handle everything else
   if(mpIsHost)return;
 
   if(action==='state'){
-    if(payload.quizData) quizData=payload.quizData;
+    if(payload.quizData){
+      quizData=payload.quizData;
+      // Ensure categories is a proper array (survives JSON serialization)
+      if(quizData.categories && !Array.isArray(quizData.categories)){
+        quizData.categories=Object.values(quizData.categories);
+      }
+      if(quizData.categories){
+        quizData.categories=quizData.categories.map(cat=>({
+          ...cat,
+          questions:Array.isArray(cat.questions)?cat.questions:Object.values(cat.questions||{})
+        }));
+      }
+    }
     if(!quizData)return;
     teams[0]={name:payload.teams[0].name,players:payload.teams[0].players,score:payload.teams[0].score};
     teams[1]={name:payload.teams[1].name,players:payload.teams[1].players,score:payload.teams[1].score};
@@ -1090,7 +1160,11 @@ function mpOnAction(action,payload){
       document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData.name||'Jeopardy');
       buildBoard(); buildScoreArea(); showView('view-game');
     }
-    updateScores(); updateTurnBanner(); updateTeamsSidebar();
+    // CRITICAL: rebuild turn order from received team data
+    buildTurnOrder();
+    updateScores();
+    // Use setTimeout to ensure DOM is updated before rendering teams
+    setTimeout(()=>{updateTurnBanner(); updateTeamsSidebar();},50);
     (payload.usedCells||[]).forEach(({ci,qi,html,classes})=>{
       const c=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
       if(c){c.innerHTML=html;classes.forEach(cl=>c.classList.add(cl));c.onclick=null;}
@@ -1099,12 +1173,24 @@ function mpOnAction(action,payload){
   }
 
   if(action==='open_q'){
+    // Clients receive open_q to show the overlay
     if(!quizData)return;
     const {ci,qi,ti,pi}=payload;
     const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
     currentQ={ci,qi,cell,points:quizData.categories[ci].questions[qi].points};
+    // Reset answer area
+    document.getElementById('player-answer-inp').value='';
+    document.getElementById('player-answer-inp').disabled=false;
+    document.getElementById('submitted-answer-box').style.display='none';
     renderOverlay(ci,qi,ti,pi);
     startTimer();
+    return;
+  }
+
+  if(action==='field_rejected'){
+    // Reset pending cell
+    document.querySelectorAll('.board-point').forEach(c=>c.style.opacity='');
+    showToast('❌ Host hat abgelehnt',2000);
     return;
   }
 
@@ -1131,6 +1217,7 @@ function mpOnAction(action,payload){
     const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
     if(cell){
       cell.classList.add('used','res-'+result);cell.onclick=null;
+      cell.style.opacity='';
       const icon=correct===true?'✓':correct===false?'✗':'—';
       const ic=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
       const tc=ti===0?'var(--team1)':'var(--team2)';
@@ -1138,6 +1225,12 @@ function mpOnAction(action,payload){
     }
     addToHistory(playerName,ti,quizData.categories[ci].name,points,result);
     turnIdx=newTurnIdx;
+    // Reset input for next round
+    document.getElementById('player-answer-inp').value='';
+    document.getElementById('player-answer-inp').disabled=false;
+    document.getElementById('submitted-answer-box').style.display='none';
+    document.getElementById('answer-input-wrap').style.display='none';
+    // Close overlay — this is the key fix
     document.getElementById('q-overlay').classList.remove('open');
     currentQ=null; updateTurnBanner(); updateTeamsSidebar();
     showToast((correct===true?'✅ +':correct===false?'❌ -':'—')+points+' für '+teams[ti].name,2500);
@@ -1197,18 +1290,16 @@ function renderOverlay(ci,qi,ti,pi,isActive){
 function submitAnswer(){
   const inp=document.getElementById('player-answer-inp');
   const answer=inp.value.trim();
-  if(!answer)return;
-  inp.disabled=true;
-  document.getElementById('answer-input-wrap').querySelector('button').disabled=true;
-
-  // Show locally
+  if(!answer){showToast('⚠️ Bitte Antwort eingeben!',1500);return;}
+  
+  // Hide input wrap, show submitted answer
+  document.getElementById('answer-input-wrap').style.display='none';
   const box=document.getElementById('submitted-answer-box');
   box.style.display='block';
   box.textContent='💬 '+mpMyName+': "'+answer+'"';
-
-  // Send to host & everyone
+  
+  // Send to all (host + spectators see the answer)
   if(mpRoom) mpSend('answer_in',{playerName:mpMyName,answer});
-  stopTimer();
 }
 
 function checkGameOver(){
@@ -1555,13 +1646,15 @@ function mpRenderEntry() {
 function mpSetTab(t) { mpTab = t; mpRenderEntry(); }
 
 function mpHtmlCreate() {
+  const hasQuiz = (typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer) || (typeof quizData !== 'undefined' && quizData);
+  const quizName = (mpQuizDataForMultiplayer && mpQuizDataForMultiplayer.name) || (quizData && quizData.name) || 'Quiz';
   return `
     <div>
       <label class="mp-label">Dein Name</label>
       <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
     </div>
-    ${typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer ? 
-      '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + (mpQuizDataForMultiplayer.name||'Quiz') + '</div>'
+    ${hasQuiz
+      ? '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + quizName + '</div>'
       : '<label class="mp-label" style="margin-top:4px;">Quiz importieren</label><label style="cursor:pointer;"><div style="padding:12px;background:var(--surface2);border:1px dashed var(--border);border-radius:10px;text-align:center;font-size:13px;color:var(--muted);">📂 Quiz-Datei auswählen<br><small style="font-size:10px;">(.quiz Datei)</small></div><input type="file" accept=".quiz,.json" style="display:none" onchange="mpLoadQuiz(event)"></label>'
     }
     <button class="mp-btn mp-btn-green" onclick="mpCreate()">🎮 Raum erstellen</button>
@@ -1665,7 +1758,15 @@ function mpRenderLobbyPlayers() {
 // ── START GAME ──
 function mpStartGame() {
   if (!mpIsHost) return;
-  const quizData = mpQuizDataForMultiplayer;
+  // Use locally loaded quizData OR uploaded quiz from lobby
+  const qd = mpQuizDataForMultiplayer || quizData;
+  if (!qd) {
+    mpShowStatus('❌ Erst Quiz importieren!', 'err');
+    return;
+  }
+  // Make sure both are set
+  quizData = qd;
+  mpQuizDataForMultiplayer = qd;
   mpSocket.emit('start_game', { code: mpRoom.code });
 }
 
