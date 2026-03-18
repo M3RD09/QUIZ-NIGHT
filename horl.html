@@ -88,10 +88,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   transition:all .15s;z-index:3;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
 }
-.drop-zone.drag-over{
-  border-color:var(--green);background:rgba(46,204,113,.14);
-}
-.drop-zone.drag-over::after{content:'↓';font-size:28px;color:var(--green);font-weight:900;}
+.drop-zone.ready{border-color:rgba(46,204,113,.35);}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--green);background:rgba(46,204,113,.14);}
+.drop-zone:hover::after,.drop-zone.drag-over::after{content:'↓';font-size:28px;color:var(--green);font-weight:900;}
+.pool-item.selected{border-color:var(--green)!important;background:rgba(46,204,113,.12)!important;box-shadow:0 0 18px rgba(46,204,113,.35)!important;transform:translateY(-4px)!important;}
 
 /* Items absolutely positioned */
 .scale-item{
@@ -361,14 +361,10 @@ let quizData=null;
 let players=[];
 let currentRound=0;
 let currentPlayerIdx=0;
-let scaleItems=[];   // [{item, position}] sorted by position
+let scaleItems=[];
+let selectedItemIdx=null;
 let maxHearts=3;
 const COLORS=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
-
-// drag state
-let dragItemIdx=null;
-let dragOverZone=null;
-let pendingDragIdx=null; // saved before dragend fires
 
 // ── IMPORT ──
 function importAndPlay(ev){
@@ -433,6 +429,7 @@ function loadRound(){
   if(currentRound>=quizData.rounds.length){showWinner();return;}
   const round=quizData.rounds[currentRound];
   scaleItems=[];
+  selectedItemIdx=null;
 
   // Place anchor in the CENTER of the scale (not at its actual value)
   const anchor=round.items.find(it=>it.isAnchor);
@@ -455,30 +452,27 @@ function loadRound(){
 // ── SCALE RENDER ──
 function renderScale(){
   const track=document.getElementById('scale-track');
-  // Remove old items and drop zones, keep scale-line
   Array.from(track.children).forEach(c=>{
     if(!c.classList.contains('scale-line'))c.remove();
   });
 
   const round=quizData.rounds[currentRound];
   const sorted=[...scaleItems].sort((a,b)=>a.position-b.position);
-  const trackW=track.offsetWidth||window.innerWidth-50;
 
   function pct(val){
     return((val-round.scaleMin)/(round.scaleMax-round.scaleMin))*100;
   }
 
-  // Place items
+  // Place items on scale
   sorted.forEach(si=>{
     const el=makeScaleItem(si);
     el.style.left=pct(si.position)+'%';
     track.appendChild(el);
   });
 
-  // Drop zones between items
-  // Zone positions: left-edge, between each pair, right-edge
+  // Drop zones
   const zones=[];
-  zones.push({id:'left', leftPct:0, rightPct: sorted.length?pct(sorted[0].position):100});
+  zones.push({id:'left', leftPct:0, rightPct:sorted.length?pct(sorted[0].position):100});
   sorted.forEach((si,i)=>{
     const nextPct=i<sorted.length-1?pct(sorted[i+1].position):100;
     zones.push({id:'after-'+i, leftPct:pct(si.position), rightPct:nextPct});
@@ -490,19 +484,24 @@ function renderScale(){
     dz.dataset.zoneId=z.id;
     dz.style.left=z.leftPct+'%';
     dz.style.width=(z.rightPct-z.leftPct)+'%';
-    dz.style.minWidth='30px';
 
-    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');dragOverZone=z.id;});
-    dz.addEventListener('dragleave',()=>{dz.classList.remove('drag-over');if(dragOverZone===z.id)dragOverZone=null;});
+    // Show arrow when item selected
+    if(selectedItemIdx!==null) dz.classList.add('ready');
+
+    dz.addEventListener('click',()=>{
+      if(selectedItemIdx===null){showToast('⬇️ Wähle erst ein Item unten!',1500);return;}
+      handlePlace(z.id);
+    });
+    // Drag & Drop
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
     dz.addEventListener('drop',e=>{
       e.preventDefault();
       dz.classList.remove('drag-over');
-      // Recover index from dataTransfer if dragItemIdx was cleared
-      const transferred=e.dataTransfer&&e.dataTransfer.getData('text/plain');
-      if(dragItemIdx===null&&transferred!=='')dragItemIdx=parseInt(transferred);
-      handleDrop(z.id);
+      const i=parseInt(e.dataTransfer.getData('itemIdx'));
+      if(!isNaN(i)){selectedItemIdx=i;}
+      handlePlace(z.id);
     });
-    dz.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
     track.appendChild(dz);
   });
 }
@@ -511,7 +510,7 @@ function makeScaleItem(si){
   const wrap=document.createElement('div');
   wrap.className='scale-item'+(si.item.isAnchor?' anchor':'');
   const imgEl=si.item.imageUrl
-    ?'<img src="'+esc(si.item.imageUrl)+'" alt="" onerror="this.style.display=\'none\'">'
+    ?'<img src="'+esc(si.item.imageUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'📦\'">'
     :'<span>📦</span>';
   wrap.innerHTML='<div class="scale-item-img">'+imgEl+'</div>'
     +'<div class="scale-item-val">'+si.item.value+'</div>'
@@ -527,144 +526,89 @@ function renderPool(){
   round.items.forEach((item,i)=>{
     if(item.isAnchor)return;
     const isPlaced=scaleItems.some(s=>s.item===item);
+    const isSelected=selectedItemIdx===i;
     const card=document.createElement('div');
-    card.className='pool-item'+(isPlaced?' placed':'');
+    card.className='pool-item'+(isPlaced?' placed':isSelected?' selected':'');
     card.dataset.itemIdx=i;
-    card.draggable=!isPlaced;
     const imgEl=item.imageUrl
-      ?'<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:7px;" onerror="this.style.display=\'none\'">'
+      ?'<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:7px;" onerror="this.parentElement.innerHTML=\'📦\'">'
       :'<span>📦</span>';
     card.innerHTML='<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
 
-    // Desktop drag
-    card.addEventListener('dragstart',e=>{
-      if(isPlaced)return;
-      dragItemIdx=i;
-      pendingDragIdx=i;
-      card.classList.add('dragging');
-      e.dataTransfer.effectAllowed='move';
-      e.dataTransfer.setData('text/plain',String(i));
-    });
-    card.addEventListener('dragend',()=>{
-      card.classList.remove('dragging');
-      // Don't clear dragItemIdx here — drop event needs it
-      setTimeout(()=>{dragItemIdx=null;},100);
-    });
-
-    // Touch drag
-    card.addEventListener('touchstart',e=>{
-      if(isPlaced)return;
-      dragItemIdx=i;
-    },{passive:true});
-
+    if(!isPlaced){
+      // Click to select
+      card.addEventListener('click',()=>{
+        selectedItemIdx=(selectedItemIdx===i)?null:i;
+        renderPool();
+        renderScale();
+        updateTurnBar();
+      });
+      // Drag start
+      card.draggable=true;
+      card.addEventListener('dragstart',e=>{
+        selectedItemIdx=i;
+        e.dataTransfer.setData('itemIdx',String(i));
+        e.dataTransfer.effectAllowed='move';
+        renderPool();
+        renderScale();
+      });
+    }
     pool.appendChild(card);
   });
-
-  // Touch move on pool to move a ghost — simple touch handling
-  setupTouchDrag(pool);
 }
 
-// ── TOUCH DRAG ──
-let touchGhost=null;
-function setupTouchDrag(pool){
-  pool.addEventListener('touchmove',e=>{
-    if(dragItemIdx===null)return;
-    e.preventDefault();
-    const touch=e.touches[0];
-    if(!touchGhost){
-      touchGhost=document.createElement('div');
-      touchGhost.style.cssText='position:fixed;width:70px;height:70px;border-radius:10px;background:rgba(46,204,113,.3);border:2px solid var(--green);pointer-events:none;z-index:999;display:flex;align-items:center;justify-content:center;font-size:24px;';
-      touchGhost.textContent='📦';
-      document.body.appendChild(touchGhost);
-    }
-    touchGhost.style.left=(touch.clientX-35)+'px';
-    touchGhost.style.top=(touch.clientY-35)+'px';
-
-    const el=document.elementFromPoint(touch.clientX,touch.clientY);
-    const dz=el&&el.closest('.drop-zone');
-    document.querySelectorAll('.drop-zone').forEach(d=>d.classList.remove('drag-over'));
-    if(dz){
-      dz.classList.add('drag-over');
-      dragOverZone=dz.dataset.zoneId;
-    } else {
-      dragOverZone=null;
-    }
-  },{passive:false});
-
-  pool.addEventListener('touchend',()=>{
-    if(touchGhost){touchGhost.remove();touchGhost=null;}
-    document.querySelectorAll('.drop-zone').forEach(dz=>dz.classList.remove('drag-over'));
-    if(dragItemIdx!==null&&dragOverZone!==null){
-      handleDrop(dragOverZone);
-    }
-    dragItemIdx=null;dragOverZone=null;
-  });
-}
-
-// ── DROP HANDLER ──
-function handleDrop(zoneId){
-  const itemIdx = dragItemIdx!==null ? dragItemIdx : pendingDragIdx;
-  if(itemIdx===null||itemIdx===undefined)return;
-  dragItemIdx=null;
-  pendingDragIdx=null;
-
+// ── PLACE HANDLER ──
+function handlePlace(zoneId){
+  if(selectedItemIdx===null)return;
   const round=quizData.rounds[currentRound];
-  const item=round.items[itemIdx];
-  if(!item)return;
+  const item=round.items[selectedItemIdx];
+  if(!item){selectedItemIdx=null;return;}
 
-  // Determine neighbours from sorted scale
   const sorted=[...scaleItems].sort((a,b)=>a.position-b.position);
   let leftVal=null, rightVal=null;
 
   if(zoneId==='left'){
-    rightVal = sorted.length>0 ? sorted[0].position : null;
+    rightVal=sorted.length>0?sorted[0].position:null;
   } else if(zoneId.startsWith('after-')){
     const zoneNum=parseInt(zoneId.replace('after-',''));
-    leftVal  = sorted[zoneNum]   ? sorted[zoneNum].position   : null;
-    rightVal = sorted[zoneNum+1] ? sorted[zoneNum+1].position : null;
+    leftVal =sorted[zoneNum]  ?sorted[zoneNum].position  :null;
+    rightVal=sorted[zoneNum+1]?sorted[zoneNum+1].position:null;
   }
 
-  // Correct if item.value fits between left and right neighbours
-  const correct=(
-    (leftVal===null  || item.value >= leftVal) &&
-    (rightVal===null || item.value <= rightVal)
-  );
-
+  const correct=(leftVal===null||item.value>=leftVal)&&(rightVal===null||item.value<=rightVal);
   const player=players[currentPlayerIdx];
+  selectedItemIdx=null;
 
   if(correct){
-    scaleItems.push({item, position:item.value});
+    scaleItems.push({item,position:item.value});
     player.score++;
     showFlash(true);
-    showToast('✅ Richtig! +1 Punkt für '+player.name, 2000);
+    showToast('✅ Richtig! +1 Punkt für '+player.name,2000);
     renderScale();
     renderPool();
     updateSidebar();
 
-    // Check round complete
     const remaining=round.items.filter(it=>!it.isAnchor&&!scaleItems.some(s=>s.item===it));
     if(remaining.length===0){
       setTimeout(()=>{
         currentRound++;
-        if(currentRound>=quizData.rounds.length||players.filter(p=>!p.eliminated).length===0){
-          showWinner();
-        } else {
-          loadRound();
-        }
+        if(currentRound>=quizData.rounds.length||players.filter(p=>!p.eliminated).length===0)showWinner();
+        else loadRound();
       },800);
       return;
     }
   } else {
     player.hearts--;
     showFlash(false);
-    const card=document.querySelector('.pool-item[data-item-idx="'+itemIdx+'"]');
+    const card=document.querySelector('.pool-item[data-item-idx="'+round.items.indexOf(item)+'"]');
     if(card){card.classList.add('wrong-flash');setTimeout(()=>card.classList.remove('wrong-flash'),600);}
     if(player.hearts<=0){
       player.eliminated=true;
       showToast('💀 '+player.name+' ausgeschieden!',3000);
     } else {
-      showToast('❌ Falsch! '+player.name+' verliert ein ❤️ ('+player.hearts+' übrig)',2500);
+      showToast('❌ Falsch! '+player.name+' verliert ❤️ ('+player.hearts+' übrig)',2500);
     }
+    renderPool();
     updateSidebar();
     if(players.filter(p=>!p.eliminated).length===0){setTimeout(()=>showWinner(),800);return;}
   }
@@ -686,7 +630,15 @@ function updateTurnBar(){
   const p=players[currentPlayerIdx];
   const bar=document.getElementById('turn-bar');
   if(!p||p.eliminated){bar.innerHTML='Kein aktiver Spieler';return;}
-  bar.innerHTML='<span style="color:'+p.color+';font-weight:700;">'+esc(p.name)+'</span> ist dran — ziehe ein Item auf die Skala 👆';
+  if(selectedItemIdx!==null){
+    const round=quizData.rounds[currentRound];
+    const item=round&&round.items[selectedItemIdx];
+    bar.innerHTML='<span style="color:'+p.color+';font-weight:700;">'+esc(p.name)+'</span>'
+      +' → <span style="color:var(--green);font-weight:700;">'+(item?esc(item.name):'')+'</span> ausgewählt — klicke eine Zone auf der Skala oben ↑';
+  } else {
+    bar.innerHTML='<span style="color:'+p.color+';font-weight:700;">'+esc(p.name)+'</span>'
+      +' ist dran — klicke ein Item an ↓ dann wähle die Position auf der Skala ↑';
+  }
 }
 
 function updateSidebar(){
