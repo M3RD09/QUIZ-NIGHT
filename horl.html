@@ -603,51 +603,41 @@ function setupTouchDrag(pool){
 
 // ── DROP HANDLER ──
 function handleDrop(zoneId){
-  const idx = dragItemIdx!==null ? dragItemIdx : pendingDragIdx;
-  if(idx===null)return;
+  const itemIdx = dragItemIdx!==null ? dragItemIdx : pendingDragIdx;
+  if(itemIdx===null||itemIdx===undefined)return;
   dragItemIdx=null;
   pendingDragIdx=null;
 
   const round=quizData.rounds[currentRound];
-  const item=round.items[idx];
+  const item=round.items[itemIdx];
+  if(!item)return;
 
-  // Determine intended position based on neighbours
+  // Determine neighbours from sorted scale
   const sorted=[...scaleItems].sort((a,b)=>a.position-b.position);
-  let leftNeighbour=null,rightNeighbour=null;
+  let leftVal=null, rightVal=null;
 
   if(zoneId==='left'){
-    rightNeighbour=sorted[0]||null;
+    rightVal = sorted.length>0 ? sorted[0].position : null;
   } else if(zoneId.startsWith('after-')){
-    const idx=parseInt(zoneId.replace('after-',''));
-    leftNeighbour=sorted[idx]||null;
-    rightNeighbour=sorted[idx+1]||null;
+    const zoneNum=parseInt(zoneId.replace('after-',''));
+    leftVal  = sorted[zoneNum]   ? sorted[zoneNum].position   : null;
+    rightVal = sorted[zoneNum+1] ? sorted[zoneNum+1].position : null;
   }
 
-  // Check if placement is correct
-  // Item goes between leftNeighbour and rightNeighbour
+  // Correct if item.value fits between left and right neighbours
   const correct=(
-    (leftNeighbour===null||item.value>=leftNeighbour.position)&&
-    (rightNeighbour===null||item.value<=rightNeighbour.position)
+    (leftVal===null  || item.value >= leftVal) &&
+    (rightVal===null || item.value <= rightVal)
   );
 
   const player=players[currentPlayerIdx];
 
   if(correct){
-    scaleItems.push({item,position:item.value});
+    scaleItems.push({item, position:item.value});
     player.score++;
     showFlash(true);
-    showToast('✅ Richtig! +1 Punkt für '+player.name,2000);
+    showToast('✅ Richtig! +1 Punkt für '+player.name, 2000);
     renderScale();
-    // Animate just placed item
-    setTimeout(()=>{
-      document.querySelectorAll('#scale-track .scale-item:not(.anchor)').forEach(el=>{
-        const nameEl=el.querySelector('.scale-item-name');
-        if(nameEl&&nameEl.textContent===item.name){
-          el.classList.add('just-placed');
-          setTimeout(()=>el.classList.remove('just-placed'),600);
-        }
-      });
-    },50);
     renderPool();
     updateSidebar();
 
@@ -667,8 +657,7 @@ function handleDrop(zoneId){
   } else {
     player.hearts--;
     showFlash(false);
-    // Flash wrong on pool item
-    const card=document.querySelector('.pool-item[data-item-idx="'+round.items.indexOf(item)+'"]');
+    const card=document.querySelector('.pool-item[data-item-idx="'+itemIdx+'"]');
     if(card){card.classList.add('wrong-flash');setTimeout(()=>card.classList.remove('wrong-flash'),600);}
     if(player.hearts<=0){
       player.eliminated=true;
@@ -677,7 +666,6 @@ function handleDrop(zoneId){
       showToast('❌ Falsch! '+player.name+' verliert ein ❤️ ('+player.hearts+' übrig)',2500);
     }
     updateSidebar();
-
     if(players.filter(p=>!p.eliminated).length===0){setTimeout(()=>showWinner(),800);return;}
   }
 
