@@ -861,6 +861,7 @@ for(let i=0;i<5;i++) addEditorQuestion();
   const action=params.get('action');
   if(action==='play') showView('view-play-landing');
   else if(action==='editor') showView('view-editor');
+  else if(action==='online') setTimeout(mpOpen,300);
 })();
 
 
