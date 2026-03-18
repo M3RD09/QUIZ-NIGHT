@@ -256,9 +256,9 @@ body::before{
 .mp-reaction-toast{background:var(--surface,#0f1118);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;animation:rtIn .3s ease,rtOut .3s ease 2.5s both;}
 @keyframes rtIn{from{opacity:0;transform:translateX(15px);}to{opacity:1;}}
 @keyframes rtOut{to{opacity:0;transform:translateX(15px);}}
-.mp-emoji-bar{display:flex;gap:8px;justify-content:center;}
-.mp-emoji-btn{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;transition:all .15s;}
-.mp-emoji-btn:hover{transform:scale(1.2);}
+
+
+
 .btn-multiplayer{background:linear-gradient(135deg,#1a5276,#2980b9);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(41,128,185,.25);}
 .btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
@@ -844,7 +844,14 @@ addEditorCat({name:'FILMGENRE',labelLeft:'Hasse ich',labelRight:'Liebe ich'});
   const a=p.get('action');
   if(a==='play')showView('view-play-landing');
   else if(a==='editor')showView('view-editor');
-  else if(a==='online'){setTimeout(mpOpen,300);}
+  else if(action==='online'||a==='online'){
+    // Hide game menu entirely, show only MP overlay on a blank dark screen
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.body.style.background='#06080f';
+    // Change tab from 'create' to let user choose, then open
+    mpTab='create';
+    setTimeout(mpOpen, 100);
+  }
 })();
 
 
@@ -1123,9 +1130,6 @@ function mpRenderLobby() {
       <div class="mp-players" id="mp-players-list"></div>
       <div class="mp-waiting" id="mp-waiting">Warte auf Spieler...</div>
     </div>
-    <div class="mp-emoji-bar">
-      ${['👋','😂','🔥','😱','👏'].map(e=>`<button class="mp-emoji-btn" onclick="mpSendReaction('${e}')">${e}</button>`).join('')}
-    </div>
     ${isHost ? `<button class="mp-btn mp-btn-green" onclick="mpStartGame()">▶ Spiel starten</button>` : `<div class="mp-waiting">Host startet das Spiel...</div>`}
     <button class="mp-btn mp-btn-ghost" onclick="mpLeave()">Verlassen</button>
     <div class="mp-status" id="mp-status"></div>
@@ -1172,9 +1176,7 @@ function mpShowStatus(msg, type) {
   el.className = 'mp-status ' + type;
 }
 
-function mpSendReaction(emoji) {
-  if (!mpSocket || !mpRoom) return;
-  mpSocket.emit('reaction', { code: mpRoom.code, emoji });
+);
 }
 
 function mpShowReaction(text) {
@@ -1187,6 +1189,16 @@ function mpShowReaction(text) {
   setTimeout(() => el.remove(), 3000);
 }
 
+
+// ── CALLED WHEN HOST STARTS MULTIPLAYER GAME ──
+function mpOnGameStart(receivedQuizData) {
+  mpClose();
+  if (receivedQuizData) {
+    quizData = receivedQuizData;
+    mpQuizDataForMultiplayer = receivedQuizData;
+  }
+  goToSetup();
+}
 // Auto-open lobby if ?room= in URL
 window.addEventListener('DOMContentLoaded', () => {
   const code = new URLSearchParams(window.location.search).get('room');
