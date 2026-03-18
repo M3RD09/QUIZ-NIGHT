@@ -1476,7 +1476,31 @@ function mpOnGameStart(receivedQuizData) {
     quizData = receivedQuizData;
     mpQuizDataForMultiplayer = receivedQuizData;
   }
-  goToSetup();
+  // Auto-split players from lobby into 2 teams randomly
+  if (mpRoom && mpRoom.players && mpRoom.players.length > 0) {
+    const playerNames = [...mpRoom.players.map(p => p.name)];
+    // Shuffle
+    for (let i = playerNames.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [playerNames[i], playerNames[j]] = [playerNames[j], playerNames[i]];
+    }
+    const half = Math.ceil(playerNames.length / 2);
+    teams[0].players = playerNames.slice(0, half);
+    teams[1].players = playerNames.slice(half);
+    if (!teams[0].players.length) teams[0].players = ['Team 1'];
+    if (!teams[1].players.length) teams[1].players = ['Team 2'];
+    teams[0].name = 'Team Blau';
+    teams[1].name = 'Team Rot';
+    teams[0].score = 0;
+    teams[1].score = 0;
+    buildTurnOrder();
+    turnIdx = 0;
+    gameHistory = [];
+    buildBoard();
+    showView('view-game');
+  } else {
+    goToSetup();
+  }
 }
 // Auto-open lobby if ?room= in URL
 window.addEventListener('DOMContentLoaded', () => {

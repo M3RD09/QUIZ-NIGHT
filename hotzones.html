@@ -1192,7 +1192,29 @@ function mpOnGameStart(receivedQuizData) {
     quizData = receivedQuizData;
     mpQuizDataForMultiplayer = receivedQuizData;
   }
-  goToSetup();
+  if (mpRoom && mpRoom.players && mpRoom.players.length > 0) {
+    const playerNames = [...mpRoom.players.map(p => p.name)];
+    // Shuffle
+    for (let i = playerNames.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [playerNames[i], playerNames[j]] = [playerNames[j], playerNames[i]];
+    }
+    const half = Math.ceil(playerNames.length / 2);
+    teams[0].players = playerNames.slice(0, half);
+    teams[1].players = playerNames.slice(half);
+    if (!teams[0].players.length) teams[0].players = ['Spieler 1'];
+    if (!teams[1].players.length) teams[1].players = ['Spieler 1'];
+    teams[0].name = 'Team Blau'; teams[0].score = 0;
+    teams[1].name = 'Team Rot';  teams[1].score = 0;
+    roundIdx = 0;
+    hintGiverIdxPerTeam = [0,0];
+    currentTeamIdx = 0;
+    phaseInRound = 0;
+    usedCatIndices = [];
+    startHintPhase(0);
+  } else {
+    goToSetup();
+  }
 }
 // Auto-open lobby if ?room= in URL
 window.addEventListener('DOMContentLoaded', () => {

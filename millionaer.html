@@ -1209,7 +1209,21 @@ function mpOnGameStart(receivedQuizData) {
     quizData = receivedQuizData;
     mpQuizDataForMultiplayer = receivedQuizData;
   }
-  goToSetup();
+  // Build players from lobby — everyone plays individually
+  if (mpRoom && mpRoom.players && mpRoom.players.length > 0) {
+    players = mpRoom.players.map(p => ({
+      name: p.name, score: 0,
+      jokers: {r:true, f:true}, eliminated: false, qAnswered: 0
+    }));
+    currentQIdx = 0;
+    risikoActive = false;
+    buildSidebar();
+    buildLadder();
+    loadQuestion();
+    showView('view-game');
+  } else {
+    goToSetup();
+  }
 }
 // Auto-open lobby if ?room= in URL
 window.addEventListener('DOMContentLoaded', () => {

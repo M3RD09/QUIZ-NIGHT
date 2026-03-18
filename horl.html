@@ -1332,7 +1332,19 @@ function mpOnGameStart(receivedQuizData) {
     quizData = receivedQuizData;
     mpQuizDataForMultiplayer = receivedQuizData;
   }
-  goToSetup();
+  if (mpRoom && mpRoom.players && mpRoom.players.length > 0) {
+    maxHearts = 3;
+    players = mpRoom.players.map((p, i) => ({
+      name: p.name, hearts: maxHearts, score: 0,
+      eliminated: false, color: COLORS[i % COLORS.length]
+    }));
+    currentRound = 0;
+    currentPlayerIdx = 0;
+    loadRound();
+    showView('view-game');
+  } else {
+    goToSetup();
+  }
 }
 // Auto-open lobby if ?room= in URL
 window.addEventListener('DOMContentLoaded', () => {
