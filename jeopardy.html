@@ -806,7 +806,7 @@ function buildBoard(){
   cats.forEach(cat=>{
     const c=document.createElement('div');
     c.className='board-cell board-cat';
-    c.textContent=cat.name.toUpperCase();
+    c.textContent=(cat.name||'Kategorie').toUpperCase();
     board.appendChild(c);
   });
   const maxQ=Math.max(...cats.map(c=>c.questions.length));
@@ -1114,10 +1114,43 @@ function getUsedCells(){
 
 // Clients receive all actions from host
 function mpOnAction(action,payload){
+
+  // HOST handles: select_field only
+  if(action==='select_field'){
+    if(!mpIsHost)return;
+    const {ci,qi,ti,pi}=payload;
+    const bar=document.getElementById('host-confirm-bar');
+    if(!bar)return;
+    bar.style.display='flex';
+    bar.innerHTML=`<span style="flex:1;font-size:13px;font-weight:600;">
+      <b style="color:var(--gold)">${escHtml(teams[ti].players[pi])}</b> wählt 
+      <b>${escHtml(quizData.categories[ci].name)}</b> für 
+      <b style="color:var(--gold)">${quizData.categories[ci].questions[qi].points} Pkt</b>
+    </span>
+    <button onclick="hostApproveField(${ci},${qi},${ti},${pi})" 
+      style="padding:8px 16px;background:var(--green);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-right:8px;">✓ Starten</button>
+    <button onclick="hostRejectField()" 
+      style="padding:8px 16px;background:var(--red);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;">✗ Ablehnen</button>`;
+    return;
+  }
+
+  // CLIENTS handle everything else
   if(mpIsHost)return;
 
   if(action==='state'){
-    if(payload.quizData) quizData=payload.quizData;
+    if(payload.quizData){
+      quizData=payload.quizData;
+      // Ensure categories is a proper array (survives JSON serialization)
+      if(quizData.categories && !Array.isArray(quizData.categories)){
+        quizData.categories=Object.values(quizData.categories);
+      }
+      if(quizData.categories){
+        quizData.categories=quizData.categories.map(cat=>({
+          ...cat,
+          questions:Array.isArray(cat.questions)?cat.questions:Object.values(cat.questions||{})
+        }));
+      }
+    }
     if(!quizData)return;
     teams[0]={name:payload.teams[0].name,players:payload.teams[0].players,score:payload.teams[0].score};
     teams[1]={name:payload.teams[1].name,players:payload.teams[1].players,score:payload.teams[1].score};
@@ -1149,28 +1182,6 @@ function mpOnAction(action,payload){
     document.getElementById('submitted-answer-box').style.display='none';
     renderOverlay(ci,qi,ti,pi);
     startTimer();
-    return;
-  }
-
-  if(action==='select_field'){
-    // HOST receives: a player selected a field, show confirm bar
-    if(!mpIsHost)return;
-    const {ci,qi,ti,pi}=payload;
-    const bar=document.getElementById('host-confirm-bar');
-    bar.style.display='flex';
-    bar.innerHTML=`<span style="flex:1;font-size:13px;font-weight:600;">
-      <b style="color:var(--gold)">${escHtml(teams[ti].players[pi])}</b> wählt 
-      <b>${escHtml(quizData.categories[ci].name)}</b> für 
-      <b style="color:var(--gold)">${quizData.categories[ci].questions[qi].points} Pkt</b>
-    </span>
-    <button onclick="hostApproveField(${ci},${qi},${ti},${pi})" 
-      style="padding:8px 16px;background:var(--green);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-right:8px;">
-      ✓ Starten
-    </button>
-    <button onclick="hostRejectField()" 
-      style="padding:8px 16px;background:var(--red);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;">
-      ✗ Ablehnen
-    </button>`;
     return;
   }
 
