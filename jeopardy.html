@@ -1128,7 +1128,7 @@ addCategory({name:'KATEGORIE 2',questions:[]});
     showView('view-play-landing');
   } else if(action === 'editor'){
     showView('view-editor');
-  else if(action==='online'||a==='online'){
+  } else if(action==='online'||a==='online'){
     // Hide game menu entirely, show only MP overlay on a blank dark screen
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     document.body.style.background='#06080f';
@@ -1458,9 +1458,6 @@ function mpShowStatus(msg, type) {
   if (!el) return;
   el.textContent = msg;
   el.className = 'mp-status ' + type;
-}
-
-);
 }
 
 function mpShowReaction(text) {
