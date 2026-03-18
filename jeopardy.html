@@ -622,7 +622,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <div class="timer-num" id="timer-num">30</div>
     </div>
     <div class="q-text" id="qo-text">Frage</div>
-    <div class="time-up-box" id="time-up-box">⏰ Zeit abgelaufen! Falsch gewertet.</div>
+    <div class="time-up-box" id="time-up-box">⏰ Zeit abgelaufen!</div>
+
+    <!-- Answer input: shown to active player -->
+    <div id="answer-input-wrap" style="display:none;margin:12px 0;">
+      <input id="player-answer-inp" placeholder="Deine Antwort eingeben..."
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')submitAnswer()">
+      <button onclick="submitAnswer()" style="width:100%;margin-top:8px;padding:12px;border-radius:10px;background:var(--blue);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">
+        ✓ Antwort abschicken
+      </button>
+    </div>
+
+    <!-- Submitted answer: shown to all after player submits -->
+    <div id="submitted-answer-box" style="display:none;margin:12px 0;padding:12px 14px;background:rgba(58,142,246,.1);border:1px solid rgba(58,142,246,.3);border-radius:10px;font-size:14px;color:var(--blue);"></div>
+
     <button class="btn-reveal-ans" id="btn-reveal" onclick="revealAnswer()">🔍 Antwort aufdecken</button>
     <div class="ans-box" id="ans-box"></div>
     <div class="verdict-wrap" id="verdict-wrap">
@@ -876,36 +890,19 @@ function addToHistory(playerName,teamIdx,category,points,result){
 // ── QUESTION ──
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
-  // Only host can open questions in multiplayer
-  if(mpRoom && !mpIsHost) return;
-
+  // In multiplayer: only the active player OR host can open
+  if(mpRoom){
+    const t=currentTurn();
+    const isActive=mpMyName===teams[t.ti].players[t.pi];
+    if(!mpIsHost&&!isActive)return;
+  }
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
   const t=currentTurn();
-
-  document.getElementById('qo-cat').textContent=quizData.categories[ci].name.toUpperCase();
-  document.getElementById('qo-pts').textContent=q.points;
-  document.getElementById('qo-whose').textContent=teams[t.ti].name+' — '+teams[t.ti].players[t.pi]+' ist dran';
-  document.getElementById('qo-text').textContent=q.question;
-  document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
-  document.getElementById('ans-box').style.display='none';
-  document.getElementById('btn-reveal').style.display=q.answer?'block':'none';
-  document.getElementById('verdict-wrap').style.display='none';
-  document.getElementById('time-up-box').style.display='none';
-
-  // Hide verdict buttons for non-hosts
-  if(mpRoom && !mpIsHost){
-    document.getElementById('btn-reveal').style.display='none';
-    document.getElementById('verdict-wrap').style.display='none';
-  }
-
-  document.getElementById('q-overlay').classList.add('open');
+  showQuestionOverlay(ci,qi,t.ti,t.pi,true);
   startTimer();
-
-  // Sync to all clients
-  if(mpRoom && mpIsHost){
-    mpSend('open_question',{ci,qi,points:q.points,teamIdx:t.ti,playerIdx:t.pi});
-  }
+  // Broadcast to all
+  if(mpRoom) mpSend('open_q',{ci,qi,points:q.points,ti:t.ti,pi:t.pi});
 }
 
 // ── TIMER ──
@@ -938,7 +935,6 @@ function timeUp(){
   updateScores();
   addToHistory(playerName,t.ti,catName,currentQ.points,'wrong');
 
-  // Mark cell immediately as wrong
   const cell=currentQ.cell;
   cell.classList.add('used','res-wrong');
   cell.onclick=null;
@@ -950,22 +946,33 @@ function timeUp(){
   document.getElementById('btn-reveal').style.display='none';
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
   if(q.answer){document.getElementById('ans-box').style.display='block';}
-  document.getElementById('verdict-wrap').style.display='flex';
+  document.getElementById('verdict-wrap').style.display=(!mpRoom||mpIsHost)?'flex':'none';
   showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
+
+  // Broadcast time_up to clients
+  if(mpRoom&&mpIsHost){
+    turnIdx++;
+    mpSend('time_up',{ti:t.ti,points:currentQ.points,
+      newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
+    setTimeout(()=>{
+      document.getElementById('q-overlay').classList.remove('open');
+      currentQ=null;updateTurnBanner();updateTeamsSidebar();checkGameOver();
+    },2500);
+  }
 }
 
 // ── REVEAL & VERDICT ──
 function revealAnswer(){
-  if(mpRoom && !mpIsHost) return;
+  if(mpRoom&&!mpIsHost)return;
   stopTimer();
   document.getElementById('btn-reveal').style.display='none';
   document.getElementById('ans-box').style.display='block';
   document.getElementById('verdict-wrap').style.display='flex';
-  if(mpRoom && mpIsHost) mpSend('reveal_answer',{});
+  if(mpRoom) mpSend('reveal',{});
 }
 
 function verdict(correct){
-  if(mpRoom && !mpIsHost) return;
+  if(mpRoom&&!mpIsHost)return;
   stopTimer();
   const t=currentTurn();
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
@@ -973,22 +980,13 @@ function verdict(correct){
   const playerName=teams[t.ti].players[t.pi];
   const result=correct===true?'correct':correct===false?'wrong':'skip';
 
-  if(correct===true){
-    teams[t.ti].score+=currentQ.points;
-    updateScores();
-    showToast('✅ +'+currentQ.points+' für '+teams[t.ti].name+'!',2500);
-  } else if(correct===false){
-    teams[t.ti].score-=currentQ.points;
-    updateScores();
-    showToast('❌ -'+currentQ.points+' für '+teams[t.ti].name,2500);
-  }
+  if(correct===true){teams[t.ti].score+=currentQ.points;updateScores();showToast('✅ +'+currentQ.points+' für '+teams[t.ti].name+'!',2500);}
+  else if(correct===false){teams[t.ti].score-=currentQ.points;updateScores();showToast('❌ -'+currentQ.points+' für '+teams[t.ti].name,2500);}
 
   addToHistory(playerName,t.ti,catName,currentQ.points,result);
 
-  // Mark cell with player initial + result icon
   const cell=currentQ.cell;
-  cell.classList.add('used');
-  cell.classList.add('res-'+result);
+  cell.classList.add('used','res-'+result);
   cell.onclick=null;
   const icon=correct===true?'✓':correct===false?'✗':'—';
   const iconColor=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
@@ -997,103 +995,214 @@ function verdict(correct){
     +'<span class="cell-who" style="color:'+teamColor+'">'+escHtml(playerName)+'</span>';
 
   turnIdx++;
-  updateTurnBanner();
-  updateTeamsSidebar();
+  updateTurnBanner();updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
 
-  // Sync verdict to all clients BEFORE clearing currentQ
-  if(mpRoom && mpIsHost){
-    mpSend('verdict',{correct,
-      result, teamIdx:t.ti, points:q.points, turnIdx,
-      scores:[teams[0].score, teams[1].score]
-    });
+  // Broadcast verdict to all
+  if(mpRoom){
+    mpSend('verdict',{correct,result,ti:t.ti,points:q.points,
+      newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
   }
 
   currentQ=null;
   checkGameOver();
 }
 
-// ── MULTIPLAYER ACTION HANDLER (clients receive host actions) ──
-function mpOnAction(action, payload, from, fromId) {
-  // Only non-hosts process incoming actions
-  if(mpIsHost) return;
+// ══════════════════════════════════════
+// JEOPARDY MULTIPLAYER — STATE SYNC
+// ══════════════════════════════════════
 
-  if(action === 'open_question'){
-    const {ci, qi, points, teamIdx, playerIdx} = payload;
-    const q = quizData.categories[ci].questions[qi];
-    // Find the cell on the board
-    const cells = document.querySelectorAll('.board-point');
-    let targetCell = null;
-    let idx = 0;
-    document.querySelectorAll('.board-point').forEach(c => {
-      if(parseInt(c.dataset.ci)===ci && parseInt(c.dataset.qi)===qi) targetCell=c;
-    });
-    currentQ = {ci, qi, cell: targetCell, points};
-    const t = {ti: teamIdx, pi: playerIdx};
-    document.getElementById('qo-cat').textContent = quizData.categories[ci].name.toUpperCase();
-    document.getElementById('qo-pts').textContent = points;
-    document.getElementById('qo-whose').textContent = teams[teamIdx].name+' — '+teams[teamIdx].players[playerIdx]+' ist dran';
-    document.getElementById('qo-text').textContent = q.question;
-    document.getElementById('ans-box').textContent = '';
-    document.getElementById('ans-box').style.display='none';
-    document.getElementById('btn-reveal').style.display='none'; // clients don't get reveal button
-    document.getElementById('verdict-wrap').style.display='none'; // clients don't get verdict buttons
-    document.getElementById('time-up-box').style.display='none';
-    document.getElementById('q-overlay').classList.add('open');
+// Called when server fires game_started
+function mpOnGameStart(receivedQuizData) {
+  mpClose();
+  if(receivedQuizData){
+    quizData=receivedQuizData;
+    mpQuizDataForMultiplayer=receivedQuizData;
+  }
+  if(!mpRoom||!mpRoom.players||!mpRoom.players.length){goToSetup();return;}
+
+  // Shuffle & split players into 2 teams
+  const names=[...mpRoom.players.map(p=>p.name)];
+  for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
+  const half=Math.ceil(names.length/2);
+  teams[0]={name:'Team Blau',players:names.slice(0,half),score:0};
+  teams[1]={name:'Team Rot', players:names.slice(half),   score:0};
+
+  buildTurnOrder();
+  turnIdx=0;
+  gameHistory=[];
+  document.getElementById('game-title').textContent='🎯 '+(quizData.name||'Jeopardy');
+  buildBoard();
+  buildScoreArea();
+  updateTurnBanner();
+  updateTeamsSidebar();
+  showView('view-game');
+
+  // Host immediately syncs state so all clients get it
+  if(mpIsHost) syncState();
+}
+
+// ── SYNC: Host pushes full game state to all ──
+function syncState(){
+  if(!mpRoom||!mpIsHost)return;
+  const state={
+    teams:teams.map(t=>({name:t.name,players:t.players,score:t.score})),
+    turnIdx,
+    usedCells:getUsedCells(),
+    gameHistory
+  };
+  mpSend('state',state);
+}
+
+function getUsedCells(){
+  const used=[];
+  document.querySelectorAll('.board-point.used').forEach(c=>{
+    used.push({ci:parseInt(c.dataset.ci),qi:parseInt(c.dataset.qi),
+      html:c.innerHTML, classes:[...c.classList]});
+  });
+  return used;
+}
+
+// ── mpOnAction: receive actions from host ──
+function mpOnAction(action,payload){
+  if(mpIsHost)return; // host doesn't process own events
+
+  if(action==='state'){
+    // Apply full state
+    teams[0]={...teams[0],...payload.teams[0]};
+    teams[1]={...teams[1],...payload.teams[1]};
+    turnIdx=payload.turnIdx;
+    gameHistory=payload.gameHistory||[];
+    updateScores();
+    updateTurnBanner();
+    updateTeamsSidebar();
+    // Restore used cells
+    if(payload.usedCells){
+      payload.usedCells.forEach(({ci,qi,html,classes})=>{
+        const c=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
+        if(c){c.innerHTML=html;classes.forEach(cl=>c.classList.add(cl));c.onclick=null;}
+      });
+    }
+  }
+
+  else if(action==='open_q'){
+    // Show question overlay to all
+    const {ci,qi,points,ti,pi}=payload;
+    const q=quizData.categories[ci].questions[qi];
+    currentQ={ci,qi,cell:document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`),points};
+    showQuestionOverlay(ci,qi,ti,pi,false);
     startTimer();
   }
 
-  else if(action === 'reveal_answer'){
+  else if(action==='answer_submitted'){
+    // Show what the active player typed
+    const box=document.getElementById('submitted-answer-box');
+    box.style.display='block';
+    box.textContent='💬 '+payload.playerName+': "'+payload.answer+'"';
     stopTimer();
-    document.getElementById('btn-reveal').style.display='none';
-    const q = quizData.categories[currentQ.ci].questions[currentQ.qi];
-    document.getElementById('ans-box').textContent = q.answer ? '✅ '+q.answer : '';
-    document.getElementById('ans-box').style.display='block';
-    // No verdict buttons for clients
   }
 
-  else if(action === 'verdict'){
-    const {correct, result, teamIdx, points, turnIdx: newTurnIdx, scores} = payload;
+  else if(action==='reveal'){
+    const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
+    document.getElementById('btn-reveal').style.display='none';
+    document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
+    document.getElementById('ans-box').style.display='block';
+  }
+
+  else if(action==='verdict'){
+    const {correct,ti,points,newTurnIdx,scores,playerName,result}=payload;
     stopTimer();
-
-    // Update scores
-    teams[0].score = scores[0];
-    teams[1].score = scores[1];
+    teams[0].score=scores[0];teams[1].score=scores[1];
     updateScores();
-
-    // Mark cell on board
-    if(currentQ && currentQ.cell){
-      const cell = currentQ.cell;
-      cell.classList.add('used','res-'+result);
-      cell.onclick = null;
-      const icon = correct===true?'✓':correct===false?'✗':'—';
-      const iconColor = correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
-      const teamColor = teamIdx===0?'var(--team1)':'var(--team2)';
-      const playerName = teams[teamIdx].players[turnOrder[newTurnIdx-1]?.pi||0]||'';
-      cell.innerHTML='<span class="cell-icon" style="color:'+iconColor+'">'+icon+'</span>'
-        +'<span class="cell-who" style="color:'+teamColor+'">'+escHtml(playerName)+'</span>';
+    if(currentQ&&currentQ.cell){
+      const c=currentQ.cell;
+      c.classList.add('used','res-'+result);c.onclick=null;
+      const icon=correct===true?'✓':correct===false?'✗':'—';
+      const iconColor=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
+      const tc=ti===0?'var(--team1)':'var(--team2)';
+      c.innerHTML=`<span class="cell-icon" style="color:${iconColor}">${icon}</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
     }
-
-    turnIdx = newTurnIdx;
-    updateTurnBanner();
-    updateTeamsSidebar();
+    turnIdx=newTurnIdx;
     document.getElementById('q-overlay').classList.remove('open');
-    currentQ = null;
-
-    const pts = correct===true ? '+'+points : correct===false ? '-'+points : '—';
-    showToast((correct===true?'✅':'❌')+' '+pts+' für '+teams[teamIdx].name, 2500);
+    currentQ=null;
+    updateTurnBanner();updateTeamsSidebar();
+    const ptsText=(correct===true?'+':correct===false?'-':'')+(correct!==null?points:'—');
+    showToast((correct===true?'✅':correct===false?'❌':'—')+' '+ptsText+' für '+teams[ti].name,2500);
     checkGameOver();
   }
 
-  else if(action === 'game_over'){
-    showWinner();
+  else if(action==='time_up'){
+    // Time ran out - host already processed, clients just update
+    const {ti,points,newTurnIdx,scores,playerName}=payload;
+    teams[0].score=scores[0];teams[1].score=scores[1];
+    updateScores();
+    document.getElementById('time-up-box').style.display='block';
+    if(currentQ&&currentQ.cell){
+      const c=currentQ.cell;
+      c.classList.add('used','res-wrong');c.onclick=null;
+      const tc=ti===0?'var(--team1)':'var(--team2)';
+      c.innerHTML=`<span class="cell-icon" style="color:var(--red)">✗</span><span class="cell-who" style="color:${tc}">${escHtml(playerName)}</span>`;
+    }
+    setTimeout(()=>{
+      turnIdx=newTurnIdx;
+      document.getElementById('q-overlay').classList.remove('open');
+      currentQ=null;
+      updateTurnBanner();updateTeamsSidebar();
+      checkGameOver();
+    },2000);
   }
+
+  else if(action==='game_over'){showWinner();}
+}
+
+// ── Show question overlay ──
+function showQuestionOverlay(ci,qi,ti,pi,isActive){
+  const q=quizData.categories[ci].questions[qi];
+  document.getElementById('qo-cat').textContent=quizData.categories[ci].name.toUpperCase();
+  document.getElementById('qo-pts').textContent=q.points;
+  document.getElementById('qo-whose').textContent=teams[ti].name+' — '+teams[ti].players[pi]+' ist dran';
+  document.getElementById('qo-text').textContent=q.question;
+  document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
+  document.getElementById('ans-box').style.display='none';
+  document.getElementById('time-up-box').style.display='none';
+  document.getElementById('submitted-answer-box').style.display='none';
+  document.getElementById('submitted-answer-box').textContent='';
+  document.getElementById('player-answer-inp').value='';
+
+  // Answer input: only for active player in multiplayer
+  const isActivePlayer=mpRoom&&!mpIsHost&&mpMyName===teams[ti].players[pi];
+  document.getElementById('answer-input-wrap').style.display=isActivePlayer?'block':'none';
+
+  // Reveal + verdict: only for host, or local play
+  const showControls=!mpRoom||mpIsHost;
+  document.getElementById('btn-reveal').style.display=showControls&&q.answer?'block':'none';
+  document.getElementById('verdict-wrap').style.display=showControls?'flex':'none';
+
+  document.getElementById('q-overlay').classList.add('open');
+}
+
+// ── Active player submits answer ──
+function submitAnswer(){
+  const inp=document.getElementById('player-answer-inp');
+  const answer=inp.value.trim();
+  if(!answer)return;
+  inp.disabled=true;
+  document.getElementById('answer-input-wrap').querySelector('button').disabled=true;
+
+  // Show locally
+  const box=document.getElementById('submitted-answer-box');
+  box.style.display='block';
+  box.textContent='💬 '+mpMyName+': "'+answer+'"';
+
+  // Send to host & everyone
+  if(mpRoom) mpSend('answer_submitted',{playerName:mpMyName,answer});
+  stopTimer();
 }
 
 function checkGameOver(){
   const open=document.querySelectorAll('.board-point:not(.used)');
   if(open.length===0){
-    if(mpRoom && mpIsHost) mpSend('game_over',{});
+    if(mpRoom&&mpIsHost)mpSend('game_over',{});
     showWinner();
   }
 }
