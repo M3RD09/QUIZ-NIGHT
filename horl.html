@@ -431,12 +431,9 @@ function loadRound(){
   scaleItems=[];
   selectedItemIdx=null;
 
-  // Place anchor in the CENTER of the scale (not at its actual value)
+  // Anchor gets its real value as position (for correct/wrong checking)
   const anchor=round.items.find(it=>it.isAnchor);
-  if(anchor){
-    const mid=Math.round((round.scaleMin+round.scaleMax)/2);
-    scaleItems.push({item:anchor,position:mid,isCenter:true});
-  }
+  if(anchor) scaleItems.push({item:anchor, position:anchor.value});
 
   document.getElementById('round-badge').textContent='RUNDE '+(currentRound+1);
   document.getElementById('cat-badge').textContent=round.category;
@@ -450,56 +447,62 @@ function loadRound(){
 }
 
 // ── SCALE RENDER ──
+// Items are positioned by RANK (order), not by actual value
+// This ensures they always stay within the visible scale
 function renderScale(){
   const track=document.getElementById('scale-track');
   Array.from(track.children).forEach(c=>{
     if(!c.classList.contains('scale-line'))c.remove();
   });
 
-  const round=quizData.rounds[currentRound];
   const sorted=[...scaleItems].sort((a,b)=>a.position-b.position);
+  const total=sorted.length;
 
-  function pct(val){
-    return((val-round.scaleMin)/(round.scaleMax-round.scaleMin))*100;
+  // Spread items evenly: 10% to 90% of track width
+  function rankPct(rank, count){
+    if(count===1) return 50;
+    return 10 + (rank/(count-1))*80;
   }
 
-  // Place items on scale
-  sorted.forEach(si=>{
+  // Place items
+  sorted.forEach((si,rank)=>{
     const el=makeScaleItem(si);
-    el.style.left=pct(si.position)+'%';
+    el.style.left=rankPct(rank,total)+'%';
     track.appendChild(el);
   });
 
-  // Drop zones
+  // Drop zones between items (and at edges)
   const zones=[];
-  zones.push({id:'left', leftPct:0, rightPct:sorted.length?pct(sorted[0].position):100});
-  sorted.forEach((si,i)=>{
-    const nextPct=i<sorted.length-1?pct(sorted[i+1].position):100;
-    zones.push({id:'after-'+i, leftPct:pct(si.position), rightPct:nextPct});
-  });
+  if(total===0){
+    zones.push({id:'left', leftPct:0, rightPct:100});
+  } else {
+    // Left of first
+    zones.push({id:'left', leftPct:0, rightPct:rankPct(0,total)});
+    // Between each pair
+    sorted.forEach((si,i)=>{
+      const nextPct = i<total-1 ? rankPct(i+1,total) : 100;
+      zones.push({id:'after-'+i, leftPct:rankPct(i,total), rightPct:nextPct});
+    });
+  }
 
   zones.forEach(z=>{
     const dz=document.createElement('div');
-    dz.className='drop-zone';
+    dz.className='drop-zone'+(selectedItemIdx!==null?' ready':'');
     dz.dataset.zoneId=z.id;
     dz.style.left=z.leftPct+'%';
     dz.style.width=(z.rightPct-z.leftPct)+'%';
-
-    // Show arrow when item selected
-    if(selectedItemIdx!==null) dz.classList.add('ready');
 
     dz.addEventListener('click',()=>{
       if(selectedItemIdx===null){showToast('⬇️ Wähle erst ein Item unten!',1500);return;}
       handlePlace(z.id);
     });
-    // Drag & Drop
     dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
     dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
     dz.addEventListener('drop',e=>{
       e.preventDefault();
       dz.classList.remove('drag-over');
       const i=parseInt(e.dataTransfer.getData('itemIdx'));
-      if(!isNaN(i)){selectedItemIdx=i;}
+      if(!isNaN(i)) selectedItemIdx=i;
       handlePlace(z.id);
     });
     track.appendChild(dz);
