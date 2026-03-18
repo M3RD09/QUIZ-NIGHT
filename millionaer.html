@@ -550,6 +550,45 @@ function startGame(){
   showView('view-game');
 }
 
+// ── SIDEBAR & LADDER ──
+function buildSidebar(){
+  updateSidebar();
+}
+
+function updateSidebar(){
+  const container=document.getElementById('sb-players');
+  container.innerHTML='';
+  const sorted=[...players].sort((a,b)=>b.score-a.score);
+  sorted.forEach((p,rank)=>{
+    const orig=players.indexOf(p);
+    const el=document.createElement('div');
+    el.className='sb-player'+(rank===0?' active':'');
+    const colors=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6'];
+    el.innerHTML='<div class="sb-avatar" style="background:'+colors[orig%colors.length]+'">'+escHtml(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="sb-name">'+escHtml(p.name)+'</div>'
+      +'<div class="sb-score">'+p.score+'</div>';
+    container.appendChild(el);
+  });
+}
+
+function buildLadder(){
+  updateLadder();
+}
+
+function updateLadder(){
+  const ladder=document.getElementById('money-ladder');
+  if(!ladder||!quizData)return;
+  ladder.innerHTML='';
+  [...quizData.questions].reverse().forEach((q,i)=>{
+    const realIdx=quizData.questions.length-1-i;
+    const el=document.createElement('div');
+    el.className='ladder-item'+(realIdx===currentQIdx?' current':realIdx<currentQIdx?' done':' todo');
+    el.id='ladder-'+realIdx;
+    el.innerHTML='<span class="ladder-num">'+(realIdx+1)+'</span><span class="ladder-pts">'+q.points+'</span>';
+    ladder.appendChild(el);
+  });
+}
+
 // ── GAME ──
 function loadQuestion(){
   if(currentQIdx>=quizData.questions.length){showWinner();return;}
