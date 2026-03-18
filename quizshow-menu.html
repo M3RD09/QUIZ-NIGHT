@@ -603,13 +603,11 @@
     horl: {
       icon: '📈',
       title: 'Higher or Lower',
-      subtitle: 'Zahlenbasiertes Ratespiel. Die Gruppe schätzt zusammen — oder gegeneinander.',
+      subtitle: 'Platziere Items auf der Skala — richtig = Punkt, falsch = Herz verloren!',
       accent: '#2ecc71',
       actions: [
-        { icon: '▶️', title: 'Spiel starten', sub: 'Sofort spielen mit vorhandenen Daten', primary: true },
-        { icon: '📥', title: 'Quiz importieren', sub: 'Eigene Vergleiche laden (.quiz)' },
-        { icon: '✏️', title: 'Quiz erstellen', sub: 'Eigene Vergleichspaare anlegen' },
-        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelle Daten als Datei speichern' },
+        { icon: '▶️', title: 'Spiel starten', sub: 'Quiz importieren & sofort losspielen', primary: true, link: 'horl.html?action=play' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Kategorien & Items selbst anlegen', link: 'horl.html?action=editor' },
       ]
     }
   };
