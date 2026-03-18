@@ -365,10 +365,13 @@ body::before{
         <input class="mm-inp" id="mm-host-name" placeholder="z.B. Mert" maxlength="20">
         <label class="mm-inp-label">Quiz</label>
         <div id="mm-quiz-status" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">❌ Kein Quiz geladen</div>
-        <label class="btn-secondary" style="cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;">
-          📂 Quiz importieren (.quiz / .json)
-          <input type="file" accept=".quiz,.json" onchange="mmOverlayLoadQuiz(event)" style="display:none;">
-        </label>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <label class="btn-secondary" style="flex:1;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
+            📂 Importieren
+            <input type="file" accept=".quiz,.json" onchange="mmOverlayLoadQuiz(event)" style="display:none;">
+          </label>
+          <button id="mm-edit-btn" class="btn-secondary" onclick="mmOpenEditorFromOverlay()" style="flex:1;display:none;">✏️ Bearbeiten</button>
+        </div>
         <button class="btn-online" onclick="mmHostCreate()">🚀 Raum erstellen</button>
       </div>
       <!-- JOIN TAB -->
@@ -494,8 +497,8 @@ body::before{
 <!-- ══ EDITOR ══ -->
 <div class="view" id="view-editor">
   <div class="topbar">
-    <button class="btn-icon" onclick="showView('view-menu')">←</button>
-    <div class="topbar-title">✏️ Quiz erstellen</div>
+    <button class="btn-icon" onclick="mmEditorBack()">←</button>
+    <div class="topbar-title" id="mm-editor-title">✏️ Quiz erstellen</div>
   </div>
   <div class="view-body" style="padding-bottom:90px;">
     <div class="field-wrap">
@@ -507,7 +510,8 @@ body::before{
   </div>
   <div class="editor-footer">
     <button class="btn-gold" onclick="exportQuiz()">💾 Exportieren</button>
-    <button class="btn-primary" onclick="editorPlay()">▶ Spielen</button>
+    <button id="mm-editor-done-btn" class="btn-online" onclick="mmEditorSaveAndReturn()" style="display:none;">✔ Fertig</button>
+    <button class="btn-primary" onclick="editorPlay()" id="mm-editor-play-btn">▶ Spielen</button>
   </div>
 </div>
 
@@ -1518,10 +1522,55 @@ function mmOverlayLoadQuiz(ev){
       quizData=d;mmOverlayQuizLoaded=true;
       document.getElementById('mm-quiz-status').innerHTML='✅ <strong>'+escHtml(d.name||'Quiz')+'</strong> — '+d.questions.length+' Fragen';
       document.getElementById('mm-quiz-status').style.color='var(--green)';
+      document.getElementById('mm-edit-btn').style.display='block';
       showToast('✅ Quiz geladen: '+d.questions.length+' Fragen',2000);
     }catch{showToast('❌ Ungültige Datei!');}
   };
   r.readAsText(file);ev.target.value='';
+}
+
+let mmEditorFromOverlay=false;
+function mmOpenEditorFromOverlay(){
+  mmEditorFromOverlay=true;
+  // Quiz-Daten in Editor laden
+  document.getElementById('quiz-name').value=quizData.name||'';
+  document.getElementById('q-editor-container').innerHTML='';
+  editorQCount=0;
+  (quizData.questions||[]).forEach(q=>addEditorQuestion(q));
+  if(!quizData.questions||!quizData.questions.length)addEditorQuestion();
+  document.getElementById('mm-editor-title').textContent='✏️ Quiz bearbeiten';
+  document.getElementById('mm-editor-done-btn').style.display='block';
+  document.getElementById('mm-editor-play-btn').style.display='none';
+  mmCloseOverlay();
+  showView('view-editor');
+}
+function mmEditorBack(){
+  if(mmEditorFromOverlay){
+    mmEditorFromOverlay=false;
+    document.getElementById('mm-editor-title').textContent='✏️ Quiz erstellen';
+    document.getElementById('mm-editor-done-btn').style.display='none';
+    document.getElementById('mm-editor-play-btn').style.display='block';
+    showView('view-menu');
+    mmShowOnlineOverlay();
+  } else {
+    showView('view-menu');
+  }
+}
+function mmEditorSaveAndReturn(){
+  const data=collectEditorData();
+  if(!data.questions||!data.questions.length){showToast('⚠️ Mindestens eine Frage nötig!');return;}
+  quizData=data;
+  mmEditorFromOverlay=false;
+  document.getElementById('mm-editor-title').textContent='✏️ Quiz erstellen';
+  document.getElementById('mm-editor-done-btn').style.display='none';
+  document.getElementById('mm-editor-play-btn').style.display='block';
+  // Overlay-Status aktualisieren
+  document.getElementById('mm-quiz-status').innerHTML='✅ <strong>'+escHtml(data.name||'Quiz')+'</strong> — '+data.questions.length+' Fragen';
+  document.getElementById('mm-quiz-status').style.color='var(--green)';
+  document.getElementById('mm-edit-btn').style.display='block';
+  showView('view-menu');
+  mmShowOnlineOverlay();
+  showToast('✅ Änderungen gespeichert!',2000);
 }
 function mmHostCreate(){
   const name=document.getElementById('mm-host-name').value.trim();
