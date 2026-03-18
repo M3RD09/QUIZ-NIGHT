@@ -1606,8 +1606,10 @@ function mpBindEvents() {
     mpRoom = room;
     mpRenderLobbyPlayers();
   });
-  mpSocket.on('game_started', ({ quizData }) => {
+  mpSocket.on('game_started', ({ quizData, room }) => {
     mpClose();
+    // Update mpRoom with the final player list before game starts
+    if (room) mpRoom = room;
     if (typeof mpOnGameStart === 'function') mpOnGameStart(quizData);
   });
   mpSocket.on('game_action', ({ action, payload, from, fromId }) => {
