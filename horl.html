@@ -68,54 +68,59 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .game-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
 
 /* ── SCALE AREA ── */
-.scale-area{padding:16px 24px 10px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
-.scale-header{display:flex;justify-content:space-between;margin-bottom:10px;}
-.scale-end-label{font-size:14px;color:var(--muted);font-weight:700;}
+.scale-area{padding:16px 24px 14px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
+.scale-header{display:flex;justify-content:space-between;margin-bottom:8px;}
+.scale-end-label{font-size:15px;color:var(--muted);font-weight:700;}
 
-.scale-row{
-  display:flex;align-items:center;gap:0;
-  min-height:120px;padding:6px 0;
-  overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative;
-}
-.scale-row::before{
-  content:'';position:absolute;left:0;right:0;top:50%;
-  height:4px;background:linear-gradient(90deg,var(--blue),var(--green),var(--gold),var(--orange),var(--red));
-  transform:translateY(-50%);pointer-events:none;z-index:0;
-}
+/* Fixed-width track — items are absolutely positioned on it */
+.scale-track-wrap{position:relative;height:130px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.scale-track{position:relative;height:130px;min-width:100%;}
+
+/* Gradient line */
+.scale-line{position:absolute;left:0;right:0;top:50px;height:5px;
+  background:linear-gradient(90deg,var(--blue),var(--green),var(--gold),var(--orange),var(--red));
+  border-radius:3px;}
+
+/* Drop zones: one per gap between items, absolutely positioned */
 .drop-zone{
-  width:36px;min-width:36px;height:100px;
+  position:absolute;top:10px;height:110px;
   border:2px dashed transparent;border-radius:10px;
-  transition:all .2s;position:relative;z-index:1;flex-shrink:0;
+  transition:all .15s;z-index:3;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
 }
 .drop-zone.drag-over{
   border-color:var(--green);background:rgba(46,204,113,.14);
-  width:110px;min-width:110px;
 }
-.drop-zone.drag-over::after{content:'↓';font-size:26px;color:var(--green);font-weight:700;}
+.drop-zone.drag-over::after{content:'↓';font-size:28px;color:var(--green);font-weight:900;}
 
-.scale-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0;position:relative;z-index:2;padding:4px 8px;}
+/* Items absolutely positioned */
+.scale-item{
+  position:absolute;top:2px;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;
+  z-index:4;
+}
 .scale-item-img{
-  width:80px;height:80px;border-radius:14px;
+  width:84px;height:84px;border-radius:14px;
   border:2px solid var(--border);background:var(--surface2);
-  display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;
 }
 .scale-item-img img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
-.scale-item.anchor .scale-item-img{border-color:var(--gold);border-width:3px;box-shadow:0 0 20px rgba(245,200,66,.45);}
+.scale-item.anchor .scale-item-img{border-color:var(--gold);border-width:3px;box-shadow:0 0 22px rgba(245,200,66,.5);}
 .scale-item.just-placed .scale-item-img{border-color:var(--green);box-shadow:0 0 20px rgba(46,204,113,.5);animation:popIn .4s ease;}
-.scale-item-val{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--green);margin-top:5px;}
-.scale-item-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
+.scale-item-val{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--green);margin-top:4px;}
+.scale-item-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
 
-@keyframes popIn{0%{transform:scale(.6);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+@keyframes popIn{0%{transform:translateX(-50%) scale(.6);}60%{transform:translateX(-50%) scale(1.2);}100%{transform:translateX(-50%) scale(1);}}
 
 /* ── ITEMS POOL ── */
-.turn-bar{padding:12px 22px;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;font-size:16px;font-weight:600;}
-.items-pool{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start;}
+.turn-bar{padding:12px 22px;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;font-size:18px;font-weight:600;}
+.items-pool{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-wrap:wrap;gap:16px;align-content:flex-start;}
 
 .pool-item{
-  width:110px;background:var(--surface2);
+  width:120px;background:var(--surface2);
   border:2px solid var(--border);border-radius:14px;
-  padding:10px 8px;cursor:grab;
+  padding:12px 8px;cursor:grab;
   transition:all .2s;text-align:center;
   user-select:none;-webkit-user-select:none;
 }
@@ -124,9 +129,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .pool-item.placed{opacity:.2;cursor:default;pointer-events:none;filter:grayscale(1);}
 .pool-item.wrong-flash{animation:wrongFlash .5s ease;}
 @keyframes wrongFlash{0%,100%{border-color:var(--border);}50%{border-color:var(--red);background:rgba(232,53,74,.15);}}
-.pool-img{width:80px;height:80px;border-radius:12px;background:var(--surface);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;}
+.pool-img{width:84px;height:84px;border-radius:12px;background:var(--surface);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:36px;overflow:hidden;}
 .pool-img img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
-.pool-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1.4;color:var(--text);}
+.pool-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1.4;color:var(--text);}
 
 /* SIDEBAR — bottom */
 .game-sidebar{width:100%;background:var(--surface);border-top:2px solid var(--border);flex-shrink:0;max-height:110px;}
@@ -281,11 +286,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <!-- Scale -->
       <div class="scale-area">
         <div class="scale-header">
-          <span class="scale-end-label" id="scale-min-label">1 — low</span>
-          <span class="scale-end-label" id="scale-max-label">high — 15</span>
+          <span class="scale-end-label" id="scale-min-label">low — 1</span>
+          <span class="scale-end-label" id="scale-max-label">15 — high</span>
         </div>
-        <!-- The scale row: items + drop zones interleaved -->
-        <div class="scale-row" id="scale-row"></div>
+        <div class="scale-track-wrap">
+          <div class="scale-track" id="scale-track">
+            <div class="scale-line"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Turn bar -->
@@ -445,47 +453,50 @@ function loadRound(){
 
 // ── SCALE RENDER ──
 function renderScale(){
-  const row=document.getElementById('scale-row');
-  row.innerHTML='';
+  const track=document.getElementById('scale-track');
+  // Remove old items and drop zones, keep scale-line
+  Array.from(track.children).forEach(c=>{
+    if(!c.classList.contains('scale-line'))c.remove();
+  });
 
-  // Sort placed items by position
+  const round=quizData.rounds[currentRound];
   const sorted=[...scaleItems].sort((a,b)=>a.position-b.position);
+  const trackW=track.offsetWidth||window.innerWidth-50;
 
-  // Build: dropZone | item | dropZone | item | ... | dropZone
-  // Each dropZone represents placing BEFORE the next item (or after the last)
+  function pct(val){
+    return((val-round.scaleMin)/(round.scaleMax-round.scaleMin))*100;
+  }
 
-  // Left edge drop zone
-  row.appendChild(makeDropZone('left'));
+  // Place items
+  sorted.forEach(si=>{
+    const el=makeScaleItem(si);
+    el.style.left=pct(si.position)+'%';
+    track.appendChild(el);
+  });
 
+  // Drop zones between items
+  // Zone positions: left-edge, between each pair, right-edge
+  const zones=[];
+  zones.push({id:'left', leftPct:0, rightPct: sorted.length?pct(sorted[0].position):100});
   sorted.forEach((si,i)=>{
-    row.appendChild(makeScaleItem(si));
-    // Drop zone after this item
-    const dz=makeDropZone('after-'+i);
-    row.appendChild(dz);
+    const nextPct=i<sorted.length-1?pct(sorted[i+1].position):100;
+    zones.push({id:'after-'+i, leftPct:pct(si.position), rightPct:nextPct});
   });
-}
 
-function makeDropZone(id){
-  const dz=document.createElement('div');
-  dz.className='drop-zone';
-  dz.dataset.zoneId=id;
-  dz.addEventListener('dragover',e=>{
-    e.preventDefault();
-    dz.classList.add('drag-over');
-    dragOverZone=id;
+  zones.forEach(z=>{
+    const dz=document.createElement('div');
+    dz.className='drop-zone';
+    dz.dataset.zoneId=z.id;
+    dz.style.left=z.leftPct+'%';
+    dz.style.width=(z.rightPct-z.leftPct)+'%';
+    dz.style.minWidth='30px';
+
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');dragOverZone=z.id;});
+    dz.addEventListener('dragleave',()=>{dz.classList.remove('drag-over');if(dragOverZone===z.id)dragOverZone=null;});
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');handleDrop(z.id);});
+    dz.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+    track.appendChild(dz);
   });
-  dz.addEventListener('dragleave',()=>{
-    dz.classList.remove('drag-over');
-    if(dragOverZone===id)dragOverZone=null;
-  });
-  dz.addEventListener('drop',e=>{
-    e.preventDefault();
-    dz.classList.remove('drag-over');
-    handleDrop(id);
-  });
-  // Touch support
-  dz.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
-  return dz;
 }
 
 function makeScaleItem(si){
@@ -557,12 +568,12 @@ function setupTouchDrag(pool){
     touchGhost.style.left=(touch.clientX-35)+'px';
     touchGhost.style.top=(touch.clientY-35)+'px';
 
-    // Highlight drop zone under finger
-    document.querySelectorAll('.drop-zone').forEach(dz=>dz.classList.remove('drag-over'));
     const el=document.elementFromPoint(touch.clientX,touch.clientY);
-    if(el&&el.classList.contains('drop-zone')){
-      el.classList.add('drag-over');
-      dragOverZone=el.dataset.zoneId;
+    const dz=el&&el.closest('.drop-zone');
+    document.querySelectorAll('.drop-zone').forEach(d=>d.classList.remove('drag-over'));
+    if(dz){
+      dz.classList.add('drag-over');
+      dragOverZone=dz.dataset.zoneId;
     } else {
       dragOverZone=null;
     }
@@ -612,21 +623,16 @@ function handleDrop(zoneId){
     showFlash(true);
     showToast('✅ Richtig! +1 Punkt für '+player.name,2000);
     renderScale();
-    // Animate last placed
-    const scaleRow=document.getElementById('scale-row');
-    const items=scaleRow.querySelectorAll('.scale-item:not(.anchor)');
-    if(items.length){
-      const last=items[items.length-1];
-      // Find the correct one
-      const si=scaleItems.find(s=>s.item===item);
-      if(si){}
-      scaleRow.querySelectorAll('.scale-item').forEach(el=>{
-        if(el.querySelector('.scale-item-name')&&el.querySelector('.scale-item-name').textContent===item.name){
+    // Animate just placed item
+    setTimeout(()=>{
+      document.querySelectorAll('#scale-track .scale-item:not(.anchor)').forEach(el=>{
+        const nameEl=el.querySelector('.scale-item-name');
+        if(nameEl&&nameEl.textContent===item.name){
           el.classList.add('just-placed');
           setTimeout(()=>el.classList.remove('just-placed'),600);
         }
       });
-    }
+    },50);
     renderPool();
     updateSidebar();
 
