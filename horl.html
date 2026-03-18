@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Higher or Lower — Quiz Games by Mert</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
 :root{
   --bg:#06080f; --surface:#0f1118; --surface2:#181c28;
@@ -373,12 +372,10 @@ const SERVER_URL = 'https://quiz-server-production-9398.up.railway.app';
 const COLORS = ['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
 
 // ── GLOBALS ──
-let socket = null;
-let myId = null;
+let mpSocket = null;
+let mpRoom = null;
 let myName = '';
 let isHost = false;
-let roomCode = '';
-let lobbyPlayers = [];
 let quizData = null;
 let horlEditorFromLobby = false;
 let horlEditorFromOverlay = false;
@@ -445,36 +442,42 @@ function horlOpenEditorFromOverlay(){
   showView('view-editor');
 }
 
-// ── SOCKET ──
+// ── SOCKET (loaded dynamically like hotzones) ──
 function mpConnect(cb){
-  if(socket && socket.connected){ cb(); return; }
-  if(socket){ socket.disconnect(); }
-  socket = io(SERVER_URL, {transports:['websocket']});
-  socket.on('connect', ()=>{ myId = socket.id; cb(); });
-  socket.on('disconnect', ()=>{ showToast('🔌 Verbindung getrennt'); });
-  socket.on('player_joined', d=>{ lobbyPlayers = d.players||[]; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
-  socket.on('player_left',   d=>{ lobbyPlayers = d.players||[]; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
-  socket.on('room_update',   d=>{ lobbyPlayers = d.players||[]; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
-  socket.on('game_action', d=>{
-    if(d.type === 'horl_state'){
-      horlState = d.state;
-      if(!document.getElementById('view-game').classList.contains('active')){
-        showView('view-game');
+  if(mpSocket && mpSocket.connected){ cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdn.socket.io/4.7.2/socket.io.min.js';
+  s.onload = ()=>{
+    mpSocket = io(SERVER_URL, {transports:['websocket','polling']});
+    mpSocket.on('connect', cb);
+    mpSocket.on('player_joined', ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+    mpSocket.on('player_left',   ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+    mpSocket.on('room_update',   ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+    mpSocket.on('game_started',  ({room})=>{ if(room) mpRoom=room; });
+    mpSocket.on('game_action', ({action, payload})=>{
+      if(action === 'horl_state'){
+        horlState = payload;
+        if(!document.getElementById('view-game').classList.contains('active')){
+          showView('view-game');
+        }
+        renderGameView();
+        return;
       }
-      renderGameView();
-      return;
-    }
-    if(isHost) horlProcessAction(d);
-  });
+      if(isHost) horlProcessAction(action, payload);
+    });
+    mpSocket.on('error', ({msg})=>{ showHorlStatus('err','❌ '+(msg||'Fehler')); showToast('❌ '+(msg||'Fehler')); });
+    mpSocket.on('disconnect', ()=>{ showToast('🔌 Verbindung getrennt'); });
+  };
+  document.head.appendChild(s);
 }
 
-function mpSend(type, data){
-  if(!socket) return;
-  socket.emit('game_action', Object.assign({roomCode, type}, data));
+function mpSend(action, payload){
+  if(!mpSocket||!mpRoom) return;
+  mpSocket.emit('game_action', {code: mpRoom.code, action, payload});
 }
 
 function broadcastState(){
-  mpSend('horl_state', {state: horlState});
+  mpSend('horl_state', horlState);
 }
 
 // ── HOST CREATE ──
@@ -486,15 +489,16 @@ function horlHostCreate(){
   myName = name;
   showHorlStatus('ok','🔌 Verbinde...');
   mpConnect(()=>{
-    socket.emit('create_room', {playerName: name});
-    socket.once('room_created', d=>{
-      roomCode = d.roomCode;
+    mpSocket.emit('create_room', {game:'horl', playerName: name, quizData:{}});
+    mpSocket.once('room_created', ({code, room})=>{
+      mpRoom = room;
+      mpRoom.code = code;
       isHost = true;
-      lobbyPlayers = d.players || [{id: myId, name, isHost: true}];
       horlCloseOverlay();
       showView('view-lobby');
       renderLobby();
     });
+    mpSocket.once('error', ({msg})=>{ showHorlStatus('err','❌ '+(msg||'Fehler')); horlShowOverlay(); });
   });
 }
 
@@ -507,31 +511,34 @@ function horlPlayerJoin(){
   myName = name;
   showHorlStatus('ok','🔌 Verbinde...');
   mpConnect(()=>{
-    socket.emit('join_room', {playerName: name, roomCode: code});
-    socket.once('room_joined', d=>{
-      if(d.error){ showHorlStatus('err','❌ '+d.error); return; }
-      roomCode = d.roomCode||code;
+    mpSocket.emit('join_room', {code, playerName: name});
+    mpSocket.once('room_joined', ({room, yourName, code: c})=>{
+      mpRoom = room;
+      mpRoom.code = c || code;
+      myName = yourName || name;
       isHost = false;
-      lobbyPlayers = d.players||[];
       horlCloseOverlay();
       showView('view-lobby');
       renderLobby();
     });
+    mpSocket.once('error', ({msg})=>{ showHorlStatus('err','❌ '+(msg||'Raum nicht gefunden')); horlShowOverlay(); });
   });
 }
 
 // ── LOBBY ──
 function renderLobby(){
-  document.getElementById('horl-lobby-code').textContent = roomCode;
+  if(!mpRoom) return;
+  document.getElementById('horl-lobby-code').textContent = mpRoom.code;
+  const players = mpRoom.players || [];
   const list = document.getElementById('horl-lobby-players');
   list.innerHTML = '';
-  lobbyPlayers.forEach((p, i)=>{
+  players.forEach((p, i)=>{
     const color = COLORS[i % COLORS.length];
     const el = document.createElement('div');
     el.className = 'lobby-player';
     el.innerHTML = '<div class="lobby-player-avatar" style="background:'+color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
-      +'<div class="lobby-player-name">'+esc(p.name)+'</div>'
-      +(p.isHost?'<div class="lobby-player-badge">HOST</div>':'');
+      +'<div class="lobby-player-name">'+esc(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:11px;">(du)</span>':'')+'</div>'
+      +(p.isHost?'<div class="lobby-player-badge">HOST</div>':'<div class="lobby-player-badge">Bereit</div>');
     list.appendChild(el);
   });
 
@@ -546,7 +553,7 @@ function renderLobby(){
     if(quizData){
       qi.style.display = 'flex';
       document.getElementById('horl-lobby-quiz-name').textContent = '📊 '+quizData.name+' ('+quizData.rounds.length+' Runden)';
-      document.getElementById('horl-lobby-start-btn').disabled = false;
+      document.getElementById('horl-lobby-start-btn').disabled = players.filter(p=>!p.isHost).length < 1;
     } else {
       qi.style.display = 'none';
       document.getElementById('horl-lobby-start-btn').disabled = true;
@@ -564,26 +571,29 @@ function horlChangeLobbyHearts(d){
 }
 
 function horlLobbyLeave(){
-  if(socket){ socket.disconnect(); socket = null; }
-  isHost = false; roomCode = ''; lobbyPlayers = [];
+  if(mpSocket){ mpSocket.disconnect(); mpSocket = null; }
+  mpRoom = null; isHost = false;
+  history.replaceState(null,'',window.location.pathname);
   showView('view-menu');
 }
 
 function horlCopyCode(){
-  const url = window.location.origin + window.location.pathname + '?room=' + roomCode;
-  navigator.clipboard.writeText(url).then(()=>showToast('📋 Link kopiert!')).catch(()=>showToast('Code: '+roomCode));
+  if(!mpRoom) return;
+  const url = window.location.origin + window.location.pathname + '?room=' + mpRoom.code;
+  navigator.clipboard.writeText(url).then(()=>showToast('📋 Link kopiert!')).catch(()=>showToast('Code: '+mpRoom.code));
 }
 
 // ── START GAME ──
 function horlStartGame(){
   if(!quizData||!quizData.rounds.length){ showToast('⚠️ Quiz erforderlich!'); return; }
+  const nonHostPlayers = (mpRoom.players||[]).filter(p=>!p.isHost);
+  if(!nonHostPlayers.length){ showToast('⚠️ Mindestens 1 Spieler nötig!'); return; }
   const round0 = quizData.rounds[0];
   const startIdx = Math.floor(Math.random() * round0.items.length);
   horlState = {
     phase: 'playing',
     quizData: quizData,
-    players: lobbyPlayers.map((p, i)=>({
-      id: p.id,
+    players: nonHostPlayers.map((p, i)=>({
       name: p.name,
       hearts: horlLobbyHearts,
       score: 0,
@@ -598,22 +608,22 @@ function horlStartGame(){
     resultFlashId: 0,
     lastResult: null
   };
-  socket.emit('start_game', {roomCode});
-  broadcastState();
+  mpSocket.emit('start_game', {code: mpRoom.code});
+  setTimeout(()=>{ broadcastState(); showView('view-game'); renderGameView(); }, 350);
 }
 
 // ── HOST PROCESSES ACTIONS ──
-function horlProcessAction(d){
+function horlProcessAction(action, payload){
   if(!horlState || horlState.phase === 'end') return;
   const active = horlState.players[horlState.currentPlayerIdx];
 
-  if(d.type === 'horl_select'){
-    if(!active || active.id !== d.playerId) return;
-    horlState.selectedItemIdx = (horlState.selectedItemIdx === d.itemIdx) ? null : d.itemIdx;
+  if(action === 'horl_select'){
+    if(!active || active.name !== payload.playerName) return;
+    horlState.selectedItemIdx = (horlState.selectedItemIdx === payload.itemIdx) ? null : payload.itemIdx;
     broadcastState();
 
-  } else if(d.type === 'horl_place'){
-    if(!active || active.id !== d.playerId) return;
+  } else if(action === 'horl_place'){
+    if(!active || active.name !== payload.playerName) return;
     if(horlState.selectedItemIdx === null) return;
 
     const round = horlState.quizData.rounds[horlState.currentRound];
@@ -621,7 +631,7 @@ function horlProcessAction(d){
     const sorted = [...horlState.scaleItemIndices].sort((a,b)=>round.items[a].value - round.items[b].value);
 
     let leftVal = -Infinity, rightVal = Infinity;
-    const zid = d.zoneId;
+    const zid = payload.zoneId;
     if(zid === 'left'){
       rightVal = round.items[sorted[0]].value;
     } else if(zid === 'right'){
@@ -687,7 +697,7 @@ function renderGameView(){
 
   const round = horlState.quizData.rounds[horlState.currentRound];
   const active = horlState.players[horlState.currentPlayerIdx];
-  const isMyTurn = active && active.id === myId;
+  const isMyTurn = active && active.name === myName;
 
   document.getElementById('round-badge').textContent = 'RUNDE '+(horlState.currentRound+1);
   document.getElementById('cat-badge').textContent = round.category;
@@ -721,7 +731,7 @@ function renderScaleOnline(round, isMyTurn){
     const z = document.createElement('div');
     z.className = 'scale-zone'+(isMyTurn && hasSel ? ' active' : '');
     if(isMyTurn && hasSel){
-      z.addEventListener('click', ()=>mpSend('horl_place', {zoneId, playerId: myId}));
+      z.addEventListener('click', ()=>mpSend('horl_place', {zoneId, playerName: myName}));
     }
     row.appendChild(z);
     row.appendChild(makeScaleCard(round.items[itemIdx], i===0 && sorted.length===1));
@@ -730,7 +740,7 @@ function renderScaleOnline(round, isMyTurn){
   const rz = document.createElement('div');
   rz.className = 'scale-zone'+(isMyTurn && hasSel ? ' active' : '');
   if(isMyTurn && hasSel){
-    rz.addEventListener('click', ()=>mpSend('horl_place', {zoneId:'right', playerId: myId}));
+    rz.addEventListener('click', ()=>mpSend('horl_place', {zoneId:'right', playerName: myName}));
   }
   row.appendChild(rz);
 }
@@ -759,7 +769,7 @@ function renderPoolOnline(round, isMyTurn){
       : '<span>📦</span>';
     card.innerHTML = '<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
     if(!onScale && isMyTurn){
-      card.addEventListener('click', ()=>mpSend('horl_select', {itemIdx: i, playerId: myId}));
+      card.addEventListener('click', ()=>mpSend('horl_select', {itemIdx: i, playerName: myName}));
     }
     pool.appendChild(card);
   });
@@ -774,12 +784,12 @@ function updateTurnBarOnline(active, isMyTurn, round){
         +'<span style="color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</span>'
         +' ausgewählt — klicke eine Zone ↑';
     } else {
-      bar.innerHTML = '<span style="color:var(--green);font-weight:800;">Du bist dran!</span> Wähle ein Item ↓';
+      bar.innerHTML = '<span style="color:var(--green);font-weight:800;">Du bist dran!</span> Wähle ein Item aus dem Pool ↓';
     }
   } else {
     const selText = horlState.selectedItemIdx !== null
       ? ' → <span style="color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</span> ausgewählt...'
-      : ' wählt ein Item...';
+      : ' ist dran — wählt ein Item...';
     bar.innerHTML = '<span style="color:'+esc(active.color)+';font-weight:800;">'+esc(active.name)+'</span>'+selText;
   }
 }
@@ -834,8 +844,9 @@ function showWinnerOnline(){
 }
 
 function horlLeaveGame(){
-  if(socket){ socket.disconnect(); socket = null; }
-  horlState = null; isHost = false; roomCode = ''; lobbyPlayers = [];
+  if(mpSocket){ mpSocket.disconnect(); mpSocket = null; }
+  horlState = null; mpRoom = null; isHost = false;
+  history.replaceState(null,'',window.location.pathname);
   showView('view-menu');
 }
 
@@ -898,7 +909,6 @@ function horlEditorSaveToLobby(){
   horlEditorFromOverlay = false;
   document.getElementById('horl-editor-done-btn').style.display = 'none';
   document.getElementById('horl-editor-play-btn').style.display = 'flex';
-  // Update overlay quiz status
   document.getElementById('horl-quiz-status').style.display = 'flex';
   document.getElementById('horl-quiz-status-text').textContent = '✅ '+data.name+' — '+data.rounds.length+' Runde(n)';
   document.getElementById('horl-edit-btn').style.display = 'block';
