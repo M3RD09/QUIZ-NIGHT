@@ -328,6 +328,7 @@ to{opacity:1;}}
       ▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
+    <button class="btn-secondary" onclick="showJoinOverlay()">🎮 Spiel beitreten</button>
         <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
@@ -905,8 +906,9 @@ function mpSend(action,payload){
 // Each player has: {name, score, choice: null|0-3, jokers:{f:true,r:true}}
 // mpVotes = {playerName: choiceIdx} — collected during voting phase
 // Phase: 'voting' | 'revealed'
-let mpVotes = {};        // {name: choiceIdx}
+let mpVotes = {};        // {name: {choice, hasRisiko}}
 let mpPhase = 'voting';  // current phase
+var mpSpyWatchers = [];  // players currently watching live spy overlay
 
 // ── Game Start (everyone) ──
 function mpBeginGame(){
@@ -1024,10 +1026,18 @@ function mpOnVote(playerName, choice, hasRisiko){
   // Update vote count in host bar
   const vc=document.getElementById('mp-vote-count');
   if(vc) vc.textContent=`${Object.keys(mpVotes).length}/${players.length} haben geantwortet`;
+  // Push live update to all SPY watchers
+  mpSpyWatchers.forEach(function(watcher){ mpSendSpyCounts(watcher); });
   // Auto-reveal if all voted
   if(Object.keys(mpVotes).length>=players.length){
     setTimeout(mpHostReveal, 800);
   }
+}
+
+function mpSendSpyCounts(forPlayer){
+  var counts=[0,0,0,0];
+  Object.values(mpVotes).forEach(function(v){ if(v.choice>=0&&v.choice<4) counts[v.choice]++; });
+  mpSend('spy_result',{counts:counts, forPlayer:forPlayer, total:Object.keys(mpVotes).length, playerCount:players.length});
 }
 
 // ── HOST: reveal answer ──
@@ -1101,7 +1111,7 @@ function mpApplyReveal(cIdx, results){
 
 // ── HOST: next question ──
 function mpHostNext(){
-  mpPhase='voting'; mpVotes={};
+  mpPhase='voting'; mpVotes={}; mpSpyWatchers=[];
   // Clear reveal info
   const ri=document.getElementById('mp-reveal-info');
   if(ri) ri.remove();
@@ -1128,10 +1138,8 @@ function mpOnAction(action,payload){
       if(jType==='r') risikoActive=true;
     }
     if(action==='spy_request'){
-      var spyCounts=[0,0,0,0];
-      var voteVals=Object.values(mpVotes);
-      voteVals.forEach(function(c){if(c>=0&&c<4)spyCounts[c]++;});
-      mpSend('spy_result',{counts:spyCounts, forPlayer:payload.playerName});
+      if(!mpSpyWatchers.includes(payload.playerName)) mpSpyWatchers.push(payload.playerName);
+      mpSendSpyCounts(payload.playerName);
     }
     return;
   }
@@ -1163,6 +1171,8 @@ function mpOnAction(action,payload){
       const msg=myResult.correct?`✅ Richtig! +${quizData.questions[currentQIdx].points*(risikoActive?2:1)} Punkte`:'❌ Falsch!';
       showToast(msg,3000);
     }
+    const spyOv=document.getElementById('spy-live-overlay');
+    if(spyOv) spyOv.remove();
     const ind=document.getElementById('mp-waiting-ind');
     if(ind) ind.textContent='⏳ Warte auf nächste Frage...';
     return;
@@ -1178,6 +1188,8 @@ function mpOnAction(action,payload){
     players.forEach(function(p){p._usedJokerThisQ=false;});
     const ri=document.getElementById('mp-reveal-info');
     if(ri) ri.remove();
+    const spyOv2=document.getElementById('spy-live-overlay');
+    if(spyOv2) spyOv2.remove();
     // Remove fire animation
     document.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('on-fire'));
     loadQuestion();
@@ -1201,9 +1213,8 @@ function mpOnAction(action,payload){
   }
 
   if(action==='spy_result'){
-    // Only show to the player who requested (others receive this too — ignore)
     if(payload.forPlayer !== mpMyName) return;
-    showSpyResult(payload.counts);
+    _spyUpdateOverlay(payload.counts, payload.total||0, payload.playerCount||players.length);
     return;
   }
 
@@ -1346,36 +1357,42 @@ function useSpy(){
   mpSend('spy_request',{playerName: mpMyName});
 }
 
-function showSpyResult(counts){
-  var total = counts.reduce(function(a,b){ return a+b; },0);
-  if(total === 0){
-    showToast('🕵️ Noch hat niemand abgestimmt!',2000);
-    return;
+function _spyUpdateOverlay(counts, voted, total){
+  var maxH=72;
+  var ov=document.getElementById('spy-live-overlay');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.id='spy-live-overlay';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:700;display:flex;align-items:center;justify-content:center;animation:mpIn .25s ease;';
+    ov.innerHTML='<div style="background:var(--surface);border:2px solid rgba(74,144,217,.5);border-radius:20px;padding:28px 24px;width:90%;max-width:340px;text-align:center;">'
+      +'<div style="font-size:40px;margin-bottom:4px;">🕵️</div>'
+      +'<div style="font-family:\'Bebas Neue\';font-size:28px;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">SPY LIVE</div>'
+      +'<div id="spy-voted-label" style="font-size:12px;color:var(--muted);margin-bottom:16px;"></div>'
+      +'<div id="spy-bars" style="display:flex;gap:8px;align-items:flex-end;height:'+maxH+'px;margin-bottom:8px;"></div>'
+      +'<div style="font-size:10px;color:var(--muted2);margin-bottom:18px;letter-spacing:.08em;">LIVE · AKTUALISIERT AUTOMATISCH</div>'
+      +'<button onclick="document.getElementById(\'spy-live-overlay\').remove()" style="padding:9px 28px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:14px;cursor:pointer;">Schließen</button>'
+      +'</div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click',function(e){ if(e.target===ov) ov.remove(); });
   }
 
-  var maxH = 72;
-  var barsHtml = LETTERS.map(function(l,i){
-    var pct  = Math.round(counts[i]/total*100);
-    var h    = Math.max(Math.round(pct/100*maxH),4);
-    var col  = 'var(--accent)';
+  document.getElementById('spy-voted-label').textContent=voted+' von '+total+' haben abgestimmt';
+
+  var barsEl=document.getElementById('spy-bars');
+  if(!barsEl) return;
+  var totalVotes=counts.reduce(function(a,b){return a+b;},0);
+  barsEl.innerHTML=LETTERS.map(function(l,i){
+    var pct=totalVotes>0?Math.round(counts[i]/totalVotes*100):0;
+    var h=totalVotes>0?Math.max(Math.round(pct/100*maxH),3):3;
+    var active=counts[i]>0;
+    var col=active?'var(--accent)':'var(--border)';
     return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">'
-      +'<div style="font-size:11px;color:var(--muted);">'+pct+'%</div>'
-      +'<div style="width:100%;height:'+h+'px;background:'+col+';border-radius:5px 5px 0 0;transition:height .4s;"></div>'
+      +'<div style="font-size:11px;color:var(--muted);min-height:14px;">'+(active?pct+'%':'')+'</div>'
+      +'<div style="width:100%;height:'+h+'px;background:'+col+';border-radius:5px 5px 0 0;transition:height .35s,background .25s;"></div>'
       +'<div style="font-family:\'Bebas Neue\';font-size:18px;color:'+col+';">'+l+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);">'+counts[i]+'</div>'
       +'</div>';
   }).join('');
-
-  var ov = document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:700;display:flex;align-items:center;justify-content:center;animation:mpIn .25s ease;';
-  ov.innerHTML='<div style="background:var(--surface);border:2px solid rgba(74,144,217,.5);border-radius:20px;padding:28px;width:90%;max-width:320px;text-align:center;">'
-    +'<div style="font-size:40px;margin-bottom:6px;">🕵️</div>'
-    +'<div style="font-family:\'Bebas Neue\';font-size:26px;letter-spacing:.06em;color:var(--accent);margin-bottom:16px;">SPY ERGEBNIS</div>'
-    +'<div style="display:flex;gap:10px;align-items:flex-end;height:'+maxH+'px;margin-bottom:16px;">'+barsHtml+'</div>'
-    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Echtzeit-Verteilung der Stimmen ('+total+' abgegeben)</div>'
-    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="padding:10px 28px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:14px;cursor:pointer;">OK</button>'
-    +'</div>';
-  document.body.appendChild(ov);
-  ov.addEventListener('click',function(e){ if(e.target===ov) ov.remove(); });
 }
 
 // ════════════════════════════
@@ -1439,6 +1456,58 @@ function nameOverlayConfirm(){
   document.getElementById('name-overlay').style.display='none';
   if(_nameOverlayCb) _nameOverlayCb(name);
   _nameOverlayCb=null;
+}
+
+// ── JOIN BY CODE ──
+function showJoinOverlay(){
+  document.getElementById('join-code-inp').value='';
+  document.getElementById('join-name-inp').value='';
+  document.getElementById('join-error').style.display='none';
+  const ov=document.getElementById('join-overlay');
+  ov.style.display='flex';
+  setTimeout(()=>document.getElementById('join-code-inp').focus(),100);
+}
+
+function joinByCode(){
+  const code=document.getElementById('join-code-inp').value.trim().toUpperCase();
+  const name=document.getElementById('join-name-inp').value.trim();
+  const errEl=document.getElementById('join-error');
+  errEl.style.display='none';
+
+  if(!code){
+    document.getElementById('join-code-inp').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('join-code-inp').style.borderColor='',1500);
+    return;
+  }
+  if(!name){
+    document.getElementById('join-name-inp').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('join-name-inp').style.borderColor='',1500);
+    return;
+  }
+
+  document.getElementById('join-overlay').style.display='none';
+
+  // Connect and join — reuse lobbyJoin but catch errors
+  mpMyName=name; mpIsHost=false;
+  showView('view-setup');
+  document.getElementById('lobby-start-btn').style.display='none';
+  document.getElementById('lobby-join-wrap').style.display='block';
+  mpConnect(()=>{
+    mpSocket.emit('join_room',{code,playerName:name});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{
+      mpRoom=room; mpRoom.code=c||code; mpMyName=yourName;
+      lobbyRender();
+    });
+    mpSocket.once('error',({msg})=>{
+      showView('view-menu');
+      // Show error back in overlay
+      document.getElementById('join-code-inp').value=code;
+      document.getElementById('join-name-inp').value=name;
+      errEl.textContent='❌ '+msg;
+      errEl.style.display='block';
+      document.getElementById('join-overlay').style.display='flex';
+    });
+  });
 }
 
 // Auto-join if ?room= in URL
@@ -1606,6 +1675,38 @@ document.addEventListener('click',function(e){
 </script>
 
 
+
+<!-- ══ JOIN OVERLAY ══ -->
+<div id="join-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:800;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;">
+    <div style="text-align:center;">
+      <div style="font-size:36px;margin-bottom:6px;">🎮</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:26px;letter-spacing:.08em;color:var(--gold);">SPIEL BEITRETEN</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);">Raumcode</label>
+      <input id="join-code-inp" maxlength="6" placeholder="z.B. AB12CD"
+        style="padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.2em;text-align:center;outline:none;width:100%;text-transform:uppercase;"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter')document.getElementById('join-name-inp').focus()">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);">Dein Name</label>
+      <input id="join-name-inp" maxlength="20" placeholder="Name eingeben..."
+        style="padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;width:100%;"
+        onkeydown="if(event.key==='Enter')joinByCode()">
+    </div>
+    <div id="join-error" style="display:none;font-size:13px;color:var(--red);text-align:center;background:rgba(232,53,74,.08);border:1px solid rgba(232,53,74,.2);border-radius:10px;padding:10px;"></div>
+    <button onclick="joinByCode()"
+      style="padding:15px;background:linear-gradient(135deg,#2a5298,#1a3a6e);border:1px solid rgba(74,144,217,.4);border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">
+      ✓ Beitreten
+    </button>
+    <button onclick="document.getElementById('join-overlay').style.display='none'"
+      style="padding:12px;background:none;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">
+      Abbrechen
+    </button>
+  </div>
+</div>
 
 <!-- ══ NAME OVERLAY ══ -->
 <div id="name-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;align-items:center;justify-content:center;padding:20px;">
