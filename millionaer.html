@@ -192,20 +192,23 @@ body::before{
 .ladder-pts{font-weight:600;font-size:11px;}
 
 /* ══ WINNER ══ */
-#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
-.trophy{font-size:80px;margin-bottom:14px;animation:bounce .6s ease;}
-@keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
-.winner-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:.06em;color:var(--gold);}
-.winner-name{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:8px;}
-.winner-score{font-size:15px;color:var(--muted);margin-bottom:28px;}
+#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
+.trophy{font-size:90px;margin-bottom:10px;animation:trophyBounce .8s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes trophyBounce{0%{transform:scale(0) rotate(-20deg);opacity:0;}60%{transform:scale(1.2) rotate(5deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.08em;color:var(--gold);animation:slideUpM .5s ease .3s both;text-shadow:0 0 40px rgba(245,200,66,.4);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:8px;animation:slideUpM .5s ease .5s both;}
+.winner-score{font-size:15px;color:var(--muted);margin-bottom:28px;animation:slideUpM .5s ease .6s both;}
+@keyframes slideUpM{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 .final-podium{display:flex;gap:10px;width:100%;max-width:380px;margin-bottom:28px;align-items:flex-end;}
-.podium-card{flex:1;border-radius:14px;padding:14px 10px;text-align:center;border-top:3px solid var(--border);}
-.podium-card.p1{background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(245,200,66,.05));border-color:var(--gold);}
-.podium-card.p2{background:var(--surface);}
-.podium-card.p3{background:var(--surface);}
+.podium-card{flex:1;border-radius:14px;padding:14px 10px;text-align:center;border-top:3px solid var(--border);animation:slideUpM .5s ease both;}
+.podium-card.p1{background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(245,200,66,.05));border-color:var(--gold);animation-delay:.7s;}
+.podium-card.p2{background:var(--surface);animation-delay:.85s;}
+.podium-card.p3{background:var(--surface);animation-delay:1.0s;}
 .pod-rank{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);}
 .pod-name{font-size:11px;font-weight:700;color:var(--text);margin:4px 0;}
 .pod-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+.winner-btns-m{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;animation:slideUpM .5s ease 1.1s both;}
+#confetti-canvas-m{position:fixed;inset:0;pointer-events:none;z-index:10;}
 
 /* ══ EDITOR ══ */
 .field-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
@@ -242,6 +245,75 @@ body::before{
 .toast.show{transform:translateX(-50%) translateY(0);}
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+
+
+
+/* ── THEMES ── */
+:root[data-theme="midnight"]{--bg:#06080f;--surface:#0f1118;--surface2:#181c28;--border:rgba(255,255,255,.08);--text:#f0eee8;--muted:rgba(240,238,232,.5);--muted2:rgba(240,238,232,.18);}
+:root[data-theme="neon"]{--bg:#08010f;--surface:#130820;--surface2:#1e0f32;--border:rgba(255,0,255,.15);--text:#f8f0ff;--muted:rgba(248,240,255,.5);--muted2:rgba(248,240,255,.2);}
+:root[data-theme="forest"]{--bg:#060e07;--surface:#0d1a0e;--surface2:#162518;--border:rgba(100,200,80,.12);--text:#e8f0e4;--muted:rgba(232,240,228,.5);--muted2:rgba(232,240,228,.2);}
+:root[data-theme="sunset"]{--bg:#0f0608;--surface:#1a0d10;--surface2:#271218;--border:rgba(255,100,50,.12);--text:#ffe8e0;--muted:rgba(255,232,224,.5);--muted2:rgba(255,232,224,.2);}
+:root[data-theme="arctic"]{--bg:#f0f4f8;--surface:#ffffff;--surface2:#e8edf2;--border:rgba(0,80,160,.12);--text:#0d1b2a;--muted:rgba(13,27,42,.5);--muted2:rgba(13,27,42,.2);}
+.theme-btn{position:fixed;bottom:80px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:999;transition:all .2s;}
+.theme-btn:hover{transform:scale(1.12);}
+.theme-panel{position:fixed;bottom:134px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;display:none;flex-direction:column;gap:7px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:999;width:158px;animation:panelIn .2s ease;}
+.theme-panel.open{display:flex;}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
+.theme-panel-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.theme-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:none;width:100%;text-align:left;}
+.theme-option:hover{background:var(--surface2);}
+.theme-option.active{background:var(--surface2);border-color:var(--green,#2ecc71);}
+.theme-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
+
+
+/* ── MULTIPLAYER ── */
+.mp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;}
+.mp-overlay.hidden{display:none;}
+.mp-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:mpIn .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.mp-header{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border);}
+.mp-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;flex:1;}
+.mp-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;}
+.mp-body{padding:16px;display:flex;flex-direction:column;gap:10px;}
+.mp-tabs{display:flex;gap:8px;}
+.mp-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
+.mp-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
+.mp-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+.mp-input:focus{border-color:var(--green,#2ecc71);}
+.mp-input::placeholder{color:var(--muted2);}
+.mp-code-input{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.2em;text-align:center;text-transform:uppercase;}
+.mp-btn{width:100%;padding:13px;border-radius:12px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.mp-btn-green{background:linear-gradient(135deg,#27ae60,#1e8c4e);color:#fff;}
+.mp-btn-blue{background:linear-gradient(135deg,#2980b9,#1a5276);color:#fff;}
+.mp-btn-ghost{background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
+.mp-room-code-wrap{text-align:center;padding:16px;background:var(--surface2);border-radius:14px;}
+.mp-room-code-lbl{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.mp-room-code-val{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.15em;color:var(--gold,#f5c842);text-shadow:0 0 30px rgba(245,200,66,.3);}
+.mp-share{font-size:10px;color:var(--muted);margin-top:4px;word-break:break-all;cursor:pointer;}
+.mp-section-lbl{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);}
+.mp-players{display:flex;flex-direction:column;gap:7px;}
+.mp-player-row{display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--surface2);border-radius:10px;}
+.mp-player-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0;}
+.mp-player-name{flex:1;font-size:13px;font-weight:700;}
+.mp-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.mp-badge-host{background:rgba(245,200,66,.15);color:var(--gold,#f5c842);border:1px solid rgba(245,200,66,.3);}
+.mp-badge-ready{background:rgba(46,204,113,.15);color:var(--green,#2ecc71);border:1px solid rgba(46,204,113,.3);}
+.mp-status{padding:9px 13px;border-radius:10px;font-size:12px;display:none;}
+.mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
+.mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
+.mp-waiting{text-align:center;color:var(--muted);font-size:12px;}
+.mp-reaction-wrap{position:fixed;bottom:120px;right:20px;display:flex;flex-direction:column;gap:6px;z-index:820;pointer-events:none;}
+.mp-reaction-toast{background:var(--surface,#0f1118);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;animation:rtIn .3s ease,rtOut .3s ease 2.5s both;}
+@keyframes rtIn{from{opacity:0;transform:translateX(15px);}to{opacity:1;}}
+@keyframes rtOut{to{opacity:0;transform:translateX(15px);}}
+.mp-emoji-bar{display:flex;gap:8px;justify-content:center;}
+.mp-emoji-btn{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;transition:all .15s;}
+.mp-emoji-btn:hover{transform:scale(1.2);}
+.btn-multiplayer{background:linear-gradient(135deg,#1a5276,#2980b9);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(41,128,185,.25);}
+.btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
 </style>
 </head>
 <body>
@@ -345,13 +417,16 @@ body::before{
 
 <!-- ══ WINNER ══ -->
 <div class="view" id="view-winner">
+  <canvas id="confetti-canvas-m"></canvas>
   <div class="trophy">🏆</div>
   <div class="winner-title">GEWINNER!</div>
   <div class="winner-name" id="winner-name">Spieler</div>
   <div class="winner-score" id="winner-score">0 Punkte</div>
   <div class="final-podium" id="final-podium"></div>
-  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;">🔄 Nochmal spielen</button>
-  <button class="btn-secondary" onclick="showView('view-menu')" style="max-width:300px;margin-top:10px;">🏠 Hauptmenü</button>
+  <div class="winner-btns-m">
+    <button class="btn-primary" onclick="goToSetup()">🔄 Nochmal spielen</button>
+    <button class="btn-secondary" onclick="showView('view-menu')">🏠 Hauptmenü</button>
+  </div>
 </div>
 
 <!-- ══ EDITOR ══ -->
@@ -657,7 +732,6 @@ function showWinner(){
 
   const podium=document.getElementById('final-podium');
   podium.innerHTML='';
-  const colors=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6'];
   const classes=['p1','p2','p3'];
   sorted.slice(0,3).forEach((p,i)=>{
     const el=document.createElement('div');
@@ -669,6 +743,36 @@ function showWinner(){
   });
 
   showView('view-winner');
+  setTimeout(()=>launchConfetti('confetti-canvas-m'),400);
+}
+
+function launchConfetti(canvasId){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const colors=['#f5c842','#2ecc71','#3a8ef6','#e8354a','#9b59b6','#f39c12','#1abc9c'];
+  const pieces=Array.from({length:120},()=>({
+    x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.5,
+    w:8+Math.random()*8,h:5+Math.random()*5,
+    r:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.15,
+    vx:(Math.random()-.5)*3,vy:2+Math.random()*4,
+    color:colors[Math.floor(Math.random()*colors.length)],alpha:1
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.r+=p.rv;
+      if(frame>80)p.alpha=Math.max(0,p.alpha-.012);
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    });
+    frame++;
+    if(frame<150)requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
 }
 
 // ── EDITOR ──
@@ -757,6 +861,354 @@ for(let i=0;i<5;i++) addEditorQuestion();
   if(action==='play') showView('view-play-landing');
   else if(action==='editor') showView('view-editor');
 })();
+
+
+
 </script>
+
+<!-- THEME SWITCHER -->
+<button class="theme-btn" onclick="toggleThemePanel()" title="Design wählen">🎨</button>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">Design wählen</div>
+  <button class="theme-option" onclick="setTheme('midnight')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight
+  </button>
+  <button class="theme-option" onclick="setTheme('neon')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon
+  </button>
+  <button class="theme-option" onclick="setTheme('forest')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest
+  </button>
+  <button class="theme-option" onclick="setTheme('sunset')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset
+  </button>
+  <button class="theme-option" onclick="setTheme('arctic')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic
+  </button>
+</div>
+
+
+<!-- THEME SWITCHER -->
+<button class="theme-btn" onclick="toggleThemePanel()" title="Design w&#228;hlen">&#127912;</button>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">Design w&#228;hlen</div>
+  <button class="theme-option" onclick="setTheme('midnight')"><div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight</button>
+  <button class="theme-option" onclick="setTheme('neon')"><div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon</button>
+  <button class="theme-option" onclick="setTheme('forest')"><div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest</button>
+  <button class="theme-option" onclick="setTheme('sunset')"><div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset</button>
+  <button class="theme-option" onclick="setTheme('arctic')"><div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic</button>
+</div>
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('quizTheme',t);
+  document.querySelectorAll('.theme-option').forEach(function(el){
+    el.classList.toggle('active', el.textContent.trim().toLowerCase().startsWith(t));
+  });
+  var panel=document.getElementById('theme-panel');
+  if(panel) panel.classList.remove('open');
+}
+function toggleThemePanel(){
+  var panel=document.getElementById('theme-panel');
+  if(panel) panel.classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  var panel=document.getElementById('theme-panel');
+  if(panel && !panel.contains(e.target) && !e.target.classList.contains('theme-btn')){
+    panel.classList.remove('open');
+  }
+});
+(function(){ setTheme(localStorage.getItem('quizTheme')||'midnight'); })();
+</script>
+
+
+<!-- ══ MULTIPLAYER OVERLAY ══ -->
+<div class="mp-overlay hidden" id="mp-overlay">
+  <div class="mp-box">
+    <div class="mp-header">
+      <span>🌐</span>
+      <div class="mp-title">MULTIPLAYER</div>
+      <button class="mp-close" onclick="mpClose()">✕</button>
+    </div>
+    <div class="mp-body" id="mp-body">
+      <!-- Dynamically rendered by JS -->
+    </div>
+  </div>
+</div>
+<div class="mp-reaction-wrap" id="mp-reaction-wrap"></div>
+
+
+<script>
+const GAME_TYPE = 'millionaer';
+
+// ══════════════════════════════════════════
+// MULTIPLAYER SYSTEM
+// ══════════════════════════════════════════
+const SERVER_URL = 'https://DEINE-RAILWAY-URL.up.railway.app';
+const COLORS_MP = ['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
+
+let mpSocket = null;
+let mpRoom = null;
+let mpMyName = '';
+let mpIsHost = false;
+let mpTab = 'create'; // create | join
+
+function mpOpen() {
+  document.getElementById('mp-overlay').classList.remove('hidden');
+  mpRenderEntry();
+}
+function mpClose() {
+  document.getElementById('mp-overlay').classList.add('hidden');
+}
+
+// ── CONNECT TO SERVER ──
+function mpConnect(cb) {
+  if (mpSocket && mpSocket.connected) { cb(); return; }
+  if (typeof io === 'undefined') {
+    const s = document.createElement('script');
+    s.src = SERVER_URL + '/socket.io/socket.io.js';
+    s.onload = () => { mpSocket = io(SERVER_URL); mpBindEvents(); cb(); };
+    s.onerror = () => mpShowStatus('❌ Server nicht erreichbar!', 'err');
+    document.head.appendChild(s);
+  } else {
+    mpSocket = io(SERVER_URL);
+    mpBindEvents();
+    cb();
+  }
+}
+
+function mpBindEvents() {
+  mpSocket.on('room_created', ({ code, room }) => {
+    mpRoom = room; mpRoom.code = code;
+    mpRenderLobby();
+    mpShowStatus('✅ Raum erstellt! Teile den Code mit deinen Freunden.', 'ok');
+  });
+  mpSocket.on('room_joined', ({ code, room, yourName }) => {
+    mpRoom = room; mpRoom.code = code; mpMyName = yourName;
+    mpRenderLobby();
+    mpShowStatus('✅ Beigetreten!', 'ok');
+  });
+  mpSocket.on('player_joined', ({ room, newPlayer }) => {
+    mpRoom = room;
+    mpRenderLobbyPlayers();
+    mpShowReaction(newPlayer + ' ist beigetreten 👋');
+  });
+  mpSocket.on('player_left', ({ name, room }) => {
+    mpRoom = room;
+    mpRenderLobbyPlayers();
+    mpShowReaction(name + ' hat verlassen 👋');
+  });
+  mpSocket.on('host_changed', ({ newHost }) => {
+    if (mpMyName === newHost) { mpIsHost = true; }
+    mpRenderLobbyPlayers();
+  });
+  mpSocket.on('room_update', ({ room }) => {
+    mpRoom = room;
+    mpRenderLobbyPlayers();
+  });
+  mpSocket.on('game_started', ({ quizData }) => {
+    mpClose();
+    if (typeof mpOnGameStart === 'function') mpOnGameStart(quizData);
+  });
+  mpSocket.on('game_action', ({ action, payload, from, fromId }) => {
+    if (typeof mpOnAction === 'function') mpOnAction(action, payload, from, fromId);
+  });
+  mpSocket.on('host_sync', ({ gameState }) => {
+    if (!mpIsHost && typeof mpOnHostSync === 'function') mpOnHostSync(gameState);
+  });
+  mpSocket.on('reaction', ({ name, emoji }) => {
+    mpShowReaction(name + ' ' + emoji);
+  });
+  mpSocket.on('error', ({ msg }) => {
+    mpShowStatus('❌ ' + msg, 'err');
+  });
+  mpSocket.on('game_ended', () => {
+    if (typeof mpOnGameEnd === 'function') mpOnGameEnd();
+  });
+}
+
+// ── SEND ACTION ──
+function mpSend(action, payload) {
+  if (!mpSocket || !mpRoom) return;
+  mpSocket.emit('game_action', { code: mpRoom.code, action, payload });
+}
+function mpSendSync(gameState) {
+  if (!mpSocket || !mpRoom || !mpIsHost) return;
+  mpSocket.emit('host_sync', { code: mpRoom.code, gameState });
+}
+
+// ── RENDER ENTRY (create / join tabs) ──
+function mpRenderEntry() {
+  document.getElementById('mp-body').innerHTML = `
+    <div class="mp-tabs">
+      <button class="mp-tab ${mpTab==='create'?'active':''}" onclick="mpSetTab('create')">🎮 Erstellen</button>
+      <button class="mp-tab ${mpTab==='join'?'active':''}" onclick="mpSetTab('join')">🔗 Beitreten</button>
+    </div>
+    ${mpTab==='create' ? mpHtmlCreate() : mpHtmlJoin()}
+    <div class="mp-status" id="mp-status"></div>
+  `;
+}
+
+function mpSetTab(t) { mpTab = t; mpRenderEntry(); }
+
+function mpHtmlCreate() {
+  return `
+    <div>
+      <label class="mp-label">Dein Name</label>
+      <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
+    </div>
+    ${typeof mpQuizDataForMultiplayer !== 'undefined' && mpQuizDataForMultiplayer ? 
+      '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: ' + (mpQuizDataForMultiplayer.name||'Quiz') + '</div>'
+      : '<label class="mp-label" style="margin-top:4px;">Quiz importieren</label><label style="cursor:pointer;"><div style="padding:12px;background:var(--surface2);border:1px dashed var(--border);border-radius:10px;text-align:center;font-size:13px;color:var(--muted);">📂 Quiz-Datei auswählen<br><small style="font-size:10px;">(.quiz Datei)</small></div><input type="file" accept=".quiz,.json" style="display:none" onchange="mpLoadQuiz(event)"></label>'
+    }
+    <button class="mp-btn mp-btn-green" onclick="mpCreate()">🎮 Raum erstellen</button>
+    <button class="mp-btn mp-btn-ghost" onclick="mpClose()">Abbrechen</button>
+  `;
+}
+
+function mpHtmlJoin() {
+  // Auto-fill code from URL param
+  const urlCode = new URLSearchParams(window.location.search).get('room') || '';
+  return `
+    <div>
+      <label class="mp-label">Dein Name</label>
+      <input class="mp-input" id="mp-name-inp" placeholder="Name eingeben..." maxlength="20">
+    </div>
+    <div>
+      <label class="mp-label">Raum-Code</label>
+      <input class="mp-input mp-code-input" id="mp-code-inp" placeholder="ABC123" maxlength="6" value="${urlCode}">
+    </div>
+    <button class="mp-btn mp-btn-blue" onclick="mpJoin()">🔗 Beitreten</button>
+    <button class="mp-btn mp-btn-ghost" onclick="mpClose()">Abbrechen</button>
+  `;
+}
+
+// ── LOAD QUIZ FILE ──
+let mpQuizDataForMultiplayer = null;
+function mpLoadQuiz(ev) {
+  const file = ev.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      mpQuizDataForMultiplayer = JSON.parse(e.target.result);
+      mpRenderEntry();
+    } catch(e) { mpShowStatus('❌ Ungültige Datei!', 'err'); }
+  };
+  r.readAsText(file);
+}
+
+// ── CREATE ROOM ──
+function mpCreate() {
+  const name = (document.getElementById('mp-name-inp')||{}).value.trim();
+  if (!name) { mpShowStatus('❌ Bitte Namen eingeben!', 'err'); return; }
+  mpMyName = name; mpIsHost = true;
+  const gameType = typeof GAME_TYPE !== 'undefined' ? GAME_TYPE : 'unknown';
+  const quizData = mpQuizDataForMultiplayer || (typeof quizData !== 'undefined' ? quizData : null);
+  mpConnect(() => {
+    mpSocket.emit('create_room', { game: gameType, playerName: name, quizData });
+  });
+}
+
+// ── JOIN ROOM ──
+function mpJoin() {
+  const name = (document.getElementById('mp-name-inp')||{}).value.trim();
+  const code = (document.getElementById('mp-code-inp')||{}).value.trim().toUpperCase();
+  if (!name) { mpShowStatus('❌ Bitte Namen eingeben!', 'err'); return; }
+  if (code.length < 4) { mpShowStatus('❌ Bitte Code eingeben!', 'err'); return; }
+  mpMyName = name; mpIsHost = false;
+  mpConnect(() => {
+    mpSocket.emit('join_room', { code, playerName: name });
+  });
+}
+
+// ── RENDER LOBBY ──
+function mpRenderLobby() {
+  const isHost = mpIsHost;
+  const code = mpRoom.code;
+  const link = window.location.origin + window.location.pathname + '?room=' + code;
+  
+  document.getElementById('mp-body').innerHTML = `
+    <div class="mp-room-code-wrap">
+      <div class="mp-room-code-lbl">RAUM-CODE</div>
+      <div class="mp-room-code-val">${code}</div>
+      <div class="mp-share" onclick="mpCopyLink('${link}')">🔗 Link kopieren: ${link}</div>
+    </div>
+    <div>
+      <div class="mp-section-lbl" style="margin-bottom:8px;">Spieler (${mpRoom.players.length})</div>
+      <div class="mp-players" id="mp-players-list"></div>
+      <div class="mp-waiting" id="mp-waiting">Warte auf Spieler...</div>
+    </div>
+    <div class="mp-emoji-bar">
+      ${['👋','😂','🔥','😱','👏'].map(e=>`<button class="mp-emoji-btn" onclick="mpSendReaction('${e}')">${e}</button>`).join('')}
+    </div>
+    ${isHost ? `<button class="mp-btn mp-btn-green" onclick="mpStartGame()">▶ Spiel starten</button>` : `<div class="mp-waiting">Host startet das Spiel...</div>`}
+    <button class="mp-btn mp-btn-ghost" onclick="mpLeave()">Verlassen</button>
+    <div class="mp-status" id="mp-status"></div>
+  `;
+  mpRenderLobbyPlayers();
+}
+
+function mpRenderLobbyPlayers() {
+  const list = document.getElementById('mp-players-list');
+  const waiting = document.getElementById('mp-waiting');
+  if (!list || !mpRoom) return;
+  list.innerHTML = mpRoom.players.map((p,i) => `
+    <div class="mp-player-row">
+      <div class="mp-player-avatar" style="background:${COLORS_MP[i%COLORS_MP.length]}">${p.name.charAt(0).toUpperCase()}</div>
+      <div class="mp-player-name">${p.name}${p.name===mpMyName?' (du)':''}</div>
+      ${p.isHost ? '<span class="mp-badge mp-badge-host">HOST</span>' : ''}
+    </div>
+  `).join('');
+  if (waiting) waiting.style.display = mpRoom.players.length > 1 ? 'none' : 'block';
+}
+
+// ── START GAME ──
+function mpStartGame() {
+  if (!mpIsHost) return;
+  const quizData = mpQuizDataForMultiplayer;
+  mpSocket.emit('start_game', { code: mpRoom.code });
+}
+
+// ── HELPERS ──
+function mpCopyLink(link) {
+  navigator.clipboard.writeText(link).then(() => mpShowStatus('✅ Link kopiert!', 'ok'));
+}
+
+function mpLeave() {
+  if (mpSocket) mpSocket.disconnect();
+  mpRoom = null; mpIsHost = false; mpMyName = '';
+  mpClose();
+}
+
+function mpShowStatus(msg, type) {
+  const el = document.getElementById('mp-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'mp-status ' + type;
+}
+
+function mpSendReaction(emoji) {
+  if (!mpSocket || !mpRoom) return;
+  mpSocket.emit('reaction', { code: mpRoom.code, emoji });
+}
+
+function mpShowReaction(text) {
+  const wrap = document.getElementById('mp-reaction-wrap');
+  if (!wrap) return;
+  const el = document.createElement('div');
+  el.className = 'mp-reaction-toast';
+  el.textContent = text;
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// Auto-open lobby if ?room= in URL
+window.addEventListener('DOMContentLoaded', () => {
+  const code = new URLSearchParams(window.location.search).get('room');
+  if (code) { mpTab = 'join'; setTimeout(mpOpen, 500); }
+});
+
+</script>
+
 </body>
 </html>
