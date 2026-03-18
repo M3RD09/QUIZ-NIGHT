@@ -64,7 +64,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .game-title-mid{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;background:linear-gradient(135deg,#2ecc71,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;text-align:center;}
 .cat-badge{background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-.game-layout{display:flex;flex:1;overflow:hidden;min-height:0;}
+.game-layout{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
 .game-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
 
 /* ── SCALE AREA ── */
@@ -152,21 +152,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .pool-img img{width:100%;height:100%;object-fit:cover;border-radius:7px;}
 .pool-name{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1.3;color:var(--text);}
 
-/* SIDEBAR */
-.game-sidebar{width:160px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;}
-.sb-section{padding:10px;}
-.sb-label{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:7px;}
-.sb-player{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:9px;margin-bottom:4px;background:var(--surface2);}
-.sb-player.active{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);}
+/* SIDEBAR — jetzt unten */
+.game-sidebar{width:100%;background:var(--surface);border-top:1px solid var(--border);border-left:none;overflow-x:auto;overflow-y:hidden;flex-shrink:0;max-height:120px;}
+.sb-section{padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.sb-label{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:4px;}
+.sb-players-row{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+.sb-player{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:var(--surface2);flex-shrink:0;min-width:140px;}
+.sb-player.active{background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);}
 .sb-player.eliminated{opacity:.3;filter:grayscale(1);}
-.sb-avatar{width:26px;height:26px;border-radius:50%;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-avatar{width:36px;height:36px;border-radius:50%;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .sb-info{flex:1;min-width:0;}
-.sb-name{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-hearts{font-size:9px;letter-spacing:0px;}
+.sb-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-hearts{font-size:12px;margin-top:2px;}
+.sb-pts{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
 .sb-pts{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--gold);}
 
 @media(max-width:640px){
-  .game-sidebar{width:120px;}
   .pool-item{width:70px;}
   .pool-img{width:52px;height:52px;}
 }
@@ -319,11 +320,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="items-pool" id="items-pool"></div>
     </div>
 
-    <!-- Sidebar -->
+    <!-- Sidebar unten -->
     <div class="game-sidebar">
       <div class="sb-section">
-        <div class="sb-label">Spieler</div>
-        <div id="sb-players"></div>
+        <div class="sb-label">👥 Spieler</div>
+        <div class="sb-players-row" id="sb-players"></div>
       </div>
     </div>
   </div>
