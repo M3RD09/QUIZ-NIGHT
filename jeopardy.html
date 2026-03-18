@@ -894,21 +894,22 @@ function addToHistory(playerName,teamIdx,category,points,result){
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
   if(mpRoom){
+    // MULTIPLAYER: strict turn enforcement
+    if(mpIsHost) return; // host never clicks board
     const t=currentTurn();
+    if(!t)return;
     const isActivePlayer=mpMyName===teams[t.ti].players[t.pi];
-    if(mpIsHost){
-      // Host: approve the selected field (after receiving select_field from player)
-      return; // host doesn't click board directly
+    if(!isActivePlayer){
+      showToast('⏳ Du bist nicht dran!',1500);
+      return;
     }
-    if(!isActivePlayer) return; // only active player can select
-    // Player selects field → ask host to confirm
+    // Active player sends field selection to host for approval
     mpSend('select_field',{ci,qi,ti:t.ti,pi:t.pi});
-    // Show pending state on cell
     cell.style.opacity='0.5';
     showToast('⏳ Warte auf Host...',2000);
     return;
   }
-  // LOCAL PLAY (no mpRoom)
+  // LOCAL PLAY
   const t=currentTurn();
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
@@ -1095,6 +1096,7 @@ function syncState(includeQuiz){
       {name:teams[0].name,players:[...teams[0].players],score:teams[0].score},
       {name:teams[1].name,players:[...teams[1].players],score:teams[1].score}
     ],
+    turnOrder:[...turnOrder],
     turnIdx, gameHistory:[...gameHistory],
     usedCells:getUsedCells(),
     quizName:(quizData?quizData.name:'')||''
@@ -1160,8 +1162,9 @@ function mpOnAction(action,payload){
       document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData.name||'Jeopardy');
       buildBoard(); buildScoreArea(); showView('view-game');
     }
-    // CRITICAL: rebuild turn order from received team data
-    buildTurnOrder();
+    // Use EXACT turnOrder from host — never rebuild locally
+    if(payload.turnOrder && payload.turnOrder.length) turnOrder=payload.turnOrder;
+    else buildTurnOrder(); // fallback
     updateScores();
     // Use setTimeout to ensure DOM is updated before rendering teams
     setTimeout(()=>{updateTurnBanner(); updateTeamsSidebar();},50);
@@ -1274,11 +1277,14 @@ function renderOverlay(ci,qi,ti,pi,isActive){
   document.getElementById('submitted-answer-box').textContent='';
   document.getElementById('player-answer-inp').value='';
 
-  // Answer input: only for active player in multiplayer
+  // Answer input: ONLY active player gets it
   const isActivePlayer=mpRoom&&!mpIsHost&&mpMyName===teams[ti].players[pi];
-  document.getElementById('answer-input-wrap').style.display=isActivePlayer?'block':'none';
+  const inp=document.getElementById('answer-input-wrap');
+  inp.style.display=isActivePlayer?'block':'none';
+  inp.querySelector('input').disabled=false;
+  inp.querySelector('button').disabled=false;
 
-  // Reveal + verdict: only for host, or local play
+  // Reveal + verdict: ONLY host (or local play)
   const showControls=!mpRoom||mpIsHost;
   document.getElementById('btn-reveal').style.display=showControls&&q.answer?'block':'none';
   document.getElementById('verdict-wrap').style.display=showControls?'flex':'none';
