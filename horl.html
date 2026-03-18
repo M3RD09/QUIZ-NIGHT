@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Higher or Lower — Quiz Games by Mert</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
 :root{
   --bg:#06080f; --surface:#0f1118; --surface2:#181c28;
@@ -18,14 +19,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(46,204,113,.07),transparent 55%);pointer-events:none;z-index:0;}
 .view{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:1;}
 .view.active{display:flex;}
-#view-menu,#view-play-landing,#view-setup,#view-winner,#view-editor{overflow-y:auto;}
+#view-menu,#view-winner,#view-editor{overflow-y:auto;}
 #view-game{height:100vh;overflow:hidden;}
+#view-lobby{overflow-y:auto;}
 
 .btn-primary{background:linear-gradient(135deg,#27ae60,#1e8c4e);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
 .btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;}
 .btn-secondary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;transition:all .2s;width:100%;}
 .btn-secondary:hover{border-color:var(--green);color:var(--green);}
 .btn-gold{background:linear-gradient(135deg,#f5c842,#e8a020);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-online{background:linear-gradient(135deg,#1a6fd4,#1254a8);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-online:hover{filter:brightness(1.15);transform:translateY(-1px);}
 .btn-icon{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:9px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
 .btn-icon:hover{border-color:var(--green);color:var(--green);}
 .topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(6,8,15,.97);position:sticky;top:0;z-index:50;}
@@ -33,166 +38,87 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .view-body{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
 
 /* MENU */
-#view-menu,#view-play-landing{align-items:center;justify-content:center;padding:40px 20px;}
+#view-menu{align-items:center;justify-content:center;padding:40px 20px;}
 .menu-logo{text-align:center;margin-bottom:40px;}
 .menu-logo-icon{font-size:60px;margin-bottom:12px;}
 .menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.04em;background:linear-gradient(135deg,#2ecc71,#27ae60,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
 .menu-logo-sub{font-size:13px;color:var(--muted);margin-top:8px;}
 .menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
 
-/* SETUP */
-.setup-field{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
-.setup-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
-.setup-row{display:flex;gap:8px;align-items:center;}
-.setup-num{width:70px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;background:none;border:none;outline:none;color:var(--text);}
-.players-setup{display:flex;flex-direction:column;gap:7px;}
-.player-setup-row{display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
-.player-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);width:24px;flex-shrink:0;}
-.player-setup-inp{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;}
-.player-setup-inp::placeholder{color:var(--muted2);}
-.btn-del-p{background:none;border:none;color:var(--muted2);font-size:15px;cursor:pointer;}
-.btn-del-p:hover{color:var(--red);}
-.btn-add-player-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border:1px dashed var(--border);border-radius:10px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
-.btn-add-player-row:hover{border-color:var(--green);color:var(--green);}
-.info-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.8;}
-.info-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+/* OVERLAY */
+.horl-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
+.horl-overlay.hidden{display:none;}
+.horl-modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;overflow:hidden;animation:mpIn .2s ease;}
+@keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.horl-modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
+.horl-tabs{display:flex;gap:8px;padding:16px 20px 0;}
+.horl-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;}
+.horl-tab.active{background:var(--green);border-color:var(--green);color:#fff;}
+#horl-tab-create,#horl-tab-join{padding:16px 20px;display:flex;flex-direction:column;gap:10px;}
+.horl-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+.horl-inp:focus{border-color:var(--green);}
+.horl-inp::placeholder{color:var(--muted2);}
+.horl-file-btn{background:var(--surface2);border:1px dashed var(--border);border-radius:10px;padding:12px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;}
+.horl-file-btn:hover{border-color:var(--green);color:var(--green);}
+.horl-quiz-box{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--green);display:flex;align-items:center;gap:8px;}
+.horl-status{padding:10px 14px;font-size:12px;border-radius:8px;margin:0 20px 16px;}
+.horl-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green);}
+.horl-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;}
 
-/* ══ GAME ══ */
+/* LOBBY */
+.lobby-section-title{font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);}
+.lobby-player-list{display:flex;flex-direction:column;gap:8px;}
+.lobby-player{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
+.lobby-player-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lobby-player-name{flex:1;font-size:13px;font-weight:700;}
+.lobby-player-badge{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);background:var(--surface2);border-radius:6px;padding:3px 8px;}
+.lobby-quiz-box{display:flex;align-items:center;gap:10px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:10px 14px;}
+.lobby-hearts-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 15px;}
+
+/* GAME */
 .game-topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:rgba(6,8,15,.97);flex-shrink:0;}
 .round-badge{background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);border-radius:20px;padding:4px 14px;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);flex-shrink:0;}
 .game-title-mid{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em;background:linear-gradient(135deg,#2ecc71,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;text-align:center;}
 .cat-badge{background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
 .game-layout{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
 
-/* ── SCALE ── */
+/* SCALE */
 .scale-section{padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
 .scale-end-labels{display:flex;justify-content:space-between;margin-bottom:8px;}
 .scale-end-label{font-size:12px;font-weight:700;color:var(--muted);}
 .scale-end-label.low{color:var(--blue);}
 .scale-end-label.high{color:var(--red);}
-
-/* The gradient line */
-.scale-line{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green),var(--gold),var(--orange),var(--red));margin-bottom:10px;border-radius:3px;}
-
-/* Items + zones row on scale */
-.scale-row{
-  display:flex;
-  align-items:center;
-  min-height:110px;
-  gap:0;
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-}
-
-/* Drop zone — clickable gap */
-.scale-zone{
-  flex:1;min-width:44px;height:104px;
-  border:2px dashed transparent;
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;color:transparent;
-  transition:all .18s;cursor:default;
-  flex-shrink:0;
-}
-.scale-zone.active{
-  border-color:rgba(46,204,113,.35);
-  cursor:pointer;
-}
-.scale-zone.active:hover{
-  border-color:var(--green);
-  background:rgba(46,204,113,.12);
-  color:var(--green);
-}
-.scale-zone.active:hover::after,.scale-zone.drop-here::after{
-  content:'↓';
-  font-size:26px;
-  font-weight:900;
-}
-.scale-zone.drop-here{
-  border-color:var(--green);
-  background:rgba(46,204,113,.15);
-  color:var(--green);
-}
-
-/* Each placed item on scale */
-.scale-card{
-  display:flex;flex-direction:column;align-items:center;
-  flex-shrink:0;
-  cursor:default;
-}
-.scale-card-img{
-  width:72px;height:72px;border-radius:12px;
-  border:2px solid var(--border);background:var(--surface2);
-  display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;
-}
+.scale-line{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green),var(--gold),var(--orange),var(--red));margin-bottom:10px;}
+.scale-row{display:flex;align-items:center;min-height:110px;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.scale-zone{flex:1;min-width:44px;height:104px;border:2px dashed transparent;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:transparent;transition:all .18s;cursor:default;flex-shrink:0;}
+.scale-zone.active{border-color:rgba(46,204,113,.35);cursor:pointer;}
+.scale-zone.active:hover{border-color:var(--green);background:rgba(46,204,113,.12);color:var(--green);}
+.scale-zone.active:hover::after{content:'↓';font-size:26px;font-weight:900;}
+.scale-card{display:flex;flex-direction:column;align-items:center;flex-shrink:0;cursor:default;}
+.scale-card-img{width:72px;height:72px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
 .scale-card-img img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
 .scale-card.anchor-card .scale-card-img{border-color:var(--gold);border-width:3px;box-shadow:0 0 16px rgba(245,200,66,.35);}
 .scale-card.new-card .scale-card-img{border-color:var(--green);box-shadow:0 0 16px rgba(46,204,113,.5);animation:popIn .4s ease;}
 .scale-card-name{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--muted);max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;margin-top:4px;}
-
 @keyframes popIn{0%{transform:scale(.5);}65%{transform:scale(1.15);}100%{transform:scale(1);}}
 
-/* ── TURN BAR ── */
+/* TURN BAR */
 .turn-bar{padding:10px 18px;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;font-size:14px;font-weight:600;min-height:42px;}
 
-/* ── SELECTED ITEM DISPLAY ── */
-.selected-item-bar{
-  display:none;
-  padding:8px 16px;
-  background:rgba(46,204,113,.08);
-  border-bottom:1px solid rgba(46,204,113,.2);
-  flex-shrink:0;
-  align-items:center;
-  gap:10px;
-}
-.selected-item-bar.visible{display:flex;}
-.sel-img{width:40px;height:40px;border-radius:8px;background:var(--surface2);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0;}
-.sel-img img{width:100%;height:100%;object-fit:cover;border-radius:6px;}
-.sel-name{font-size:13px;font-weight:700;flex:1;}
-.sel-hint{font-size:11px;color:var(--muted);}
-
-/* Placement buttons */
-.placement-btns{
-  display:none;
-  padding:10px 16px;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-  gap:8px;
-}
-.placement-btns.visible{display:flex;}
-.btn-place{
-  flex:1;padding:12px;border-radius:12px;border:2px solid var(--border);
-  background:var(--surface2);color:var(--text);
-  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
-  cursor:pointer;transition:all .2s;text-align:center;
-}
-.btn-place.lower{border-color:var(--blue);color:var(--blue);}
-.btn-place.lower:hover{background:rgba(58,142,246,.15);}
-.btn-place.between{border-color:var(--green);color:var(--green);}
-.btn-place.between:hover{background:rgba(46,204,113,.15);}
-.btn-place.higher{border-color:var(--red);color:var(--red);}
-.btn-place.higher:hover{background:rgba(232,53,74,.15);}
-.btn-place:disabled{opacity:.3;cursor:not-allowed;}
-
-/* ── POOL ── */
+/* POOL */
 .pool-area{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;}
-.pool-card{
-  width:100px;background:var(--surface2);border:2px solid var(--border);
-  border-radius:12px;padding:9px 7px;cursor:pointer;
-  transition:all .2s;text-align:center;user-select:none;
-}
+.pool-card{width:100px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:9px 7px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;}
 .pool-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 18px rgba(46,204,113,.18);}
 .pool-card.selected-pool{border-color:var(--green);background:rgba(46,204,113,.1);box-shadow:0 0 14px rgba(46,204,113,.3);transform:translateY(-3px);}
 .pool-card.used{opacity:.2;cursor:default;pointer-events:none;filter:grayscale(1);}
+.pool-card.no-turn{cursor:default;pointer-events:none;}
 .pool-card.wrong-flash{animation:wrongFlash .5s ease;}
 @keyframes wrongFlash{0%,100%{border-color:var(--border);}50%{border-color:var(--red);background:rgba(232,53,74,.15);}}
 .pool-img{width:70px;height:70px;border-radius:10px;background:var(--surface);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
 .pool-img img{width:100%;height:100%;object-fit:cover;border-radius:9px;}
 .pool-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1.3;color:var(--text);}
 
-/* ── SIDEBAR BOTTOM ── */
+/* SIDEBAR */
 .game-sidebar{width:100%;background:var(--surface);border-top:2px solid var(--border);flex-shrink:0;}
 .sb-wrap{padding:8px 14px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .sb-player{display:flex;align-items:center;gap:9px;padding:7px 14px;border-radius:11px;background:var(--surface2);flex-shrink:0;min-width:150px;}
@@ -212,60 +138,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .result-flash.wrong .rfi{color:var(--red);}
 
 /* WINNER */
-#view-winner{
-  align-items:center;justify-content:center;padding:40px 20px;text-align:center;
-  position:relative;overflow:hidden;
-}
-.trophy{
-  font-size:90px;margin-bottom:10px;
-  animation:trophyBounce .8s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes trophyBounce{
-  0%{transform:scale(0) rotate(-20deg);opacity:0;}
-  60%{transform:scale(1.2) rotate(5deg);}
-  100%{transform:scale(1) rotate(0deg);opacity:1;}
-}
-.winner-title{
-  font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.08em;
-  color:var(--gold);
-  animation:slideUp .5s ease .3s both;
-  text-shadow:0 0 40px rgba(245,200,66,.4);
-}
-.winner-name{
-  font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:28px;
-  animation:slideUp .5s ease .5s both;
-  color:var(--text);
-}
-.final-table{
-  width:100%;max-width:360px;margin-bottom:28px;
-  display:flex;flex-direction:column;gap:8px;
-}
-.final-row{
-  display:flex;align-items:center;gap:12px;
-  background:var(--surface);border-radius:12px;padding:12px 16px;
-  opacity:0;animation:slideUp .4s ease both;
-  border:1px solid var(--border);
-}
+#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
+.trophy{font-size:90px;margin-bottom:10px;animation:trophyBounce .8s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes trophyBounce{0%{transform:scale(0) rotate(-20deg);opacity:0;}60%{transform:scale(1.2) rotate(5deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.08em;color:var(--gold);animation:slideUp .5s ease .3s both;text-shadow:0 0 40px rgba(245,200,66,.4);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:28px;animation:slideUp .5s ease .5s both;color:var(--text);}
+.final-table{width:100%;max-width:360px;margin-bottom:28px;display:flex;flex-direction:column;gap:8px;}
+.final-row{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:12px;padding:12px 16px;opacity:0;animation:slideUp .4s ease both;border:1px solid var(--border);}
 .final-row:nth-child(1){animation-delay:.7s;}
 .final-row:nth-child(2){animation-delay:.85s;}
 .final-row:nth-child(3){animation-delay:1.0s;}
 .final-row:nth-child(4){animation-delay:1.15s;}
-.final-row.first-place{
-  background:linear-gradient(135deg,rgba(245,200,66,.12),rgba(245,200,66,.04));
-  border-color:rgba(245,200,66,.3);
-}
+.final-row.first-place{background:linear-gradient(135deg,rgba(245,200,66,.12),rgba(245,200,66,.04));border-color:rgba(245,200,66,.3);}
 .final-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);width:28px;}
 .final-name{flex:1;font-size:14px;font-weight:700;}
 .final-pts{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
-
 .winner-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;animation:slideUp .5s ease 1.2s both;}
-
-@keyframes slideUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* Confetti canvas */
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:10;}
 
 /* EDITOR */
@@ -291,16 +180,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .item-ed-inp::placeholder{color:var(--muted2);}
 .item-ed-val{width:60px;background:none;border:none;border-bottom:1px solid var(--border);outline:none;color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:14px;text-align:center;}
 .item-ed-val::placeholder{color:var(--muted2);}
-.item-ed-url{flex:3;background:none;border:none;border-bottom:1px solid var(--border);outline:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;}
-.item-ed-url::placeholder{color:var(--muted2);}
 .img-upload-btn{display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.img-preview{
-  width:44px;height:44px;border-radius:8px;
-  background:var(--surface2);border:2px dashed var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;transition:all .2s;cursor:pointer;
-  background-size:cover;background-position:center;
-}
+.img-preview{width:44px;height:44px;border-radius:8px;background:var(--surface2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;cursor:pointer;background-size:cover;background-position:center;}
 .img-preview:hover{border-color:var(--green);}
 .btn-add-item{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
 .btn-add-item:hover{border-color:var(--green);color:var(--green);}
@@ -314,10 +195,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
-
-
-
-/* ── THEMES ── */
+/* THEMES */
 :root[data-theme="midnight"]{--bg:#06080f;--surface:#0f1118;--surface2:#181c28;--border:rgba(255,255,255,.08);--text:#f0eee8;--muted:rgba(240,238,232,.5);--muted2:rgba(240,238,232,.18);}
 :root[data-theme="neon"]{--bg:#08010f;--surface:#130820;--surface2:#1e0f32;--border:rgba(255,0,255,.15);--text:#f8f0ff;--muted:rgba(248,240,255,.5);--muted2:rgba(248,240,255,.2);}
 :root[data-theme="forest"]{--bg:#060e07;--surface:#0d1a0e;--surface2:#162518;--border:rgba(100,200,80,.12);--text:#e8f0e4;--muted:rgba(232,240,228,.5);--muted2:rgba(232,240,228,.2);}
@@ -331,25 +209,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .theme-panel-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
 .theme-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:none;width:100%;text-align:left;}
 .theme-option:hover{background:var(--surface2);}
-.theme-option.active{background:var(--surface2);border-color:var(--green,#2ecc71);}
+.theme-option.active{background:var(--surface2);border-color:var(--green);}
 .theme-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
-
-
-/* ── MULTIPLAYER ── */
-.mp-overlay.hidden{display:none;}
-@keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-.mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
-.mp-input:focus{border-color:var(--green,#2ecc71);}
-.mp-input::placeholder{color:var(--muted2);}
-.mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
-.mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
-to{opacity:1;}}
-}
-
-
-
-.btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
-
 </style>
 </head>
 <body>
@@ -362,53 +223,87 @@ to{opacity:1;}}
     <div class="menu-logo-sub">Quiz Games by Mert</div>
   </div>
   <div class="menu-btns">
-    <label class="btn-primary" style="cursor:pointer;">▶ Spiel starten — Quiz importieren
-      <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
-    </label>
-        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-online" onclick="horlShowOverlay()">🌐 Online spielen</button>
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
 
-<!-- ══ PLAY LANDING ══ -->
-<div class="view" id="view-play-landing">
-  <div class="menu-logo">
-    <div class="menu-logo-icon">📈</div>
-    <div class="menu-logo-title">Higher or Lower</div>
-    <div class="menu-logo-sub">Quiz importieren & spielen</div>
-  </div>
-  <div class="menu-btns">
-    <label class="btn-primary" style="cursor:pointer;">📂 Quiz-Datei auswählen
-      <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
-    </label>
-    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;">🏠 Hauptmenü</button>
+<!-- ══ ONLINE OVERLAY ══ -->
+<div class="horl-overlay hidden" id="horl-overlay">
+  <div class="horl-modal">
+    <div class="horl-modal-head">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:var(--green)">🌐 ONLINE SPIELEN</span>
+      <button class="btn-icon" onclick="horlCloseOverlay()">✕</button>
+    </div>
+    <div class="horl-tabs">
+      <button class="horl-tab active" id="horl-tab-btn-create" onclick="horlSwitchTab('create')">Raum erstellen</button>
+      <button class="horl-tab" id="horl-tab-btn-join" onclick="horlSwitchTab('join')">Beitreten</button>
+    </div>
+
+    <!-- CREATE TAB -->
+    <div id="horl-tab-create" style="display:flex;flex-direction:column;gap:10px;padding:16px 20px;">
+      <input class="horl-inp" id="horl-create-name" placeholder="Dein Name..." maxlength="20">
+      <label style="cursor:pointer;display:block;">
+        <div class="horl-file-btn">📂 Quiz importieren</div>
+        <input type="file" accept=".quiz,.json" style="display:none" onchange="horlOverlayLoadQuiz(event)">
+      </label>
+      <div id="horl-quiz-status" class="horl-quiz-box" style="display:none">
+        <span style="flex:1;" id="horl-quiz-status-text">–</span>
+      </div>
+      <button id="horl-edit-btn" class="btn-secondary" onclick="horlOpenEditorFromOverlay()" style="display:none;padding:10px;">✏️ Quiz bearbeiten</button>
+      <div class="lobby-hearts-row" style="background:var(--surface2);border-color:var(--border);">
+        <span style="font-size:13px;color:var(--muted);flex:1;">Herzen pro Spieler</span>
+        <button class="btn-icon" onclick="horlChangeHearts(-1)">−</button>
+        <input id="horl-hearts-inp" type="number" value="3" min="1" max="10" readonly
+          style="width:40px;text-align:center;background:none;border:none;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:20px;outline:none;">
+        <button class="btn-icon" onclick="horlChangeHearts(1)">＋</button>
+      </div>
+      <button class="btn-primary" onclick="horlHostCreate()">🚀 Raum erstellen</button>
+    </div>
+
+    <!-- JOIN TAB -->
+    <div id="horl-tab-join" style="display:none;flex-direction:column;gap:10px;padding:16px 20px;">
+      <input class="horl-inp" id="horl-join-name" placeholder="Dein Name..." maxlength="20">
+      <input class="horl-inp" id="horl-join-code" placeholder="RAUM-CODE" maxlength="8"
+        style="text-transform:uppercase;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.15em;text-align:center;">
+      <button class="btn-primary" onclick="horlPlayerJoin()">🚪 Beitreten</button>
+    </div>
+
+    <div id="horl-status" class="horl-status" style="display:none;"></div>
   </div>
 </div>
 
-<!-- ══ SETUP ══ -->
-<div class="view" id="view-setup">
+<!-- ══ LOBBY ══ -->
+<div class="view" id="view-lobby">
   <div class="topbar">
-    <button class="btn-icon" onclick="showView('view-menu')">←</button>
-    <div class="topbar-title">📈 Spieler & Herzen</div>
+    <button class="btn-icon" onclick="horlLobbyLeave()">←</button>
+    <div class="topbar-title">📈 Raum: <span id="horl-lobby-code">–</span></div>
+    <button class="btn-icon" onclick="horlCopyCode()" title="Link kopieren">📋</button>
   </div>
   <div class="view-body">
-    <div class="setup-field">
-      <span class="setup-label">Herzen pro Spieler</span>
-      <div class="setup-row">
-        <button class="btn-icon" onclick="changeHearts(-1)">−</button>
-        <input class="setup-num" id="hearts-input" type="number" value="3" min="1" max="10" readonly>
-        <button class="btn-icon" onclick="changeHearts(1)">＋</button>
+    <div class="lobby-section-title">Spieler</div>
+    <div class="lobby-player-list" id="horl-lobby-players"></div>
+
+    <!-- HOST controls -->
+    <div id="horl-lobby-host-section" style="display:none;flex-direction:column;gap:12px;">
+      <div id="horl-lobby-quiz-info" class="lobby-quiz-box" style="display:none;">
+        <span style="font-size:13px;font-weight:700;flex:1;" id="horl-lobby-quiz-name">–</span>
+        <button class="btn-icon" onclick="horlOpenEditorFromLobby()" title="Bearbeiten">✏️</button>
       </div>
+      <div class="lobby-hearts-row">
+        <span style="font-size:13px;color:var(--muted);flex:1;">Herzen pro Spieler</span>
+        <button class="btn-icon" onclick="horlChangeLobbyHearts(-1)">−</button>
+        <span id="horl-lobby-hearts" style="font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:28px;text-align:center;">3</span>
+        <button class="btn-icon" onclick="horlChangeLobbyHearts(1)">＋</button>
+      </div>
+      <button class="btn-primary" id="horl-lobby-start-btn" onclick="horlStartGame()" disabled>▶ Spiel starten</button>
     </div>
-    <div class="players-setup" id="players-setup"></div>
-    <button class="btn-add-player-row" onclick="addPlayerRow()">＋ Spieler hinzufügen</button>
-    <div class="info-box">
-      <div class="info-title">Spielregeln</div>
-      Ein zufälliges Item startet auf der Skala. Jeder Spieler wählt ein Item aus dem Pool und entscheidet:
-      LOWER (links), HIGHER (rechts) oder BETWEEN (zwischen zwei Items).
-      Richtig = ✅ 1 Punkt. Falsch = ❌ Herz verloren.
+
+    <!-- NON-HOST waiting -->
+    <div id="horl-lobby-wait" style="display:none;text-align:center;padding:24px;color:var(--muted);font-size:14px;">
+      ⏳ Warte auf Host...
     </div>
-    <button class="btn-primary" onclick="startGame()">▶ Spiel starten!</button>
   </div>
 </div>
 
@@ -418,29 +313,19 @@ to{opacity:1;}}
     <div class="round-badge" id="round-badge">RUNDE 1</div>
     <div class="game-title-mid">HIGHER OR LOWER</div>
     <div class="cat-badge" id="cat-badge">–</div>
-    <button class="btn-icon" onclick="confirmQuit()">✕</button>
+    <button class="btn-icon" onclick="horlConfirmQuit()">✕</button>
   </div>
-
   <div class="game-layout">
-
-    <!-- Scale with clickable zones between items -->
     <div class="scale-section">
       <div class="scale-end-labels">
         <span class="scale-end-label low" id="lbl-low">◀ niedrig</span>
         <span class="scale-end-label high" id="lbl-high">hoch ▶</span>
       </div>
       <div class="scale-line"></div>
-      <!-- Items + drop zones rendered by JS -->
       <div class="scale-row" id="scale-row"></div>
     </div>
-
-    <!-- Turn bar -->
     <div class="turn-bar" id="turn-bar">–</div>
-
-    <!-- Pool -->
     <div class="pool-area" id="pool-area"></div>
-
-    <!-- Sidebar -->
     <div class="game-sidebar">
       <div class="sb-wrap" id="sb-players"></div>
     </div>
@@ -455,15 +340,14 @@ to{opacity:1;}}
   <div class="winner-name" id="winner-name">–</div>
   <div class="final-table" id="final-table"></div>
   <div class="winner-btns">
-    <button class="btn-primary" onclick="goToSetup()">🔄 Nochmal spielen</button>
-    <button class="btn-secondary" onclick="showView('view-menu')">🏠 Hauptmenü</button>
+    <button class="btn-secondary" onclick="horlLeaveGame()">🏠 Hauptmenü</button>
   </div>
 </div>
 
 <!-- ══ EDITOR ══ -->
 <div class="view" id="view-editor">
   <div class="topbar">
-    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <button class="btn-icon" onclick="horlEditorBack()">←</button>
     <div class="topbar-title">✏️ Quiz erstellen</div>
   </div>
   <div class="view-body" style="padding-bottom:90px;">
@@ -475,8 +359,9 @@ to{opacity:1;}}
     <button class="btn-add-round" onclick="addEditorRound()">＋ Runde hinzufügen</button>
   </div>
   <div class="editor-footer">
-    <button class="btn-gold" onclick="exportQuiz()">💾 Exportieren</button>
-    <button class="btn-primary" onclick="editorPlay()">▶ Spielen</button>
+    <button class="btn-gold" onclick="exportQuiz()" style="flex:1;">💾 Exportieren</button>
+    <button id="horl-editor-done-btn" class="btn-primary" onclick="horlEditorSaveToLobby()" style="display:none;flex:1;">✔ Fertig</button>
+    <button id="horl-editor-play-btn" class="btn-primary" onclick="editorGoToOverlay()" style="flex:1;">🌐 Online spielen</button>
   </div>
 </div>
 
@@ -484,290 +369,430 @@ to{opacity:1;}}
 <div class="toast" id="toast"></div>
 
 <script>
+const SERVER_URL = 'https://quiz-server-production-9398.up.railway.app';
+const COLORS = ['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
+
+// ── GLOBALS ──
+let socket = null;
+let myId = null;
+let myName = '';
+let isHost = false;
+let roomCode = '';
+let lobbyPlayers = [];
+let quizData = null;
+let horlEditorFromLobby = false;
+let horlEditorFromOverlay = false;
+let horlLobbyHearts = 3;
+let horlState = null;
+let lastFlashId = 0;
+
 // ── UTILS ──
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2800);}
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 function goHome(){window.location.href='quizshow-menu.html';}
-function confirmQuit(){if(confirm('Spiel beenden?'))showView('view-menu');}
 
-// ── STATE ──
-let quizData=null;
-let players=[];
-let currentRound=0;
-let currentPlayerIdx=0;
-let scaleItems=[];   // items on scale, sorted by value
-let selectedIdx=null; // index in round.items of selected pool item
-let maxHearts=3;
-const COLORS=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
+// ── OVERLAY ──
+function horlShowOverlay(){
+  document.getElementById('horl-overlay').classList.remove('hidden');
+  horlSwitchTab('create');
+}
+function horlCloseOverlay(){
+  document.getElementById('horl-overlay').classList.add('hidden');
+}
+function horlSwitchTab(tab){
+  document.getElementById('horl-tab-create').style.display = tab==='create'?'flex':'none';
+  document.getElementById('horl-tab-join').style.display = tab==='join'?'flex':'none';
+  document.getElementById('horl-tab-btn-create').classList.toggle('active', tab==='create');
+  document.getElementById('horl-tab-btn-join').classList.toggle('active', tab==='join');
+  document.getElementById('horl-status').style.display = 'none';
+}
+function showHorlStatus(type, msg){
+  const s = document.getElementById('horl-status');
+  s.textContent = msg;
+  s.className = 'horl-status ' + type;
+  s.style.display = 'block';
+}
+function horlChangeHearts(d){
+  const inp = document.getElementById('horl-hearts-inp');
+  inp.value = Math.max(1, Math.min(10, parseInt(inp.value) + d));
+}
 
-// ── IMPORT ──
-function importAndPlay(ev){
-  const file=ev.target.files[0];if(!file)return;
-  const r=new FileReader();
-  r.onload=e=>{
+function horlOverlayLoadQuiz(ev){
+  const file = ev.target.files[0]; if(!file)return;
+  const r = new FileReader();
+  r.onload = e => {
     try{
-      const d=JSON.parse(e.target.result);
+      const d = JSON.parse(e.target.result);
       if(!d.rounds||!Array.isArray(d.rounds))throw new Error('bad');
-      loadIntoEditor(d);
-      showToast('✅ Quiz geladen — Änderungen möglich!',2500);
-    }catch(e){showToast('❌ Ungültige Datei!');}
+      quizData = d;
+      document.getElementById('horl-quiz-status').style.display = 'flex';
+      document.getElementById('horl-quiz-status-text').textContent = '✅ ' + (d.name||'Quiz') + ' — ' + d.rounds.length + ' Runde(n)';
+      document.getElementById('horl-edit-btn').style.display = 'block';
+    }catch(e){showHorlStatus('err','❌ Ungültige Datei!');}
   };
   r.readAsText(file);
   ev.target.value='';
 }
 
-function loadIntoEditor(d){
-  if(d.name) document.getElementById('quiz-name').value=d.name;
-  document.getElementById('rounds-container').innerHTML='';
-  roundCount=0;
-  (d.rounds||[]).forEach(round=>{
-    addEditorRound(round);
-    const rid=roundCount-1;
-    (round.items||[]).forEach(item=>addEditorItem(rid,item));
-  });
-  if(!d.rounds||!d.rounds.length) addEditorRound();
+function horlOpenEditorFromOverlay(){
+  horlEditorFromOverlay = true;
+  horlEditorFromLobby = false;
+  if(quizData) loadIntoEditor(quizData);
+  document.getElementById('horl-editor-done-btn').style.display = 'flex';
+  document.getElementById('horl-editor-play-btn').style.display = 'none';
+  horlCloseOverlay();
   showView('view-editor');
 }
 
-// ── SETUP ──
-function goToSetup(){
-  players=[];
-  const g=document.getElementById('players-setup');
-  g.innerHTML='';
-  addPlayerRow();addPlayerRow();
-  showView('view-setup');
-}
-
-function addPlayerRow(){
-  const g=document.getElementById('players-setup');
-  const i=g.children.length;
-  const row=document.createElement('div');
-  row.className='player-setup-row';
-  row.innerHTML='<div class="player-num" style="color:'+COLORS[i%COLORS.length]+'">'+(i+1)+'</div>'
-    +'<input class="player-setup-inp" placeholder="Spielername..." maxlength="20">'
-    +'<button class="btn-del-p" onclick="this.closest(\'.player-setup-row\').remove();renumberSetup()">✕</button>';
-  g.appendChild(row);
-}
-
-function renumberSetup(){
-  document.querySelectorAll('.player-setup-row').forEach((r,i)=>{
-    r.querySelector('.player-num').textContent=i+1;
-    r.querySelector('.player-num').style.color=COLORS[i%COLORS.length];
+// ── SOCKET ──
+function mpConnect(cb){
+  if(socket && socket.connected){ cb(); return; }
+  if(socket){ socket.disconnect(); }
+  socket = io(SERVER_URL, {transports:['websocket']});
+  socket.on('connect', ()=>{ myId = socket.id; cb(); });
+  socket.on('disconnect', ()=>{ showToast('🔌 Verbindung getrennt'); });
+  socket.on('player_joined', d=>{ lobbyPlayers = d.players||[]; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+  socket.on('player_left',   d=>{ lobbyPlayers = d.players||[]; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+  socket.on('room_update',   d=>{ lobbyPlayers = d.players||[]; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+  socket.on('game_action', d=>{
+    if(d.type === 'horl_state'){
+      horlState = d.state;
+      if(!document.getElementById('view-game').classList.contains('active')){
+        showView('view-game');
+      }
+      renderGameView();
+      return;
+    }
+    if(isHost) horlProcessAction(d);
   });
 }
 
-function changeHearts(d){
-  const inp=document.getElementById('hearts-input');
-  inp.value=Math.max(1,Math.min(10,parseInt(inp.value)+d));
+function mpSend(type, data){
+  if(!socket) return;
+  socket.emit('game_action', Object.assign({roomCode, type}, data));
 }
 
-function startGame(){
-  maxHearts=parseInt(document.getElementById('hearts-input').value)||3;
-  players=[];
-  document.querySelectorAll('.player-setup-inp').forEach((inp,i)=>{
-    const name=inp.value.trim()||'Spieler '+(i+1);
-    players.push({name,hearts:maxHearts,score:0,eliminated:false,color:COLORS[i%COLORS.length]});
+function broadcastState(){
+  mpSend('horl_state', {state: horlState});
+}
+
+// ── HOST CREATE ──
+function horlHostCreate(){
+  const name = document.getElementById('horl-create-name').value.trim();
+  if(!name){ showHorlStatus('err','⚠️ Bitte Name eingeben.'); return; }
+  if(!quizData){ showHorlStatus('err','⚠️ Bitte Quiz importieren.'); return; }
+  horlLobbyHearts = parseInt(document.getElementById('horl-hearts-inp').value)||3;
+  myName = name;
+  showHorlStatus('ok','🔌 Verbinde...');
+  mpConnect(()=>{
+    socket.emit('create_room', {playerName: name});
+    socket.once('room_created', d=>{
+      roomCode = d.roomCode;
+      isHost = true;
+      lobbyPlayers = d.players || [{id: myId, name, isHost: true}];
+      horlCloseOverlay();
+      showView('view-lobby');
+      renderLobby();
+    });
   });
-  if(!players.length){showToast('⚠️ Mindestens 1 Spieler!');return;}
-  currentRound=0;currentPlayerIdx=0;
-  loadRound();showView('view-game');
 }
 
-// ── GAME ──
-function loadRound(){
-  if(currentRound>=quizData.rounds.length){showWinner();return;}
-  const round=quizData.rounds[currentRound];
-
-  // Pick random starting item
-  const randomIdx=Math.floor(Math.random()*round.items.length);
-  scaleItems=[round.items[randomIdx]];
-  selectedIdx=null;
-
-  document.getElementById('round-badge').textContent='RUNDE '+(currentRound+1);
-  document.getElementById('cat-badge').textContent=round.category;
-  document.getElementById('lbl-low').textContent='◀ '+(round.labelLow||'niedrig');
-  document.getElementById('lbl-high').textContent=(round.labelHigh||'hoch')+' ▶';
-
-  hideSelectionUI();
-  renderScale();
-  renderPool();
-  updateTurnBar();
-  updateSidebar();
-}
-
-// ── RENDER SCALE with clickable zones ──
-function renderScale(){
-  const row=document.getElementById('scale-row');
-  row.innerHTML='';
-  const sorted=[...scaleItems].sort((a,b)=>a.value-b.value);
-
-  // Build: zone | item | zone | item | ... | zone
-  sorted.forEach((item,i)=>{
-    // Zone before this item (or left edge)
-    const zoneId=i===0?'left':'between-'+(i-1);
-    row.appendChild(makeZone(zoneId,i===0?'◀':null));
-    // Item card
-    row.appendChild(makeScaleCard(item,i===0&&sorted.length===1));
+// ── PLAYER JOIN ──
+function horlPlayerJoin(){
+  const name = document.getElementById('horl-join-name').value.trim();
+  const code = document.getElementById('horl-join-code').value.trim().toUpperCase();
+  if(!name){ showHorlStatus('err','⚠️ Bitte Name eingeben.'); return; }
+  if(!code){ showHorlStatus('err','⚠️ Bitte Raum-Code eingeben.'); return; }
+  myName = name;
+  showHorlStatus('ok','🔌 Verbinde...');
+  mpConnect(()=>{
+    socket.emit('join_room', {playerName: name, roomCode: code});
+    socket.once('room_joined', d=>{
+      if(d.error){ showHorlStatus('err','❌ '+d.error); return; }
+      roomCode = d.roomCode||code;
+      isHost = false;
+      lobbyPlayers = d.players||[];
+      horlCloseOverlay();
+      showView('view-lobby');
+      renderLobby();
+    });
   });
-  // Right edge zone
-  row.appendChild(makeZone('right','▶'));
 }
 
-function makeZone(id,label){
-  const z=document.createElement('div');
-  z.className='scale-zone'+(selectedIdx!==null?' active':'');
-  z.dataset.zid=id;
-  if(selectedIdx!==null){
-    z.addEventListener('click',()=>doPlace(id));
+// ── LOBBY ──
+function renderLobby(){
+  document.getElementById('horl-lobby-code').textContent = roomCode;
+  const list = document.getElementById('horl-lobby-players');
+  list.innerHTML = '';
+  lobbyPlayers.forEach((p, i)=>{
+    const color = COLORS[i % COLORS.length];
+    const el = document.createElement('div');
+    el.className = 'lobby-player';
+    el.innerHTML = '<div class="lobby-player-avatar" style="background:'+color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="lobby-player-name">'+esc(p.name)+'</div>'
+      +(p.isHost?'<div class="lobby-player-badge">HOST</div>':'');
+    list.appendChild(el);
+  });
+
+  const hostSec = document.getElementById('horl-lobby-host-section');
+  const waitSec = document.getElementById('horl-lobby-wait');
+  if(isHost){
+    hostSec.style.display = 'flex';
+    hostSec.style.flexDirection = 'column';
+    hostSec.style.gap = '12px';
+    waitSec.style.display = 'none';
+    const qi = document.getElementById('horl-lobby-quiz-info');
+    if(quizData){
+      qi.style.display = 'flex';
+      document.getElementById('horl-lobby-quiz-name').textContent = '📊 '+quizData.name+' ('+quizData.rounds.length+' Runden)';
+      document.getElementById('horl-lobby-start-btn').disabled = false;
+    } else {
+      qi.style.display = 'none';
+      document.getElementById('horl-lobby-start-btn').disabled = true;
+    }
+    document.getElementById('horl-lobby-hearts').textContent = horlLobbyHearts;
+  } else {
+    hostSec.style.display = 'none';
+    waitSec.style.display = 'block';
   }
-  return z;
 }
 
-function makeScaleCard(item,isFirst){
-  const el=document.createElement('div');
-  el.className='scale-card'+(isFirst?' anchor-card':'');
-  const imgEl=item.imageUrl
-    ?'<img src="'+esc(item.imageUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'📦\'">'
-    :'<span>📦</span>';
-  el.innerHTML='<div class="scale-card-img">'+imgEl+'</div>'
+function horlChangeLobbyHearts(d){
+  horlLobbyHearts = Math.max(1, Math.min(10, horlLobbyHearts + d));
+  document.getElementById('horl-lobby-hearts').textContent = horlLobbyHearts;
+}
+
+function horlLobbyLeave(){
+  if(socket){ socket.disconnect(); socket = null; }
+  isHost = false; roomCode = ''; lobbyPlayers = [];
+  showView('view-menu');
+}
+
+function horlCopyCode(){
+  const url = window.location.origin + window.location.pathname + '?room=' + roomCode;
+  navigator.clipboard.writeText(url).then(()=>showToast('📋 Link kopiert!')).catch(()=>showToast('Code: '+roomCode));
+}
+
+// ── START GAME ──
+function horlStartGame(){
+  if(!quizData||!quizData.rounds.length){ showToast('⚠️ Quiz erforderlich!'); return; }
+  const round0 = quizData.rounds[0];
+  const startIdx = Math.floor(Math.random() * round0.items.length);
+  horlState = {
+    phase: 'playing',
+    quizData: quizData,
+    players: lobbyPlayers.map((p, i)=>({
+      id: p.id,
+      name: p.name,
+      hearts: horlLobbyHearts,
+      score: 0,
+      eliminated: false,
+      color: COLORS[i % COLORS.length]
+    })),
+    currentRound: 0,
+    currentPlayerIdx: 0,
+    scaleItemIndices: [startIdx],
+    selectedItemIdx: null,
+    maxHearts: horlLobbyHearts,
+    resultFlashId: 0,
+    lastResult: null
+  };
+  socket.emit('start_game', {roomCode});
+  broadcastState();
+}
+
+// ── HOST PROCESSES ACTIONS ──
+function horlProcessAction(d){
+  if(!horlState || horlState.phase === 'end') return;
+  const active = horlState.players[horlState.currentPlayerIdx];
+
+  if(d.type === 'horl_select'){
+    if(!active || active.id !== d.playerId) return;
+    horlState.selectedItemIdx = (horlState.selectedItemIdx === d.itemIdx) ? null : d.itemIdx;
+    broadcastState();
+
+  } else if(d.type === 'horl_place'){
+    if(!active || active.id !== d.playerId) return;
+    if(horlState.selectedItemIdx === null) return;
+
+    const round = horlState.quizData.rounds[horlState.currentRound];
+    const item = round.items[horlState.selectedItemIdx];
+    const sorted = [...horlState.scaleItemIndices].sort((a,b)=>round.items[a].value - round.items[b].value);
+
+    let leftVal = -Infinity, rightVal = Infinity;
+    const zid = d.zoneId;
+    if(zid === 'left'){
+      rightVal = round.items[sorted[0]].value;
+    } else if(zid === 'right'){
+      leftVal = round.items[sorted[sorted.length-1]].value;
+    } else if(zid.startsWith('between-')){
+      const i = parseInt(zid.replace('between-',''));
+      leftVal = round.items[sorted[i]].value;
+      rightVal = round.items[sorted[i+1]].value;
+    }
+
+    const correct = item.value > leftVal && item.value < rightVal;
+    const placedIdx = horlState.selectedItemIdx;
+    horlState.selectedItemIdx = null;
+    horlState.resultFlashId++;
+    horlState.lastResult = {correct, id: horlState.resultFlashId, playerName: active.name, itemName: item.name};
+
+    const player = horlState.players[horlState.currentPlayerIdx];
+    if(correct){
+      horlState.scaleItemIndices.push(placedIdx);
+      player.score++;
+      const remaining = round.items.length - horlState.scaleItemIndices.length;
+      if(remaining === 0){
+        horlState.currentRound++;
+        if(horlState.currentRound >= horlState.quizData.rounds.length){
+          horlState.phase = 'end';
+          broadcastState();
+          return;
+        }
+        const nr = horlState.quizData.rounds[horlState.currentRound];
+        const si = Math.floor(Math.random() * nr.items.length);
+        horlState.scaleItemIndices = [si];
+        horlNextPlayer();
+        broadcastState();
+        return;
+      }
+    } else {
+      player.hearts--;
+      if(player.hearts <= 0) player.eliminated = true;
+      if(horlState.players.every(p=>p.eliminated)){
+        horlState.phase = 'end';
+        broadcastState();
+        return;
+      }
+    }
+    horlNextPlayer();
+    broadcastState();
+  }
+}
+
+function horlNextPlayer(){
+  const n = horlState.players.length;
+  let tries = 0;
+  do {
+    horlState.currentPlayerIdx = (horlState.currentPlayerIdx + 1) % n;
+    tries++;
+  } while(horlState.players[horlState.currentPlayerIdx].eliminated && tries < n);
+}
+
+// ── RENDER GAME ──
+function renderGameView(){
+  if(!horlState) return;
+  if(horlState.phase === 'end'){ showWinnerOnline(); return; }
+
+  const round = horlState.quizData.rounds[horlState.currentRound];
+  const active = horlState.players[horlState.currentPlayerIdx];
+  const isMyTurn = active && active.id === myId;
+
+  document.getElementById('round-badge').textContent = 'RUNDE '+(horlState.currentRound+1);
+  document.getElementById('cat-badge').textContent = round.category;
+  document.getElementById('lbl-low').textContent = '◀ '+(round.labelLow||'niedrig');
+  document.getElementById('lbl-high').textContent = (round.labelHigh||'hoch')+' ▶';
+
+  renderScaleOnline(round, isMyTurn);
+  renderPoolOnline(round, isMyTurn);
+  updateTurnBarOnline(active, isMyTurn, round);
+  updateSidebarOnline();
+
+  if(horlState.lastResult && horlState.lastResult.id !== lastFlashId){
+    lastFlashId = horlState.lastResult.id;
+    showFlash(horlState.lastResult.correct);
+    if(horlState.lastResult.correct){
+      showToast('✅ Richtig! +1 für '+horlState.lastResult.playerName, 2000);
+    } else {
+      showToast('❌ Falsch! '+horlState.lastResult.playerName+' verliert ❤️', 2000);
+    }
+  }
+}
+
+function renderScaleOnline(round, isMyTurn){
+  const row = document.getElementById('scale-row');
+  row.innerHTML = '';
+  const hasSel = horlState.selectedItemIdx !== null;
+  const sorted = [...horlState.scaleItemIndices].sort((a,b)=>round.items[a].value - round.items[b].value);
+
+  sorted.forEach((itemIdx, i)=>{
+    const zoneId = i===0 ? 'left' : 'between-'+(i-1);
+    const z = document.createElement('div');
+    z.className = 'scale-zone'+(isMyTurn && hasSel ? ' active' : '');
+    if(isMyTurn && hasSel){
+      z.addEventListener('click', ()=>mpSend('horl_place', {zoneId, playerId: myId}));
+    }
+    row.appendChild(z);
+    row.appendChild(makeScaleCard(round.items[itemIdx], i===0 && sorted.length===1));
+  });
+
+  const rz = document.createElement('div');
+  rz.className = 'scale-zone'+(isMyTurn && hasSel ? ' active' : '');
+  if(isMyTurn && hasSel){
+    rz.addEventListener('click', ()=>mpSend('horl_place', {zoneId:'right', playerId: myId}));
+  }
+  row.appendChild(rz);
+}
+
+function makeScaleCard(item, isFirst){
+  const el = document.createElement('div');
+  el.className = 'scale-card'+(isFirst?' anchor-card':'');
+  const imgEl = item.imageUrl
+    ? '<img src="'+esc(item.imageUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'📦\'">'
+    : '<span>📦</span>';
+  el.innerHTML = '<div class="scale-card-img">'+imgEl+'</div>'
     +'<div class="scale-card-name">'+esc(item.name)+'</div>';
   return el;
 }
 
-// ── SELECT ITEM ──
-function selectItem(idx){
-  if(selectedIdx===idx){
-    selectedIdx=null;
-  } else {
-    selectedIdx=idx;
-  }
-  renderScale();
-  renderPool();
-  updateTurnBar();
-}
-
-function hideSelectionUI(){
-  selectedIdx=null;
-}
-
-// ── DO PLACE (zone-based) ──
-function doPlace(zoneId){
-  if(selectedIdx===null)return;
-  const round=quizData.rounds[currentRound];
-  const item=round.items[selectedIdx];
-  const player=players[currentPlayerIdx];
-
-  const sorted=[...scaleItems].sort((a,b)=>a.value-b.value);
-
-  // Determine left and right neighbours from zone
-  let leftVal=-Infinity, rightVal=Infinity;
-  if(zoneId==='left'){
-    rightVal=sorted[0].value;
-  } else if(zoneId==='right'){
-    leftVal=sorted[sorted.length-1].value;
-  } else if(zoneId.startsWith('between-')){
-    const i=parseInt(zoneId.replace('between-',''));
-    leftVal=sorted[i].value;
-    rightVal=sorted[i+1].value;
-  }
-
-  const correct=item.value>leftVal&&item.value<rightVal;
-  selectedIdx=null;
-
-  if(correct){
-    scaleItems.push(item);
-    player.score++;
-    showFlash(true);
-    showToast('✅ Richtig! +1 für '+player.name,2000);
-    renderScale();
-    renderPool();
-    updateSidebar();
-    const remaining=round.items.filter(it=>!scaleItems.includes(it));
-    if(remaining.length===0){
-      setTimeout(()=>{
-        currentRound++;
-        if(currentRound>=quizData.rounds.length)showWinner();
-        else loadRound();
-      },1000);
-      return;
+function renderPoolOnline(round, isMyTurn){
+  const pool = document.getElementById('pool-area');
+  pool.innerHTML = '';
+  round.items.forEach((item, i)=>{
+    const onScale = horlState.scaleItemIndices.includes(i);
+    const isSel = horlState.selectedItemIdx === i;
+    const card = document.createElement('div');
+    card.className = 'pool-card'+(onScale?' used': isSel?' selected-pool': !isMyTurn?' no-turn':'');
+    const imgEl = item.imageUrl
+      ? '<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" onerror="this.parentElement.innerHTML=\'📦\'">'
+      : '<span>📦</span>';
+    card.innerHTML = '<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
+    if(!onScale && isMyTurn){
+      card.addEventListener('click', ()=>mpSend('horl_select', {itemIdx: i, playerId: myId}));
     }
-  } else {
-    player.hearts--;
-    showFlash(false);
-    const cards=document.querySelectorAll('.pool-card');
-    cards.forEach(c=>{
-      if(c.querySelector('.pool-name')&&c.querySelector('.pool-name').textContent===item.name){
-        c.classList.add('wrong-flash');
-        setTimeout(()=>c.classList.remove('wrong-flash'),600);
-      }
-    });
-    if(player.hearts<=0){
-      player.eliminated=true;
-      showToast('💀 '+player.name+' ausgeschieden!',3000);
-    } else {
-      showToast('❌ Falsch! '+player.name+' verliert ❤️ ('+player.hearts+' übrig)',2500);
-    }
-    renderPool();
-    updateSidebar();
-    if(players.filter(p=>!p.eliminated).length===0){setTimeout(()=>showWinner(),800);return;}
-  }
-
-  setTimeout(()=>nextPlayer(),300);
-}
-
-// ── RENDER POOL ──
-function renderPool(){
-  const pool=document.getElementById('pool-area');
-  pool.innerHTML='';
-  const round=quizData.rounds[currentRound];
-  round.items.forEach((item,i)=>{
-    const onScale=scaleItems.includes(item);
-    const isSel=selectedIdx===i;
-    const card=document.createElement('div');
-    card.className='pool-card'+(onScale?' used':isSel?' selected-pool':'');
-    const imgEl=item.imageUrl
-      ?'<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" onerror="this.parentElement.innerHTML=\'📦\'">'
-      :'<span>📦</span>';
-    card.innerHTML='<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
-    if(!onScale) card.addEventListener('click',()=>selectItem(i));
     pool.appendChild(card);
   });
 }
 
-function nextPlayer(){
-  let tries=0;
-  do{currentPlayerIdx=(currentPlayerIdx+1)%players.length;tries++;}
-  while(players[currentPlayerIdx].eliminated&&tries<players.length);
-  updateTurnBar();
-  updateSidebar();
-}
-
-function updateTurnBar(){
-  const p=players[currentPlayerIdx];
-  const bar=document.getElementById('turn-bar');
-  if(!p||p.eliminated){bar.innerHTML='–';return;}
-  if(selectedIdx!==null){
-    const round=quizData.rounds[currentRound];
-    const item=round.items[selectedIdx];
-    bar.innerHTML='<span style="color:'+p.color+';font-weight:800;">'+esc(p.name)+'</span>'
-      +' → <span style="color:var(--green);">'+esc(item.name)+'</span> ausgewählt'
-      +' — klicke eine Zone auf der Skala ↑';
+function updateTurnBarOnline(active, isMyTurn, round){
+  const bar = document.getElementById('turn-bar');
+  if(!active){ bar.innerHTML = '–'; return; }
+  if(isMyTurn){
+    if(horlState.selectedItemIdx !== null){
+      bar.innerHTML = '<span style="color:var(--green);font-weight:800;">Du</span> → '
+        +'<span style="color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</span>'
+        +' ausgewählt — klicke eine Zone ↑';
+    } else {
+      bar.innerHTML = '<span style="color:var(--green);font-weight:800;">Du bist dran!</span> Wähle ein Item ↓';
+    }
   } else {
-    bar.innerHTML='<span style="color:'+p.color+';font-weight:800;">'+esc(p.name)+'</span>'
-      +' ist dran — wähle ein Item aus dem Pool ↓';
+    const selText = horlState.selectedItemIdx !== null
+      ? ' → <span style="color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</span> ausgewählt...'
+      : ' wählt ein Item...';
+    bar.innerHTML = '<span style="color:'+esc(active.color)+';font-weight:800;">'+esc(active.name)+'</span>'+selText;
   }
 }
 
-function updateSidebar(){
-  const con=document.getElementById('sb-players');
-  con.innerHTML='';
-  players.forEach((p,i)=>{
-    const isActive=i===currentPlayerIdx&&!p.eliminated;
-    const el=document.createElement('div');
-    el.className='sb-player'+(isActive?' active':'')+( p.eliminated?' eliminated':'');
-    const hearts='❤️'.repeat(p.hearts)+'🖤'.repeat(Math.max(0,maxHearts-p.hearts));
-    el.innerHTML='<div class="sb-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+function updateSidebarOnline(){
+  const con = document.getElementById('sb-players');
+  con.innerHTML = '';
+  horlState.players.forEach((p, i)=>{
+    const isActive = i===horlState.currentPlayerIdx && !p.eliminated;
+    const el = document.createElement('div');
+    el.className = 'sb-player'+(isActive?' active':'')+(p.eliminated?' eliminated':'');
+    const hearts = '❤️'.repeat(p.hearts)+'🖤'.repeat(Math.max(0, horlState.maxHearts - p.hearts));
+    el.innerHTML = '<div class="sb-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
       +'<div class="sb-info"><div class="sb-name">'+esc(p.name)+(p.eliminated?' 💀':'')+'</div>'
       +'<div class="sb-hearts">'+hearts+'</div></div>'
       +'<div class="sb-pts">'+p.score+'</div>';
@@ -776,92 +801,153 @@ function updateSidebar(){
 }
 
 function showFlash(correct){
-  const f=document.getElementById('result-flash');
-  f.className='result-flash '+(correct?'correct':'wrong');
-  document.getElementById('rfi').textContent=correct?'✓':'✗';
+  const f = document.getElementById('result-flash');
+  f.className = 'result-flash '+(correct?'correct':'wrong');
+  document.getElementById('rfi').textContent = correct?'✓':'✗';
   f.classList.add('show');
-  setTimeout(()=>f.classList.remove('show'),700);
+  setTimeout(()=>f.classList.remove('show'), 700);
+}
+
+function horlConfirmQuit(){
+  if(confirm('Spiel verlassen?')) horlLeaveGame();
 }
 
 // ── WINNER ──
-function showWinner(){
-  const sorted=[...players].sort((a,b)=>b.score-a.score||b.hearts-a.hearts);
-  const tied=sorted.length>1&&sorted[0].score===sorted[1].score;
-  document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':sorted[0].name;
-  const table=document.getElementById('final-table');
-  table.innerHTML='';
-  sorted.forEach((p,i)=>{
-    const el=document.createElement('div');
-    el.className='final-row'+(i===0?' first-place':'');
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
-    el.innerHTML='<div class="final-rank">'+medal+'</div>'
+function showWinnerOnline(){
+  const sorted = [...horlState.players].sort((a,b)=>b.score-a.score||b.hearts-a.hearts);
+  const tied = sorted.length>1 && sorted[0].score===sorted[1].score;
+  document.getElementById('winner-name').textContent = tied?'Unentschieden! 🤝':sorted[0].name;
+  const table = document.getElementById('final-table');
+  table.innerHTML = '';
+  sorted.forEach((p, i)=>{
+    const el = document.createElement('div');
+    el.className = 'final-row'+(i===0?' first-place':'');
+    const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+    el.innerHTML = '<div class="final-rank">'+medal+'</div>'
       +'<div class="final-name" style="color:'+p.color+'">'+esc(p.name)+'</div>'
       +'<div style="font-size:11px;">'+'❤️'.repeat(p.hearts)+'</div>'
       +'<div class="final-pts">'+p.score+' Pkt</div>';
     table.appendChild(el);
   });
   showView('view-winner');
-  setTimeout(launchConfetti,400);
+  setTimeout(launchConfetti, 400);
+}
+
+function horlLeaveGame(){
+  if(socket){ socket.disconnect(); socket = null; }
+  horlState = null; isHost = false; roomCode = ''; lobbyPlayers = [];
+  showView('view-menu');
 }
 
 // ── CONFETTI ──
 function launchConfetti(){
-  const canvas=document.getElementById('confetti-canvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-  const colors=['#f5c842','#2ecc71','#3a8ef6','#e8354a','#9b59b6','#f39c12','#1abc9c'];
-  const pieces=[];
+  const canvas = document.getElementById('confetti-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#f5c842','#2ecc71','#3a8ef6','#e8354a','#9b59b6','#f39c12','#1abc9c'];
+  const pieces = [];
   for(let i=0;i<120;i++){
-    pieces.push({
-      x:Math.random()*canvas.width,
-      y:-20-Math.random()*canvas.height*0.5,
-      w:8+Math.random()*8,
-      h:5+Math.random()*5,
-      r:Math.random()*Math.PI*2,
-      rv:(Math.random()-.5)*0.15,
-      vx:(Math.random()-.5)*3,
-      vy:2+Math.random()*4,
-      color:colors[Math.floor(Math.random()*colors.length)],
-      alpha:1
-    });
+    pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.5,
+      w:8+Math.random()*8,h:5+Math.random()*5,r:Math.random()*Math.PI*2,
+      rv:(Math.random()-.5)*.15,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,
+      color:colors[Math.floor(Math.random()*colors.length)],alpha:1});
   }
   let frame=0;
-  function draw(){
+  (function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     pieces.forEach(p=>{
-      p.x+=p.vx;
-      p.y+=p.vy;
-      p.r+=p.rv;
-      p.vx*=0.99;
-      if(frame>80)p.alpha=Math.max(0,p.alpha-0.012);
-      ctx.save();
-      ctx.globalAlpha=p.alpha;
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.r);
-      ctx.fillStyle=p.color;
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
+      p.x+=p.vx; p.y+=p.vy; p.r+=p.rv; p.vx*=.99;
+      if(frame>80)p.alpha=Math.max(0,p.alpha-.012);
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
     });
     frame++;
     if(frame<150)requestAnimationFrame(draw);
     else ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
-  draw();
+  })();
 }
 
 // ── EDITOR ──
-let roundCount=0;
+let roundCount = 0;
+
+function horlEditorBack(){
+  if(horlEditorFromLobby){
+    horlEditorFromLobby = false;
+    document.getElementById('horl-editor-done-btn').style.display = 'none';
+    document.getElementById('horl-editor-play-btn').style.display = 'flex';
+    showView('view-lobby');
+  } else if(horlEditorFromOverlay){
+    horlEditorFromOverlay = false;
+    document.getElementById('horl-editor-done-btn').style.display = 'none';
+    document.getElementById('horl-editor-play-btn').style.display = 'flex';
+    showView('view-menu');
+    horlShowOverlay();
+  } else {
+    showView('view-menu');
+  }
+}
+
+function horlEditorSaveToLobby(){
+  const data = collectData();
+  if(!data.rounds.length){ showToast('⚠️ Mindestens 1 Runde mit 2+ Items!'); return; }
+  quizData = data;
+  const fromLobby = horlEditorFromLobby;
+  horlEditorFromLobby = false;
+  horlEditorFromOverlay = false;
+  document.getElementById('horl-editor-done-btn').style.display = 'none';
+  document.getElementById('horl-editor-play-btn').style.display = 'flex';
+  // Update overlay quiz status
+  document.getElementById('horl-quiz-status').style.display = 'flex';
+  document.getElementById('horl-quiz-status-text').textContent = '✅ '+data.name+' — '+data.rounds.length+' Runde(n)';
+  document.getElementById('horl-edit-btn').style.display = 'block';
+  if(fromLobby){
+    showView('view-lobby');
+    renderLobby();
+  } else {
+    showView('view-menu');
+    horlShowOverlay();
+  }
+  showToast('✅ Quiz gespeichert!');
+}
+
+function horlOpenEditorFromLobby(){
+  horlEditorFromLobby = true;
+  horlEditorFromOverlay = false;
+  if(quizData) loadIntoEditor(quizData);
+  document.getElementById('horl-editor-done-btn').style.display = 'flex';
+  document.getElementById('horl-editor-play-btn').style.display = 'none';
+  showView('view-editor');
+}
+
+function editorGoToOverlay(){
+  const data = collectData();
+  if(!data.rounds.length){ showToast('⚠️ Mindestens 1 Runde mit 2+ Items!'); return; }
+  quizData = data;
+  showView('view-menu');
+  horlShowOverlay();
+  document.getElementById('horl-quiz-status').style.display = 'flex';
+  document.getElementById('horl-quiz-status-text').textContent = '✅ '+data.name+' — '+data.rounds.length+' Runde(n)';
+  document.getElementById('horl-edit-btn').style.display = 'block';
+}
+
+function loadIntoEditor(d){
+  if(d.name) document.getElementById('quiz-name').value = d.name;
+  document.getElementById('rounds-container').innerHTML = '';
+  roundCount = 0;
+  (d.rounds||[]).forEach(round => addEditorRound(round));
+  if(!d.rounds||!d.rounds.length) addEditorRound();
+}
 
 function addEditorRound(rData){
-  const id=roundCount++;
-  const con=document.getElementById('rounds-container');
-  const el=document.createElement('div');
-  el.className='round-block';
-  el.innerHTML='<div class="round-head">'
+  const id = roundCount++;
+  const con = document.getElementById('rounds-container');
+  const el = document.createElement('div');
+  el.className = 'round-block';
+  el.innerHTML = '<div class="round-head">'
     +'<span class="round-num-lbl">RUNDE '+(con.children.length+1)+'</span>'
-    +'<input class="round-cat-inp" placeholder="Kategorie..." maxlength="40" value="'+(rData?esc(rData.category):'')+'">'
+    +'<input class="round-cat-inp" placeholder="Kategorie..." maxlength="40" value="'+(rData?esc(rData.category||''):'')+'">'
     +'<button class="btn-del-round" onclick="this.closest(\'.round-block\').remove()">🗑</button>'
     +'</div>'
     +'<div class="round-body">'
@@ -871,12 +957,12 @@ function addEditorRound(rData){
         +'<div><div class="lbl-field-label">Label Rechts (hoch)</div>'
         +'<input class="lbl-field-inp" placeholder="z.B. viele" value="'+(rData&&rData.labelHigh?esc(rData.labelHigh):'')+'"></div>'
       +'</div>'
-      +'<div class="ed-hint">Wert = die echte Zahl (wird intern für Korrektheit genutzt, Spieler sehen sie nicht)</div>'
+      +'<div class="ed-hint">Wert = die echte Zahl (intern für Korrektheit — Spieler sehen sie nicht)</div>'
       +'<div class="items-ed" id="items-ed-'+id+'"></div>'
       +'<button class="btn-add-item" onclick="addEditorItem('+id+')">＋ Item hinzufügen</button>'
     +'</div>';
   con.appendChild(el);
-  if(rData&&rData.items)rData.items.forEach(it=>addEditorItem(id,it));
+  if(rData&&rData.items) rData.items.forEach(it=>addEditorItem(id,it));
   else{
     addEditorItem(id,{name:'Apex Legends',value:320,imageUrl:''});
     addEditorItem(id,{name:'CS2',value:520,imageUrl:''});
@@ -884,120 +970,94 @@ function addEditorRound(rData){
   }
 }
 
-function addEditorItem(roundId,iData){
-  const list=document.getElementById('items-ed-'+roundId);
-  if(!list)return;
-  const uid='item-'+roundId+'-'+Date.now()+'-'+Math.random().toString(36).slice(2);
-  const row=document.createElement('div');
-  row.className='item-ed-row';
-  row.dataset.imgData=iData&&iData.imageUrl?iData.imageUrl:'';
-
-  const previewSrc=iData&&iData.imageUrl?iData.imageUrl:'';
-  row.innerHTML=
-    // Image upload button
+function addEditorItem(roundId, iData){
+  const list = document.getElementById('items-ed-'+roundId);
+  if(!list) return;
+  const row = document.createElement('div');
+  row.className = 'item-ed-row';
+  row.dataset.imgData = iData&&iData.imageUrl ? iData.imageUrl : '';
+  const previewSrc = iData&&iData.imageUrl ? iData.imageUrl : '';
+  row.innerHTML =
     '<label class="img-upload-btn" title="Bild hochladen" style="cursor:pointer;flex-shrink:0;">'
       +'<div class="img-preview" style="'+(previewSrc?'background-image:url('+previewSrc+');background-size:cover;background-position:center;':'')+'">'+(!previewSrc?'📷':'')+'</div>'
       +'<input type="file" accept="image/*" style="display:none" onchange="handleImgUpload(this)">'
     +'</label>'
-    +'<input class="item-ed-inp" placeholder="Itemname..." maxlength="30" value="'+(iData?esc(iData.name):'')+'">'
+    +'<input class="item-ed-inp" placeholder="Itemname..." maxlength="30" value="'+(iData?esc(iData.name||''):'')+'">'
     +'<input class="item-ed-val" type="number" placeholder="Wert" value="'+(iData&&iData.value!==undefined?iData.value:'')+'">'
-    +'<button class="btn-del-item" onclick="this.closest(\'.item-ed-row\').remove()">✕</button>';
+    +'<button style="background:none;border:none;color:var(--muted2);font-size:15px;cursor:pointer;" onclick="this.closest(\'.item-ed-row\').remove()">✕</button>';
   list.appendChild(row);
 }
 
 function handleImgUpload(input){
-  const file=input.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const b64=e.target.result;
-    const row=input.closest('.item-ed-row');
-    row.dataset.imgData=b64;
-    const preview=row.querySelector('.img-preview');
-    preview.style.backgroundImage='url('+b64+')';
-    preview.style.backgroundSize='cover';
-    preview.style.backgroundPosition='center';
-    preview.textContent='';
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const b64 = e.target.result;
+    const row = input.closest('.item-ed-row');
+    row.dataset.imgData = b64;
+    const preview = row.querySelector('.img-preview');
+    preview.style.backgroundImage = 'url('+b64+')';
+    preview.style.backgroundSize = 'cover';
+    preview.style.backgroundPosition = 'center';
+    preview.textContent = '';
   };
   reader.readAsDataURL(file);
 }
 
 function collectData(){
-  const name=document.getElementById('quiz-name').value.trim()||'Higher or Lower';
-  const rounds=[];
+  const name = document.getElementById('quiz-name').value.trim()||'Higher or Lower';
+  const rounds = [];
   document.querySelectorAll('.round-block').forEach(block=>{
-    const category=block.querySelector('.round-cat-inp').value.trim()||'Kategorie';
-    const lbls=block.querySelectorAll('.lbl-field-inp');
-    const labelLow=lbls[0].value.trim()||'niedrig';
-    const labelHigh=lbls[1].value.trim()||'hoch';
-    const items=[];
+    const category = block.querySelector('.round-cat-inp').value.trim()||'Kategorie';
+    const lbls = block.querySelectorAll('.lbl-field-inp');
+    const labelLow = lbls[0].value.trim()||'niedrig';
+    const labelHigh = lbls[1].value.trim()||'hoch';
+    const items = [];
     block.querySelectorAll('.item-ed-row').forEach(row=>{
-      const nm=row.querySelector('.item-ed-inp').value.trim();
-      const val=parseInt(row.querySelector('.item-ed-val').value);
-      const imageUrl=row.dataset.imgData||'';
-      if(nm&&!isNaN(val))items.push({name:nm,value:val,imageUrl});
+      const nm = row.querySelector('.item-ed-inp').value.trim();
+      const val = parseInt(row.querySelector('.item-ed-val').value);
+      const imageUrl = row.dataset.imgData||'';
+      if(nm&&!isNaN(val)) items.push({name:nm, value:val, imageUrl});
     });
-    if(items.length>=2)rounds.push({category,labelLow,labelHigh,items});
+    if(items.length>=2) rounds.push({category, labelLow, labelHigh, items});
   });
-  return{name,rounds};
+  return {name, rounds};
 }
 
 function exportQuiz(){
-  const data=collectData();
-  if(!data.rounds.length){showToast('⚠️ Mindestens 1 Runde mit 2+ Items!');return;}
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;
-  a.download=data.name.replace(/\s+/g,'_')+'.quiz';
-  a.click();URL.revokeObjectURL(url);
+  const data = collectData();
+  if(!data.rounds.length){ showToast('⚠️ Mindestens 1 Runde mit 2+ Items!'); return; }
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download = data.name.replace(/\s+/g,'_')+'.quiz';
+  a.click(); URL.revokeObjectURL(url);
   showToast('✅ Quiz gespeichert!');
-}
-
-function editorPlay(){
-  const data=collectData();
-  if(!data.rounds.length){showToast('⚠️ Mindestens 1 Runde mit 2+ Items!');return;}
-  quizData=data;goToSetup();
 }
 
 addEditorRound();
 
-(function(){
-  const p=new URLSearchParams(window.location.search);
-  const a=p.get('action');
-  if(a==='play')showView('view-play-landing');
-  else if(a==='editor')showView('view-editor');
-})();
-
-
-
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', ()=>{
+  const p = new URLSearchParams(window.location.search);
+  const room = p.get('room');
+  const action = p.get('action');
+  if(room){
+    horlShowOverlay();
+    horlSwitchTab('join');
+    document.getElementById('horl-join-code').value = room.toUpperCase();
+  } else if(action==='editor'){
+    showView('view-editor');
+  } else if(action==='play'){
+    horlShowOverlay();
+  }
+});
 </script>
 
 <!-- THEME SWITCHER -->
 <button class="theme-btn" onclick="toggleThemePanel()" title="Design wählen">🎨</button>
 <div class="theme-panel" id="theme-panel">
   <div class="theme-panel-title">Design wählen</div>
-  <button class="theme-option" onclick="setTheme('midnight')">
-    <div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight
-  </button>
-  <button class="theme-option" onclick="setTheme('neon')">
-    <div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon
-  </button>
-  <button class="theme-option" onclick="setTheme('forest')">
-    <div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest
-  </button>
-  <button class="theme-option" onclick="setTheme('sunset')">
-    <div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset
-  </button>
-  <button class="theme-option" onclick="setTheme('arctic')">
-    <div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic
-  </button>
-</div>
-
-
-<!-- THEME SWITCHER -->
-<button class="theme-btn" onclick="toggleThemePanel()" title="Design w&#228;hlen">&#127912;</button>
-<div class="theme-panel" id="theme-panel">
-  <div class="theme-panel-title">Design w&#228;hlen</div>
   <button class="theme-option" onclick="setTheme('midnight')"><div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight</button>
   <button class="theme-option" onclick="setTheme('neon')"><div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon</button>
   <button class="theme-option" onclick="setTheme('forest')"><div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest</button>
@@ -1008,7 +1068,7 @@ addEditorRound();
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('quizTheme',t);
-  document.querySelectorAll('.theme-option').forEach(function(el){
+  document.querySelectorAll('.theme-option').forEach(el=>{
     el.classList.toggle('active', el.textContent.trim().toLowerCase().startsWith(t));
   });
   var panel=document.getElementById('theme-panel');
@@ -1020,33 +1080,11 @@ function toggleThemePanel(){
 }
 document.addEventListener('click',function(e){
   var panel=document.getElementById('theme-panel');
-  if(panel && !panel.contains(e.target) && !e.target.classList.contains('theme-btn')){
+  if(panel&&!panel.contains(e.target)&&!e.target.classList.contains('theme-btn')){
     panel.classList.remove('open');
   }
 });
 (function(){ setTheme(localStorage.getItem('quizTheme')||'midnight'); })();
-</script>
-
-
-<!-- ══ MULTIPLAYER OVERLAY ══ -->
-<div class="mp-overlay hidden" id="mp-overlay">
-  <div class="mp-box">
-    <div class="mp-header">
-      <span>🌐</span>
-      <div class="mp-title">MULTIPLAYER</div>
-      <button class="mp-close" onclick="mpClose()">✕</button>
-    </div>
-    <div class="mp-body" id="mp-body">
-      <!-- Dynamically rendered by JS -->
-    </div>
-  </div>
-</div>
-
-
-
-<script>
-
-
 </script>
 
 </body>
