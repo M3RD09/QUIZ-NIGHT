@@ -641,6 +641,61 @@ function selectAnswer(idx){
   }
 }
 
+// ── EDITOR ──
+let editorQCount=0;
+
+function addEditorQuestion(qData){
+  const _PTS=[100,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,25000,50000];
+  const con=document.getElementById('q-editor-container');
+  const idx=editorQCount++;
+  const pts=qData?qData.points:(_PTS[idx]||idx*100+100);
+  const el=document.createElement('div');
+  el.className='q-editor-block';
+  el.dataset.qidx=idx;
+
+  const answersHtml=LETTERS.map((l,i)=>`
+    <div class="ans-editor-wrap">
+      <span class="ans-editor-letter">${l}</span>
+      <input class="ans-editor-inp" placeholder="Antwort ${l}" maxlength="100"
+        value="${qData?escHtml(qData.answers[i]||''):''}">
+    </div>
+  `).join('');
+
+  el.innerHTML=`
+    <div class="q-editor-head">
+      <span class="q-editor-num">Frage ${idx+1}</span>
+      <input class="field-num" style="width:80px;text-align:right;" value="${pts}" min="1" type="number" placeholder="Punkte">
+      <span class="q-editor-pts">Punkte</span>
+      <button class="btn-del-q-ed" onclick="this.closest('.q-editor-block').remove()">🗑</button>
+    </div>
+    <div class="q-editor-body">
+      <input class="q-editor-inp" placeholder="❓ Frage eingeben..." maxlength="300"
+        value="${qData?escHtml(qData.question):''}">
+      <div class="answers-editor">${answersHtml}</div>
+      <div class="correct-mark">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">Richtige Antwort:</label>
+        <select class="q-editor-inp" style="padding:6px 8px;width:auto;cursor:pointer;">
+          ${LETTERS.map((l,i)=>`<option value="${i}" ${qData&&qData.correct===i?'selected':''}>Antwort ${l}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+  con.appendChild(el);
+}
+
+function collectEditorData(){
+  const name=document.getElementById('quiz-name').value.trim()||'Millionär Quiz';
+  const questions=[];
+  document.querySelectorAll('.q-editor-block').forEach(block=>{
+    const question=block.querySelector('.q-editor-inp').value.trim();
+    const answers=[...block.querySelectorAll('.ans-editor-inp')].map(i=>i.value.trim());
+    const correct=parseInt(block.querySelector('select').value);
+    const points=parseInt(block.querySelector('.field-num').value)||100;
+    if(question) questions.push({question,answers,correct,points});
+  });
+  return{name,questions};
+}
+
 function exportQuiz(){
   const data=collectEditorData();
   if(!data.questions.length){showToast('⚠️ Erst Fragen hinzufügen!');return;}
@@ -667,23 +722,23 @@ const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
 let mpSocket=null, mpRoom=null, mpMyName='', mpIsHost=false;
 
 function lobbyCreate(){
-  // Ask for host name first
-  const name=window.prompt('Dein Name als Host:','Host');
-  if(!name)return;
-  mpMyName=name.trim()||'Host';
-  mpIsHost=true;
-  showView('view-setup');
-  document.getElementById('lobby-start-btn').style.display='block';
-  document.getElementById('lobby-join-wrap').style.display='none';
-  document.getElementById('lobby-status').textContent='⏳ Warte auf Spieler...';
-  mpConnect(()=>{
-    mpSocket.emit('create_room',{game:'millionaer',playerName:mpMyName,quizData});
-    mpSocket.once('room_created',({code,room})=>{
-      mpRoom=room; mpRoom.code=code;
-      lobbyRender();
+  nameOverlayShow('Dein Name als Host', (name)=>{
+    mpMyName=name;
+    mpIsHost=true;
+    showView('view-setup');
+    document.getElementById('lobby-start-btn').style.display='block';
+    document.getElementById('lobby-join-wrap').style.display='none';
+    document.getElementById('lobby-status').textContent='⏳ Warte auf Spieler...';
+    mpConnect(()=>{
+      mpSocket.emit('create_room',{game:'millionaer',playerName:mpMyName,quizData});
+      mpSocket.once('room_created',({code,room})=>{
+        mpRoom=room; mpRoom.code=code;
+        lobbyRender();
+      });
     });
   });
 }
+
 
 function lobbyJoin(code,name){
   mpMyName=name; mpIsHost=false;
@@ -821,12 +876,29 @@ function mpOnAction(action,payload){
   }
 }
 
+
+// ── NAME OVERLAY ──
+let _nameOverlayCb=null;
+function nameOverlayShow(title, cb){
+  _nameOverlayCb=cb;
+  document.getElementById('name-overlay-title').textContent=title.toUpperCase();
+  document.getElementById('name-overlay-inp').value='';
+  document.getElementById('name-overlay').style.display='flex';
+  setTimeout(()=>document.getElementById('name-overlay-inp').focus(),100);
+}
+function nameOverlayConfirm(){
+  const name=document.getElementById('name-overlay-inp').value.trim();
+  if(!name){document.getElementById('name-overlay-inp').style.border='1px solid var(--red)';return;}
+  document.getElementById('name-overlay').style.display='none';
+  if(_nameOverlayCb) _nameOverlayCb(name);
+  _nameOverlayCb=null;
+}
+
 // Auto-join if ?room= in URL
 window.addEventListener('DOMContentLoaded',()=>{
   const code=new URLSearchParams(window.location.search).get('room');
   if(code){
-    const name=window.prompt('Dein Name:','Spieler');
-    if(name) lobbyJoin(code, name.trim()||'Spieler');
+    nameOverlayShow('Dein Name', (name)=>lobbyJoin(code, name));
   }
 });
 
@@ -901,5 +973,19 @@ document.addEventListener('click',function(e){
 </script>
 
 
+
+<!-- ══ NAME OVERLAY ══ -->
+<div id="name-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.08em;color:var(--gold);" id="name-overlay-title">DEIN NAME</div>
+    <input id="name-overlay-inp" maxlength="20" placeholder="Name eingeben..."
+      style="padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;width:100%;"
+      onkeydown="if(event.key==='Enter')nameOverlayConfirm()">
+    <button onclick="nameOverlayConfirm()"
+      style="padding:14px;background:var(--gold);border:none;border-radius:12px;color:#000;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">
+      ✓ Weiter
+    </button>
+  </div>
+</div>
 </body>
 </html>
