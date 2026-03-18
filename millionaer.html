@@ -1015,33 +1015,12 @@ function mpOnVote(playerName, choice, hasRisiko){
   // Update vote count in host bar
   const vc=document.getElementById('mp-vote-count');
   if(vc) vc.textContent=`${Object.keys(mpVotes).length}/${players.length} haben geantwortet`;
-<<<<<<< HEAD
-  // Push live spy update if spy is active (and the voter is not the spy themselves)
-  if(spyActiveFor && spyActiveFor !== playerName){
-    mpSend('spy_result',{votes: mpBuildSpyData(spyActiveFor), forPlayer: spyActiveFor});
-  }
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   // Auto-reveal if all voted
   if(Object.keys(mpVotes).length>=players.length){
     setTimeout(mpHostReveal, 800);
   }
 }
 
-<<<<<<< HEAD
-// ── HOST: build per-player vote snapshot for spy ──
-function mpBuildSpyData(spyName){
-  var votes = {};
-  players.forEach(function(p){
-    if(p.name === spyName) return; // don't include spy's own vote
-    var voteData = mpVotes[p.name];
-    votes[p.name] = (voteData !== undefined) ? voteData.choice : null;
-  });
-  return votes;
-}
-
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 // ── HOST: reveal answer ──
 function mpHostReveal(){
   if(mpPhase==='revealed') return;
@@ -1074,12 +1053,6 @@ function mpHostReveal(){
     risikoActive
   });
 
-<<<<<<< HEAD
-  // Clear spy tracking for this question
-  spyActiveFor = null;
-
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   // Apply locally on host
   mpApplyReveal(cIdx, results);
   updateSidebar(); buildLadder();
@@ -1120,10 +1093,6 @@ function mpApplyReveal(cIdx, results){
 // ── HOST: next question ──
 function mpHostNext(){
   mpPhase='voting'; mpVotes={};
-<<<<<<< HEAD
-  spyActiveFor = null;
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   // Clear reveal info
   const ri=document.getElementById('mp-reveal-info');
   if(ri) ri.remove();
@@ -1150,15 +1119,10 @@ function mpOnAction(action,payload){
       if(jType==='r') risikoActive=true;
     }
     if(action==='spy_request'){
-<<<<<<< HEAD
-      spyActiveFor = payload.playerName;
-      mpSend('spy_result',{votes: mpBuildSpyData(payload.playerName), forPlayer: payload.playerName});
-=======
       var spyCounts=[0,0,0,0];
       var voteVals=Object.values(mpVotes);
       voteVals.forEach(function(c){if(c>=0&&c<4)spyCounts[c]++;});
       mpSend('spy_result',{counts:spyCounts, forPlayer:payload.playerName});
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     }
     return;
   }
@@ -1182,10 +1146,6 @@ function mpOnAction(action,payload){
       const p=players.find(x=>x.name===name);
       if(p) p.score=score;
     });
-<<<<<<< HEAD
-    closeSpyOverlay();
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     mpApplyReveal(cIdx, results);
     updateSidebar(); buildLadder();
     // Show my result
@@ -1209,10 +1169,6 @@ function mpOnAction(action,payload){
     players.forEach(function(p){p._usedJokerThisQ=false;});
     const ri=document.getElementById('mp-reveal-info');
     if(ri) ri.remove();
-<<<<<<< HEAD
-    closeSpyOverlay();
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     // Remove fire animation
     document.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('on-fire'));
     loadQuestion();
@@ -1238,11 +1194,7 @@ function mpOnAction(action,payload){
   if(action==='spy_result'){
     // Only show to the player who requested (others receive this too — ignore)
     if(payload.forPlayer !== mpMyName) return;
-<<<<<<< HEAD
-    updateSpyOverlay(payload.votes);
-=======
     showSpyResult(payload.counts);
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     return;
   }
 
@@ -1268,10 +1220,6 @@ function mpOnAction(action,payload){
 // Per-question tracking (reset on every new question)
 var mpJokerUsedThisQ = {};
 var myRisikoActive = false; // true if THIS player used RISIKO this question // {type: playerName} – first claim wins
-<<<<<<< HEAD
-var spyActiveFor = null;   // playerName of whoever has SPY active this question (host-side)
-=======
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 
 // ── Reset for every new question ──
 function mpResetJokersForQuestion(){
@@ -1385,53 +1333,6 @@ function useSpy(){
   if(!canUseJoker('s','joker-spy')) return;
   consumeJoker('s');
 
-<<<<<<< HEAD
-  showToast('🕵️ SPY aktiv — Antworten der anderen werden live angezeigt!',2500);
-  // Request live vote tracking from host
-  mpSend('spy_request',{playerName: mpMyName});
-}
-
-function updateSpyOverlay(votes){
-  var ov = document.getElementById('spy-live-overlay');
-  if(!ov){
-    ov = document.createElement('div');
-    ov.id = 'spy-live-overlay';
-    ov.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:700;'
-      +'background:var(--surface);border:2px solid rgba(74,144,217,.5);border-radius:20px;'
-      +'padding:24px 20px;width:90%;max-width:340px;text-align:center;'
-      +'box-shadow:0 0 60px rgba(42,82,152,.4);animation:mpIn .25s ease;';
-    document.body.appendChild(ov);
-  }
-
-  var otherPlayers = players.filter(function(p){ return p.name !== mpMyName; });
-  var answeredCount = otherPlayers.filter(function(p){
-    return votes[p.name] !== null && votes[p.name] !== undefined;
-  }).length;
-
-  var playerRows = otherPlayers.map(function(p){
-    var choice = votes[p.name];
-    var hasVoted = (choice !== null && choice !== undefined);
-    var letter = hasVoted ? LETTERS[choice] : '?';
-    var borderCol = hasVoted ? 'rgba(74,144,217,.5)' : 'var(--border)';
-    var letterCol = hasVoted ? 'var(--accent)' : 'var(--muted2)';
-    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface2);'
-      +'border-radius:10px;border:1px solid '+borderCol+';margin-bottom:6px;">'
-      +'<div style="flex:1;font-size:13px;font-weight:700;text-align:left;">'+escHtml(p.name)+'</div>'
-      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:'+letterCol+';">'+letter+'</div>'
-      +'</div>';
-  }).join('');
-
-  ov.innerHTML = '<div style="font-size:36px;margin-bottom:6px;">🕵️</div>'
-    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">SPY AKTIV</div>'
-    +'<div style="font-size:12px;color:var(--muted);margin-bottom:14px;">'+answeredCount+'/'+otherPlayers.length+' haben geantwortet</div>'
-    +'<div style="text-align:left;">'+playerRows+'</div>'
-    +'<div style="font-size:11px;color:var(--muted2);margin-top:12px;">Schließt automatisch bei Auflösung</div>';
-}
-
-function closeSpyOverlay(){
-  var ov = document.getElementById('spy-live-overlay');
-  if(ov) ov.remove();
-=======
   // Request current vote distribution from host
   mpSend('spy_request',{playerName: mpMyName});
 }
@@ -1466,7 +1367,6 @@ function showSpyResult(counts){
     +'</div>';
   document.body.appendChild(ov);
   ov.addEventListener('click',function(e){ if(e.target===ov) ov.remove(); });
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 }
 
 // ════════════════════════════
