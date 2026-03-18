@@ -966,12 +966,6 @@ addEditorRound();
   const a=p.get('action');
   if(a==='play')showView('view-play-landing');
   else if(a==='editor')showView('view-editor');
-  else if(action==='online'||a==='online'){
-    // Show menu view first (needed for layout), then open MP overlay on top
-    showView('view-menu');
-    mpTab='create';
-    setTimeout(mpOpen, 200);
-  }
 })();
 
 

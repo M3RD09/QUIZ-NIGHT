@@ -36,8 +36,6 @@ body::before{
   pointer-events:none;z-index:0;
 }
 
-.btn-multiplayer{background:linear-gradient(135deg,#1a5276,#2980b9);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(41,128,185,.25);}
-.btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
 .view{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:1;}
 .view.active{display:flex;}
 
@@ -300,8 +298,7 @@ to{opacity:1;}}
       ▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
-        <button class="btn-multiplayer" onclick="mpOpen()">🌐 Online spielen</button>
-    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -322,23 +319,51 @@ to{opacity:1;}}
   </div>
 </div>
 
-<!-- ══ SETUP ══ -->
+<!-- ══ LOBBY ══ -->
 <div class="view" id="view-setup">
   <div class="topbar">
-    <button class="btn-icon" onclick="showView('view-menu')">←</button>
-    <div class="topbar-title">💰 Spieler eintragen</div>
+    <button class="btn-icon" onclick="showView('view-editor')">←</button>
+    <div class="topbar-title">💰 Spieler-Lobby</div>
   </div>
-  <div class="view-body">
-    <div class="info-box">
-      <div class="info-title">Spielmodus</div>
-      Alle Spieler sehen dieselben Fragen gleichzeitig und antworten unabhängig voneinander.
-      Am Ende gewinnt wer die meisten Punkte hat.
+  <div class="view-body" style="align-items:center;gap:20px;padding:30px 20px;">
+
+    <!-- Room Code -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:420px;text-align:center;">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:.2em;margin-bottom:8px;">RAUM-CODE</div>
+      <div id="lobby-code" style="font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);letter-spacing:.15em;">------</div>
+      <div id="lobby-link" onclick="lobbyLinkCopy()" style="font-size:11px;color:var(--muted);margin-top:6px;cursor:pointer;word-break:break-all;">🔗 Link wird generiert...</div>
     </div>
-    <div class="players-grid" id="players-grid"></div>
-    <button class="btn-add-player-row" onclick="addPlayerRow()">＋ Spieler hinzufügen</button>
-    <button class="btn-primary" onclick="startGame()" style="margin-top:8px;">▶ Spiel starten!</button>
+
+    <!-- Players list -->
+    <div style="width:100%;max-width:420px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--muted);margin-bottom:10px;">SPIELER</div>
+      <div id="lobby-players" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- Status -->
+    <div id="lobby-status" style="font-size:13px;color:var(--muted);text-align:center;">
+      ⏳ Warte auf Spieler...
+    </div>
+
+    <!-- Start button -->
+    <button id="lobby-start-btn" onclick="lobbyStart()"
+      style="width:100%;max-width:420px;padding:16px;background:var(--gold);border:none;border-radius:14px;color:#000;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:800;cursor:pointer;display:none;">
+      ▶ Spiel starten!
+    </button>
+
+    <button onclick="lobbyLeave()"
+      style="width:100%;max-width:420px;padding:13px;background:none;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;">
+      Verlassen
+    </button>
+
+    <!-- Join view (for non-hosts) -->
+    <div id="lobby-join-wrap" style="display:none;width:100%;max-width:420px;text-align:center;padding:10px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:12px;font-size:13px;color:var(--green);">
+      ✅ Beigetreten! Host startet das Spiel...
+    </div>
+
   </div>
 </div>
+
 
 <!-- ══ GAME ══ -->
 <div class="view" id="view-game">
@@ -608,225 +633,12 @@ function selectAnswer(idx){
   }
 
   updateSidebar();
-  document.getElementById('next-btn').style.display='block';
-
-  // MP: broadcast answer reveal + score update to all clients
+  document.getElementById('next-btn').style.display=(typeof mpIsHost!=='undefined'&&mpSocket&&!mpIsHost)?'none':'block';
+  // MP broadcast
   if(typeof mpSocket!=='undefined'&&mpSocket&&mpIsHost){
     mpSend('reveal',{correctIdx,chosenIdx:idx,isCorrect});
     mpSend('score_update',{players:players.map(p=>({name:p.name,score:p.score,eliminated:p.eliminated,qAnswered:p.qAnswered,jokers:p.jokers}))});
   }
-}
-
-function nextQuestion(){
-  currentQIdx++;
-  if(currentQIdx>=quizData.questions.length){
-    // MP: sync game over
-    if(typeof mpSocket!=='undefined'&&mpSocket&&mpIsHost){
-      mpSend('game_over',{players:players.map(p=>({name:p.name,score:p.score,eliminated:p.eliminated,qAnswered:p.qAnswered,jokers:p.jokers}))});
-    }
-    showWinner();
-  } else {
-    if(typeof mpSocket!=='undefined'&&mpSocket&&mpIsHost){
-      mpSend('next_q',{currentQIdx});
-    }
-    loadQuestion();
-  }
-}
-
-// ── JOKERS ──
-function use5050(){
-  if(document.getElementById('joker-5050').classList.contains('used'))return;
-  if(answered)return;
-  const q=quizData.questions[currentQIdx];
-
-  // Hide 2 wrong answers
-  let wrongHidden=0;
-  const btns=document.querySelectorAll('.ans-btn');
-  for(let i=0;i<4;i++){
-    if(i!==correctIdx&&wrongHidden<2){
-      btns[i].classList.add('hidden');
-      wrongHidden++;
-    }
-  }
-  players.forEach(p=>p.jokers.f=false);
-  document.getElementById('joker-5050').classList.add('used');
-  showToast('✂️ 50:50 — 2 falsche Antworten entfernt!',2500);
-}
-
-function useRisiko(){
-  if(document.getElementById('joker-risiko').classList.contains('used'))return;
-  if(answered)return;
-  document.getElementById('risiko-overlay').classList.add('open');
-}
-
-function confirmRisiko(){
-  document.getElementById('risiko-overlay').classList.remove('open');
-  risikoActive=true;
-  document.getElementById('joker-risiko').classList.add('risiko-pending');
-  // MP: broadcast risiko active
-  if(typeof mpSocket!=='undefined'&&mpSocket&&mpIsHost) mpSend('risiko_active',{});
-  showToast('🎲 RISIKO aktiv! Antworte jetzt!',3000);
-  // Highlight all answer buttons
-  document.querySelectorAll('.ans-btn:not(.hidden)').forEach(b=>b.classList.add('risiko-active'));
-}
-
-function closeRisiko(){
-  document.getElementById('risiko-overlay').classList.remove('open');
-}
-
-// ── SIDEBAR ──
-function buildSidebar(){
-  updateSidebar();
-}
-
-function updateSidebar(){
-  const container=document.getElementById('sb-players');
-  container.innerHTML='';
-  const sorted=[...players].sort((a,b)=>b.score-a.score);
-  sorted.forEach((p,rank)=>{
-    const orig=players.indexOf(p);
-    const el=document.createElement('div');
-    el.className='sb-player'+(rank===0?' active':'');
-    const colors=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c'];
-    const color=colors[orig%colors.length];
-    el.innerHTML='<div class="sb-avatar" style="background:'+color+'">'+escHtml(p.name.charAt(0).toUpperCase())+'</div>'
-      +'<div class="sb-info"><div class="sb-name">'+escHtml(p.name)+'</div>'
-      +'<div class="sb-q">'+p.qAnswered+' richtig</div></div>'
-      +'<div class="sb-score">'+p.score+'</div>';
-    container.appendChild(el);
-  });
-}
-
-function buildLadder(){
-  const ladder=document.getElementById('money-ladder');
-  ladder.innerHTML='<div class="sb-label" style="padding:12px 0 6px;">Punkteleiter</div>';
-  const questions=[...quizData.questions].reverse();
-  questions.forEach((q,i)=>{
-    const realIdx=quizData.questions.length-1-i;
-    const el=document.createElement('div');
-    el.className='ladder-item'+(realIdx===currentQIdx?' current':realIdx<currentQIdx?' done':' todo');
-    el.id='ladder-'+realIdx;
-    el.innerHTML='<span class="ladder-num">'+(realIdx+1)+'</span><span class="ladder-pts">'+q.points+'</span>';
-    ladder.appendChild(el);
-  });
-}
-
-function updateLadder(){
-  document.querySelectorAll('.ladder-item').forEach((el,i)=>{
-    const realIdx=quizData.questions.length-1-i;
-    el.className='ladder-item'+(realIdx===currentQIdx?' current':realIdx<currentQIdx?' done':' todo');
-  });
-}
-
-// ── WINNER ──
-function showWinner(){
-  const sorted=[...players].sort((a,b)=>b.score-a.score);
-  const winner=sorted[0];
-  const tied=sorted.length>1&&sorted[0].score===sorted[1].score;
-
-  document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':winner.name;
-  document.getElementById('winner-score').textContent=winner.score+' Punkte';
-
-  const podium=document.getElementById('final-podium');
-  podium.innerHTML='';
-  const classes=['p1','p2','p3'];
-  sorted.slice(0,3).forEach((p,i)=>{
-    const el=document.createElement('div');
-    el.className='podium-card '+(classes[i]||'');
-    el.innerHTML='<div class="pod-rank">'+(i===0?'🥇':i===1?'🥈':'🥉')+'</div>'
-      +'<div class="pod-name">'+escHtml(p.name)+'</div>'
-      +'<div class="pod-pts">'+p.score+'</div>';
-    podium.appendChild(el);
-  });
-
-  showView('view-winner');
-  setTimeout(()=>launchConfetti('confetti-canvas-m'),400);
-}
-
-function launchConfetti(canvasId){
-  const canvas=document.getElementById(canvasId);
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  const colors=['#f5c842','#2ecc71','#3a8ef6','#e8354a','#9b59b6','#f39c12','#1abc9c'];
-  const pieces=Array.from({length:120},()=>({
-    x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.5,
-    w:8+Math.random()*8,h:5+Math.random()*5,
-    r:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.15,
-    vx:(Math.random()-.5)*3,vy:2+Math.random()*4,
-    color:colors[Math.floor(Math.random()*colors.length)],alpha:1
-  }));
-  let frame=0;
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    pieces.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;p.r+=p.rv;
-      if(frame>80)p.alpha=Math.max(0,p.alpha-.012);
-      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
-      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
-    });
-    frame++;
-    if(frame<150)requestAnimationFrame(draw);
-    else ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
-  draw();
-}
-
-// ── EDITOR ──
-let editorQCount=0;
-const DEFAULT_PTS=[100,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,25000,50000];
-
-function addEditorQuestion(qData){
-  const con=document.getElementById('q-editor-container');
-  const idx=editorQCount++;
-  const pts=qData?qData.points:(DEFAULT_PTS[idx]||idx*100+100);
-  const el=document.createElement('div');
-  el.className='q-editor-block';
-  el.dataset.qidx=idx;
-
-  const answersHtml=LETTERS.map((l,i)=>`
-    <div class="ans-editor-wrap">
-      <span class="ans-editor-letter">${l}</span>
-      <input class="ans-editor-inp" placeholder="Antwort ${l}" maxlength="100"
-        value="${qData?escHtml(qData.answers[i]):''}">
-    </div>
-  `).join('');
-
-  el.innerHTML=`
-    <div class="q-editor-head">
-      <span class="q-editor-num">Frage ${idx+1}</span>
-      <input class="field-num" style="width:80px;text-align:right;" value="${pts}" min="1" type="number" placeholder="Punkte">
-      <span class="q-editor-pts">Punkte</span>
-      <button class="btn-del-q-ed" onclick="this.closest('.q-editor-block').remove()">🗑</button>
-    </div>
-    <div class="q-editor-body">
-      <input class="q-editor-inp" placeholder="❓ Frage eingeben..." maxlength="300"
-        value="${qData?escHtml(qData.question):''}">
-      <div class="answers-editor">${answersHtml}</div>
-      <div class="correct-mark">
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-          Richtige Antwort:
-        </label>
-        <select class="q-editor-inp" style="padding:6px 8px;width:auto;cursor:pointer;">
-          ${LETTERS.map((l,i)=>`<option value="${i}" ${qData&&qData.correct===i?'selected':''}>Antwort ${l}</option>`).join('')}
-        </select>
-      </div>
-    </div>
-  `;
-  con.appendChild(el);
-}
-
-function collectEditorData(){
-  const name=document.getElementById('quiz-name').value.trim()||'Millionär Quiz';
-  const questions=[];
-  document.querySelectorAll('.q-editor-block').forEach(block=>{
-    const question=block.querySelector('.q-editor-inp').value.trim();
-    const answers=[...block.querySelectorAll('.ans-editor-inp')].map(i=>i.value.trim());
-    const correct=parseInt(block.querySelector('select').value);
-    const points=parseInt(block.querySelector('.field-num').value)||100;
-    if(question&&answers[0])questions.push({question,answers,correct,points});
-  });
-  return{name,questions};
 }
 
 function exportQuiz(){
@@ -845,8 +657,178 @@ function editorPlay(){
   if(!data.questions.length){showToast('⚠️ Erst Fragen hinzufügen!');return;}
   quizData=data;
   document.getElementById('game-title').textContent='💰 '+data.name;
-  goToSetup();
+  lobbyCreate(); // open online lobby instead of local setup
 }
+
+// ══════════════════════════════════════
+// LOBBY & MULTIPLAYER
+// ══════════════════════════════════════
+const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
+let mpSocket=null, mpRoom=null, mpMyName='', mpIsHost=false;
+
+function lobbyCreate(){
+  // Ask for host name first
+  const name=window.prompt('Dein Name als Host:','Host');
+  if(!name)return;
+  mpMyName=name.trim()||'Host';
+  mpIsHost=true;
+  showView('view-setup');
+  document.getElementById('lobby-start-btn').style.display='block';
+  document.getElementById('lobby-join-wrap').style.display='none';
+  document.getElementById('lobby-status').textContent='⏳ Warte auf Spieler...';
+  mpConnect(()=>{
+    mpSocket.emit('create_room',{game:'millionaer',playerName:mpMyName,quizData});
+    mpSocket.once('room_created',({code,room})=>{
+      mpRoom=room; mpRoom.code=code;
+      lobbyRender();
+    });
+  });
+}
+
+function lobbyJoin(code,name){
+  mpMyName=name; mpIsHost=false;
+  showView('view-setup');
+  document.getElementById('lobby-start-btn').style.display='none';
+  document.getElementById('lobby-join-wrap').style.display='block';
+  mpConnect(()=>{
+    mpSocket.emit('join_room',{code,playerName:mpMyName});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{
+      mpRoom=room; mpRoom.code=c||code; mpMyName=yourName;
+      lobbyRender();
+    });
+    mpSocket.once('error',({msg})=>showToast('❌ '+msg));
+  });
+}
+
+function mpConnect(cb){
+  if(mpSocket&&mpSocket.connected){cb();return;}
+  const s=document.createElement('script');
+  s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
+  s.onload=()=>{
+    mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
+    mpSocket.on('connect',cb);
+    mpSocket.on('player_joined',({room})=>{mpRoom=room;lobbyRender();});
+    mpSocket.on('player_left',({room})=>{mpRoom=room;lobbyRender();});
+    mpSocket.on('room_update',({room})=>{mpRoom=room;lobbyRender();});
+    mpSocket.on('game_started',({room,quizData:qd})=>{
+      if(room) mpRoom=room;
+      if(qd&&!mpIsHost) quizData=qd;
+      mpBeginGame();
+    });
+    mpSocket.on('game_action',({action,payload})=>mpOnAction(action,payload));
+  };
+  document.head.appendChild(s);
+}
+
+function lobbyRender(){
+  if(!mpRoom)return;
+  const code=mpRoom.code;
+  const link=window.location.origin+window.location.pathname+'?room='+code;
+  document.getElementById('lobby-code').textContent=code;
+  const linkEl=document.getElementById('lobby-link');
+  linkEl.textContent='🔗 '+link;
+  linkEl.onclick=()=>navigator.clipboard.writeText(link).then(()=>showToast('✅ Link kopiert!'));
+
+  const list=document.getElementById('lobby-players');
+  list.innerHTML='';
+  mpRoom.players.forEach(p=>{
+    const el=document.createElement('div');
+    el.style.cssText='display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-radius:12px;';
+    el.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">${escHtml(p.name.charAt(0).toUpperCase())}</div>
+      <div style="flex:1;font-weight:600;">${escHtml(p.name)}${p.name===mpMyName?' <span style="color:var(--muted);font-size:12px;">(du)</span>':''}</div>
+      ${p.isHost?'<span style="font-size:10px;padding:2px 8px;background:rgba(245,200,66,.15);color:var(--gold);border-radius:20px;font-weight:700;">HOST</span>':''}`;
+    list.appendChild(el);
+  });
+
+  const playerCount=mpRoom.players.filter(p=>!p.isHost).length;
+  document.getElementById('lobby-status').textContent=
+    playerCount===0?'⏳ Warte auf Spieler...':
+    `✅ ${playerCount} Spieler bereit`;
+}
+
+function lobbyLinkCopy(){
+  if(!mpRoom)return;
+  const link=window.location.origin+window.location.pathname+'?room='+mpRoom.code;
+  navigator.clipboard.writeText(link).then(()=>showToast('✅ Link kopiert!'));
+}
+
+function lobbyStart(){
+  if(!mpIsHost||!mpRoom)return;
+  const playerCount=mpRoom.players.filter(p=>!p.isHost).length;
+  if(playerCount===0){showToast('⚠️ Mindestens 1 Spieler muss beitreten!');return;}
+  mpSocket.emit('start_game',{code:mpRoom.code});
+}
+
+function lobbyLeave(){
+  if(mpSocket) mpSocket.disconnect();
+  mpSocket=null; mpRoom=null; mpIsHost=false;
+  showView('view-menu');
+}
+
+function mpSend(action,payload){
+  if(!mpSocket||!mpRoom)return;
+  mpSocket.emit('game_action',{code:mpRoom.code,action,payload});
+}
+
+// ── GAME START ──
+function mpBeginGame(){
+  // Build player list from lobby (exclude host — host is moderator)
+  const lobbyPlayers=mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
+  players=lobbyPlayers.map(name=>({name,score:0,jokers:{r:true,f:true},eliminated:false,qAnswered:0}));
+  currentQIdx=0; risikoActive=false; answered=false;
+  buildSidebar(); buildLadder(); loadQuestion();
+  showView('view-game');
+  // Host syncs initial state to all clients
+  if(mpIsHost) setTimeout(()=>mpSend('state',{
+    currentQIdx,quizData,
+    players:players.map(p=>({name:p.name,score:p.score,eliminated:p.eliminated,qAnswered:p.qAnswered,jokers:p.jokers}))
+  }),500);
+}
+
+// ── CLIENT RECEIVES FROM HOST ──
+function mpOnAction(action,payload){
+  if(mpIsHost)return;
+  if(action==='state'){
+    if(payload.quizData) quizData=payload.quizData;
+    if(payload.players) players=payload.players.map(p=>({...p,jokers:p.jokers||{r:true,f:true}}));
+    if(typeof payload.currentQIdx==='number') currentQIdx=payload.currentQIdx;
+    risikoActive=payload.risikoActive||false; answered=false;
+    buildSidebar(); buildLadder(); loadQuestion(); showView('view-game');
+  }
+  if(action==='next_q'){
+    currentQIdx=payload.currentQIdx; risikoActive=false; answered=false; loadQuestion();
+  }
+  if(action==='reveal'){
+    answered=true;
+    document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
+      btn.disabled=true;
+      if(i===payload.correctIdx) btn.classList.add('correct');
+      else if(i===payload.chosenIdx&&payload.chosenIdx!==payload.correctIdx) btn.classList.add('wrong');
+    });
+    document.getElementById('next-btn').style.display=mpIsHost?'block':'none';
+    showToast(payload.isCorrect?'✅ Richtig!':'❌ Falsch!',2000);
+  }
+  if(action==='score_update'){
+    players=payload.players; updateSidebar(); buildLadder();
+  }
+  if(action==='risiko_active'){
+    risikoActive=true;
+    document.getElementById('joker-risiko').classList.add('risiko-pending');
+    showToast('🎲 RISIKO aktiv!',2000);
+  }
+  if(action==='game_over'){
+    players=payload.players; updateSidebar(); showWinner();
+  }
+}
+
+// Auto-join if ?room= in URL
+window.addEventListener('DOMContentLoaded',()=>{
+  const code=new URLSearchParams(window.location.search).get('room');
+  if(code){
+    const name=window.prompt('Dein Name:','Spieler');
+    if(name) lobbyJoin(code, name.trim()||'Spieler');
+  }
+});
 
 // Init editor with 5 default questions
 for(let i=0;i<5;i++) addEditorQuestion();
@@ -857,12 +839,6 @@ for(let i=0;i<5;i++) addEditorQuestion();
   const action=params.get('action');
   if(action==='play') showView('view-play-landing');
   else if(action==='editor') showView('view-editor');
-  else if(action==='online'){
-    // Show menu view first (needed for layout), then open MP overlay on top
-    showView('view-menu');
-    mpTab='create';
-    setTimeout(mpOpen, 200);
-  }
 })();
 
 
@@ -924,305 +900,6 @@ document.addEventListener('click',function(e){
 (function(){ setTheme(localStorage.getItem('quizTheme')||'midnight'); })();
 </script>
 
-
-<!-- ══ MULTIPLAYER OVERLAY ══ -->
-<div class="mp-overlay hidden" id="mp-overlay">
-  <div class="mp-box">
-    <div class="mp-header">
-      <span>🌐</span>
-      <div class="mp-title">MULTIPLAYER</div>
-      <button class="mp-close" onclick="mpClose()">✕</button>
-    </div>
-    <div class="mp-body" id="mp-body">
-      <!-- Dynamically rendered by JS -->
-    </div>
-  </div>
-</div>
-
-
-
-<script>
-
-
-</script>
-
-
-<!-- ══ MULTIPLAYER OVERLAY ══ -->
-<div id="mp-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:900;display:none;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#0d1520;border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:22px;">🌐</span>
-      <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.08em;">MULTIPLAYER</span>
-      <button onclick="mpClose()" style="margin-left:auto;background:none;border:1px solid rgba(255,255,255,.15);color:#aaa;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;">✕</button>
-    </div>
-    <div style="display:flex;gap:8px;">
-      <button id="mp-tab-create" onclick="mpSetTab('create')" style="flex:1;padding:10px;border-radius:10px;background:#2980b9;border:none;color:#fff;font-weight:700;cursor:pointer;">🎮 Erstellen</button>
-      <button id="mp-tab-join" onclick="mpSetTab('join')" style="flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#aaa;cursor:pointer;">🔗 Beitreten</button>
-    </div>
-    <div id="mp-body"></div>
-  </div>
-</div>
-<div id="mp-reaction-wrap" style="position:fixed;bottom:80px;right:16px;z-index:910;pointer-events:none;"></div>
-
-<script>
-// ══════════════════════════════════════
-// MILLIONÄR MULTIPLAYER
-// ══════════════════════════════════════
-const GAME_TYPE='millionaer';
-const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
-let mpSocket=null,mpRoom=null,mpMyName='',mpIsHost=false,mpTab='create';
-let mpQuizData=null; // quiz loaded by host
-
-function mpOpen(){
-  document.getElementById('mp-overlay').style.display='flex';
-  mpSetTab('create');
-}
-function mpClose(){
-  document.getElementById('mp-overlay').style.display='none';
-}
-function mpSetTab(t){
-  mpTab=t;
-  document.getElementById('mp-tab-create').style.background=t==='create'?'#2980b9':'rgba(255,255,255,.07)';
-  document.getElementById('mp-tab-create').style.color=t==='create'?'#fff':'#aaa';
-  document.getElementById('mp-tab-join').style.background=t==='join'?'#2980b9':'rgba(255,255,255,.07)';
-  document.getElementById('mp-tab-join').style.color=t==='join'?'#fff':'#aaa';
-  document.getElementById('mp-body').innerHTML=t==='create'?mpHtmlCreate():mpHtmlJoin();
-}
-
-function mpHtmlCreate(){
-  const hasQuiz=(typeof quizData!=='undefined'&&quizData);
-  return `<div style="display:flex;flex-direction:column;gap:12px;">
-    <div>
-      <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:#aaa;margin-bottom:6px;">DEIN NAME</div>
-      <input id="mp-name-inp" placeholder="Name eingeben..." maxlength="20"
-        style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
-    </div>
-    ${hasQuiz
-      ? '<div style="padding:10px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.25);border-radius:10px;font-size:12px;color:#2ecc71;">✅ Quiz geladen: '+escHtml(quizData.name||'Quiz')+'</div>'
-      : '<label style="cursor:pointer;"><div style="padding:12px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.2);border-radius:10px;text-align:center;font-size:13px;color:#aaa;">📂 Quiz-Datei auswählen (.quiz)</div><input type="file" accept=".quiz,.json" style="display:none" onchange="mpLoadQuiz(event)"></label>'
-    }
-    <button onclick="mpCreate()" style="padding:14px;background:#2ecc71;border:none;border-radius:12px;color:#000;font-weight:800;font-size:15px;cursor:pointer;">🎮 Raum erstellen</button>
-    <button onclick="mpClose()" style="padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#aaa;cursor:pointer;">Abbrechen</button>
-  </div>`;
-}
-
-function mpHtmlJoin(){
-  const urlCode=new URLSearchParams(window.location.search).get('room')||'';
-  return `<div style="display:flex;flex-direction:column;gap:12px;">
-    <div>
-      <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:#aaa;margin-bottom:6px;">DEIN NAME</div>
-      <input id="mp-name-inp" placeholder="Name eingeben..." maxlength="20"
-        style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;">
-    </div>
-    <div>
-      <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:#aaa;margin-bottom:6px;">RAUM-CODE</div>
-      <input id="mp-code-inp" placeholder="6-stelliger Code" maxlength="6" value="${urlCode}"
-        style="width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.15em;text-align:center;outline:none;"
-        oninput="this.value=this.value.toUpperCase()">
-    </div>
-    <button onclick="mpJoin()" style="padding:14px;background:#2980b9;border:none;border-radius:12px;color:#fff;font-weight:800;font-size:15px;cursor:pointer;">🔗 Beitreten</button>
-    <button onclick="mpClose()" style="padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#aaa;cursor:pointer;">Abbrechen</button>
-  </div>`;
-}
-
-function mpLoadQuiz(ev){
-  const file=ev.target.files[0];
-  if(!file)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    try{
-      const d=JSON.parse(e.target.result);
-      if(!d.questions||!Array.isArray(d.questions))throw new Error();
-      quizData=d;
-      mpSetTab('create'); // re-render to show ✅
-    }catch(e){showToast('❌ Ungültige Datei!');}
-  };
-  r.readAsText(file);
-}
-
-function mpConnect(cb){
-  if(mpSocket&&mpSocket.connected){cb();return;}
-  const s=document.createElement('script');
-  s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
-  s.onload=()=>{
-    mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
-    mpSocket.on('connect',cb);
-    mpSocket.on('game_started',({room,quizData:qd})=>{
-      if(room) mpRoom=room;
-      if(qd) quizData=qd;
-      mpStartOnlineGame();
-    });
-    mpSocket.on('game_action',({action,payload})=>{
-      mpOnAction(action,payload);
-    });
-    mpSocket.on('player_joined',({room})=>{ mpRoom=room; mpRenderLobby(); });
-    mpSocket.on('player_left',({room})=>{ mpRoom=room; mpRenderLobby(); });
-    mpSocket.on('room_update',({room})=>{ mpRoom=room; mpRenderLobby(); });
-  };
-  document.head.appendChild(s);
-}
-
-function mpCreate(){
-  const name=(document.getElementById('mp-name-inp')||{}).value.trim();
-  if(!name){showToast('⚠️ Name eingeben!');return;}
-  const qd=quizData;
-  if(!qd){showToast('⚠️ Erst Quiz laden!');return;}
-  mpMyName=name; mpIsHost=true;
-  mpConnect(()=>{
-    mpSocket.emit('create_room',{game:GAME_TYPE,playerName:name,quizData:qd});
-    mpSocket.once('room_created',({code,room})=>{
-      mpRoom=room; mpRoom.code=code;
-      mpRenderLobby();
-    });
-  });
-}
-
-function mpJoin(){
-  const name=(document.getElementById('mp-name-inp')||{}).value.trim();
-  const code=(document.getElementById('mp-code-inp')||{}).value.trim().toUpperCase();
-  if(!name){showToast('⚠️ Name eingeben!');return;}
-  if(!code||code.length<4){showToast('⚠️ Code eingeben!');return;}
-  mpMyName=name; mpIsHost=false;
-  mpConnect(()=>{
-    mpSocket.emit('join_room',{code,playerName:name});
-    mpSocket.once('room_joined',({room,yourName})=>{
-      mpRoom=room; mpRoom.code=code; mpMyName=yourName;
-      mpRenderLobby();
-    });
-    mpSocket.once('error',({msg})=>showToast('❌ '+msg));
-  });
-}
-
-function mpRenderLobby(){
-  const code=mpRoom.code;
-  const link=window.location.origin+window.location.pathname+'?room='+code;
-  document.getElementById('mp-body').innerHTML=`
-    <div style="background:rgba(255,255,255,.05);border-radius:14px;padding:16px;text-align:center;">
-      <div style="font-size:11px;color:#aaa;letter-spacing:.15em;margin-bottom:6px;">RAUM-CODE</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:#f5c842;letter-spacing:.15em;">${code}</div>
-      <div onclick="navigator.clipboard.writeText('${link}').then(()=>showToast('✅ Link kopiert!'))"
-        style="font-size:11px;color:#aaa;margin-top:4px;cursor:pointer;word-break:break-all;">🔗 ${link}</div>
-    </div>
-    <div>
-      <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:#aaa;margin-bottom:8px;">SPIELER (${mpRoom.players.length})</div>
-      ${mpRoom.players.map(p=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:6px;">
-          <div style="width:32px;height:32px;border-radius:50%;background:#2980b9;display:flex;align-items:center;justify-content:center;font-weight:800;">${p.name.charAt(0).toUpperCase()}</div>
-          <div style="flex:1;font-weight:600;">${escHtml(p.name)}${p.name===mpMyName?' (du)':''}</div>
-          ${p.isHost?'<span style="font-size:10px;padding:2px 8px;background:rgba(245,200,66,.15);color:#f5c842;border-radius:20px;font-weight:700;">HOST</span>':''}
-        </div>`).join('')}
-    </div>
-    ${mpIsHost
-      ? '<button onclick="mpStartGame()" style="width:100%;padding:14px;background:#2ecc71;border:none;border-radius:12px;color:#000;font-weight:800;font-size:15px;cursor:pointer;">▶ Spiel starten</button>'
-      : '<div style="text-align:center;color:#aaa;font-size:13px;padding:10px;">Host startet das Spiel...</div>'
-    }
-    <button onclick="mpLeave()" style="width:100%;padding:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#aaa;cursor:pointer;">Verlassen</button>
-    <div id="mp-status"></div>
-  `;
-}
-
-function mpStartGame(){
-  if(!mpIsHost)return;
-  const qd=quizData;
-  if(!qd){showToast('❌ Kein Quiz geladen!');return;}
-  mpSocket.emit('start_game',{code:mpRoom.code});
-}
-
-function mpLeave(){
-  if(mpSocket) mpSocket.disconnect();
-  mpSocket=null; mpRoom=null; mpIsHost=false;
-  mpClose();
-}
-
-function mpSend(action,payload){
-  if(!mpSocket||!mpRoom)return;
-  mpSocket.emit('game_action',{code:mpRoom.code,action,payload});
-}
-
-// ── GAME START ──
-function mpStartOnlineGame(){
-  mpClose();
-  // Build player list from lobby (host excluded)
-  const lobbyPlayers=mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
-  if(!lobbyPlayers.length) lobbyPlayers.push(mpMyName);
-  players=lobbyPlayers.map(name=>({name,score:0,jokers:{r:true,f:true},eliminated:false,qAnswered:0}));
-  currentQIdx=0; risikoActive=false;
-  buildSidebar(); buildLadder(); loadQuestion(); showView('view-game');
-  if(mpIsHost) setTimeout(()=>mpSend('state',mpGetState()),400);
-}
-
-function mpGetState(){
-  return{
-    currentQIdx,
-    risikoActive,
-    players:players.map(p=>({name:p.name,score:p.score,eliminated:p.eliminated,qAnswered:p.qAnswered,jokers:p.jokers})),
-    quizName:quizData?quizData.name:'',
-    answersRevealed:answered
-  };
-}
-
-// ── CLIENT RECEIVES ACTIONS ──
-function mpOnAction(action,payload){
-  if(mpIsHost)return;
-
-  if(action==='state'){
-    // Sync full state from host
-    if(payload.players) players=payload.players.map(p=>({...p,jokers:p.jokers||{r:true,f:true}}));
-    if(typeof payload.currentQIdx==='number') currentQIdx=payload.currentQIdx;
-    risikoActive=payload.risikoActive||false;
-    updateSidebar(); buildLadder(); loadQuestion();
-    if(!document.getElementById('view-game').classList.contains('active')) showView('view-game');
-    return;
-  }
-
-  if(action==='next_q'){
-    currentQIdx=payload.currentQIdx;
-    risikoActive=false;
-    answered=false;
-    loadQuestion();
-    return;
-  }
-
-  if(action==='reveal'){
-    // Host reveals answer — show correct/wrong highlight
-    answered=true;
-    const q=quizData.questions[currentQIdx];
-    document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
-      btn.disabled=true;
-      if(i===payload.correctIdx) btn.classList.add('correct');
-      else if(i===payload.chosenIdx&&payload.chosenIdx!==payload.correctIdx) btn.classList.add('wrong');
-    });
-    document.getElementById('next-btn').style.display='block';
-    return;
-  }
-
-  if(action==='score_update'){
-    players=payload.players;
-    updateSidebar(); buildLadder();
-    return;
-  }
-
-  if(action==='risiko_active'){
-    risikoActive=true;
-    document.getElementById('joker-risiko').classList.add('risiko-pending');
-    showToast('🎲 RISIKO aktiv!',2000);
-    return;
-  }
-
-  if(action==='game_over'){
-    players=payload.players;
-    updateSidebar();
-    showWinner();
-    return;
-  }
-}
-
-// Auto-open if ?room= in URL
-window.addEventListener('DOMContentLoaded',()=>{
-  const code=new URLSearchParams(window.location.search).get('room');
-  if(code){ mpTab='join'; setTimeout(mpOpen,400); }
-});
-</script>
 
 </body>
 </html>
