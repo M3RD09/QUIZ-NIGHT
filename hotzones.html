@@ -488,7 +488,7 @@ function importAndPlay(ev){
 }
 
 function loadIntoEditor(d){
-  if(d.name) document.getElementById('hz-quiz-name').value=d.name;
+  if(d.name) document.getElementById('quiz-name').value=d.name;
   document.getElementById('cat-editor-container').innerHTML='';
   editorCatCount=0;
   (d.categories||[]).forEach(cat=>addEditorCat(cat));
