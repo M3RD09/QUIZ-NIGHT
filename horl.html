@@ -366,8 +366,9 @@ let maxHearts=3;
 const COLORS=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63'];
 
 // drag state
-let dragItemIdx=null;   // index in current round's items array
+let dragItemIdx=null;
 let dragOverZone=null;
+let pendingDragIdx=null; // saved before dragend fires
 
 // ── IMPORT ──
 function importAndPlay(ev){
@@ -493,7 +494,14 @@ function renderScale(){
 
     dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');dragOverZone=z.id;});
     dz.addEventListener('dragleave',()=>{dz.classList.remove('drag-over');if(dragOverZone===z.id)dragOverZone=null;});
-    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');handleDrop(z.id);});
+    dz.addEventListener('drop',e=>{
+      e.preventDefault();
+      dz.classList.remove('drag-over');
+      // Recover index from dataTransfer if dragItemIdx was cleared
+      const transferred=e.dataTransfer&&e.dataTransfer.getData('text/plain');
+      if(dragItemIdx===null&&transferred!=='')dragItemIdx=parseInt(transferred);
+      handleDrop(z.id);
+    });
     dz.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
     track.appendChild(dz);
   });
@@ -532,11 +540,15 @@ function renderPool(){
     card.addEventListener('dragstart',e=>{
       if(isPlaced)return;
       dragItemIdx=i;
+      pendingDragIdx=i;
       card.classList.add('dragging');
       e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',String(i));
     });
     card.addEventListener('dragend',()=>{
       card.classList.remove('dragging');
+      // Don't clear dragItemIdx here — drop event needs it
+      setTimeout(()=>{dragItemIdx=null;},100);
     });
 
     // Touch drag
@@ -591,10 +603,13 @@ function setupTouchDrag(pool){
 
 // ── DROP HANDLER ──
 function handleDrop(zoneId){
-  if(dragItemIdx===null)return;
-  const round=quizData.rounds[currentRound];
-  const item=round.items[dragItemIdx];
+  const idx = dragItemIdx!==null ? dragItemIdx : pendingDragIdx;
+  if(idx===null)return;
   dragItemIdx=null;
+  pendingDragIdx=null;
+
+  const round=quizData.rounds[currentRound];
+  const item=round.items[idx];
 
   // Determine intended position based on neighbours
   const sorted=[...scaleItems].sort((a,b)=>a.position-b.position);
