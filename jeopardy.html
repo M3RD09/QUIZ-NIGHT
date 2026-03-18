@@ -376,6 +376,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 
 /* ── MULTIPLAYER ── */
+<<<<<<< HEAD
 .mp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;}
 .mp-overlay.hidden{display:none;}
 .mp-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:mpIn .3s cubic-bezier(.34,1.56,.64,1);}
@@ -420,6 +421,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 
 .btn-multiplayer{background:linear-gradient(135deg,#1a5276,#2980b9);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(41,128,185,.25);}
+=======
+.mp-overlay.hidden{display:none;}
+@keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
+.mp-input:focus{border-color:var(--green,#2ecc71);}
+.mp-input::placeholder{color:var(--muted2);}
+.mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
+.mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
+to{opacity:1;}}
+}
+
+
+
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 .btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
 </style>
@@ -438,8 +453,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       ▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
+<<<<<<< HEAD
     <button class="btn-multiplayer" onclick="mpOpen()">🌐 Multiplayer — Online spielen</button>
     <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+=======
+        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -627,6 +646,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="q-text" id="qo-text">Frage</div>
     <div class="time-up-box" id="time-up-box">⏰ Zeit abgelaufen!</div>
 
+<<<<<<< HEAD
     <!-- Answer input: shown to active player -->
     <div id="answer-input-wrap" style="display:none;margin:12px 0;">
       <input id="player-answer-inp" placeholder="Deine Antwort eingeben..."
@@ -640,6 +660,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <!-- Submitted answer: shown to all after player submits -->
     <div id="submitted-answer-box" style="display:none;margin:12px 0;padding:12px 14px;background:rgba(58,142,246,.1);border:1px solid rgba(58,142,246,.3);border-radius:10px;font-size:14px;color:var(--blue);"></div>
 
+=======
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     <button class="btn-reveal-ans" id="btn-reveal" onclick="revealAnswer()">🔍 Antwort aufdecken</button>
     <div class="ans-box" id="ans-box"></div>
     <div class="verdict-wrap" id="verdict-wrap">
@@ -679,13 +701,28 @@ function importAndPlay(ev){
     try{
       const d=JSON.parse(e.target.result);
       if(!d.categories||!Array.isArray(d.categories))throw new Error();
-      quizData=d;
-      document.getElementById('game-title').textContent='🎯 '+quizData.name;
-      goToSetup();
+      loadIntoEditor(d);
+      showToast('✅ Quiz geladen — Änderungen möglich!',2500);
     }catch(err){showToast('❌ Ungültige Datei!');}
   };
   r.readAsText(file);
   ev.target.value='';
+}
+
+function loadIntoEditor(d){
+  // Set quiz name
+  document.getElementById('quiz-name').value=d.name||'';
+  // Clear existing categories
+  document.getElementById('cat-container').innerHTML='';
+  catCount=0;
+  // Load each category with its questions
+  (d.categories||[]).forEach(cat=>{
+    addCategory(cat);
+    // addCategory creates the block — now add questions
+    const id=catCount-1;
+    (cat.questions||[]).forEach(q=>addQuestion(id,q));
+  });
+  showView('view-editor');
 }
 
 // ── SETUP ──
@@ -893,6 +930,7 @@ function addToHistory(playerName,teamIdx,category,points,result){
 // ── QUESTION ──
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
+<<<<<<< HEAD
   if(mpRoom){
     const t=currentTurn();
     const isActivePlayer=mpMyName===teams[t.ti].players[t.pi];
@@ -909,6 +947,8 @@ function openQuestion(ci,qi,cell){
     return;
   }
   // LOCAL PLAY (no mpRoom)
+=======
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   const t=currentTurn();
   const q=quizData.categories[ci].questions[qi];
   currentQ={ci,qi,cell,points:q.points};
@@ -916,6 +956,7 @@ function openQuestion(ci,qi,cell){
   startTimer();
 }
 
+<<<<<<< HEAD
 // Host approves field selection
 function hostApproveField(ci,qi,ti,pi){
   const cell=document.querySelector(`.board-point[data-ci="${ci}"][data-qi="${qi}"]`);
@@ -936,6 +977,9 @@ function hostRejectField(){
 }
 
 // ── TIMER ──
+=======
+
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 function startTimer(){
   stopTimer();
   timerSecs=30;
@@ -978,6 +1022,7 @@ function timeUp(){
   document.getElementById('btn-reveal').style.display='none';
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
   if(q.answer){document.getElementById('ans-box').style.display='block';}
+<<<<<<< HEAD
   document.getElementById('verdict-wrap').style.display=(!mpRoom||mpIsHost)?'flex':'none';
   showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
 
@@ -991,6 +1036,11 @@ function timeUp(){
       currentQ=null;updateTurnBanner();updateTeamsSidebar();checkGameOver();
     },2500);
   }
+=======
+  document.getElementById('verdict-wrap').style.display=true?'flex':'none';
+  showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
+
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 }
 
 // ── REVEAL & VERDICT ──
@@ -1032,6 +1082,7 @@ function verdict(correct){
   updateTurnBanner();updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
 
+<<<<<<< HEAD
   // Broadcast verdict to all
   if(mpRoom){
     const {ci:vci,qi:vqi}=currentQ;
@@ -1039,10 +1090,13 @@ function verdict(correct){
       newTurnIdx:turnIdx,scores:[teams[0].score,teams[1].score],playerName});
   }
 
+=======
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   currentQ=null;
   checkGameOver();
 }
 
+<<<<<<< HEAD
 // ══════════════════════════════════════
 // JEOPARDY MULTIPLAYER — STATE SYNC
 // ══════════════════════════════════════
@@ -1309,6 +1363,9 @@ function checkGameOver(){
     showWinner();
   }
 }
+=======
+
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 
 function showWinner(){
   const tied=teams[0].score===teams[1].score;
@@ -1529,6 +1586,7 @@ document.addEventListener('click',function(e){
     </div>
   </div>
 </div>
+<<<<<<< HEAD
 <div class="mp-reaction-wrap" id="mp-reaction-wrap"></div>
 
 
@@ -1837,6 +1895,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const code = new URLSearchParams(window.location.search).get('room');
   if (code) { mpTab = 'join'; setTimeout(mpOpen, 500); }
 });
+=======
+
+
+
+<script>
+
+>>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 
 </script>
 

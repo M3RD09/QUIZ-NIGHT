@@ -152,16 +152,20 @@ body::before{
 .sc-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);}
 
 /* WINNER */
-#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
-.trophy{font-size:80px;margin-bottom:14px;}
-.winner-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:.06em;color:var(--gold);}
-.winner-name{font-family:'Bebas Neue',sans-serif;font-size:30px;margin-bottom:24px;}
+#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
+.trophy{font-size:90px;margin-bottom:10px;animation:trophyBounce .8s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes trophyBounce{0%{transform:scale(0) rotate(-20deg);opacity:0;}60%{transform:scale(1.2) rotate(5deg);}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.08em;color:var(--gold);animation:slideUpHz .5s ease .3s both;text-shadow:0 0 40px rgba(245,200,66,.4);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:30px;margin-bottom:24px;animation:slideUpHz .5s ease .5s both;}
+@keyframes slideUpHz{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 .final-scores{display:flex;gap:12px;width:100%;max-width:340px;margin-bottom:28px;}
-.final-card{flex:1;background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);text-align:center;}
-.final-card.t1{--tc:var(--team1);}
-.final-card.t2{--tc:var(--team2);}
+.final-card{flex:1;background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);text-align:center;animation:slideUpHz .5s ease both;}
+.final-card.t1{--tc:var(--team1);animation-delay:.7s;}
+.final-card.t2{--tc:var(--team2);animation-delay:.85s;}
 .fc-name{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tc);}
 .fc-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);}
+.winner-btns-hz{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;animation:slideUpHz .5s ease 1.0s both;}
+#confetti-canvas-hz{position:fixed;inset:0;pointer-events:none;z-index:10;}
 
 /* EDITOR */
 .field-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
@@ -189,6 +193,43 @@ body::before{
 .toast.show{transform:translateX(-50%) translateY(0);}
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+
+
+
+/* ── THEMES ── */
+:root[data-theme="midnight"]{--bg:#06080f;--surface:#0f1118;--surface2:#181c28;--border:rgba(255,255,255,.08);--text:#f0eee8;--muted:rgba(240,238,232,.5);--muted2:rgba(240,238,232,.18);}
+:root[data-theme="neon"]{--bg:#08010f;--surface:#130820;--surface2:#1e0f32;--border:rgba(255,0,255,.15);--text:#f8f0ff;--muted:rgba(248,240,255,.5);--muted2:rgba(248,240,255,.2);}
+:root[data-theme="forest"]{--bg:#060e07;--surface:#0d1a0e;--surface2:#162518;--border:rgba(100,200,80,.12);--text:#e8f0e4;--muted:rgba(232,240,228,.5);--muted2:rgba(232,240,228,.2);}
+:root[data-theme="sunset"]{--bg:#0f0608;--surface:#1a0d10;--surface2:#271218;--border:rgba(255,100,50,.12);--text:#ffe8e0;--muted:rgba(255,232,224,.5);--muted2:rgba(255,232,224,.2);}
+:root[data-theme="arctic"]{--bg:#f0f4f8;--surface:#ffffff;--surface2:#e8edf2;--border:rgba(0,80,160,.12);--text:#0d1b2a;--muted:rgba(13,27,42,.5);--muted2:rgba(13,27,42,.2);}
+.theme-btn{position:fixed;bottom:80px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:999;transition:all .2s;}
+.theme-btn:hover{transform:scale(1.12);}
+.theme-panel{position:fixed;bottom:134px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;display:none;flex-direction:column;gap:7px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:999;width:158px;animation:panelIn .2s ease;}
+.theme-panel.open{display:flex;}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
+.theme-panel-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.theme-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:none;width:100%;text-align:left;}
+.theme-option:hover{background:var(--surface2);}
+.theme-option.active{background:var(--surface2);border-color:var(--green,#2ecc71);}
+.theme-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
+
+
+/* ── MULTIPLAYER ── */
+.mp-overlay.hidden{display:none;}
+@keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
+.mp-input:focus{border-color:var(--green,#2ecc71);}
+.mp-input::placeholder{color:var(--muted2);}
+.mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
+.mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
+to{opacity:1;}}
+}
+
+
+
+.btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
 </style>
 </head>
 <body>
@@ -205,7 +246,7 @@ body::before{
       ▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
-    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -374,12 +415,15 @@ body::before{
 
 <!-- ══ WINNER ══ -->
 <div class="view" id="view-winner">
+  <canvas id="confetti-canvas-hz"></canvas>
   <div class="trophy">🏆</div>
   <div class="winner-title">GEWINNER!</div>
   <div class="winner-name" id="winner-name">–</div>
   <div class="final-scores" id="final-scores"></div>
-  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;">🔄 Nochmal spielen</button>
-  <button class="btn-secondary" onclick="showView('view-menu')" style="max-width:300px;margin-top:10px;">🏠 Hauptmenü</button>
+  <div class="winner-btns-hz">
+    <button class="btn-primary" onclick="goToSetup()">🔄 Nochmal spielen</button>
+    <button class="btn-secondary" onclick="showView('view-menu')">🏠 Hauptmenü</button>
+  </div>
 </div>
 
 <!-- ══ EDITOR ══ -->
@@ -435,12 +479,21 @@ function importAndPlay(ev){
     try{
       const d=JSON.parse(e.target.result);
       if(!d.categories||!Array.isArray(d.categories))throw new Error();
-      quizData=d;
-      goToSetup();
+      loadIntoEditor(d);
+      showToast('✅ Quiz geladen — Änderungen möglich!',2500);
     }catch(err){showToast('❌ Ungültige Datei!');}
   };
   r.readAsText(file);
   ev.target.value='';
+}
+
+function loadIntoEditor(d){
+  if(d.name) document.getElementById('hz-quiz-name').value=d.name;
+  document.getElementById('cat-editor-container').innerHTML='';
+  editorCatCount=0;
+  (d.categories||[]).forEach(cat=>addEditorCat(cat));
+  if(!d.categories||!d.categories.length) addEditorCat();
+  showView('view-editor');
 }
 
 // ── SETUP ──
@@ -668,6 +721,36 @@ function showWinner(){
     fs.appendChild(el);
   });
   showView('view-winner');
+  setTimeout(()=>launchConfetti('confetti-canvas-hz'),400);
+}
+
+function launchConfetti(canvasId){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const colors=['#f5c842','#2ecc71','#3a8ef6','#e8354a','#9b59b6','#f39c12','#1abc9c'];
+  const pieces=Array.from({length:120},()=>({
+    x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*.5,
+    w:8+Math.random()*8,h:5+Math.random()*5,
+    r:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.15,
+    vx:(Math.random()-.5)*3,vy:2+Math.random()*4,
+    color:colors[Math.floor(Math.random()*colors.length)],alpha:1
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.r+=p.rv;
+      if(frame>80)p.alpha=Math.max(0,p.alpha-.012);
+      ctx.save();ctx.globalAlpha=p.alpha;ctx.translate(p.x,p.y);ctx.rotate(p.r);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    });
+    frame++;
+    if(frame<150)requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
 }
 
 // ── EDITOR ──
@@ -738,6 +821,87 @@ addEditorCat({name:'FILMGENRE',labelLeft:'Hasse ich',labelRight:'Liebe ich'});
   if(a==='play')showView('view-play-landing');
   else if(a==='editor')showView('view-editor');
 })();
+
+
+
 </script>
+
+<!-- THEME SWITCHER -->
+<button class="theme-btn" onclick="toggleThemePanel()" title="Design wählen">🎨</button>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">Design wählen</div>
+  <button class="theme-option" onclick="setTheme('midnight')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight
+  </button>
+  <button class="theme-option" onclick="setTheme('neon')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon
+  </button>
+  <button class="theme-option" onclick="setTheme('forest')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest
+  </button>
+  <button class="theme-option" onclick="setTheme('sunset')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset
+  </button>
+  <button class="theme-option" onclick="setTheme('arctic')">
+    <div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic
+  </button>
+</div>
+
+
+<!-- THEME SWITCHER -->
+<button class="theme-btn" onclick="toggleThemePanel()" title="Design w&#228;hlen">&#127912;</button>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">Design w&#228;hlen</div>
+  <button class="theme-option" onclick="setTheme('midnight')"><div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight</button>
+  <button class="theme-option" onclick="setTheme('neon')"><div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon</button>
+  <button class="theme-option" onclick="setTheme('forest')"><div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest</button>
+  <button class="theme-option" onclick="setTheme('sunset')"><div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset</button>
+  <button class="theme-option" onclick="setTheme('arctic')"><div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic</button>
+</div>
+<script>
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('quizTheme',t);
+  document.querySelectorAll('.theme-option').forEach(function(el){
+    el.classList.toggle('active', el.textContent.trim().toLowerCase().startsWith(t));
+  });
+  var panel=document.getElementById('theme-panel');
+  if(panel) panel.classList.remove('open');
+}
+function toggleThemePanel(){
+  var panel=document.getElementById('theme-panel');
+  if(panel) panel.classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  var panel=document.getElementById('theme-panel');
+  if(panel && !panel.contains(e.target) && !e.target.classList.contains('theme-btn')){
+    panel.classList.remove('open');
+  }
+});
+(function(){ setTheme(localStorage.getItem('quizTheme')||'midnight'); })();
+</script>
+
+
+<!-- ══ MULTIPLAYER OVERLAY ══ -->
+<div class="mp-overlay hidden" id="mp-overlay">
+  <div class="mp-box">
+    <div class="mp-header">
+      <span>🌐</span>
+      <div class="mp-title">MULTIPLAYER</div>
+      <button class="mp-close" onclick="mpClose()">✕</button>
+    </div>
+    <div class="mp-body" id="mp-body">
+      <!-- Dynamically rendered by JS -->
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+
+
+</script>
+
 </body>
 </html>
