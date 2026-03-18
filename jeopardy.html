@@ -97,6 +97,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .score-dot{width:8px;height:8px;border-radius:50%;opacity:.7;}
 .score-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);flex-shrink:0;}
 
+/* TEAM MEMBERS */
+.sb-teams{padding:12px;border-bottom:1px solid var(--border);}
+.sb-team-block{margin-bottom:10px;}
+.sb-team-header{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.sb-team-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sb-team-name-label{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;}
+.sb-team-players-list{display:flex;flex-direction:column;gap:3px;padding-left:14px;}
+.sb-team-player-item{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.sb-team-player-item.active-player{color:var(--text);font-weight:700;}
+.sb-active-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+
 /* HISTORY */
 .sidebar-history{padding:12px;flex:1;}
 .history-empty{font-size:11px;color:var(--muted2);text-align:center;padding:12px 0;font-style:italic;}
@@ -165,10 +176,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .board-point:active{transform:scale(.96);}
 .board-point.used{
   background:var(--surface2);color:var(--muted2);
-  cursor:default;border-color:transparent;font-size:20px;
+  cursor:default;border-color:transparent;font-size:11px;
   box-shadow:none;transform:none;
+  flex-direction:column;gap:2px;
 }
 .board-point.used::after{display:none;}
+.board-point.used.res-correct{border:1px solid rgba(46,204,113,.3)!important;background:rgba(46,204,113,.07)!important;}
+.board-point.used.res-wrong{border:1px solid rgba(232,53,74,.2)!important;background:rgba(232,53,74,.05)!important;}
+.board-point.used.res-skip{border:1px solid rgba(255,255,255,.05)!important;}
+.cell-icon{font-size:14px;line-height:1;}
+.cell-who{font-size:9px;font-weight:700;color:var(--muted2);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
 
 /* Score area */
 .score-area{
@@ -433,6 +450,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <div class="st-team" id="st-team">Team Blau</div>
       </div>
 
+      <!-- Teams & Players -->
+      <div class="sb-teams" id="sb-teams"></div>
+
       <!-- Scores -->
       <div class="sidebar-scores">
         <div class="sidebar-section-label">🏆 SCORES</div>
@@ -470,8 +490,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="winner-title">GEWINNER!</div>
   <div class="winner-name" id="winner-name">Team Blau</div>
   <div class="final-grid" id="final-grid"></div>
-  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;">🔄 Nochmal spielen</button>
+  <button class="btn-primary" onclick="showBoardOverview()" style="max-width:300px;">📋 Board-Übersicht</button>
+  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;margin-top:10px;">🔄 Nochmal spielen</button>
   <button class="btn-secondary" onclick="showView('view-menu')" style="max-width:300px;margin-top:10px;">🏠 Hauptmenü</button>
+</div>
+
+<!-- ══ BOARD OVERVIEW ══ -->
+<div class="view" id="view-board-overview">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showView('view-winner')">←</button>
+    <div class="topbar-title">📋 Board-Übersicht</div>
+  </div>
+  <div style="flex:1;overflow:auto;-webkit-overflow-scrolling:touch;">
+    <div class="board-scroll"><div class="board" id="overview-board"></div></div>
+  </div>
+  <div style="padding:14px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:12px;font-size:11px;color:var(--muted);align-items:center;justify-content:center;flex-wrap:wrap;gap:16px;">
+    <span>🟢 Richtig</span>
+    <span>🔴 Falsch</span>
+    <span>⚪ Nicht gespielt</span>
+  </div>
 </div>
 
 <!-- ══ EDITOR ══ -->
@@ -599,9 +636,11 @@ function startGame(){
   if(!teams[1].players.length)teams[1].players=['Spieler 1'];
   buildTurnOrder();
   turnIdx=0;
+  gameHistory=[];
   buildBoard();
   buildScoreArea();
   updateTurnBanner();
+  updateTeamsSidebar();
   showView('view-game');
 }
 
@@ -628,6 +667,40 @@ function updateTurnBanner(){
   document.getElementById('st-name').textContent=name;
   document.getElementById('st-team').textContent=teams[t.ti].name;
   document.getElementById('st-team').style.color=t.ti===0?'var(--team1)':'var(--team2)';
+}
+
+function updateTeamsSidebar(){
+  const container=document.getElementById('sb-teams');
+  if(!container)return;
+  const t=currentTurn();
+  container.innerHTML='<div class="sidebar-section-label">👥 TEAMS</div>';
+  teams.forEach((team,ti)=>{
+    const color=ti===0?'var(--team1)':'var(--team2)';
+    const block=document.createElement('div');
+    block.className='sb-team-block';
+    block.innerHTML='<div class="sb-team-header">'
+      +'<div class="sb-team-dot" style="background:'+color+'"></div>'
+      +'<div class="sb-team-name-label" style="color:'+color+'">'+escHtml(team.name)+'</div>'
+      +'</div><div class="sb-team-players-list" id="sbtp-'+ti+'"></div>';
+    container.appendChild(block);
+    const plist=document.getElementById('sbtp-'+ti);
+    team.players.forEach((p,pi)=>{
+      const isActive=t.ti===ti&&t.pi===pi;
+      const el=document.createElement('div');
+      el.className='sb-team-player-item'+(isActive?' active-player':'');
+      el.innerHTML=(isActive?'<div class="sb-active-dot"></div>':'')+escHtml(p);
+      plist.appendChild(el);
+    });
+  });
+}
+
+function showBoardOverview(){
+  const src=document.getElementById('game-board');
+  const dst=document.getElementById('overview-board');
+  dst.innerHTML=src.innerHTML;
+  dst.style.gridTemplateColumns=src.style.gridTemplateColumns;
+  dst.querySelectorAll('.board-point').forEach(c=>{c.onclick=null;c.style.cursor='default';});
+  showView('view-board-overview');
 }
 
 // ── BOARD ──
@@ -669,6 +742,7 @@ function resetBoard(){
   buildBoard();
   buildScoreArea();
   updateTurnBanner();
+  updateTeamsSidebar();
   showView('view-game');
 }
 
@@ -770,6 +844,15 @@ function timeUp(){
   teams[t.ti].score-=currentQ.points;
   updateScores();
   addToHistory(playerName,t.ti,catName,currentQ.points,'wrong');
+
+  // Mark cell immediately as wrong
+  const cell=currentQ.cell;
+  cell.classList.add('used','res-wrong');
+  cell.onclick=null;
+  const teamColor=t.ti===0?'var(--team1)':'var(--team2)';
+  cell.innerHTML='<span class="cell-icon" style="color:var(--red)">✗</span>'
+    +'<span class="cell-who" style="color:'+teamColor+'">'+escHtml(playerName)+'</span>';
+
   document.getElementById('time-up-box').style.display='block';
   document.getElementById('btn-reveal').style.display='none';
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
@@ -806,11 +889,20 @@ function verdict(correct){
 
   addToHistory(playerName,t.ti,catName,currentQ.points,result);
 
-  currentQ.cell.classList.add('used');
-  currentQ.cell.textContent='—';
-  currentQ.cell.onclick=null;
+  // Mark cell with player initial + result icon
+  const cell=currentQ.cell;
+  cell.classList.add('used');
+  cell.classList.add('res-'+result);
+  cell.onclick=null;
+  const icon=correct===true?'✓':correct===false?'✗':'—';
+  const iconColor=correct===true?'var(--green)':correct===false?'var(--red)':'var(--muted2)';
+  const teamColor=t.ti===0?'var(--team1)':'var(--team2)';
+  cell.innerHTML='<span class="cell-icon" style="color:'+iconColor+'">'+icon+'</span>'
+    +'<span class="cell-who" style="color:'+teamColor+'">'+escHtml(playerName)+'</span>';
+
   turnIdx++;
   updateTurnBanner();
+  updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
   currentQ=null;
   checkGameOver();
