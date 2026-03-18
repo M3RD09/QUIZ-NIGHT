@@ -1070,6 +1070,10 @@ function mpOnGameStart(receivedQuizData){
 }
 
 function setupMpGame(){
+  // DEBUG: show what mpRoom.players contains
+  const allNames = mpRoom.players.map(p=>p.name+(p.isHost?'(H)':''));
+  showToast('Players: '+allNames.join(', '), 4000);
+  
   const playerNames=mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
   if(!playerNames.length) playerNames.push('Spieler 1');
   // Shuffle
