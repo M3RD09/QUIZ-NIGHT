@@ -575,36 +575,10 @@ function startGame(){
 }
 
 // ── GAME ──
-// All items sorted by value get rank 1..N
-// Skala shows 1..N ticks, items placed at their rank position
-// Min/Max in editor = just labels for display, actual scale = 1..totalItems
-
-let allItemsSorted=[]; // all items sorted by value (rank order)
-
-function getRank(item){
-  return allItemsSorted.indexOf(item)+1; // 1-based rank
-}
-
 function loadRound(){
   if(currentRound>=quizData.rounds.length){showWinner();return;}
   const round=quizData.rounds[currentRound];
 
-<<<<<<< HEAD
-  // Sort ALL items by value to get their rank
-  allItemsSorted=[...round.items].sort((a,b)=>a.value-b.value);
-  const N=round.items.length;
-
-  // Place anchor
-  const anchor=round.items.find(it=>it.isAnchor);
-  if(anchor) placedItems.push(anchor);
-
-  document.getElementById('round-badge').textContent='RUNDE '+(currentRound+1);
-  document.getElementById('cat-badge').textContent=round.category;
-  document.getElementById('lbl-min').textContent=(round.labelMin||'niedrig')+' — 1';
-  document.getElementById('lbl-max').textContent=N+' — '+(round.labelMax||'hoch');
-
-  buildTicks(N);
-=======
   // Pick random starting item
   const randomIdx=Math.floor(Math.random()*round.items.length);
   scaleItems=[round.items[randomIdx]];
@@ -616,63 +590,18 @@ function loadRound(){
   document.getElementById('lbl-high').textContent=(round.labelHigh||'hoch')+' ▶';
 
   hideSelectionUI();
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   renderScale();
   renderPool();
   updateTurnBar();
   updateSidebar();
 }
 
-<<<<<<< HEAD
-// ── TICKS: always 1..N ──
-function buildTicks(N){
-  const rail=document.getElementById('scale-rail');
-  Array.from(rail.children).forEach(c=>{if(!c.classList.contains('scale-rail-line'))c.remove();});
-
-  for(let v=1;v<=N;v++){
-    const tick=document.createElement('div');
-    tick.className='scale-tick major';
-    tick.style.left=((v-1)/(N-1)*100)+'%';
-    tick.innerHTML='<div class="scale-tick-line"></div><div class="scale-tick-num">'+v+'</div>';
-    rail.appendChild(tick);
-  }
-}
-
-// ── SCALE RENDER ──
-// Items positioned by rank (1..N), evenly spaced
-=======
 // ── RENDER SCALE with clickable zones ──
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 function renderScale(){
   const row=document.getElementById('scale-row');
   row.innerHTML='';
   const sorted=[...scaleItems].sort((a,b)=>a.value-b.value);
 
-<<<<<<< HEAD
-  const round=quizData.rounds[currentRound];
-  const N=round.items.length;
-
-  // Sort placed items by rank
-  const sorted=[...placedItems].sort((a,b)=>getRank(a)-getRank(b));
-
-  function rankPct(item){
-    const rank=getRank(item);
-    if(N===1)return 50;
-    return((rank-1)/(N-1))*100;
-  }
-
-  // Render placed items — no value shown, only name
-  sorted.forEach(item=>{
-    const el=document.createElement('div');
-    el.className='scale-placed-item'+(item.isAnchor?' anchor':'');
-    el.style.left=rankPct(item)+'%';
-    const imgEl=item.imageUrl
-      ?'<img src="'+esc(item.imageUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'📦\'">'
-      :'<span>📦</span>';
-    el.innerHTML='<div class="scale-placed-img">'+imgEl+'</div>'
-      +'<div class="scale-placed-name">'+esc(item.name)+'</div>';
-    area.appendChild(el);
-=======
   // Build: zone | item | zone | item | ... | zone
   sorted.forEach((item,i)=>{
     // Zone before this item (or left edge)
@@ -680,44 +609,11 @@ function renderScale(){
     row.appendChild(makeZone(zoneId,i===0?'◀':null));
     // Item card
     row.appendChild(makeScaleCard(item,i===0&&sorted.length===1));
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   });
   // Right edge zone
   row.appendChild(makeZone('right','▶'));
 }
 
-<<<<<<< HEAD
-  // Drop zones between ranked items
-  const makeZone=(id,leftPct,rightPct)=>{
-    const dz=document.createElement('div');
-    dz.className='scale-dropzone'+(selectedItemIdx!==null?' active':'');
-    dz.dataset.zoneId=id;
-    dz.style.left=leftPct+'%';
-    dz.style.width=Math.max(rightPct-leftPct,5)+'%';
-    dz.addEventListener('click',()=>{
-      if(selectedItemIdx===null){showToast('⬇️ Wähle erst ein Item!',1500);return;}
-      placeItem(id);
-    });
-    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
-    dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
-    dz.addEventListener('drop',e=>{
-      e.preventDefault();dz.classList.remove('drag-over');
-      const idx=parseInt(e.dataTransfer.getData('itemIdx'));
-      if(!isNaN(idx))selectedItemIdx=idx;
-      placeItem(id);
-    });
-    area.appendChild(dz);
-  };
-
-  if(sorted.length===0){
-    makeZone('left-of-0',0,100);
-  } else {
-    makeZone('left-of-0', 0, rankPct(sorted[0]));
-    for(let i=0;i<sorted.length-1;i++){
-      makeZone('between-'+i, rankPct(sorted[i]), rankPct(sorted[i+1]));
-    }
-    makeZone('right-of-'+(sorted.length-1), rankPct(sorted[sorted.length-1]), 100);
-=======
 function makeZone(id,label){
   const z=document.createElement('div');
   z.className='scale-zone'+(selectedIdx!==null?' active':'');
@@ -745,43 +641,12 @@ function selectItem(idx){
     selectedIdx=null;
   } else {
     selectedIdx=idx;
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   }
   renderScale();
   renderPool();
   updateTurnBar();
 }
 
-<<<<<<< HEAD
-// ── PLACE ITEM ──
-function placeItem(zoneId){
-  if(selectedItemIdx===null)return;
-  const round=quizData.rounds[currentRound];
-  const item=round.items[selectedItemIdx];
-  if(!item){selectedItemIdx=null;return;}
-
-  // Get sorted placed items by rank
-  const sorted=[...placedItems].sort((a,b)=>getRank(a)-getRank(b));
-
-  let leftItem=null, rightItem=null;
-  if(zoneId==='left-of-0'){
-    rightItem=sorted[0]||null;
-  } else if(zoneId.startsWith('between-')){
-    const idx=parseInt(zoneId.replace('between-',''));
-    leftItem=sorted[idx]||null;
-    rightItem=sorted[idx+1]||null;
-  } else if(zoneId.startsWith('right-of-')){
-    const idx=parseInt(zoneId.replace('right-of-',''));
-    leftItem=sorted[idx]||null;
-  }
-
-  // Correct if item's rank fits between neighbours' ranks
-  const itemRank=getRank(item);
-  const leftRank=leftItem?getRank(leftItem):0;
-  const rightRank=rightItem?getRank(rightItem):allItemsSorted.length+1;
-  const correct=itemRank>leftRank&&itemRank<rightRank;
-
-=======
 function hideSelectionUI(){
   selectedIdx=null;
 }
@@ -791,7 +656,6 @@ function doPlace(zoneId){
   if(selectedIdx===null)return;
   const round=quizData.rounds[currentRound];
   const item=round.items[selectedIdx];
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
   const player=players[currentPlayerIdx];
 
   const sorted=[...scaleItems].sort((a,b)=>a.value-b.value);
@@ -815,20 +679,11 @@ function doPlace(zoneId){
     scaleItems.push(item);
     player.score++;
     showFlash(true);
-<<<<<<< HEAD
-    showToast('✅ Richtig! +1 Punkt für '+player.name,2000);
-    renderScale();
-    renderPool();
-    updateSidebar();
-
-    const remaining=round.items.filter(it=>!it.isAnchor&&!placedItems.includes(it));
-=======
     showToast('✅ Richtig! +1 für '+player.name,2000);
     renderScale();
     renderPool();
     updateSidebar();
     const remaining=round.items.filter(it=>!scaleItems.includes(it));
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     if(remaining.length===0){
       setTimeout(()=>{
         currentRound++;
@@ -840,10 +695,6 @@ function doPlace(zoneId){
   } else {
     player.hearts--;
     showFlash(false);
-<<<<<<< HEAD
-    const card=document.querySelector('.pool-item[data-item-idx="'+round.items.indexOf(item)+'"]');
-    if(card){card.classList.add('wrong-flash');setTimeout(()=>card.classList.remove('wrong-flash'),600);}
-=======
     const cards=document.querySelectorAll('.pool-card');
     cards.forEach(c=>{
       if(c.querySelector('.pool-name')&&c.querySelector('.pool-name').textContent===item.name){
@@ -851,7 +702,6 @@ function doPlace(zoneId){
         setTimeout(()=>c.classList.remove('wrong-flash'),600);
       }
     });
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
     if(player.hearts<=0){
       player.eliminated=true;
       showToast('💀 '+player.name+' ausgeschieden!',3000);
@@ -862,9 +712,6 @@ function doPlace(zoneId){
     updateSidebar();
     if(players.filter(p=>!p.eliminated).length===0){setTimeout(()=>showWinner(),800);return;}
   }
-<<<<<<< HEAD
-  setTimeout(()=>nextPlayer(),350);
-=======
 
   setTimeout(()=>nextPlayer(),300);
 }
@@ -886,7 +733,6 @@ function renderPool(){
     if(!onScale) card.addEventListener('click',()=>selectItem(i));
     pool.appendChild(card);
   });
->>>>>>> 2a70fff107233ac6464468bdd8d5fc8e0f3021d9
 }
 
 function nextPlayer(){
@@ -895,39 +741,6 @@ function nextPlayer(){
   while(players[currentPlayerIdx].eliminated&&tries<players.length);
   updateTurnBar();
   updateSidebar();
-}
-
-// ── POOL RENDER ──
-function renderPool(){
-  const pool=document.getElementById('items-pool');
-  pool.innerHTML='';
-  const round=quizData.rounds[currentRound];
-  round.items.forEach((item,i)=>{
-    if(item.isAnchor)return;
-    const isPlaced=placedItems.includes(item);
-    const isSelected=selectedItemIdx===i;
-    const card=document.createElement('div');
-    card.className='pool-item'+(isPlaced?' placed':isSelected?' selected':'');
-    card.dataset.itemIdx=i;
-    const imgEl=item.imageUrl
-      ?'<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" onerror="this.parentElement.innerHTML=\'📦\'">'
-      :'<span>📦</span>';
-    card.innerHTML='<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
-    if(!isPlaced){
-      card.addEventListener('click',()=>{
-        selectedItemIdx=(selectedItemIdx===i)?null:i;
-        renderPool();renderScale();updateTurnBar();
-      });
-      card.draggable=true;
-      card.addEventListener('dragstart',e=>{
-        selectedItemIdx=i;
-        e.dataTransfer.setData('itemIdx',String(i));
-        e.dataTransfer.effectAllowed='move';
-        setTimeout(()=>{renderPool();renderScale();updateTurnBar();},0);
-      });
-    }
-    pool.appendChild(card);
-  });
 }
 
 function updateTurnBar(){
