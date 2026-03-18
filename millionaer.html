@@ -240,6 +240,7 @@ body::before{
 .btn-add-q-ed:hover{border-color:var(--accent);color:var(--accent);}
 .editor-footer{padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;position:sticky;bottom:0;}
 
+.ans-btn.selected-ans{border-color:var(--gold)!important;background:rgba(245,200,66,.15)!important;}
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;z-index:500;transition:transform .3s ease;white-space:nowrap;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
@@ -387,7 +388,7 @@ to{opacity:1;}}
             <span class="joker-icon">✂️</span>
             <span>50:50</span>
           </button>
-          <button class="joker-btn spy-disabled" id="joker-spy" title="Verfügbar mit Multiplayer">
+          <button class="joker-btn" id="joker-spy" onclick="useSpy()" title="SPY - Zeige führende Antwort">
             <span class="joker-icon">🕵️</span>
             <span>SPY</span>
           </button>
@@ -636,7 +637,7 @@ function loadQuestion(){
   updateSidebar();
 }
 
-function selectAnswer(idx){
+function _localSelectAnswer(idx){
   if(answered)return;
   answered=true;
   const q=quizData.questions[currentQIdx];
@@ -806,7 +807,9 @@ function mpConnect(cb){
     mpSocket.on('room_update',({room})=>{mpRoom=room;lobbyRender();});
     mpSocket.on('game_started',({room,quizData:qd})=>{
       if(room) mpRoom=room;
-      if(qd&&!mpIsHost) quizData=qd;
+      // Clients get quiz from host; host already has it loaded
+      if(qd && !mpIsHost) quizData=qd;
+      // Everyone starts the game
       mpBeginGame();
     });
     mpSocket.on('game_action',({action,payload})=>mpOnAction(action,payload));
@@ -864,57 +867,353 @@ function mpSend(action,payload){
   mpSocket.emit('game_action',{code:mpRoom.code,action,payload});
 }
 
-// ── GAME START ──
+// ══════════════════════════════════════════════
+// ONLINE MULTIPLAYER — LIVE QUIZ SYSTEM
+// ══════════════════════════════════════════════
+
+// ── State ──
+// players[] is built from lobby on game start
+// Each player has: {name, score, choice: null|0-3, jokers:{f:true,r:true}}
+// mpVotes = {playerName: choiceIdx} — collected during voting phase
+// Phase: 'voting' | 'revealed'
+let mpVotes = {};        // {name: choiceIdx}
+let mpPhase = 'voting';  // current phase
+
+// ── Game Start (everyone) ──
 function mpBeginGame(){
-  // Build player list from lobby (exclude host — host is moderator)
-  const lobbyPlayers=mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
-  players=lobbyPlayers.map(name=>({name,score:0,jokers:{r:true,f:true},eliminated:false,qAnswered:0}));
+  if(!quizData){showToast('❌ Kein Quiz geladen!'); return;}
+
+  // Build players from lobby (host = moderator, not in players list)
+  const lobbyPlayers = mpRoom.players.filter(p=>!p.isHost).map(p=>p.name);
+  players = lobbyPlayers.map(name=>({
+    name, score:0, choice:null,
+    jokers:{f:true, r:true}
+  }));
+
   currentQIdx=0; risikoActive=false; answered=false;
+  mpVotes={}; mpPhase='voting';
+
   buildSidebar(); buildLadder(); loadQuestion();
   showView('view-game');
-  // Host syncs initial state to all clients
-  if(mpIsHost) setTimeout(()=>mpSend('state',{
-    currentQIdx,quizData,
-    players:players.map(p=>({name:p.name,score:p.score,eliminated:p.eliminated,qAnswered:p.qAnswered,jokers:p.jokers}))
-  }),500);
+
+  // Host: disable answer buttons (host is moderator), show host controls
+  if(mpIsHost){
+    mpRenderHostControls();
+    // Sync full state to clients
+    setTimeout(()=>mpSend('init',{
+      quizData,
+      players: players.map(p=>({name:p.name,score:p.score,jokers:p.jokers})),
+      currentQIdx
+    }),500);
+  } else {
+    // Clients: enable voting, hide next button
+    document.getElementById('next-btn').style.display='none';
+    mpRenderVotingUI();
+  }
 }
 
-// ── CLIENT RECEIVES FROM HOST ──
+// ── Host Controls Bar ──
+function mpRenderHostControls(){
+  let bar = document.getElementById('mp-host-bar');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'mp-host-bar';
+    bar.style.cssText='position:fixed;bottom:0;left:0;right:0;background:rgba(13,21,32,.97);border-top:1px solid rgba(245,200,66,.3);padding:12px 16px;display:flex;gap:10px;z-index:300;align-items:center;';
+    document.body.appendChild(bar);
+  }
+  const answered = Object.keys(mpVotes).length;
+  const total = players.length;
+  bar.innerHTML=`
+    <div style="flex:1;font-size:13px;color:var(--muted);">
+      👑 <b style="color:var(--gold)">Host</b> &nbsp;·&nbsp;
+      <span id="mp-vote-count">${answered}/${total} haben geantwortet</span>
+    </div>
+    <button onclick="mpHostReveal()" style="padding:10px 20px;background:var(--gold);border:none;border-radius:10px;color:#000;font-weight:800;font-size:14px;cursor:pointer;">
+      🔍 Auflösen
+    </button>
+    <button onclick="mpHostNext()" id="mp-next-btn" style="padding:10px 20px;background:var(--green);border:none;border-radius:10px;color:#000;font-weight:800;font-size:14px;cursor:pointer;display:none;">
+      → Weiter
+    </button>
+  `;
+  // Disable answer buttons for host
+  document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
+  document.getElementById('next-btn').style.display='none';
+}
+
+// ── Client Voting UI ──
+function mpRenderVotingUI(){
+  // Reset all answer buttons to clickable
+  document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
+    btn.disabled = false;
+    btn.classList.remove('correct','wrong','selected-ans');
+    btn.style.opacity='';
+  });
+  // Show waiting indicator
+  let ind = document.getElementById('mp-waiting-ind');
+  if(!ind){
+    ind = document.createElement('div');
+    ind.id='mp-waiting-ind';
+    ind.style.cssText='text-align:center;padding:10px;font-size:13px;color:var(--muted);';
+    document.getElementById('answers-grid').after(ind);
+  }
+  ind.textContent='';
+  answered=false;
+}
+
+// ── Client selects answer ──
+function selectAnswer(idx){
+  if(!mpRoom){
+    // Local play
+    _localSelectAnswer(idx); return;
+  }
+  if(mpIsHost) return; // host can't vote
+  if(answered) return; // already voted
+
+  answered=true;
+  // Highlight chosen
+  document.querySelectorAll('.ans-btn').forEach((b,i)=>{
+    b.disabled=true;
+    b.style.opacity=i===idx?'1':'0.4';
+    if(i===idx) b.classList.add('selected-ans');
+  });
+  // Show waiting
+  const ind=document.getElementById('mp-waiting-ind');
+  if(ind) ind.textContent='✅ Antwort abgegeben — warte auf Host...';
+  // Send vote anonymously to host
+  mpSend('vote',{playerName:mpMyName, choice:idx});
+}
+
+// ── HOST: receive vote from player ──
+function mpOnVote(playerName, choice){
+  mpVotes[playerName]=choice;
+  // Update vote count in host bar
+  const vc=document.getElementById('mp-vote-count');
+  if(vc) vc.textContent=`${Object.keys(mpVotes).length}/${players.length} haben geantwortet`;
+  // Auto-reveal if all voted
+  if(Object.keys(mpVotes).length>=players.length){
+    setTimeout(mpHostReveal, 800);
+  }
+}
+
+// ── HOST: reveal answer ──
+function mpHostReveal(){
+  if(mpPhase==='revealed') return;
+  mpPhase='revealed';
+
+  const q=quizData.questions[currentQIdx];
+  const cIdx=q.correct;
+  const mult=risikoActive?2:1;
+
+  // Calculate scores
+  const results={};
+  players.forEach(p=>{
+    const choice=mpVotes[p.name];
+    const correct=(choice===cIdx);
+    if(correct){
+      p.score+=q.points*mult;
+    } else if(risikoActive && choice!==undefined){
+      p.score-=q.points;
+    }
+    results[p.name]={choice, correct};
+  });
+
+  // Send reveal to all
+  mpSend('reveal',{
+    correctIdx:cIdx,
+    results,
+    scores:players.map(p=>({name:p.name,score:p.score})),
+    risikoActive
+  });
+
+  // Apply locally on host
+  mpApplyReveal(cIdx, results);
+  updateSidebar(); buildLadder();
+
+  // Show next button on host bar
+  const nb=document.getElementById('mp-next-btn');
+  if(nb) nb.style.display='block';
+}
+
+function mpApplyReveal(cIdx, results){
+  document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===cIdx) btn.classList.add('correct');
+  });
+
+  // Build who-chose-what overlay on game screen
+  let info=document.getElementById('mp-reveal-info');
+  if(!info){
+    info=document.createElement('div');
+    info.id='mp-reveal-info';
+    info.style.cssText='padding:14px 16px;background:var(--surface2);border-radius:12px;margin:12px 0;display:flex;flex-wrap:wrap;gap:8px;';
+    document.getElementById('answers-grid').after(info);
+  }
+  info.innerHTML='';
+  players.forEach(p=>{
+    const r=results[p.name]||{};
+    const letter=r.choice!==undefined?LETTERS[r.choice]:'–';
+    const col=r.correct?'var(--green)':r.choice!==undefined?'var(--red)':'var(--muted)';
+    const el=document.createElement('div');
+    el.style.cssText=`display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--surface);border-radius:10px;border:1px solid ${col};`;
+    el.innerHTML=`<span style="font-weight:700;font-size:13px;">${escHtml(p.name)}</span>
+      <span style="font-family:'Bebas Neue';font-size:16px;color:${col}">${letter}</span>
+      <span style="font-size:11px;color:${col}">${r.correct?'+'+quizData.questions[currentQIdx].points*(risikoActive?2:1):r.choice!==undefined?'✗':''}</span>`;
+    info.appendChild(el);
+  });
+}
+
+// ── HOST: next question ──
+function mpHostNext(){
+  mpPhase='voting'; mpVotes={};
+  // Clear reveal info
+  const ri=document.getElementById('mp-reveal-info');
+  if(ri) ri.remove();
+
+  currentQIdx++;
+  if(currentQIdx>=quizData.questions.length){
+    mpSend('game_over',{scores:players.map(p=>({name:p.name,score:p.score}))});
+    showWinner(); return;
+  }
+  risikoActive=false; answered=false;
+  mpSend('next_q',{currentQIdx, scores:players.map(p=>({name:p.name,score:p.score}))});
+  loadQuestion();
+  mpRenderHostControls();
+}
+
+// ── CLIENT: receive actions ──
 function mpOnAction(action,payload){
-  if(mpIsHost)return;
-  if(action==='state'){
+  if(mpIsHost){
+    // Host only processes votes
+    if(action==='vote') mpOnVote(payload.playerName, payload.choice);
+    return;
+  }
+
+  if(action==='init'){
     if(payload.quizData) quizData=payload.quizData;
-    if(payload.players) players=payload.players.map(p=>({...p,jokers:p.jokers||{r:true,f:true}}));
+    if(payload.players) players=payload.players.map(p=>({...p, choice:null, jokers:p.jokers||{f:true,r:true}}));
     if(typeof payload.currentQIdx==='number') currentQIdx=payload.currentQIdx;
-    risikoActive=payload.risikoActive||false; answered=false;
-    buildSidebar(); buildLadder(); loadQuestion(); showView('view-game');
+    risikoActive=false; answered=false; mpVotes={};
+    buildSidebar(); buildLadder(); loadQuestion();
+    showView('view-game');
+    mpRenderVotingUI();
+    return;
   }
-  if(action==='next_q'){
-    currentQIdx=payload.currentQIdx; risikoActive=false; answered=false; loadQuestion();
-  }
+
   if(action==='reveal'){
-    answered=true;
-    document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
-      btn.disabled=true;
-      if(i===payload.correctIdx) btn.classList.add('correct');
-      else if(i===payload.chosenIdx&&payload.chosenIdx!==payload.correctIdx) btn.classList.add('wrong');
+    const {correctIdx:cIdx, results, scores, risikoActive:ra}=payload;
+    risikoActive=ra||false;
+    // Update scores
+    scores.forEach(({name,score})=>{
+      const p=players.find(x=>x.name===name);
+      if(p) p.score=score;
     });
-    document.getElementById('next-btn').style.display=mpIsHost?'block':'none';
-    showToast(payload.isCorrect?'✅ Richtig!':'❌ Falsch!',2000);
+    mpApplyReveal(cIdx, results);
+    updateSidebar(); buildLadder();
+    // Show my result
+    const myResult=results[mpMyName];
+    if(myResult){
+      const msg=myResult.correct?`✅ Richtig! +${quizData.questions[currentQIdx].points*(risikoActive?2:1)} Punkte`:'❌ Falsch!';
+      showToast(msg,3000);
+    }
+    const ind=document.getElementById('mp-waiting-ind');
+    if(ind) ind.textContent='⏳ Warte auf nächste Frage...';
+    return;
   }
-  if(action==='score_update'){
-    players=payload.players; updateSidebar(); buildLadder();
+
+  if(action==='next_q'){
+    const {scores}=payload;
+    scores.forEach(({name,score})=>{const p=players.find(x=>x.name===name);if(p)p.score=score;});
+    currentQIdx=payload.currentQIdx;
+    risikoActive=false; answered=false; mpVotes={};
+    const ri=document.getElementById('mp-reveal-info');
+    if(ri) ri.remove();
+    loadQuestion();
+    mpRenderVotingUI();
+    updateSidebar(); buildLadder();
+    return;
   }
+
   if(action==='risiko_active'){
     risikoActive=true;
     document.getElementById('joker-risiko').classList.add('risiko-pending');
-    showToast('🎲 RISIKO aktiv!',2000);
+    showToast('🎲 RISIKO aktiv — Doppelte Punkte oder Abzug!',2500);
+    return;
   }
+
+  if(action==='5050'){
+    use5050local(payload.hide);
+    return;
+  }
+
+  if(action==='spy'){
+    // SPY joker: show what most players chose so far
+    showToast('🕵️ SPY: '+payload.hint,3000);
+    return;
+  }
+
   if(action==='game_over'){
-    players=payload.players; updateSidebar(); showWinner();
+    payload.scores.forEach(({name,score})=>{const p=players.find(x=>x.name===name);if(p)p.score=score;});
+    updateSidebar();
+    showWinner();
+    return;
   }
 }
 
+// ── JOKERS (host-controlled) ──
+// Override use5050 for MP
+function use5050(){
+  if(mpRoom&&!mpIsHost) return;
+  const btn=document.getElementById('joker-5050');
+  if(btn.classList.contains('used')) return;
+  btn.classList.add('used'); btn.disabled=true;
+
+  const q=quizData.questions[currentQIdx];
+  const wrong=[];
+  q.answers.forEach((_,i)=>{if(i!==q.correct)wrong.push(i);});
+  const hide=wrong.sort(()=>Math.random()-.5).slice(0,2);
+
+  use5050local(hide);
+  if(mpRoom) mpSend('5050',{hide});
+}
+
+function use5050local(hide){
+  document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
+    if(hide.includes(i)){btn.style.opacity='0.15';btn.disabled=true;}
+  });
+  const btn=document.getElementById('joker-5050');
+  if(btn){btn.classList.add('used');btn.disabled=true;}
+}
+
+// Override useRisiko for MP
+function useRisiko(){
+  if(mpRoom&&!mpIsHost) return;
+  document.getElementById('risiko-overlay').classList.add('open');
+}
+
+function confirmRisiko(){
+  document.getElementById('risiko-overlay').classList.remove('open');
+  risikoActive=true;
+  document.getElementById('joker-risiko').classList.add('risiko-pending');
+  if(mpRoom&&mpIsHost) mpSend('risiko_active',{});
+}
+
+// SPY joker (host only)
+function useSpy(){
+  if(mpRoom&&!mpIsHost) return;
+  const btn=document.getElementById('joker-spy');
+  if(btn.classList.contains('used')||btn.classList.contains('spy-disabled')) return;
+  if(!mpRoom){showToast('SPY nur im Multiplayer!',2000);return;}
+  btn.classList.add('used'); btn.disabled=true;
+  // Find leading choice among votes so far
+  const counts=[0,0,0,0];
+  Object.values(mpVotes).forEach(c=>counts[c]++);
+  const maxC=Math.max(...counts);
+  if(maxC===0){showToast('🕵️ Noch keine Stimmen!',2000);btn.classList.remove('used');btn.disabled=false;return;}
+  const leader=counts.indexOf(maxC);
+  const hint=`Die meisten tippen auf Antwort ${LETTERS[leader]}`;
+  showToast('🕵️ '+hint,3500);
+  mpSend('spy',{hint});
+}
 
 // ── NAME OVERLAY ──
 let _nameOverlayCb=null;
@@ -940,6 +1239,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     nameOverlayShow('Dein Name', (name)=>lobbyJoin(code, name));
   }
 });
+
 
 // Init editor with 5 default questions
 for(let i=0;i<5;i++) addEditorQuestion();
