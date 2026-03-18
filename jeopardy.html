@@ -1021,12 +1021,27 @@ function mpOnGameStart(receivedQuizData) {
   }
   if(!mpRoom||!mpRoom.players||!mpRoom.players.length){goToSetup();return;}
 
-  // Shuffle & split players into 2 teams
-  const names=[...mpRoom.players.map(p=>p.name)];
-  for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
-  const half=Math.ceil(names.length/2);
-  teams[0]={name:'Team Blau',players:names.slice(0,half),score:0};
-  teams[1]={name:'Team Rot', players:names.slice(half),   score:0};
+  // Host is moderator only — exclude from player list
+  const hostName=mpRoom.hostName||mpRoom.players.find(p=>p.isHost)?.name||'';
+  const playerNames=mpRoom.players
+    .filter(p=>!p.isHost)  // exclude host
+    .map(p=>p.name);
+
+  if(playerNames.length===0){
+    // Fallback: if only host in room, play solo
+    playerNames.push(...mpRoom.players.map(p=>p.name));
+  }
+
+  // Shuffle
+  for(let i=playerNames.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [playerNames[i],playerNames[j]]=[playerNames[j],playerNames[i]];
+  }
+
+  // Split evenly — team 1 gets ceil(n/2), team 2 gets floor(n/2)
+  const half=Math.ceil(playerNames.length/2);
+  teams[0]={name:'Team Blau',players:playerNames.slice(0,half),score:0};
+  teams[1]={name:'Team Rot', players:playerNames.slice(half).length?playerNames.slice(half):['Team Rot'],score:0};
 
   buildTurnOrder();
   turnIdx=0;
@@ -1038,18 +1053,22 @@ function mpOnGameStart(receivedQuizData) {
   updateTeamsSidebar();
   showView('view-game');
 
-  // Host immediately syncs state so all clients get it
-  if(mpIsHost) syncState();
+  // Host syncs state to all clients
+  if(mpIsHost) setTimeout(syncState, 300);
 }
 
 // ── SYNC: Host pushes full game state to all ──
 function syncState(){
   if(!mpRoom||!mpIsHost)return;
   const state={
-    teams:teams.map(t=>({name:t.name,players:t.players,score:t.score})),
+    teams:[
+      {name:teams[0].name,players:teams[0].players,score:teams[0].score},
+      {name:teams[1].name,players:teams[1].players,score:teams[1].score}
+    ],
     turnIdx,
     usedCells:getUsedCells(),
-    gameHistory
+    gameHistory,
+    quizName:quizData?.name||''
   };
   mpSend('state',state);
 }
@@ -1068,14 +1087,25 @@ function mpOnAction(action,payload){
   if(mpIsHost)return; // host doesn't process own events
 
   if(action==='state'){
-    // Apply full state
+    // First time receiving state: build board if not yet built
+    const firstSync=!document.getElementById('game-board').children.length;
+
     teams[0]={...teams[0],...payload.teams[0]};
     teams[1]={...teams[1],...payload.teams[1]};
     turnIdx=payload.turnIdx;
     gameHistory=payload.gameHistory||[];
+
+    if(firstSync){
+      document.getElementById('game-title').textContent='🎯 '+(payload.quizName||quizData?.name||'Jeopardy');
+      buildBoard();
+      buildScoreArea();
+      showView('view-game');
+    }
+
     updateScores();
     updateTurnBanner();
     updateTeamsSidebar();
+
     // Restore used cells
     if(payload.usedCells){
       payload.usedCells.forEach(({ci,qi,html,classes})=>{
