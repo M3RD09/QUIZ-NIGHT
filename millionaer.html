@@ -305,12 +305,28 @@ body::before{
 .mp-input::placeholder{color:var(--muted2);}
 .mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
 .mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
-to{opacity:1;}}
-}
-
-
-
 .btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
+/* ── ONLINE OVERLAY ── */
+.mm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:mmOverlayIn .2s ease;}
+.mm-overlay.hidden{display:none;}
+@keyframes mmOverlayIn{from{opacity:0;}to{opacity:1;}}
+.mm-modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;overflow:hidden;animation:mmModalIn .25s cubic-bezier(.34,1.56,.64,1);}
+@keyframes mmModalIn{from{transform:scale(.88);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mm-modal-header{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border);}
+.mm-modal-title{font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:.06em;color:var(--gold);flex:1;}
+.mm-modal-close{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;}
+.mm-tabs{display:flex;padding:16px 20px 0;gap:8px;}
+.mm-tab{flex:1;padding:9px;border:1px solid var(--border);border-radius:10px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.mm-tab.active{background:var(--gold);border-color:var(--gold);color:#000;}
+.mm-modal-body{padding:20px;}
+.mm-inp-label{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.mm-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;outline:none;margin-bottom:14px;}
+.mm-inp:focus{border-color:var(--gold);}
+.mm-inp::placeholder{color:var(--muted2);}
+.mm-code-inp{text-transform:uppercase;letter-spacing:.15em;font-size:20px;text-align:center;}
+.btn-online{background:linear-gradient(135deg,#f5c842,#e8a020);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(245,200,66,.25);}
+.btn-online:hover{filter:brightness(1.1);transform:translateY(-1px);}
 
 </style>
 </head>
@@ -324,13 +340,46 @@ to{opacity:1;}}
     <div class="menu-logo-sub">Quiz Games by Mert</div>
   </div>
   <div class="menu-btns">
-    <label class="btn-primary" style="cursor:pointer;">
-      ▶ Spiel starten — Quiz importieren
-      <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
-    </label>
-    <button class="btn-secondary" onclick="showJoinOverlay()">🎮 Spiel beitreten</button>
-        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-online" onclick="mmShowOnlineOverlay()">🌐 Online spielen</button>
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ ONLINE OVERLAY ══ -->
+<div class="mm-overlay hidden" id="mm-overlay">
+  <div class="mm-modal">
+    <div class="mm-modal-header">
+      <span style="font-size:22px;">🌐</span>
+      <div class="mm-modal-title">ONLINE SPIELEN</div>
+      <button class="mm-modal-close" onclick="mmCloseOverlay()">✕</button>
+    </div>
+    <div class="mm-tabs">
+      <button class="mm-tab active" id="mm-tab-create" onclick="mmSwitchTab('create')">Raum erstellen</button>
+      <button class="mm-tab" id="mm-tab-join" onclick="mmSwitchTab('join')">Beitreten</button>
+    </div>
+    <div class="mm-modal-body">
+      <!-- CREATE TAB -->
+      <div id="mm-panel-create">
+        <label class="mm-inp-label">Dein Name (Host)</label>
+        <input class="mm-inp" id="mm-host-name" placeholder="z.B. Mert" maxlength="20">
+        <label class="mm-inp-label">Quiz</label>
+        <div id="mm-quiz-status" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">❌ Kein Quiz geladen</div>
+        <label class="btn-secondary" style="cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;">
+          📂 Quiz importieren (.quiz / .json)
+          <input type="file" accept=".quiz,.json" onchange="mmOverlayLoadQuiz(event)" style="display:none;">
+        </label>
+        <button class="btn-online" onclick="mmHostCreate()">🚀 Raum erstellen</button>
+      </div>
+      <!-- JOIN TAB -->
+      <div id="mm-panel-join" style="display:none;">
+        <label class="mm-inp-label">Dein Name</label>
+        <input class="mm-inp" id="mm-join-name" placeholder="z.B. Anna" maxlength="20">
+        <label class="mm-inp-label">Raum-Code</label>
+        <input class="mm-inp mm-code-inp" id="mm-join-code" placeholder="XXXX" maxlength="6">
+        <button class="btn-primary" onclick="mmPlayerJoin()">▶ Beitreten</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -353,7 +402,7 @@ to{opacity:1;}}
 <!-- ══ LOBBY ══ -->
 <div class="view" id="view-setup">
   <div class="topbar">
-    <button class="btn-icon" onclick="showView('view-editor')">←</button>
+    <button class="btn-icon" onclick="lobbyLeave()">←</button>
     <div class="topbar-title">💰 Spieler-Lobby</div>
   </div>
   <div class="view-body" style="align-items:center;gap:20px;padding:30px 20px;">
@@ -1458,6 +1507,75 @@ function nameOverlayConfirm(){
   _nameOverlayCb=null;
 }
 
+// ── NEUES ONLINE-OVERLAY ──
+let mmOverlayQuizLoaded=false;
+
+function mmShowOnlineOverlay(){
+  document.getElementById('mm-overlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('mm-host-name').focus(),200);
+  const code=new URLSearchParams(window.location.search).get('room');
+  if(code){mmSwitchTab('join');document.getElementById('mm-join-code').value=code.toUpperCase();}
+}
+function mmCloseOverlay(){document.getElementById('mm-overlay').classList.add('hidden');}
+function mmSwitchTab(tab){
+  document.getElementById('mm-tab-create').classList.toggle('active',tab==='create');
+  document.getElementById('mm-tab-join').classList.toggle('active',tab==='join');
+  document.getElementById('mm-panel-create').style.display=tab==='create'?'block':'none';
+  document.getElementById('mm-panel-join').style.display=tab==='join'?'block':'none';
+}
+function mmOverlayLoadQuiz(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.questions||!Array.isArray(d.questions))throw new Error();
+      quizData=d;mmOverlayQuizLoaded=true;
+      document.getElementById('mm-quiz-status').innerHTML='✅ <strong>'+escHtml(d.name||'Quiz')+'</strong> — '+d.questions.length+' Fragen';
+      document.getElementById('mm-quiz-status').style.color='var(--green)';
+      showToast('✅ Quiz geladen: '+d.questions.length+' Fragen',2000);
+    }catch{showToast('❌ Ungültige Datei!');}
+  };
+  r.readAsText(file);ev.target.value='';
+}
+function mmHostCreate(){
+  const name=document.getElementById('mm-host-name').value.trim();
+  if(!name){showToast('⚠️ Bitte deinen Namen eingeben!');return;}
+  if(!quizData||!quizData.questions||!quizData.questions.length){showToast('⚠️ Erst Quiz importieren!');return;}
+  mmCloseOverlay();
+  mpMyName=name;mpIsHost=true;
+  showView('view-setup');
+  document.getElementById('lobby-start-btn').style.display='block';
+  document.getElementById('lobby-join-wrap').style.display='none';
+  document.getElementById('lobby-status').textContent='⏳ Warte auf Spieler...';
+  mpConnect(()=>{
+    mpSocket.emit('create_room',{game:'millionaer',playerName:mpMyName,quizData});
+    mpSocket.once('room_created',({code,room})=>{mpRoom=room;mpRoom.code=code;lobbyRender();});
+    mpSocket.once('error',({msg})=>showToast('❌ '+msg));
+  });
+}
+function mmPlayerJoin(){
+  const name=document.getElementById('mm-join-name').value.trim();
+  const code=document.getElementById('mm-join-code').value.trim().toUpperCase();
+  if(!name){showToast('⚠️ Bitte deinen Namen eingeben!');return;}
+  if(!code){showToast('⚠️ Bitte den Raum-Code eingeben!');return;}
+  mmCloseOverlay();
+  mpMyName=name;mpIsHost=false;
+  showView('view-setup');
+  document.getElementById('lobby-start-btn').style.display='none';
+  document.getElementById('lobby-join-wrap').style.display='block';
+  mpConnect(()=>{
+    mpSocket.emit('join_room',{code,playerName:name});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{mpRoom=room;mpRoom.code=c||code;mpMyName=yourName;lobbyRender();});
+    mpSocket.once('error',({msg})=>{
+      showView('view-menu');showToast('❌ '+msg);
+      mmShowOnlineOverlay();mmSwitchTab('join');
+      document.getElementById('mm-join-code').value=code;
+      document.getElementById('mm-join-name').value=name;
+    });
+  });
+}
+
 // ── JOIN BY CODE ──
 function showJoinOverlay(){
   document.getElementById('join-code-inp').value='';
@@ -1513,9 +1631,7 @@ function joinByCode(){
 // Auto-join if ?room= in URL
 window.addEventListener('DOMContentLoaded',()=>{
   const code=new URLSearchParams(window.location.search).get('room');
-  if(code){
-    nameOverlayShow('Dein Name', (name)=>lobbyJoin(code, name));
-  }
+  if(code){mmShowOnlineOverlay();}
 });
 
 

@@ -300,10 +300,13 @@ body::before{content:'';position:fixed;inset:0;
       <div id="lobby-quiz-status" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">
         ❌ Kein Quiz geladen
       </div>
-      <label class="btn-secondary" style="cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
-        📂 Quiz importieren (.quiz / .json)
-        <input type="file" accept=".quiz,.json" onchange="lobbyImportQuiz(event)" style="display:none;">
-      </label>
+      <div style="display:flex;gap:8px;">
+        <label class="btn-secondary" style="flex:1;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
+          📂 Importieren
+          <input type="file" accept=".quiz,.json" onchange="lobbyImportQuiz(event)" style="display:none;">
+        </label>
+        <button id="lobby-edit-btn" class="btn-secondary" onclick="openEditorFromLobby()" style="flex:1;display:none;">✏️ Bearbeiten</button>
+      </div>
     </div>
 
     <div>
@@ -351,8 +354,8 @@ body::before{content:'';position:fixed;inset:0;
 <!-- ══ EDITOR ══ -->
 <div class="view" id="view-editor">
   <div class="topbar">
-    <button class="btn-icon" onclick="showView('view-menu')">←</button>
-    <div class="topbar-title">✏️ Quiz erstellen</div>
+    <button class="btn-icon" onclick="editorBack()">←</button>
+    <div class="topbar-title" id="editor-topbar-title">✏️ Quiz erstellen</div>
   </div>
   <div class="view-body" style="padding-bottom:90px;">
     <div class="field-wrap">
@@ -364,6 +367,7 @@ body::before{content:'';position:fixed;inset:0;
   </div>
   <div class="editor-footer">
     <button class="btn-gold" onclick="exportQuiz()">💾 Exportieren</button>
+    <button class="btn-green" id="editor-lobby-btn" onclick="editorSaveToLobby()" style="display:none;">✔ Fertig → Lobby</button>
   </div>
 </div>
 
@@ -552,6 +556,7 @@ function lobbyImportQuiz(ev){
       document.getElementById('lobby-quiz-status').innerHTML=
         '✅ <strong>'+escHtml(d.name||'Hot Zones Quiz')+'</strong> — '+d.categories.length+' Kategorien geladen';
       document.getElementById('lobby-quiz-status').style.color='var(--green)';
+      document.getElementById('lobby-edit-btn').style.display='block';
       showToast('✅ Quiz geladen: '+d.categories.length+' Kategorien',2500);
     }catch{showToast('❌ Ungültige Datei!');}
   };
@@ -1080,6 +1085,46 @@ function confirmQuitOnline(){if(confirm('Spiel verlassen?'))lobbyLeave();}
 // EDITOR
 // ════════════════════════════════════════
 let editorCatCount=0;
+let editorFromLobby=false;
+
+function openEditorFromLobby(){
+  editorFromLobby=true;
+  const data=quizData;
+  document.getElementById('quiz-name').value=data.name||'';
+  document.getElementById('cat-editor-container').innerHTML='';
+  editorCatCount=0;
+  (data.categories||[]).forEach(cat=>addEditorCat(cat));
+  if(!data.categories||!data.categories.length)addEditorCat();
+  document.getElementById('editor-topbar-title').textContent='✏️ Quiz bearbeiten';
+  document.getElementById('editor-lobby-btn').style.display='block';
+  showView('view-editor');
+}
+
+function editorBack(){
+  if(editorFromLobby){
+    editorFromLobby=false;
+    document.getElementById('editor-topbar-title').textContent='✏️ Quiz erstellen';
+    document.getElementById('editor-lobby-btn').style.display='none';
+    showView('view-lobby');
+  } else {
+    showView('view-menu');
+  }
+}
+
+function editorSaveToLobby(){
+  const data=collectEditorData();
+  if(!data.categories.length){showToast('⚠️ Mindestens eine Kategorie nötig!');return;}
+  quizData=data;
+  editorFromLobby=false;
+  document.getElementById('editor-topbar-title').textContent='✏️ Quiz erstellen';
+  document.getElementById('editor-lobby-btn').style.display='none';
+  document.getElementById('lobby-quiz-status').innerHTML=
+    '✅ <strong>'+escHtml(data.name||'Hot Zones Quiz')+'</strong> — '+data.categories.length+' Kategorien geladen';
+  document.getElementById('lobby-quiz-status').style.color='var(--green)';
+  document.getElementById('lobby-edit-btn').style.display='block';
+  showView('view-lobby');
+  showToast('✅ Quiz gespeichert!',2000);
+}
 
 function addEditorCat(catData){
   const id=editorCatCount++;
