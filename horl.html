@@ -415,11 +415,25 @@ function startGame(){
 }
 
 // ── GAME ──
+// All items sorted by value get rank 1..N
+// Skala shows 1..N ticks, items placed at their rank position
+// Min/Max in editor = just labels for display, actual scale = 1..totalItems
+
+let allItemsSorted=[]; // all items sorted by value (rank order)
+
+function getRank(item){
+  return allItemsSorted.indexOf(item)+1; // 1-based rank
+}
+
 function loadRound(){
   if(currentRound>=quizData.rounds.length){showWinner();return;}
   const round=quizData.rounds[currentRound];
   placedItems=[];
   selectedItemIdx=null;
+
+  // Sort ALL items by value to get their rank
+  allItemsSorted=[...round.items].sort((a,b)=>a.value-b.value);
+  const N=round.items.length;
 
   // Place anchor
   const anchor=round.items.find(it=>it.isAnchor);
@@ -427,82 +441,76 @@ function loadRound(){
 
   document.getElementById('round-badge').textContent='RUNDE '+(currentRound+1);
   document.getElementById('cat-badge').textContent=round.category;
-  document.getElementById('lbl-min').textContent=(round.labelMin||'low')+' — '+round.scaleMin;
-  document.getElementById('lbl-max').textContent=round.scaleMax+' — '+(round.labelMax||'high');
+  document.getElementById('lbl-min').textContent=(round.labelMin||'niedrig')+' — 1';
+  document.getElementById('lbl-max').textContent=N+' — '+(round.labelMax||'hoch');
 
-  buildTicks(round);
+  buildTicks(N);
   renderScale();
   renderPool();
   updateTurnBar();
   updateSidebar();
 }
 
-// ── TICKS ──
-function buildTicks(round){
+// ── TICKS: always 1..N ──
+function buildTicks(N){
   const rail=document.getElementById('scale-rail');
-  // Remove old ticks
   Array.from(rail.children).forEach(c=>{if(!c.classList.contains('scale-rail-line'))c.remove();});
 
-  const min=round.scaleMin, max=round.scaleMax;
-  const range=max-min;
-
-  for(let v=min;v<=max;v++){
+  for(let v=1;v<=N;v++){
     const tick=document.createElement('div');
-    tick.className='scale-tick'+(v===min||v===max||(v-min)%5===0?' major':'');
-    tick.style.left=((v-min)/range*100)+'%';
+    tick.className='scale-tick major';
+    tick.style.left=((v-1)/(N-1)*100)+'%';
     tick.innerHTML='<div class="scale-tick-line"></div><div class="scale-tick-num">'+v+'</div>';
     rail.appendChild(tick);
   }
 }
 
 // ── SCALE RENDER ──
-// placedItems is sorted by value
+// Items positioned by rank (1..N), evenly spaced
 function renderScale(){
   const area=document.getElementById('scale-items-area');
   area.innerHTML='';
 
   const round=quizData.rounds[currentRound];
-  const sorted=[...placedItems].sort((a,b)=>a.value-b.value);
-  const min=round.scaleMin, max=round.scaleMax, range=max-min;
+  const N=round.items.length;
 
-  function valPct(v){return((v-min)/range)*100;}
+  // Sort placed items by rank
+  const sorted=[...placedItems].sort((a,b)=>getRank(a)-getRank(b));
 
-  // Render placed items
+  function rankPct(item){
+    const rank=getRank(item);
+    if(N===1)return 50;
+    return((rank-1)/(N-1))*100;
+  }
+
+  // Render placed items — no value shown, only name
   sorted.forEach(item=>{
     const el=document.createElement('div');
     el.className='scale-placed-item'+(item.isAnchor?' anchor':'');
-    el.style.left=valPct(item.value)+'%';
+    el.style.left=rankPct(item)+'%';
     const imgEl=item.imageUrl
       ?'<img src="'+esc(item.imageUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'📦\'">'
       :'<span>📦</span>';
     el.innerHTML='<div class="scale-placed-img">'+imgEl+'</div>'
-      +'<div class="scale-placed-val">'+item.value+'</div>'
       +'<div class="scale-placed-name">'+esc(item.name)+'</div>';
     area.appendChild(el);
   });
 
-  // Drop zones: left edge, between each pair, right edge
-  // Zone 'left-of-0' = left of first item
-  // Zone 'right-of-N' = right of last item
-  // Zone 'between-N' = between item N and N+1
-
-  const makeZone=(id, leftPct, rightPct)=>{
+  // Drop zones between ranked items
+  const makeZone=(id,leftPct,rightPct)=>{
     const dz=document.createElement('div');
     dz.className='scale-dropzone'+(selectedItemIdx!==null?' active':'');
     dz.dataset.zoneId=id;
     dz.style.left=leftPct+'%';
-    dz.style.width=(rightPct-leftPct)+'%';
-    dz.style.minWidth='20px';
-
+    dz.style.width=Math.max(rightPct-leftPct,5)+'%';
     dz.addEventListener('click',()=>{
-      if(selectedItemIdx===null){showToast('⬇️ Wähle erst ein Item aus dem Pool!',1800);return;}
+      if(selectedItemIdx===null){showToast('⬇️ Wähle erst ein Item!',1500);return;}
       placeItem(id);
     });
     dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
     dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
     dz.addEventListener('drop',e=>{
-      e.preventDefault();
-      dz.classList.remove('drag-over');
+      e.preventDefault();dz.classList.remove('drag-over');
       const idx=parseInt(e.dataTransfer.getData('itemIdx'));
       if(!isNaN(idx))selectedItemIdx=idx;
       placeItem(id);
@@ -511,55 +519,14 @@ function renderScale(){
   };
 
   if(sorted.length===0){
-    makeZone('left-of-0', 0, 100);
+    makeZone('left-of-0',0,100);
   } else {
-    // Left of first
-    makeZone('left-of-0', 0, valPct(sorted[0].value));
-    // Between each pair
+    makeZone('left-of-0', 0, rankPct(sorted[0]));
     for(let i=0;i<sorted.length-1;i++){
-      makeZone('between-'+i, valPct(sorted[i].value), valPct(sorted[i+1].value));
+      makeZone('between-'+i, rankPct(sorted[i]), rankPct(sorted[i+1]));
     }
-    // Right of last
-    makeZone('right-of-'+(sorted.length-1), valPct(sorted[sorted.length-1].value), 100);
+    makeZone('right-of-'+(sorted.length-1), rankPct(sorted[sorted.length-1]), 100);
   }
-}
-
-// ── POOL RENDER ──
-function renderPool(){
-  const pool=document.getElementById('items-pool');
-  pool.innerHTML='';
-  const round=quizData.rounds[currentRound];
-
-  round.items.forEach((item,i)=>{
-    if(item.isAnchor)return;
-    const isPlaced=placedItems.includes(item);
-    const isSelected=selectedItemIdx===i;
-    const card=document.createElement('div');
-    card.className='pool-item'+(isPlaced?' placed':isSelected?' selected':'');
-    card.dataset.itemIdx=i;
-
-    const imgEl=item.imageUrl
-      ?'<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" onerror="this.parentElement.innerHTML=\'📦\'">'
-      :'<span>📦</span>';
-    card.innerHTML='<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
-
-    if(!isPlaced){
-      card.addEventListener('click',()=>{
-        selectedItemIdx=(selectedItemIdx===i)?null:i;
-        renderPool();
-        renderScale();
-        updateTurnBar();
-      });
-      card.draggable=true;
-      card.addEventListener('dragstart',e=>{
-        selectedItemIdx=i;
-        e.dataTransfer.setData('itemIdx',String(i));
-        e.dataTransfer.effectAllowed='move';
-        setTimeout(()=>{renderPool();renderScale();updateTurnBar();},0);
-      });
-    }
-    pool.appendChild(card);
-  });
 }
 
 // ── PLACE ITEM ──
@@ -569,25 +536,26 @@ function placeItem(zoneId){
   const item=round.items[selectedItemIdx];
   if(!item){selectedItemIdx=null;return;}
 
-  // Get sorted placed items
-  const sorted=[...placedItems].sort((a,b)=>a.value-b.value);
+  // Get sorted placed items by rank
+  const sorted=[...placedItems].sort((a,b)=>getRank(a)-getRank(b));
 
-  // Determine left and right neighbours based on zone
-  let leftVal=null, rightVal=null;
-
+  let leftItem=null, rightItem=null;
   if(zoneId==='left-of-0'){
-    rightVal=sorted.length>0?sorted[0].value:null;
+    rightItem=sorted[0]||null;
   } else if(zoneId.startsWith('between-')){
     const idx=parseInt(zoneId.replace('between-',''));
-    leftVal=sorted[idx]?sorted[idx].value:null;
-    rightVal=sorted[idx+1]?sorted[idx+1].value:null;
+    leftItem=sorted[idx]||null;
+    rightItem=sorted[idx+1]||null;
   } else if(zoneId.startsWith('right-of-')){
     const idx=parseInt(zoneId.replace('right-of-',''));
-    leftVal=sorted[idx]?sorted[idx].value:null;
+    leftItem=sorted[idx]||null;
   }
 
-  // Check correctness: item.value must fit between neighbours
-  const correct=(leftVal===null||item.value>leftVal)&&(rightVal===null||item.value<rightVal);
+  // Correct if item's rank fits between neighbours' ranks
+  const itemRank=getRank(item);
+  const leftRank=leftItem?getRank(leftItem):0;
+  const rightRank=rightItem?getRank(rightItem):allItemsSorted.length+1;
+  const correct=itemRank>leftRank&&itemRank<rightRank;
 
   const player=players[currentPlayerIdx];
   selectedItemIdx=null;
@@ -597,21 +565,10 @@ function placeItem(zoneId){
     player.score++;
     showFlash(true);
     showToast('✅ Richtig! +1 Punkt für '+player.name,2000);
-
-    // Animate new item
     renderScale();
-    setTimeout(()=>{
-      document.querySelectorAll('.scale-placed-item:not(.anchor)').forEach(el=>{
-        if(el.querySelector('.scale-placed-name')&&el.querySelector('.scale-placed-name').textContent===item.name){
-          el.classList.add('new-item');
-          setTimeout(()=>el.classList.remove('new-item'),600);
-        }
-      });
-    },50);
     renderPool();
     updateSidebar();
 
-    // Check round complete
     const remaining=round.items.filter(it=>!it.isAnchor&&!placedItems.includes(it));
     if(remaining.length===0){
       setTimeout(()=>{currentRound++;
@@ -623,7 +580,6 @@ function placeItem(zoneId){
   } else {
     player.hearts--;
     showFlash(false);
-    // Flash wrong item in pool
     const card=document.querySelector('.pool-item[data-item-idx="'+round.items.indexOf(item)+'"]');
     if(card){card.classList.add('wrong-flash');setTimeout(()=>card.classList.remove('wrong-flash'),600);}
     if(player.hearts<=0){
@@ -636,7 +592,6 @@ function placeItem(zoneId){
     updateSidebar();
     if(players.filter(p=>!p.eliminated).length===0){setTimeout(()=>showWinner(),800);return;}
   }
-
   setTimeout(()=>nextPlayer(),350);
 }
 
@@ -646,6 +601,39 @@ function nextPlayer(){
   while(players[currentPlayerIdx].eliminated&&tries<players.length);
   updateTurnBar();
   updateSidebar();
+}
+
+// ── POOL RENDER ──
+function renderPool(){
+  const pool=document.getElementById('items-pool');
+  pool.innerHTML='';
+  const round=quizData.rounds[currentRound];
+  round.items.forEach((item,i)=>{
+    if(item.isAnchor)return;
+    const isPlaced=placedItems.includes(item);
+    const isSelected=selectedItemIdx===i;
+    const card=document.createElement('div');
+    card.className='pool-item'+(isPlaced?' placed':isSelected?' selected':'');
+    card.dataset.itemIdx=i;
+    const imgEl=item.imageUrl
+      ?'<img src="'+esc(item.imageUrl)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" onerror="this.parentElement.innerHTML=\'📦\'">'
+      :'<span>📦</span>';
+    card.innerHTML='<div class="pool-img">'+imgEl+'</div><div class="pool-name">'+esc(item.name)+'</div>';
+    if(!isPlaced){
+      card.addEventListener('click',()=>{
+        selectedItemIdx=(selectedItemIdx===i)?null:i;
+        renderPool();renderScale();updateTurnBar();
+      });
+      card.draggable=true;
+      card.addEventListener('dragstart',e=>{
+        selectedItemIdx=i;
+        e.dataTransfer.setData('itemIdx',String(i));
+        e.dataTransfer.effectAllowed='move';
+        setTimeout(()=>{renderPool();renderScale();updateTurnBar();},0);
+      });
+    }
+    pool.appendChild(card);
+  });
 }
 
 function updateTurnBar(){
