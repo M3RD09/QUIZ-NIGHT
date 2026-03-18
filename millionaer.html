@@ -241,6 +241,27 @@ body::before{
 .editor-footer{padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;position:sticky;bottom:0;}
 
 .ans-btn.selected-ans{border-color:var(--gold)!important;background:rgba(245,200,66,.15)!important;}
+
+/* ── JOKER STYLES ── */
+/* Fire animation on RISIKO */
+.ans-btn.on-fire{
+  border-color:#f39c12!important;
+  animation:firePulse .7s ease-in-out infinite alternate;
+}
+@keyframes firePulse{
+  0%{box-shadow:0 0 8px rgba(243,156,18,.3),0 0 2px rgba(255,80,0,.2);}
+  100%{box-shadow:0 0 22px rgba(243,156,18,.7),0 0 10px rgba(255,50,0,.5);}
+}
+.joker-btn.on-fire .joker-icon{animation:jShake .35s ease infinite alternate;}
+@keyframes jShake{0%{transform:rotate(-4deg) scale(1);}100%{transform:rotate(4deg) scale(1.12);}}
+
+/* Host joker popup animation */
+@keyframes jokerPopIn{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-12deg);}
+  65%{transform:translate(-50%,-50%) scale(1.08) rotate(3deg);}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg);}
+}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;z-index:500;transition:transform .3s ease;white-space:nowrap;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
@@ -651,7 +672,6 @@ function _localSelectAnswer(idx){
   });
 
   // Score all active players
-  const mult=risikoActive?2:1;
   players.forEach(p=>{
     if(p.eliminated)return;
     if(isCorrect){
@@ -948,6 +968,12 @@ function mpRenderVotingUI(){
     btn.classList.remove('correct','wrong','selected-ans');
     btn.style.opacity='';
   });
+  // Reset joker tracking for new question
+  mpJokerUsedThisQ = {};
+  // Reset _usedJokerThisQ per player
+  players.forEach(p=>p._usedJokerThisQ=false);
+  // Update joker button states for this player
+  mpResetJokersForQuestion();
   // Show waiting indicator
   let ind = document.getElementById('mp-waiting-ind');
   if(!ind){
@@ -979,13 +1005,13 @@ function selectAnswer(idx){
   // Show waiting
   const ind=document.getElementById('mp-waiting-ind');
   if(ind) ind.textContent='✅ Antwort abgegeben — warte auf Host...';
-  // Send vote anonymously to host
-  mpSend('vote',{playerName:mpMyName, choice:idx});
+  // Send vote with risiko flag so host can score correctly
+  mpSend('vote',{playerName:mpMyName, choice:idx, hasRisiko:myRisikoActive});
 }
 
 // ── HOST: receive vote from player ──
-function mpOnVote(playerName, choice){
-  mpVotes[playerName]=choice;
+function mpOnVote(playerName, choice, hasRisiko){
+  mpVotes[playerName]={choice:choice, hasRisiko:!!hasRisiko};
   // Update vote count in host bar
   const vc=document.getElementById('mp-vote-count');
   if(vc) vc.textContent=`${Object.keys(mpVotes).length}/${players.length} haben geantwortet`;
@@ -1002,19 +1028,21 @@ function mpHostReveal(){
 
   const q=quizData.questions[currentQIdx];
   const cIdx=q.correct;
-  const mult=risikoActive?2:1;
 
-  // Calculate scores
-  const results={};
-  players.forEach(p=>{
-    const choice=mpVotes[p.name];
-    const correct=(choice===cIdx);
+  // Calculate scores — per-player risiko
+  var results={};
+  players.forEach(function(p){
+    var voteData=mpVotes[p.name]||{};
+    var choice=voteData.choice;
+    var pRisiko=voteData.hasRisiko||false;
+    var correct=(choice===cIdx);
+    var pts=q.points*(pRisiko?2:1);
     if(correct){
-      p.score+=q.points*mult;
-    } else if(risikoActive && choice!==undefined){
-      p.score-=q.points;
+      p.score+=pts;
+    } else if(pRisiko && choice!==undefined){
+      p.score-=q.points; // subtract base points (not doubled)
     }
-    results[p.name]={choice, correct};
+    results[p.name]={choice:choice, correct:correct, hasRisiko:pRisiko};
   });
 
   // Send reveal to all
@@ -1057,7 +1085,7 @@ function mpApplyReveal(cIdx, results){
     el.style.cssText=`display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--surface);border-radius:10px;border:1px solid ${col};`;
     el.innerHTML=`<span style="font-weight:700;font-size:13px;">${escHtml(p.name)}</span>
       <span style="font-family:'Bebas Neue';font-size:16px;color:${col}">${letter}</span>
-      <span style="font-size:11px;color:${col}">${r.correct?'+'+quizData.questions[currentQIdx].points*(risikoActive?2:1):r.choice!==undefined?'✗':''}</span>`;
+      <span style="font-size:11px;color:${col}">${r.correct?'+'+(quizData.questions[currentQIdx].points*(r.hasRisiko?2:1)):r.choice!==undefined?'✗':''}</span>`;
     info.appendChild(el);
   });
 }
@@ -1083,8 +1111,19 @@ function mpHostNext(){
 // ── CLIENT: receive actions ──
 function mpOnAction(action,payload){
   if(mpIsHost){
-    // Host only processes votes
-    if(action==='vote') mpOnVote(payload.playerName, payload.choice);
+    if(action==='vote') mpOnVote(payload.playerName, payload.choice, payload.hasRisiko);
+    if(action==='joker_used'){
+      var jType=payload.type, jName=payload.playerName;
+      mpJokerUsedThisQ[jType]=jName;
+      showHostJokerPopup(jName, jType);
+      if(jType==='r') risikoActive=true;
+    }
+    if(action==='spy_request'){
+      var spyCounts=[0,0,0,0];
+      var voteVals=Object.values(mpVotes);
+      voteVals.forEach(function(c){if(c>=0&&c<4)spyCounts[c]++;});
+      mpSend('spy_result',{counts:spyCounts, forPlayer:payload.playerName});
+    }
     return;
   }
 
@@ -1125,8 +1164,13 @@ function mpOnAction(action,payload){
     scores.forEach(({name,score})=>{const p=players.find(x=>x.name===name);if(p)p.score=score;});
     currentQIdx=payload.currentQIdx;
     risikoActive=false; answered=false; mpVotes={};
+    mpJokerUsedThisQ={};
+    myRisikoActive=false;
+    players.forEach(function(p){p._usedJokerThisQ=false;});
     const ri=document.getElementById('mp-reveal-info');
     if(ri) ri.remove();
+    // Remove fire animation
+    document.querySelectorAll('.ans-btn').forEach(b=>b.classList.remove('on-fire'));
     loadQuestion();
     mpRenderVotingUI();
     updateSidebar(); buildLadder();
@@ -1140,14 +1184,17 @@ function mpOnAction(action,payload){
     return;
   }
 
-  if(action==='5050'){
-    use5050local(payload.hide);
+  if(action==='joker_used'){
+    // Mark this joker type claimed for this question (blocks others from using same type)
+    mpJokerUsedThisQ[payload.type] = payload.playerName;
+    // No visual effect on OTHER clients — joker effects are personal
     return;
   }
 
-  if(action==='spy'){
-    // SPY joker: show what most players chose so far
-    showToast('🕵️ SPY: '+payload.hint,3000);
+  if(action==='spy_result'){
+    // Only show to the player who requested (others receive this too — ignore)
+    if(payload.forPlayer !== mpMyName) return;
+    showSpyResult(payload.counts);
     return;
   }
 
@@ -1159,62 +1206,215 @@ function mpOnAction(action,payload){
   }
 }
 
-// ── JOKERS (host-controlled) ──
-// Override use5050 for MP
-function use5050(){
-  if(mpRoom&&!mpIsHost) return;
-  const btn=document.getElementById('joker-5050');
-  if(btn.classList.contains('used')) return;
-  btn.classList.add('used'); btn.disabled=true;
+// ══════════════════════════════════════════════════════
+// JOKER SYSTEM
+// ══════════════════════════════════════════════════════
+// RULES:
+//  • Each player owns: 50:50 (f), SPY (s), RISIKO (r)
+//  • Max 1 joker per player per question (_usedJokerThisQ flag)
+//  • Max 1 player per joker TYPE per question (mpJokerUsedThisQ dict)
+//  • Only the user sees the joker effect on their own screen
+//  • Host sees animated popup whenever anyone uses a joker
+//  • Once used, a joker is gone permanently (jokers[type]=false)
 
-  const q=quizData.questions[currentQIdx];
-  const wrong=[];
-  q.answers.forEach((_,i)=>{if(i!==q.correct)wrong.push(i);});
-  const hide=wrong.sort(()=>Math.random()-.5).slice(0,2);
+// Per-question tracking (reset on every new question)
+var mpJokerUsedThisQ = {};
+var myRisikoActive = false; // true if THIS player used RISIKO this question // {type: playerName} – first claim wins
 
-  use5050local(hide);
-  if(mpRoom) mpSend('5050',{hide});
+// ── Reset for every new question ──
+function mpResetJokersForQuestion(){
+  mpJokerUsedThisQ = {};
+  myRisikoActive = false;
+  players.forEach(function(p){ p._usedJokerThisQ = false; });
+  // Re-render joker buttons for this player's current state
+  refreshMyJokerButtons();
 }
 
-function use5050local(hide){
-  document.querySelectorAll('.ans-btn').forEach((btn,i)=>{
-    if(hide.includes(i)){btn.style.opacity='0.15';btn.disabled=true;}
+function refreshMyJokerButtons(){
+  var me = players.find(function(p){ return p.name === mpMyName; });
+  // In local play there's no mpMyName; skip silently
+  if(!me && mpRoom) return;
+  var defs = [{id:'joker-5050', key:'f'},{id:'joker-spy', key:'s'},{id:'joker-risiko', key:'r'}];
+  defs.forEach(function(d){
+    var btn = document.getElementById(d.id);
+    if(!btn) return;
+    var permanently = me ? (me.jokers[d.key] === false) : false;
+    btn.disabled  = permanently;
+    btn.classList.toggle('used', permanently);
+    btn.classList.remove('risiko-pending','on-fire');
   });
-  const btn=document.getElementById('joker-5050');
-  if(btn){btn.classList.add('used');btn.disabled=true;}
 }
 
-// Override useRisiko for MP
+// ── Guard: can this player use this joker right now? ──
+function canUseJoker(type, btnId){
+  // Host is moderator, can't play
+  if(mpRoom && mpIsHost){
+    showToast('Host kann keine Joker nutzen.',1800);
+    return false;
+  }
+
+  var me = players.find(function(p){ return p.name === mpMyName; });
+
+  // Permanently consumed?
+  if(me && me.jokers[type] === false){
+    showToast('Dieser Joker ist bereits verbraucht!',1800);
+    return false;
+  }
+
+  // Already used a joker this question?
+  if(me && me._usedJokerThisQ){
+    showToast('Nur 1 Joker pro Frage!',1800);
+    return false;
+  }
+
+  // Already claimed by another player this question?
+  if(mpJokerUsedThisQ[type]){
+    showToast(mpJokerUsedThisQ[type] + ' hat diesen Joker bereits genutzt!',2000);
+    return false;
+  }
+
+  return true;
+}
+
+// ── Consume joker: mark permanently + mark question ──
+function consumeJoker(type){
+  mpJokerUsedThisQ[type] = mpMyName || 'Spieler';
+  var me = players.find(function(p){ return p.name === mpMyName; });
+  if(me){
+    me.jokers[type] = false;
+    me._usedJokerThisQ = true;
+  }
+  // Grey out this button
+  var ids = {f:'joker-5050', s:'joker-spy', r:'joker-risiko'};
+  var btn = document.getElementById(ids[type]);
+  if(btn){ btn.classList.add('used'); btn.disabled = true; }
+}
+
+// ════════════════════════════
+// 50:50 JOKER
+// ════════════════════════════
+function use5050(){
+  if(!canUseJoker('f','joker-5050')) return;
+  consumeJoker('f');
+
+  // Pick 2 wrong answers to hide
+  var q   = quizData.questions[currentQIdx];
+  var wrong = [];
+  q.answers.forEach(function(_,i){ if(i !== q.correct) wrong.push(i); });
+  // Shuffle and take first 2
+  wrong.sort(function(){ return Math.random()-.5; });
+  var hide = wrong.slice(0,2);
+
+  apply5050(hide);
+
+  // Tell server: other clients + host
+  if(mpRoom) mpSend('joker_used',{type:'f', playerName:mpMyName, hide:hide});
+}
+
+function apply5050(hide){
+  document.querySelectorAll('.ans-btn').forEach(function(btn,i){
+    if(hide.indexOf(i) !== -1){
+      btn.style.opacity        = '0.08';
+      btn.style.pointerEvents  = 'none';
+      btn.disabled             = true;
+    }
+  });
+  showToast('✂️ 50:50 — zwei falsche Antworten ausgeblendet!',2500);
+}
+
+// ════════════════════════════
+// SPY JOKER
+// ════════════════════════════
+function useSpy(){
+  if(!mpRoom){
+    showToast('SPY ist nur im Multiplayer verfügbar!',2000);
+    return;
+  }
+  if(!canUseJoker('s','joker-spy')) return;
+  consumeJoker('s');
+
+  // Request current vote distribution from host
+  mpSend('spy_request',{playerName: mpMyName});
+}
+
+function showSpyResult(counts){
+  var total = counts.reduce(function(a,b){ return a+b; },0);
+  if(total === 0){
+    showToast('🕵️ Noch hat niemand abgestimmt!',2000);
+    return;
+  }
+
+  var maxH = 72;
+  var barsHtml = LETTERS.map(function(l,i){
+    var pct  = Math.round(counts[i]/total*100);
+    var h    = Math.max(Math.round(pct/100*maxH),4);
+    var col  = 'var(--accent)';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">'
+      +'<div style="font-size:11px;color:var(--muted);">'+pct+'%</div>'
+      +'<div style="width:100%;height:'+h+'px;background:'+col+';border-radius:5px 5px 0 0;transition:height .4s;"></div>'
+      +'<div style="font-family:\'Bebas Neue\';font-size:18px;color:'+col+';">'+l+'</div>'
+      +'</div>';
+  }).join('');
+
+  var ov = document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:700;display:flex;align-items:center;justify-content:center;animation:mpIn .25s ease;';
+  ov.innerHTML='<div style="background:var(--surface);border:2px solid rgba(74,144,217,.5);border-radius:20px;padding:28px;width:90%;max-width:320px;text-align:center;">'
+    +'<div style="font-size:40px;margin-bottom:6px;">🕵️</div>'
+    +'<div style="font-family:\'Bebas Neue\';font-size:26px;letter-spacing:.06em;color:var(--accent);margin-bottom:16px;">SPY ERGEBNIS</div>'
+    +'<div style="display:flex;gap:10px;align-items:flex-end;height:'+maxH+'px;margin-bottom:16px;">'+barsHtml+'</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Echtzeit-Verteilung der Stimmen ('+total+' abgegeben)</div>'
+    +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="padding:10px 28px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:14px;cursor:pointer;">OK</button>'
+    +'</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){ if(e.target===ov) ov.remove(); });
+}
+
+// ════════════════════════════
+// RISIKO JOKER
+// ════════════════════════════
 function useRisiko(){
-  if(mpRoom&&!mpIsHost) return;
+  if(!canUseJoker('r','joker-risiko')) return;
+  // Show confirmation modal before consuming
   document.getElementById('risiko-overlay').classList.add('open');
 }
 
 function confirmRisiko(){
   document.getElementById('risiko-overlay').classList.remove('open');
-  risikoActive=true;
+  consumeJoker('r');
+
+  // Fire up answer buttons for this player
+  document.querySelectorAll('.ans-btn').forEach(function(btn){
+    btn.classList.add('on-fire');
+  });
   document.getElementById('joker-risiko').classList.add('risiko-pending');
-  if(mpRoom&&mpIsHost) mpSend('risiko_active',{});
+  showToast('🔥 RISIKO aktiv! Richtig = 2× Punkte, Falsch = Abzug!',2800);
+
+  myRisikoActive = true;
+  if(mpRoom) mpSend('joker_used',{type:'r', playerName:mpMyName, risikoFor:mpMyName});
 }
 
-// SPY joker (host only)
-function useSpy(){
-  if(mpRoom&&!mpIsHost) return;
-  const btn=document.getElementById('joker-spy');
-  if(btn.classList.contains('used')||btn.classList.contains('spy-disabled')) return;
-  if(!mpRoom){showToast('SPY nur im Multiplayer!',2000);return;}
-  btn.classList.add('used'); btn.disabled=true;
-  // Find leading choice among votes so far
-  const counts=[0,0,0,0];
-  Object.values(mpVotes).forEach(c=>counts[c]++);
-  const maxC=Math.max(...counts);
-  if(maxC===0){showToast('🕵️ Noch keine Stimmen!',2000);btn.classList.remove('used');btn.disabled=false;return;}
-  const leader=counts.indexOf(maxC);
-  const hint=`Die meisten tippen auf Antwort ${LETTERS[leader]}`;
-  showToast('🕵️ '+hint,3500);
-  mpSend('spy',{hint});
-}
+// ════════════════════════════
+// HOST POPUP (animated)
+// ════════════════════════════
+function showHostJokerPopup(playerName, type){
+  var icons = {f:'✂️', s:'🕵️', r:'🔥'};
+  var names = {f:'50:50', s:'SPY', r:'RISIKO'};
 
+  var popup = document.createElement('div');
+  popup.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:650;'
+    +'background:var(--surface);border:2px solid var(--gold);border-radius:22px;padding:28px 36px;'
+    +'text-align:center;min-width:240px;max-width:320px;'
+    +'box-shadow:0 0 80px rgba(245,200,66,.35);'
+    +'animation:jokerPopIn .45s cubic-bezier(.34,1.56,.64,1) both;';
+  popup.innerHTML='<div style="font-size:52px;margin-bottom:8px;">'+(icons[type]||'🃏')+'</div>'
+    +'<div style="font-family:\'Bebas Neue\';font-size:30px;letter-spacing:.06em;color:var(--gold);">'+(names[type]||'JOKER')+'</div>'
+    +'<div style="margin-top:8px;font-size:14px;color:var(--muted);">'+escHtml(playerName)+' nutzt den Joker!</div>';
+  document.body.appendChild(popup);
+
+  // Fade out after 2.5s
+  setTimeout(function(){ popup.style.transition='opacity .4s'; popup.style.opacity='0'; },2500);
+  setTimeout(function(){ if(popup.parentNode) popup.parentNode.removeChild(popup); },2950);
+}
 // ── NAME OVERLAY ──
 let _nameOverlayCb=null;
 function nameOverlayShow(title, cb){
