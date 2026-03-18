@@ -383,21 +383,6 @@ body::before{
   </div>
 </div>
 
-<!-- ══ PLAY LANDING ══ -->
-<div class="view" id="view-play-landing" style="align-items:center;justify-content:center;padding:40px 20px;">
-  <div class="menu-logo">
-    <div class="menu-logo-icon">💰</div>
-    <div class="menu-logo-title">Wer wird Millionär?</div>
-    <div class="menu-logo-sub">Quiz importieren & spielen</div>
-  </div>
-  <div class="menu-btns">
-    <label class="btn-primary" style="cursor:pointer;">
-      📂 Quiz-Datei auswählen
-      <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
-    </label>
-    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;">🏠 Hauptmenü</button>
-  </div>
-</div>
 
 <!-- ══ LOBBY ══ -->
 <div class="view" id="view-setup">
@@ -1642,7 +1627,7 @@ for(let i=0;i<5;i++) addEditorQuestion();
 (function(){
   const params=new URLSearchParams(window.location.search);
   const action=params.get('action');
-  if(action==='play') setTimeout(()=>mmShowOnlineOverlay(),50);
+  if(action==='play') mmShowOnlineOverlay();
   else if(action==='editor') showView('view-editor');
 })();
 
