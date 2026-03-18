@@ -1129,12 +1129,10 @@ addCategory({name:'KATEGORIE 2',questions:[]});
   } else if(action === 'editor'){
     showView('view-editor');
   } else if(action==='online'||a==='online'){
-    // Hide game menu entirely, show only MP overlay on a blank dark screen
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.body.style.background='#06080f';
-    // Change tab from 'create' to let user choose, then open
+    // Show menu view first (needed for layout), then open MP overlay on top
+    showView('view-menu');
     mpTab='create';
-    setTimeout(mpOpen, 100);
+    setTimeout(mpOpen, 200);
   }
 })();
 
