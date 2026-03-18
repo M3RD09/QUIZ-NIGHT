@@ -593,13 +593,11 @@
     hotzones: {
       icon: '🔥',
       title: 'Hot Zones',
-      subtitle: 'Schnelles Multiplayer-Buzzerspiel. Wer als erstes richtig antwortet gewinnt die Zone.',
+      subtitle: 'Hint-Geber gibt ein Wort — Team schätzt die Zahl. Wie nah seid ihr dran?',
       accent: '#e8354a',
       actions: [
-        { icon: '▶️', title: 'Spiel starten', sub: 'Room erstellen & Spieler einladen', primary: true },
-        { icon: '📥', title: 'Quiz importieren', sub: 'JSON-Datei laden (.quiz)' },
-        { icon: '✏️', title: 'Quiz erstellen', sub: 'Fragen & Zeitlimits festlegen' },
-        { icon: '📤', title: 'Quiz exportieren', sub: 'Aktuelles Quiz als Datei speichern' },
+        { icon: '▶️', title: 'Spiel starten', sub: 'Quiz importieren & sofort losspielen', primary: true, link: 'hotzones.html?action=play' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Kategorien & Skalen selbst anlegen', link: 'hotzones.html?action=editor' },
       ]
     },
     horl: {

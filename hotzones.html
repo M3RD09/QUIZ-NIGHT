@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hot Zones — Quiz Games by Mert</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#06080f;
+  --surface:#0f1118;
+  --surface2:#181c28;
+  --border:rgba(255,255,255,0.08);
+  --red:#e8354a; --red2:#c0293b;
+  --blue:#3a8ef6; --blue2:#1a5cd8;
+  --orange:#f39c12;
+  --green:#2ecc71;
+  --gold:#f5c842;
+  --purple:#9b59b6;
+  --team1:#3a8ef6;
+  --team2:#e8354a;
+  --text:#f0eee8;
+  --muted:rgba(240,238,232,.5);
+  --muted2:rgba(240,238,232,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 50% -10%,rgba(232,53,74,.12),transparent 55%),
+             radial-gradient(ellipse at 20% 100%,rgba(58,142,246,.08),transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+.view{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:1;}
+.view.active{display:flex;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(6,8,15,.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+.btn-icon{background:none;border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:9px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.btn-icon:hover{border-color:var(--red);color:var(--red);}
+.topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.08em;color:var(--red);flex:1;}
+
+.view-body{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px;}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--red2));border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(232,53,74,.3);}
+.btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:14px;cursor:pointer;transition:all .2s;width:100%;}
+.btn-secondary:hover{border-color:var(--red);color:var(--red);}
+.btn-gold{background:linear-gradient(135deg,#f5c842,#e8a020);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;}
+
+/* MENU */
+#view-menu{align-items:center;justify-content:center;padding:40px 20px;}
+#view-play-landing{align-items:center;justify-content:center;padding:40px 20px;}
+.menu-logo{text-align:center;margin-bottom:40px;}
+.menu-logo-icon{font-size:60px;margin-bottom:12px;}
+.menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:.06em;background:linear-gradient(135deg,#ff6b6b,var(--red),#ff9f43);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.menu-logo-sub{font-size:13px;color:var(--muted);margin-top:8px;}
+.menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
+
+/* SETUP */
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.team-card{background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);}
+.team-card.t1{--tc:var(--team1);}
+.team-card.t2{--tc:var(--team2);}
+.team-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em;color:var(--tc);margin-bottom:10px;}
+.team-name-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;margin-bottom:10px;}
+.team-name-inp:focus{border-color:var(--tc);}
+.player-list{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
+.player-row{display:flex;align-items:center;gap:6px;background:var(--surface2);border-radius:8px;padding:5px 9px;font-size:12px;}
+.player-row-name{flex:1;}
+.btn-del-p{background:none;border:none;color:var(--muted2);font-size:13px;cursor:pointer;transition:color .15s;}
+.btn-del-p:hover{color:var(--red);}
+.player-add-row{display:flex;gap:6px;}
+.player-add-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;min-width:0;}
+.player-add-inp:focus{border-color:var(--tc);}
+.btn-add-p-inline{background:var(--tc);border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:700;width:34px;height:34px;cursor:pointer;flex-shrink:0;transition:all .2s;}
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:12px;color:var(--muted);line-height:1.8;}
+.info-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
+
+/* ══ GAME VIEWS ══ */
+
+/* HINT GIVER VIEW */
+#view-hintgiver{align-items:center;justify-content:center;padding:24px 20px;text-align:center;}
+.hg-team-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px;}
+.hg-team-badge.t1{background:rgba(58,142,246,.15);border:1px solid rgba(58,142,246,.3);color:var(--team1);}
+.hg-team-badge.t2{background:rgba(232,53,74,.15);border:1px solid rgba(232,53,74,.3);color:var(--team2);}
+.hg-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;color:var(--muted);margin-bottom:4px;}
+.hg-name{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--text);margin-bottom:24px;}
+
+.hg-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%;max-width:440px;margin-bottom:24px;}
+.hg-cat-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.hg-cat-name{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.06em;color:var(--red);margin-bottom:20px;}
+
+.hg-scale{margin-bottom:20px;}
+.hg-scale-bar{height:12px;border-radius:6px;background:linear-gradient(90deg,#3a8ef6,#2ecc71,#f5c842,#f39c12,#e8354a);margin-bottom:10px;position:relative;}
+.hg-scale-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.hg-number{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red2));font-family:'Bebas Neue',sans-serif;font-size:40px;color:#fff;box-shadow:0 0 30px rgba(232,53,74,.4);margin-bottom:8px;}
+.hg-number-label{font-size:12px;color:var(--muted);}
+
+.hg-hint-area{width:100%;max-width:440px;}
+.hg-hint-label{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.hg-hint-inp{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;outline:none;text-align:center;transition:border-color .2s;}
+.hg-hint-inp:focus{border-color:var(--red);}
+.hg-hint-inp::placeholder{color:var(--muted2);}
+
+/* TEAM GUESS VIEW */
+#view-guess{padding:0;}
+.guess-header{padding:16px;border-bottom:1px solid var(--border);background:var(--surface);text-align:center;}
+.guess-round-info{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.guess-cat{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:.06em;}
+.hint-display{background:linear-gradient(135deg,rgba(232,53,74,.1),rgba(58,142,246,.05));border:1px solid rgba(232,53,74,.2);border-radius:16px;padding:20px;margin:16px;text-align:center;}
+.hint-word-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.hint-word{font-family:'Bebas Neue',sans-serif;font-size:52px;background:linear-gradient(135deg,#ff6b6b,var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.04em;line-height:1;}
+
+.scale-section{padding:0 16px 16px;}
+.scale-labels-row{display:flex;justify-content:space-between;margin-bottom:8px;}
+.scale-label-left{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;}
+.scale-label-right{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;}
+.gradient-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,#3a8ef6,#2ecc71,#f5c842,#f39c12,#e8354a);margin-bottom:14px;}
+
+.numbers-row{display:flex;gap:6px;justify-content:center;flex-wrap:nowrap;}
+.num-btn{flex:1;min-width:0;aspect-ratio:1;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.num-btn:hover{border-color:var(--red);transform:scale(1.08);}
+.num-btn.selected{background:linear-gradient(135deg,var(--red),var(--red2));border-color:var(--red);color:#fff;box-shadow:0 4px 16px rgba(232,53,74,.4);transform:scale(1.12);}
+.num-btn.correct-reveal{background:linear-gradient(135deg,#27ae60,#1e8c4e);border-color:var(--green);color:#fff;}
+.num-btn.close-reveal{background:linear-gradient(135deg,#f39c12,#d68910);border-color:var(--orange);color:#fff;}
+.num-btn.wrong-reveal{background:var(--surface2);border-color:var(--border);opacity:.4;}
+
+.guess-footer{padding:14px 16px;background:var(--surface);border-top:1px solid var(--border);}
+.btn-confirm{width:100%;padding:14px;background:linear-gradient(135deg,var(--red),var(--red2));border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(232,53,74,.3);}
+.btn-confirm:hover{filter:brightness(1.1);}
+.btn-confirm:disabled{opacity:.4;cursor:not-allowed;filter:none;}
+
+/* RESULT VIEW */
+#view-result{align-items:center;justify-content:center;padding:32px 20px;text-align:center;}
+.result-points{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;margin-bottom:8px;}
+.result-points.p3{color:var(--gold);}
+.result-points.p1{color:var(--orange);}
+.result-points.p0{color:var(--muted2);}
+.result-label{font-size:16px;font-weight:600;margin-bottom:8px;}
+.result-detail{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
+.scores-display{display:flex;gap:10px;width:100%;max-width:360px;margin-bottom:28px;}
+.score-card{flex:1;border-radius:14px;padding:14px;text-align:center;}
+.score-card.t1{background:linear-gradient(135deg,rgba(58,142,246,.15),rgba(58,142,246,.05));border:1px solid rgba(58,142,246,.3);}
+.score-card.t2{background:linear-gradient(135deg,rgba(232,53,74,.15),rgba(232,53,74,.05));border:1px solid rgba(232,53,74,.3);}
+.sc-name{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;}
+.sc-name.t1{color:var(--team1);}
+.sc-name.t2{color:var(--team2);}
+.sc-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);}
+
+/* WINNER */
+#view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;}
+.trophy{font-size:80px;margin-bottom:14px;}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:.06em;color:var(--gold);}
+.winner-name{font-family:'Bebas Neue',sans-serif;font-size:30px;margin-bottom:24px;}
+.final-scores{display:flex;gap:12px;width:100%;max-width:340px;margin-bottom:28px;}
+.final-card{flex:1;background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);text-align:center;}
+.final-card.t1{--tc:var(--team1);}
+.final-card.t2{--tc:var(--team2);}
+.fc-name{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--tc);}
+.fc-pts{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);}
+
+/* EDITOR */
+.field-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px;}
+.field-label{font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.field-input{width:100%;background:none;border:none;outline:none;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.04em;}
+.field-input::placeholder{color:var(--muted2);}
+.cat-editor-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.cat-editor-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.cat-editor-inp{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.cat-editor-inp::placeholder{color:var(--muted);}
+.btn-del-cat{background:none;border:none;color:var(--muted2);font-size:16px;cursor:pointer;transition:color .15s;}
+.btn-del-cat:hover{color:var(--red);}
+.cat-editor-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+.scale-labels-editor{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.scale-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;}
+.scale-inp:focus{border-color:var(--red);}
+.scale-inp::placeholder{color:var(--muted2);}
+.scale-inp-label{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:4px;}
+.btn-add-cat-ed{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border:1px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
+.btn-add-cat-ed:hover{border-color:var(--red);color:var(--red);}
+.editor-footer{padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;position:sticky;bottom:0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:13px;z-index:500;transition:transform .3s ease;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ══ MENU ══ -->
+<div class="view active" id="view-menu">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">🔥</div>
+    <div class="menu-logo-title">HOT ZONES</div>
+    <div class="menu-logo-sub">Quiz Games by Mert</div>
+  </div>
+  <div class="menu-btns">
+    <label class="btn-primary" style="cursor:pointer;">
+      ▶ Spiel starten — Quiz importieren
+      <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    </label>
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ PLAY LANDING ══ -->
+<div class="view" id="view-play-landing">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">🔥</div>
+    <div class="menu-logo-title">HOT ZONES</div>
+    <div class="menu-logo-sub">Quiz importieren & spielen</div>
+  </div>
+  <div class="menu-btns">
+    <label class="btn-primary" style="cursor:pointer;">
+      📂 Quiz-Datei auswählen
+      <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
+    </label>
+    <button class="btn-secondary" onclick="goHome()" style="opacity:.55;">🏠 Hauptmenü</button>
+  </div>
+</div>
+
+<!-- ══ SETUP ══ -->
+<div class="view" id="view-setup">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">🔥 Teams aufstellen</div>
+  </div>
+  <div class="view-body">
+    <div class="team-grid">
+      <div class="team-card t1">
+        <div class="team-label">TEAM 1</div>
+        <input class="team-name-inp" id="t1-name" placeholder="Teamname" value="Team Blau" maxlength="16">
+        <div class="player-list" id="t1-players"></div>
+        <div class="player-add-row">
+          <input class="player-add-inp" id="t1-new-player" placeholder="Spielername..." maxlength="20"
+            onkeydown="if(event.key==='Enter')addPlayer(1)">
+          <button class="btn-add-p-inline" style="background:var(--team1)" onclick="addPlayer(1)">＋</button>
+        </div>
+      </div>
+      <div class="team-card t2">
+        <div class="team-label">TEAM 2</div>
+        <input class="team-name-inp" id="t2-name" placeholder="Teamname" value="Team Rot" maxlength="16">
+        <div class="player-list" id="t2-players"></div>
+        <div class="player-add-row">
+          <input class="player-add-inp" id="t2-new-player" placeholder="Spielername..." maxlength="20"
+            onkeydown="if(event.key==='Enter')addPlayer(2)">
+          <button class="btn-add-p-inline" style="background:var(--team2)" onclick="addPlayer(2)">＋</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-box">
+      <div class="info-title">Spielablauf</div>
+      Jedes Team hat einen Hint-Geber. Der Hint-Geber sieht eine Kategorie + eine geheime Zahl (1-10) und gibt ein Hint-Wort.
+      Das Team schätzt die Zahl: Genau = 3 Pkt · 1 daneben = 1 Pkt · 2+ daneben = 0 Pkt.
+    </div>
+    <button class="btn-primary" onclick="startGame()">▶ Spiel starten!</button>
+  </div>
+</div>
+
+<!-- ══ HINT GIVER VIEW ══ -->
+<div class="view" id="view-hintgiver">
+  <div class="topbar">
+    <button class="btn-icon" onclick="confirmQuit()">←</button>
+    <div class="topbar-title" id="hg-topbar-title">🔥 Hot Zones</div>
+    <div id="hg-round-label" style="font-size:12px;color:var(--muted);">Runde 1</div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;">
+    <div class="hg-team-badge t1" id="hg-team-badge">TEAM BLAU</div>
+    <div class="hg-title">HINT-GEBER DRAN:</div>
+    <div class="hg-name" id="hg-player-name">Spieler</div>
+
+    <div class="hg-card">
+      <div class="hg-cat-label">KATEGORIE</div>
+      <div class="hg-cat-name" id="hg-cat-name">–</div>
+
+      <div class="hg-scale">
+        <div class="hg-scale-bar"></div>
+        <div class="hg-scale-labels">
+          <span id="hg-label-left">–</span>
+          <span id="hg-label-right">–</span>
+        </div>
+      </div>
+
+      <div style="text-align:center;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Deine geheime Zahl:</div>
+        <div class="hg-number" id="hg-secret-num">?</div>
+        <div class="hg-number-label">Nur du siehst diese Zahl!</div>
+      </div>
+    </div>
+
+    <div class="hg-hint-area">
+      <div class="hg-hint-label">Dein Hint-Wort:</div>
+      <input class="hg-hint-inp" id="hg-hint-input" placeholder="z.B. Sauce..." maxlength="30">
+      <button class="btn-primary" style="margin-top:12px;" onclick="submitHint()">
+        Hint abschicken →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TEAM GUESS VIEW ══ -->
+<div class="view" id="view-guess">
+  <div class="topbar">
+    <button class="btn-icon" onclick="confirmQuit()">←</button>
+    <div class="topbar-title">🔥 Hot Zones</div>
+    <div id="guess-round-label" style="font-size:12px;color:var(--muted);">Runde 1</div>
+  </div>
+
+  <div class="guess-header">
+    <div class="guess-round-info" id="guess-team-info">TEAM BLAU — schätzt jetzt</div>
+    <div class="guess-cat" id="guess-cat">KATEGORIE</div>
+  </div>
+
+  <div class="hint-display">
+    <div class="hint-word-label">HINT-WORT</div>
+    <div class="hint-word" id="guess-hint-word">–</div>
+  </div>
+
+  <div class="scale-section">
+    <div class="scale-labels-row">
+      <span class="scale-label-left" id="guess-label-left">–</span>
+      <span class="scale-label-right" id="guess-label-right">–</span>
+    </div>
+    <div class="gradient-bar"></div>
+    <div class="numbers-row" id="numbers-row"></div>
+  </div>
+
+  <div style="padding:0 16px;margin-bottom:8px;">
+    <div id="guess-selected-display" style="text-align:center;font-size:13px;color:var(--muted);min-height:20px;"></div>
+  </div>
+
+  <div class="guess-footer">
+    <button class="btn-confirm" id="btn-confirm" onclick="confirmGuess()" disabled>
+      Antwort bestätigen
+    </button>
+  </div>
+</div>
+
+<!-- ══ RESULT VIEW ══ -->
+<div class="view" id="view-result">
+  <div class="topbar">
+    <button class="btn-icon" onclick="confirmQuit()">←</button>
+    <div class="topbar-title">🔥 Ergebnis</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;overflow-y:auto;">
+    <div class="result-points" id="result-points">3</div>
+    <div class="result-label" id="result-label">Volltreffer!</div>
+    <div class="result-detail" id="result-detail"></div>
+
+    <div class="scores-display">
+      <div class="score-card t1">
+        <div class="sc-name t1" id="res-t1-name">Team 1</div>
+        <div class="sc-pts" id="res-t1-pts">0</div>
+      </div>
+      <div class="score-card t2">
+        <div class="sc-name t2" id="res-t2-name">Team 2</div>
+        <div class="sc-pts" id="res-t2-pts">0</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="max-width:340px;" id="result-next-btn" onclick="nextRound()">
+      Weiter →
+    </button>
+  </div>
+</div>
+
+<!-- ══ WINNER ══ -->
+<div class="view" id="view-winner">
+  <div class="trophy">🏆</div>
+  <div class="winner-title">GEWINNER!</div>
+  <div class="winner-name" id="winner-name">–</div>
+  <div class="final-scores" id="final-scores"></div>
+  <button class="btn-primary" onclick="goToSetup()" style="max-width:300px;">🔄 Nochmal spielen</button>
+  <button class="btn-secondary" onclick="showView('view-menu')" style="max-width:300px;margin-top:10px;">🏠 Hauptmenü</button>
+</div>
+
+<!-- ══ EDITOR ══ -->
+<div class="view" id="view-editor">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="topbar-title">✏️ Quiz erstellen</div>
+  </div>
+  <div class="view-body" style="padding-bottom:90px;">
+    <div class="field-wrap">
+      <span class="field-label">Quiz-Name</span>
+      <input class="field-input" id="quiz-name" placeholder="Mein Hot Zones Quiz" maxlength="40">
+    </div>
+    <div id="cat-editor-container"></div>
+    <button class="btn-add-cat-ed" onclick="addEditorCat()">＋ Kategorie hinzufügen</button>
+  </div>
+  <div class="editor-footer">
+    <button class="btn-gold" onclick="exportQuiz()">💾 Exportieren</button>
+    <button class="btn-primary" onclick="editorPlay()">▶ Spielen</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── UTILS ──
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showToast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2800);}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){window.location.href='quizshow-menu.html';}
+function confirmQuit(){if(confirm('Spiel beenden?'))showView('view-menu');}
+function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+// ── STATE ──
+let quizData=null;
+let teams=[{name:'Team Blau',players:[],score:0},{name:'Team Rot',players:[],score:0}];
+let roundIdx=0;
+let hintGiverIdxPerTeam=[0,0]; // which player is hint giver this round
+let currentTeamIdx=0; // which team is currently playing (0 or 1)
+let currentSecretNum=0;
+let currentHintWord='';
+let currentCatIdx=0;
+let selectedGuess=null;
+let roundsPerTeam=3; // default, can be set
+let phaseInRound=0; // 0=team0 hints, 1=team0 guesses, 2=team1 hints, 3=team1 guesses
+
+// ── IMPORT ──
+function importAndPlay(ev){
+  const file=ev.target.files[0];
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(!d.categories||!Array.isArray(d.categories))throw new Error();
+      quizData=d;
+      goToSetup();
+    }catch(err){showToast('❌ Ungültige Datei!');}
+  };
+  r.readAsText(file);
+  ev.target.value='';
+}
+
+// ── SETUP ──
+function goToSetup(){
+  teams[0].players=[];teams[1].players=[];
+  teams[0].score=0;teams[1].score=0;
+  renderPlayers(1);renderPlayers(2);
+  showView('view-setup');
+}
+
+function renderPlayers(t){
+  const list=document.getElementById('t'+t+'-players');
+  list.innerHTML='';
+  teams[t-1].players.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='player-row';
+    el.innerHTML='<span class="player-row-name">'+escHtml(p)+'</span>'
+      +'<button class="btn-del-p" onclick="removePlayer('+t+','+i+')">✕</button>';
+    list.appendChild(el);
+  });
+}
+
+function addPlayer(t){
+  const inp=document.getElementById('t'+t+'-new-player');
+  const name=inp.value.trim();
+  if(!name)return;
+  teams[t-1].players.push(name);
+  inp.value='';inp.focus();
+  renderPlayers(t);
+}
+
+function removePlayer(t,i){
+  teams[t-1].players.splice(i,1);
+  renderPlayers(t);
+}
+
+function startGame(){
+  teams[0].name=document.getElementById('t1-name').value.trim()||'Team Blau';
+  teams[1].name=document.getElementById('t2-name').value.trim()||'Team Rot';
+  if(!teams[0].players.length)teams[0].players=['Spieler 1'];
+  if(!teams[1].players.length)teams[1].players=['Spieler 1'];
+  teams[0].score=0;teams[1].score=0;
+  roundIdx=0;
+  hintGiverIdxPerTeam=[0,0];
+  currentTeamIdx=0;
+  phaseInRound=0;
+  usedCatIndices=[];
+  startHintPhase(0);
+}
+
+// ── GAME FLOW ──
+// Each full round = Team 0 hints+guess, then Team 1 hints+guess
+let usedCatIndices=[];
+let currentRoundCatIdx=-1; // track team 0's cat so team 1 gets different one
+
+function pickRandomCat(excludeIdx){
+  const available=quizData.categories.map((_,i)=>i)
+    .filter(i=>!usedCatIndices.includes(i)&&i!==excludeIdx);
+  // If nothing available (all used), reset but still exclude current round's cat
+  if(!available.length){
+    usedCatIndices=[];
+    const fallback=quizData.categories.map((_,i)=>i).filter(i=>i!==excludeIdx);
+    if(!fallback.length)return 0;
+    const idx=fallback[Math.floor(Math.random()*fallback.length)];
+    usedCatIndices.push(idx);
+    return idx;
+  }
+  const idx=available[Math.floor(Math.random()*available.length)];
+  usedCatIndices.push(idx);
+  return idx;
+}
+
+function startHintPhase(teamIdx){
+  currentTeamIdx=teamIdx;
+
+  // Team 0 picks freely, Team 1 must get different cat than Team 0 this round
+  if(teamIdx===0){
+    currentCatIdx=pickRandomCat(-1);
+    currentRoundCatIdx=currentCatIdx;
+  } else {
+    currentCatIdx=pickRandomCat(currentRoundCatIdx);
+  }
+  currentSecretNum=rnd(1,10);
+  selectedGuess=null;
+  currentHintWord='';
+
+  const cat=quizData.categories[currentCatIdx];
+  const hgIdx=hintGiverIdxPerTeam[teamIdx]%teams[teamIdx].players.length;
+  const hgName=teams[teamIdx].players[hgIdx];
+
+  document.getElementById('hg-topbar-title').textContent='🔥 '+quizData.name;
+  document.getElementById('hg-round-label').textContent='Runde '+(roundIdx+1);
+  const badge=document.getElementById('hg-team-badge');
+  badge.textContent=teams[teamIdx].name.toUpperCase();
+  badge.className='hg-team-badge '+(teamIdx===0?'t1':'t2');
+  document.getElementById('hg-player-name').textContent=hgName;
+  document.getElementById('hg-cat-name').textContent=cat.name.toUpperCase();
+  document.getElementById('hg-label-left').textContent=cat.labelLeft||'1';
+  document.getElementById('hg-label-right').textContent=cat.labelRight||'10';
+  document.getElementById('hg-secret-num').textContent=currentSecretNum;
+  document.getElementById('hg-hint-input').value='';
+
+  showView('view-hintgiver');
+}
+
+function submitHint(){
+  const hint=document.getElementById('hg-hint-input').value.trim();
+  if(!hint){showToast('⚠️ Bitte ein Hint-Wort eingeben!');return;}
+  currentHintWord=hint;
+  startGuessPhase();
+}
+
+function startGuessPhase(){
+  const cat=quizData.categories[currentCatIdx];
+  selectedGuess=null;
+
+  document.getElementById('guess-round-label').textContent='Runde '+(roundIdx+1);
+  document.getElementById('guess-team-info').textContent=teams[currentTeamIdx].name.toUpperCase()+' — schätzt jetzt';
+  document.getElementById('guess-team-info').style.color=currentTeamIdx===0?'var(--team1)':'var(--team2)';
+  document.getElementById('guess-cat').textContent=cat.name.toUpperCase();
+  document.getElementById('guess-hint-word').textContent=currentHintWord;
+  document.getElementById('guess-label-left').textContent=cat.labelLeft||'1';
+  document.getElementById('guess-label-right').textContent=cat.labelRight||'10';
+  document.getElementById('guess-selected-display').textContent='';
+  document.getElementById('btn-confirm').disabled=true;
+
+  // Build number buttons
+  const row=document.getElementById('numbers-row');
+  row.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const btn=document.createElement('button');
+    btn.className='num-btn';
+    btn.textContent=i;
+    btn.onclick=()=>selectNum(i,btn);
+    row.appendChild(btn);
+  }
+
+  showView('view-guess');
+}
+
+function selectNum(n,btn){
+  selectedGuess=n;
+  document.querySelectorAll('.num-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('guess-selected-display').textContent='Eure Antwort: '+n;
+  document.getElementById('btn-confirm').disabled=false;
+}
+
+function confirmGuess(){
+  if(selectedGuess===null)return;
+  const diff=Math.abs(selectedGuess-currentSecretNum);
+  let pts=0,label='',detail='';
+
+  if(diff===0){pts=3;label='🎯 Volltreffer!';detail='Exakt '+currentSecretNum+' — 3 Punkte!';}
+  else if(diff===1){pts=1;label='🔥 Fast!';detail='Die Zahl war '+currentSecretNum+' — 1 Punkt!';}
+  else{pts=0;label='❌ Daneben';detail='Die Zahl war '+currentSecretNum+' — 0 Punkte.';}
+
+  teams[currentTeamIdx].score+=pts;
+
+  // Reveal correct number
+  document.querySelectorAll('.num-btn').forEach((btn,i)=>{
+    const n=i+1;
+    btn.classList.remove('selected');
+    if(n===currentSecretNum) btn.classList.add('correct-reveal');
+    else if(Math.abs(n-currentSecretNum)===1) btn.classList.add('close-reveal');
+    else btn.classList.add('wrong-reveal');
+  });
+  if(selectedGuess!==null){
+    const selBtn=document.querySelectorAll('.num-btn')[selectedGuess-1];
+    if(selBtn){selBtn.style.outline='3px solid #fff';selBtn.style.outlineOffset='2px';}
+  }
+
+  // Show result after brief delay
+  setTimeout(()=>showResult(pts,label,detail),800);
+}
+
+function showResult(pts,label,detail){
+  const pClass=pts===3?'p3':pts===1?'p1':'p0';
+  document.getElementById('result-points').textContent=pts+' Pkt';
+  document.getElementById('result-points').className='result-points '+pClass;
+  document.getElementById('result-label').textContent=label;
+  document.getElementById('result-detail').textContent=detail;
+  document.getElementById('res-t1-name').textContent=teams[0].name;
+  document.getElementById('res-t2-name').textContent=teams[1].name;
+  document.getElementById('res-t1-pts').textContent=teams[0].score;
+  document.getElementById('res-t2-pts').textContent=teams[1].score;
+
+  // Determine next button text
+  const isLastTeam=currentTeamIdx===1;
+  const totalRounds=quizData.rounds||quizData.categories.length;
+  const isLastRound=isLastTeam&&(roundIdx+1)>=totalRounds;
+  document.getElementById('result-next-btn').textContent=isLastRound?'Ergebnis anzeigen 🏆':'Weiter →';
+
+  showView('view-result');
+}
+
+function nextRound(){
+  hintGiverIdxPerTeam[currentTeamIdx]++;
+
+  if(currentTeamIdx===0){
+    // Now team 1's turn
+    startHintPhase(1);
+  } else {
+    // Both teams done this round
+    roundIdx++;
+    const totalRounds=quizData.rounds||quizData.categories.length;
+    if(roundIdx>=totalRounds){
+      showWinner();
+    } else {
+      startHintPhase(0);
+    }
+  }
+}
+
+function showWinner(){
+  const tied=teams[0].score===teams[1].score;
+  const winner=teams[0].score>teams[1].score?teams[0]:teams[1];
+  document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':winner.name;
+  const fs=document.getElementById('final-scores');
+  fs.innerHTML='';
+  teams.forEach((team,ti)=>{
+    const el=document.createElement('div');
+    el.className='final-card '+(ti===0?'t1':'t2');
+    el.innerHTML='<div class="fc-name">'+escHtml(team.name)+'</div><div class="fc-pts">'+team.score+'</div>';
+    fs.appendChild(el);
+  });
+  showView('view-winner');
+}
+
+// ── EDITOR ──
+let editorCatCount=0;
+
+function addEditorCat(catData){
+  const id=editorCatCount++;
+  const con=document.getElementById('cat-editor-container');
+  const el=document.createElement('div');
+  el.className='cat-editor-block';
+  el.dataset.catId=id;
+  el.innerHTML='<div class="cat-editor-head">'
+    +'<input class="cat-editor-inp" placeholder="KATEGORIENAME" maxlength="30" value="'+(catData?escHtml(catData.name):'')+'">'
+    +'<button class="btn-del-cat" onclick="this.closest(\'.cat-editor-block\').remove()">🗑</button>'
+    +'</div>'
+    +'<div class="cat-editor-body">'
+      +'<div class="scale-labels-editor">'
+        +'<div><div class="scale-inp-label">Label Links (1)</div>'
+        +'<input class="scale-inp" placeholder="z.B. Auf keinen Fall" maxlength="20" value="'+(catData?escHtml(catData.labelLeft||''):'')+'"></div>'
+        +'<div><div class="scale-inp-label">Label Rechts (10)</div>'
+        +'<input class="scale-inp" placeholder="z.B. Ein Muss" maxlength="20" value="'+(catData?escHtml(catData.labelRight||''):'')+'"></div>'
+      +'</div>'
+    +'</div>';
+  con.appendChild(el);
+}
+
+function collectEditorData(){
+  const name=document.getElementById('quiz-name').value.trim()||'Hot Zones Quiz';
+  const categories=[];
+  document.querySelectorAll('.cat-editor-block').forEach(block=>{
+    const catName=block.querySelector('.cat-editor-inp').value.trim()||'Kategorie';
+    const inputs=block.querySelectorAll('.scale-inp');
+    const labelLeft=inputs[0].value.trim()||'1';
+    const labelRight=inputs[1].value.trim()||'10';
+    categories.push({name:catName,labelLeft,labelRight});
+  });
+  const rounds=Math.min(categories.length,10);
+  return{name,categories,rounds};
+}
+
+function exportQuiz(){
+  const data=collectEditorData();
+  if(!data.categories.length){showToast('⚠️ Erst Kategorien hinzufügen!');return;}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=data.name.replace(/\s+/g,'_')+'.quiz';
+  a.click();URL.revokeObjectURL(url);
+  showToast('✅ Quiz gespeichert!');
+}
+
+function editorPlay(){
+  const data=collectEditorData();
+  if(!data.categories.length){showToast('⚠️ Erst Kategorien hinzufügen!');return;}
+  quizData=data;
+  goToSetup();
+}
+
+// Init editor
+addEditorCat({name:'DÖNERZUTAT',labelLeft:'Auf keinen Fall',labelRight:'Ein Muss'});
+addEditorCat({name:'URLAUBSZIEL',labelLeft:'Nie im Leben',labelRight:'Traumziel'});
+addEditorCat({name:'FILMGENRE',labelLeft:'Hasse ich',labelRight:'Liebe ich'});
+
+// URL handler
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  const a=p.get('action');
+  if(a==='play')showView('view-play-landing');
+  else if(a==='editor')showView('view-editor');
+})();
+</script>
+</body>
+</html>
