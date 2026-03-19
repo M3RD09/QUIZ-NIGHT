@@ -135,6 +135,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .rfi{font-family:'Bebas Neue',sans-serif;font-size:120px;text-shadow:0 0 40px currentColor;}
 .result-flash.correct .rfi{color:var(--green);}
 .result-flash.wrong .rfi{color:var(--red);}
+.scale-card-value{font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--gold);text-align:center;margin-top:2px;letter-spacing:.05em;}
+.last-action-strip{padding:6px 16px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;flex-shrink:0;border-bottom:1px solid var(--border);background:rgba(255,255,255,.03);min-height:32px;flex-wrap:wrap;}
 
 /* WINNER */
 #view-winner{align-items:center;justify-content:center;padding:40px 20px;text-align:center;position:relative;overflow:hidden;}
@@ -324,6 +326,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="scale-row" id="scale-row"></div>
     </div>
     <div class="turn-bar" id="turn-bar">–</div>
+    <div class="last-action-strip" id="last-action-strip" style="display:none;"></div>
     <div class="pool-area" id="pool-area"></div>
     <div class="game-sidebar">
       <div class="sb-wrap" id="sb-players"></div>
@@ -606,7 +609,9 @@ function horlStartGame(){
     selectedItemIdx: null,
     maxHearts: horlLobbyHearts,
     resultFlashId: 0,
-    lastResult: null
+    lastResult: null,
+    lastAction: null,
+    revealReason: null
   };
   mpSocket.emit('start_game', {code: mpRoom.code});
   setTimeout(()=>{ broadcastState(); showView('view-game'); renderGameView(); }, 350);
@@ -648,22 +653,25 @@ function horlProcessAction(action, payload){
     horlState.resultFlashId++;
     horlState.lastResult = {correct, id: horlState.resultFlashId, playerName: active.name, itemName: item.name};
 
+    // Build last action description
+    let zoneDesc;
+    if(zid==='left') zoneDesc='links von "'+round.items[sorted[0]].name+'"';
+    else if(zid==='right') zoneDesc='rechts von "'+round.items[sorted[sorted.length-1]].name+'"';
+    else {
+      const bi=parseInt(zid.replace('between-',''));
+      zoneDesc='zwischen "'+round.items[sorted[bi]].name+'" & "'+round.items[sorted[bi+1]].name+'"';
+    }
+    horlState.lastAction = {playerName: active.name, itemName: item.name, zoneDesc, correct};
+
     const player = horlState.players[horlState.currentPlayerIdx];
     if(correct){
       horlState.scaleItemIndices.push(placedIdx);
       player.score++;
       const remaining = round.items.length - horlState.scaleItemIndices.length;
       if(remaining === 0){
-        horlState.currentRound++;
-        if(horlState.currentRound >= horlState.quizData.rounds.length){
-          horlState.phase = 'end';
-          broadcastState();
-          return;
-        }
-        const nr = horlState.quizData.rounds[horlState.currentRound];
-        const si = Math.floor(Math.random() * nr.items.length);
-        horlState.scaleItemIndices = [si];
-        horlNextPlayer();
+        // Scale complete — reveal all values
+        horlState.phase = 'reveal';
+        horlState.revealReason = 'complete';
         broadcastState();
         return;
       }
@@ -671,7 +679,9 @@ function horlProcessAction(action, payload){
       player.hearts--;
       if(player.hearts <= 0) player.eliminated = true;
       if(horlState.players.every(p=>p.eliminated)){
-        horlState.phase = 'end';
+        // All eliminated — reveal all values
+        horlState.phase = 'reveal';
+        horlState.revealReason = 'eliminated';
         broadcastState();
         return;
       }
@@ -690,6 +700,33 @@ function horlNextPlayer(){
   } while(horlState.players[horlState.currentPlayerIdx].eliminated && tries < n);
 }
 
+function horlContinue(){
+  if(!isHost || !horlState || horlState.phase !== 'reveal') return;
+  if(horlState.revealReason === 'eliminated'){
+    horlState.phase = 'end';
+    broadcastState();
+    renderGameView();
+    return;
+  }
+  // complete: advance to next round
+  horlState.currentRound++;
+  if(horlState.currentRound >= horlState.quizData.rounds.length){
+    horlState.phase = 'end';
+    broadcastState();
+    renderGameView();
+    return;
+  }
+  const nr = horlState.quizData.rounds[horlState.currentRound];
+  const si = Math.floor(Math.random() * nr.items.length);
+  horlState.scaleItemIndices = [si];
+  horlState.phase = 'playing';
+  horlState.revealReason = null;
+  horlState.lastAction = null;
+  horlNextPlayer();
+  broadcastState();
+  renderGameView();
+}
+
 // ── RENDER GAME ──
 function renderGameView(){
   if(!horlState) return;
@@ -704,9 +741,16 @@ function renderGameView(){
   document.getElementById('lbl-low').textContent = '◀ '+(round.labelLow||'niedrig');
   document.getElementById('lbl-high').textContent = (round.labelHigh||'hoch')+' ▶';
 
-  renderScaleOnline(round, isMyTurn);
-  renderPoolOnline(round, isMyTurn);
-  updateTurnBarOnline(active, isMyTurn, round);
+  // Last action strip (always update)
+  updateLastActionStrip(round);
+
+  if(horlState.phase === 'reveal'){
+    renderRevealPhase(round);
+  } else {
+    renderScaleOnline(round, isMyTurn);
+    renderPoolOnline(round, isMyTurn);
+    updateTurnBarOnline(active, isMyTurn, round);
+  }
   updateSidebarOnline();
 
   if(horlState.lastResult && horlState.lastResult.id !== lastFlashId){
@@ -718,6 +762,69 @@ function renderGameView(){
       showToast('❌ Falsch! '+horlState.lastResult.playerName+' verliert ❤️', 2000);
     }
   }
+}
+
+function updateLastActionStrip(round){
+  const strip = document.getElementById('last-action-strip');
+  if(!horlState.lastAction){ strip.style.display='none'; return; }
+  const la = horlState.lastAction;
+  const col = la.correct ? 'var(--green)' : 'var(--red)';
+  const icon = la.correct ? '✅' : '❌';
+  strip.style.display = 'flex';
+  strip.innerHTML = icon
+    +' <span style="color:var(--muted);">Letzte Aktion —</span>'
+    +' <span style="color:'+col+';font-weight:800;">'+esc(la.playerName)+'</span>'
+    +' platzierte <span style="color:var(--gold);">"'+esc(la.itemName)+'"</span>'
+    +' <span style="color:var(--muted);">'+esc(la.zoneDesc)+'</span>';
+}
+
+function renderRevealPhase(round){
+  const turnBar = document.getElementById('turn-bar');
+  if(horlState.revealReason === 'complete'){
+    turnBar.innerHTML = '🎉 <span style="color:var(--gold);font-weight:800;">Alle Items platziert!</span> Die korrekten Werte werden aufgedeckt.';
+  } else {
+    turnBar.innerHTML = '💀 <span style="color:var(--muted);font-weight:800;">Alle Spieler eliminiert!</span> Die korrekten Werte werden aufgedeckt.';
+  }
+  renderRevealScale(round);
+  const pool = document.getElementById('pool-area');
+  pool.innerHTML = '';
+  pool.style.cssText = 'display:flex;align-items:center;justify-content:center;padding:20px 16px;';
+  if(isHost){
+    const isLastRound = horlState.currentRound >= horlState.quizData.rounds.length - 1;
+    const isEnd = horlState.revealReason === 'eliminated' || isLastRound;
+    const btn = document.createElement('button');
+    btn.className = 'btn-primary';
+    btn.style.maxWidth = '280px';
+    btn.textContent = isEnd ? '🏆 Ergebnisse anzeigen' : '➡ Nächste Kategorie';
+    btn.onclick = horlContinue;
+    pool.appendChild(btn);
+  } else {
+    pool.innerHTML = '<div style="color:var(--muted);font-size:14px;text-align:center;">⏳ Warte auf Host...</div>';
+  }
+}
+
+function renderRevealScale(round){
+  const row = document.getElementById('scale-row');
+  row.innerHTML = '';
+  const allSorted = round.items.map((_,i)=>i).sort((a,b)=>round.items[a].value - round.items[b].value);
+  allSorted.forEach((itemIdx)=>{
+    const z = document.createElement('div');
+    z.className = 'scale-zone';
+    row.appendChild(z);
+    const item = round.items[itemIdx];
+    const el = document.createElement('div');
+    el.className = 'scale-card';
+    const imgEl = item.imageUrl
+      ? '<img src="'+esc(item.imageUrl)+'" alt="" onerror="this.parentElement.innerHTML=\'📦\'">'
+      : '<span>📦</span>';
+    el.innerHTML = '<div class="scale-card-img" style="border-color:var(--gold);border-width:2px;">'+imgEl+'</div>'
+      +'<div class="scale-card-name">'+esc(item.name)+'</div>'
+      +'<div class="scale-card-value">'+item.value+'</div>';
+    row.appendChild(el);
+  });
+  const rz = document.createElement('div');
+  rz.className = 'scale-zone';
+  row.appendChild(rz);
 }
 
 function renderScaleOnline(round, isMyTurn){

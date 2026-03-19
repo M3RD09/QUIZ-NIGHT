@@ -38,7 +38,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* MENU */
 #view-menu{align-items:center;justify-content:center;padding:40px 20px;}
 .menu-logo{text-align:center;margin-bottom:40px;}
-.menu-logo-icon{font-size:60px;margin-bottom:12px;}
+.menu-logo-icon{font-size:60px;margin-bottom:12px;display:inline-block;animation:bellRing 2.5s ease-in-out infinite;transform-origin:top center;}
+@keyframes bellRing{
+  0%,100%{transform:rotate(0deg);}
+  5%{transform:rotate(18deg);}
+  10%{transform:rotate(-16deg);}
+  15%{transform:rotate(14deg);}
+  20%{transform:rotate(-12deg);}
+  25%{transform:rotate(8deg);}
+  30%{transform:rotate(-4deg);}
+  35%{transform:rotate(2deg);}
+  40%{transform:rotate(0deg);}
+}
 .menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.04em;background:linear-gradient(135deg,#e8354a,#c0392b,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
 .menu-logo-sub{font-size:13px;color:var(--muted);margin-top:8px;}
 .menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
@@ -226,7 +237,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- ══ MENU ══ -->
 <div class="view active" id="view-menu">
   <div class="menu-logo">
-    <div class="menu-logo-icon">🎯</div>
+    <div class="menu-logo-icon">🔔</div>
     <div class="menu-logo-title">Buzzer Beater</div>
     <div class="menu-logo-sub">Quiz Games by Mert</div>
   </div>
