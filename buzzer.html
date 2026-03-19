@@ -155,6 +155,23 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .steal-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.08em;background:linear-gradient(135deg,#f39c12,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .steal-sub{font-size:13px;color:var(--muted);max-width:280px;}
 
+/* JOKER */
+.joker-panel{width:100%;max-width:340px;margin-top:10px;}
+.joker-panel-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;text-align:center;}
+.joker-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.joker-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border-radius:12px;border:2px solid;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;min-width:90px;background:none;color:var(--text);}
+.joker-btn:hover{transform:translateY(-2px);filter:brightness(1.2);}
+.joker-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;filter:none;}
+.joker-icon{font-size:24px;}
+.joker-btn.points{border-color:#f5c842;color:#f5c842;}
+.joker-btn.ban{border-color:#9b59b6;color:#9b59b6;}
+.joker-btn.help{border-color:#3a8ef6;color:#3a8ef6;}
+.joker-active-badge{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid;}
+.joker-active-badge.points{background:rgba(245,200,66,.12);border-color:rgba(245,200,66,.3);color:#f5c842;}
+.joker-active-badge.ban{background:rgba(155,89,182,.12);border-color:rgba(155,89,182,.3);color:#9b59b6;}
+.joker-active-badge.help{background:rgba(58,142,246,.12);border-color:rgba(58,142,246,.3);color:#3a8ef6;}
+.help-volunteer-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;}
+
 /* READY PANEL */
 .bb-ready-panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center;gap:16px;}
 .ready-icon{font-size:80px;}
@@ -654,7 +671,10 @@ function bbStartGame(){
     stealExcluded:[],
     alreadyStolenAttempted:false,
     readyPlayers:[],
-    lastResult:null
+    lastResult:null,
+    jokers:Object.fromEntries(nonHost.map(p=>[p.name,{points:true,ban:true,help:true}])),
+    activeJoker:null,
+    helpVolunteers:[]
   };
   mpSocket.emit('start_game',{code:mpRoom.code});
   setTimeout(()=>{broadcastBBState();showView('view-game');renderGameView();},350);
@@ -674,6 +694,36 @@ function bbProcessAction(action,payload){
     bbState.phase=bbState.phase==='steal'?'steal_buzzed':'buzzed';
     clearInterval(bbTimerInterval);
     broadcastBBState();
+  } else if(action==='bb_activate_joker'){
+    const {playerName,jokerType}=payload;
+    if(!bbState.jokers||!bbState.jokers[playerName])return;
+    if(!bbState.jokers[playerName][jokerType])return;
+    if(bbState.buzzedBy!==playerName)return;
+    if(bbState.activeJoker)return;
+    bbState.jokers[playerName][jokerType]=false;
+    bbState.activeJoker={type:jokerType,activatedBy:playerName,helpPartner:null};
+    if(jokerType==='help'){bbState.phase='help_request';bbState.helpVolunteers=[];}
+    broadcastBBState();
+  } else if(action==='bb_help_volunteer'){
+    const {playerName}=payload;
+    if(bbState.phase!=='help_request')return;
+    if(bbState.buzzedBy===playerName)return;
+    if(!bbState.helpVolunteers)bbState.helpVolunteers=[];
+    if(bbState.helpVolunteers.includes(playerName))return;
+    bbState.helpVolunteers.push(playerName);
+    broadcastBBState();
+  } else if(action==='bb_choose_helper'){
+    const {chooser,helperName}=payload;
+    if(bbState.phase!=='help_request')return;
+    if(bbState.buzzedBy!==chooser)return;
+    if(helperName){
+      bbState.activeJoker.helpPartner=helperName;
+      bbState.phase='help_active';
+    } else {
+      bbState.phase='buzzed';
+      bbState.activeJoker=null;
+    }
+    broadcastBBState();
   }
 }
 
@@ -685,6 +735,8 @@ function bbStartQuestion(){
   bbState.buzzedBy=null;
   bbState.stealExcluded=[];
   bbState.alreadyStolenAttempted=false;
+  bbState.activeJoker=null;
+  bbState.helpVolunteers=[];
   broadcastBBState();
   startBBTimerWatch();
   renderGameView();
@@ -722,16 +774,36 @@ function bbTimeUp(){
 function bbJudge(correct){
   if(!isHost||!bbState)return;
   const isSteal=bbState.phase==='steal_buzzed';
-  const pts=correct?(isSteal?1:2):0;
+  const isHelpActive=bbState.phase==='help_active';
+  let pts=0;
+  if(correct){
+    if(isHelpActive){pts=1;}
+    else if(bbState.activeJoker&&bbState.activeJoker.type==='points'&&!isSteal){pts=4;}
+    else{pts=isSteal?1:2;}
+  }
   if(correct&&bbState.buzzedBy){
     const p=bbState.players.find(x=>x.name===bbState.buzzedBy);
     if(p)p.score+=pts;
   }
-  bbState.lastResult={correct,pts,playerName:bbState.buzzedBy,isSteal,timeUp:false,
+  if(correct&&isHelpActive&&bbState.activeJoker?.helpPartner){
+    const h=bbState.players.find(x=>x.name===bbState.activeJoker.helpPartner);
+    if(h)h.score+=pts;
+  }
+  if(!correct&&isHelpActive){
+    const p=bbState.players.find(x=>x.name===bbState.buzzedBy);
+    if(p)p.score-=2;
+    if(bbState.activeJoker?.helpPartner){
+      const h=bbState.players.find(x=>x.name===bbState.activeJoker.helpPartner);
+      if(h)h.score-=2;
+    }
+  }
+  const helpPartner=isHelpActive?(bbState.activeJoker?.helpPartner||null):null;
+  bbState.lastResult={correct,pts,playerName:bbState.buzzedBy,helpPartner,isSteal,isHelp:isHelpActive,timeUp:false,
     question:bbState.questions[bbState.currentQIdx].question,
     answer:bbState.questions[bbState.currentQIdx].answer,
     id:(bbState.lastResult?.id||0)+1};
-  if(!correct&&!isSteal&&!bbState.alreadyStolenAttempted){
+  const usedBanJoker=!isSteal&&!isHelpActive&&bbState.activeJoker&&bbState.activeJoker.type==='ban';
+  if(!correct&&!isSteal&&!isHelpActive&&!bbState.alreadyStolenAttempted&&!usedBanJoker){
     const wrongP=bbState.players.find(x=>x.name===bbState.buzzedBy);
     const excl=[bbState.buzzedBy];
     if(wrongP&&wrongP.teamIdx!==null){
@@ -745,6 +817,7 @@ function bbJudge(correct){
     bbState.buzzedBy=null;
     bbState.phase='result';
   }
+  bbState.activeJoker=null;
   broadcastBBState();
   renderGameView();
 }
@@ -793,6 +866,8 @@ function renderGameView(){
   else if(phase==='buzzed'||phase==='steal_buzzed') renderBuzzedPhase(main,q,phase==='steal_buzzed');
   else if(phase==='steal') renderStealPhase(main,q);
   else if(phase==='result') renderResultPhase(main);
+  else if(phase==='help_request') renderHelpRequestPhase(main,q);
+  else if(phase==='help_active') renderHelpActivePhase(main,q);
   // Start display timer if question phase
   if(phase==='question') startBBDisplay();
   else { clearInterval(bbDisplayInterval); bbDisplayInterval=null; }
@@ -828,6 +903,9 @@ function renderReadyPhase(main,q,total){
 function bbSendReady(){
   mpSend('bb_ready',{playerName:myName});
 }
+function bbActivateJoker(jokerType){mpSend('bb_activate_joker',{playerName:myName,jokerType});}
+function bbVolunteerHelp(){mpSend('bb_help_volunteer',{playerName:myName});}
+function bbChooseHelper(helperName){mpSend('bb_choose_helper',{chooser:myName,helperName});}
 
 function renderQuestionPhase(main,q){
   const answerBlock=isHost?'<div class="bb-answer-box"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
@@ -878,17 +956,31 @@ function renderBuzzedPhase(main,q,isSteal){
   const headerText=isSteal
     ?'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+'</div><div class="buzz-sub">will abstauben! ('+(bbState.buzzedBy===myName?'Du bist dran — antworte mündlich!':'Warte auf Antwort...')+')</div>'
     :'<div class="buzz-who" style="color:'+pColor+'">'+esc(bbState.buzzedBy||'?')+' hat den Buzzer betätigt!</div><div class="buzz-sub">'+(bbState.buzzedBy===myName?'Du bist dran — gib deine Antwort mündlich!':'Warte auf die Antwort...')+'</div>';
+  let ptsLabel=isSteal?'+1 Punkt':'+2 Punkte';
+  if(!isSteal&&bbState.activeJoker&&bbState.activeJoker.type==='points')ptsLabel='+4 Punkte';
   const judgeBlock=isHost
     ?'<div class="host-judge-btns">'
-      +'<button class="btn-correct" onclick="bbJudge(true)">✓ Richtig<br><span style="font-size:11px;opacity:.8;">'+(isSteal?'+1 Punkt':'+2 Punkte')+'</span></button>'
+      +'<button class="btn-correct" onclick="bbJudge(true)">✓ Richtig<br><span style="font-size:11px;opacity:.8;">'+ptsLabel+'</span></button>'
       +'<button class="btn-wrong" onclick="bbJudge(false)">✕ Falsch</button>'
     +'</div>'
     :'<div style="font-size:13px;color:var(--muted);">Host bewertet...</div>';
   const answerBlock=isHost?'<div class="bb-answer-box" style="margin:0;max-width:320px;width:100%"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
+  let jokerHtml='';
+  if(!isSteal){
+    if(bbState.activeJoker){
+      const jType=bbState.activeJoker.type;
+      const jLabels={points:'⭐ Punkte-Joker aktiv (+4 Punkte)',ban:'🚫 Bann-Joker aktiv (kein Abstauben)',help:'🤝 Help-Joker aktiv'};
+      jokerHtml='<div class="joker-active-badge '+jType+'" style="margin:8px 0;">'+jLabels[jType]+'</div>';
+    } else if(!isHost&&bbState.buzzedBy===myName){
+      const myJokers=bbState.jokers?.[myName];
+      if(myJokers&&(myJokers.points||myJokers.ban||myJokers.help))jokerHtml=renderJokerPanel(myJokers);
+    }
+  }
   main.innerHTML='<div class="bb-buzz-panel">'
     +'<div class="buzz-icon">🔔</div>'
     +headerText
     +answerBlock
+    +jokerHtml
     +judgeBlock
     +'</div>';
 }
@@ -920,7 +1012,9 @@ function renderResultPhase(main){
   if(!r){main.innerHTML='';return;}
   let icon,msg,color;
   if(r.timeUp){icon='⏰';msg='Zeit abgelaufen!';color='var(--muted)';}
+  else if(r.correct&&r.isHelp&&r.helpPartner){icon='🤝';msg=esc(r.playerName)+' &amp; '+esc(r.helpPartner)+' richtig! +'+r.pts+' Pkt je';color='var(--green)';}
   else if(r.correct){icon='✅';msg=esc(r.playerName)+' liegt richtig! +'+r.pts+' Punkt'+(r.pts!==1?'e':'');color='var(--green)';}
+  else if(!r.correct&&r.isHelp&&r.helpPartner){icon='❌';msg=esc(r.playerName)+' &amp; '+esc(r.helpPartner)+' falsch! −2 Punkte je';color='var(--red)';}
   else{icon='❌';msg=r.playerName?esc(r.playerName)+' liegt falsch!':'Falsch!';color='var(--red)';}
   const nextBlock=isHost
     ?'<button class="btn-primary" onclick="bbNextQuestion()" style="max-width:280px;background:linear-gradient(135deg,#c0392b,#96281b);">Nächste Frage →</button>'
@@ -935,6 +1029,80 @@ function renderResultPhase(main){
       +'<div class="result-answer-atext">'+esc(r.answer||'')+'</div>'
     +'</div>'
     +nextBlock
+    +'</div>';
+}
+
+function renderJokerPanel(myJokers){
+  let btns='';
+  if(myJokers.points)btns+='<button class="joker-btn points" onclick="bbActivateJoker(\'points\')"><span class="joker-icon">⭐</span>Punkte</button>';
+  if(myJokers.ban)btns+='<button class="joker-btn ban" onclick="bbActivateJoker(\'ban\')"><span class="joker-icon">🚫</span>Bann</button>';
+  if(myJokers.help)btns+='<button class="joker-btn help" onclick="bbActivateJoker(\'help\')"><span class="joker-icon">🤝</span>Hilfe</button>';
+  return '<div class="joker-panel"><div class="joker-panel-title">🃏 JOKER EINSETZEN</div><div class="joker-btns">'+btns+'</div></div>';
+}
+
+function renderHelpRequestPhase(main,q){
+  const buzzedBy=bbState.buzzedBy;
+  const volunteers=bbState.helpVolunteers||[];
+  const isBuzzed=!isHost&&myName===buzzedBy;
+  const isOther=!isHost&&myName!==buzzedBy;
+  const alreadyVol=volunteers.includes(myName);
+  let contentHtml='';
+  if(isBuzzed){
+    const volHtml=volunteers.length
+      ?volunteers.map(v=>'<div class="help-volunteer-row"><div style="flex:1">'+esc(v)+'</div>'
+          +'<button class="btn-correct" style="padding:6px 14px;font-size:12px;" onclick="bbChooseHelper(\''+esc(v)+'\')">Wählen ✓</button></div>').join('')
+      :'<div style="color:var(--muted);font-size:13px;text-align:center;padding:12px;">Warte auf Freiwillige...</div>';
+    contentHtml='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:#3a8ef6;letter-spacing:.05em;">🤝 HILFE ANGEFRAGT</div>'
+      +'<div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Wer möchte dir helfen?</div>'
+      +'<div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:6px;">'+volHtml+'</div>'
+      +'<button class="btn-secondary" style="max-width:220px;margin-top:4px;" onclick="bbChooseHelper(null)">Ohne Hilfe weiter →</button>';
+  } else if(isOther){
+    if(alreadyVol){
+      contentHtml='<div style="color:var(--green);font-size:15px;font-weight:700;">✅ Du hast dich gemeldet!</div>'
+        +'<div style="font-size:13px;color:var(--muted);">Warte auf '+esc(buzzedBy)+'...</div>';
+    } else {
+      contentHtml='<div style="font-size:15px;font-weight:700;color:var(--text);">🤝 <b>'+esc(buzzedBy)+'</b> braucht Hilfe!</div>'
+        +'<div style="font-size:13px;color:var(--muted);margin-bottom:4px;">Möchtest du bei der Frage helfen?</div>'
+        +'<button class="btn-primary" onclick="bbVolunteerHelp()" style="max-width:250px;background:linear-gradient(135deg,#3a8ef6,#2070d0);">🙋 Ich helfe!</button>';
+    }
+  } else {
+    const volList=volunteers.length?volunteers.join(', '):'Noch niemand';
+    contentHtml='<div style="color:#3a8ef6;font-size:15px;font-weight:700;">🤝 Help-Joker aktiv</div>'
+      +'<div style="font-size:13px;color:var(--muted);">'+esc(buzzedBy)+' sucht Hilfe...</div>'
+      +'<div style="font-size:12px;color:var(--muted2);margin-top:4px;">Freiwillige: '+esc(volList)+'</div>';
+  }
+  const answerBlock=isHost?'<div class="bb-answer-box" style="max-width:360px;width:100%;"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
+  main.innerHTML='<div class="bb-buzz-panel">'
+    +'<div class="bb-question-card" style="max-width:400px;width:100%;margin:0 0 12px;">'
+      +'<div class="bb-q-text">'+esc(q.question)+'</div>'
+    +'</div>'
+    +answerBlock
+    +contentHtml
+    +'</div>';
+}
+
+function renderHelpActivePhase(main,q){
+  const buzzedBy=bbState.buzzedBy;
+  const helper=bbState.activeJoker?.helpPartner;
+  const pColor1=bbState.players.find(p=>p.name===buzzedBy)?.color||COLORS[0];
+  const pColor2=helper?(bbState.players.find(p=>p.name===helper)?.color||COLORS[1]):null;
+  const isInvolved=!isHost&&(myName===buzzedBy||myName===helper);
+  const subText=isInvolved?'Ihr seid dran — antwortet gemeinsam mündlich!':'Warte auf die Antwort...';
+  const judgeBlock=isHost
+    ?'<div class="host-judge-btns">'
+      +'<button class="btn-correct" onclick="bbJudge(true)">✓ Richtig<br><span style="font-size:11px;opacity:.8;">+1 Punkt je</span></button>'
+      +'<button class="btn-wrong" onclick="bbJudge(false)">✕ Falsch<br><span style="font-size:11px;opacity:.8;">−2 Punkte je</span></button>'
+    +'</div>'
+    :'<div style="font-size:13px;color:var(--muted);">Host bewertet...</div>';
+  const answerBlock=isHost?'<div class="bb-answer-box" style="margin:0;max-width:320px;width:100%"><div class="bb-answer-label">Richtige Antwort</div><div class="bb-answer-text">'+esc(q.answer)+'</div></div>':'';
+  main.innerHTML='<div class="bb-buzz-panel">'
+    +'<div class="buzz-icon">🤝</div>'
+    +'<div class="buzz-who"><span style="color:'+pColor1+'">'+esc(buzzedBy)+'</span>'
+      +(helper?' &amp; <span style="color:'+pColor2+'">'+esc(helper)+'</span>':'')+'</div>'
+    +'<div class="buzz-sub">'+subText+'</div>'
+    +answerBlock
+    +'<div class="joker-active-badge help" style="margin:8px 0;">🤝 Richtig: +1 je &nbsp;·&nbsp; Falsch: −2 je</div>'
+    +judgeBlock
     +'</div>';
 }
 

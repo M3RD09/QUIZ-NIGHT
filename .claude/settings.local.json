@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(wc:*)",
-      "Bash(node --check buzzer.html)"
+      "Bash(node --check buzzer.html)",
+      "Bash(ls:*)",
+      "Bash(git:*)"
     ]
   }
 }
