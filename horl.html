@@ -77,9 +77,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 /* GAME */
 .game-topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:rgba(6,8,15,.97);flex-shrink:0;}
 .round-badge{background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);border-radius:20px;padding:4px 14px;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);flex-shrink:0;}
-.game-title-mid{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em;background:linear-gradient(135deg,#2ecc71,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;text-align:center;}
-.cat-badge{background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.game-title-mid{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;background:linear-gradient(135deg,#2ecc71,#f5c842);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;text-align:center;}
 .game-layout{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+
+/* CATEGORY BAR */
+.category-bar{padding:8px 16px;text-align:center;background:rgba(245,200,66,.06);border-bottom:1px solid rgba(245,200,66,.15);flex-shrink:0;}
+.category-bar-label{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:2px;}
+.category-bar-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--gold);line-height:1.1;word-break:break-word;}
 
 /* SCALE */
 .scale-section{padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -88,46 +92,57 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .scale-end-label.low{color:var(--blue);}
 .scale-end-label.high{color:var(--red);}
 .scale-line{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green),var(--gold),var(--orange),var(--red));margin-bottom:10px;}
-.scale-row{display:flex;align-items:center;min-height:110px;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.scale-zone{flex:1;min-width:44px;height:104px;border:2px dashed transparent;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:transparent;transition:all .18s;cursor:default;flex-shrink:0;}
+.scale-row{display:flex;align-items:center;min-height:120px;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.scale-zone{flex:1;min-width:48px;height:112px;border:2px dashed transparent;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:transparent;transition:all .18s;cursor:default;flex-shrink:0;}
 .scale-zone.active{border-color:rgba(46,204,113,.35);cursor:pointer;}
 .scale-zone.active:hover{border-color:var(--green);background:rgba(46,204,113,.12);color:var(--green);}
 .scale-zone.active:hover::after{content:'↓';font-size:26px;font-weight:900;}
 .scale-card{display:flex;flex-direction:column;align-items:center;flex-shrink:0;cursor:default;}
-.scale-card-img{width:72px;height:72px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
+.scale-card-img{width:80px;height:80px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden;}
 .scale-card-img img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
 .scale-card.anchor-card .scale-card-img{border-color:var(--gold);border-width:3px;box-shadow:0 0 16px rgba(245,200,66,.35);}
 .scale-card.new-card .scale-card-img{border-color:var(--green);box-shadow:0 0 16px rgba(46,204,113,.5);animation:popIn .4s ease;}
-.scale-card-name{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--muted);max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;margin-top:4px;}
+.scale-card-name{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);width:88px;text-align:center;margin-top:5px;line-height:1.35;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 @keyframes popIn{0%{transform:scale(.5);}65%{transform:scale(1.15);}100%{transform:scale(1);}}
 
 /* TURN BAR */
-.turn-bar{padding:10px 18px;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;font-size:14px;font-weight:600;min-height:42px;}
+.turn-bar{padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);flex-shrink:0;font-size:14px;font-weight:600;min-height:54px;display:flex;align-items:center;gap:12px;}
+.turn-avatar{width:36px;height:36px;border-radius:50%;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
 /* POOL */
-.pool-area{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;}
-.pool-card{width:100px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:9px 7px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;}
+.pool-area{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-wrap:wrap;gap:12px;align-content:flex-start;}
+.pool-card{width:118px;background:var(--surface2);border:2px solid var(--border);border-radius:14px;padding:10px 8px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;}
 .pool-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 18px rgba(46,204,113,.18);}
 .pool-card.selected-pool{border-color:var(--green);background:rgba(46,204,113,.1);box-shadow:0 0 14px rgba(46,204,113,.3);transform:translateY(-3px);}
 .pool-card.used{opacity:.2;cursor:default;pointer-events:none;filter:grayscale(1);}
 .pool-card.no-turn{cursor:default;pointer-events:none;}
 .pool-card.wrong-flash{animation:wrongFlash .5s ease;}
 @keyframes wrongFlash{0%,100%{border-color:var(--border);}50%{border-color:var(--red);background:rgba(232,53,74,.15);}}
-.pool-img{width:70px;height:70px;border-radius:10px;background:var(--surface);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
+.pool-img{width:80px;height:80px;border-radius:10px;background:var(--surface);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;}
 .pool-img img{width:100%;height:100%;object-fit:cover;border-radius:9px;}
-.pool-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1.3;color:var(--text);}
+.pool-name{font-size:11px;font-weight:700;letter-spacing:.02em;line-height:1.45;color:var(--text);word-break:break-word;}
 
 /* SIDEBAR */
 .game-sidebar{width:100%;background:var(--surface);border-top:2px solid var(--border);flex-shrink:0;}
-.sb-wrap{padding:8px 14px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.sb-player{display:flex;align-items:center;gap:9px;padding:7px 14px;border-radius:11px;background:var(--surface2);flex-shrink:0;min-width:150px;}
-.sb-player.active{background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.28);}
-.sb-player.eliminated{opacity:.3;filter:grayscale(1);}
-.sb-avatar{width:36px;height:36px;border-radius:50%;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-wrap{padding:10px 14px;display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.sb-player{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:14px;background:var(--surface2);flex-shrink:0;width:180px;border:1px solid transparent;transition:all .25s;}
+.sb-player.active{background:linear-gradient(135deg,rgba(46,204,113,.15),rgba(46,204,113,.05));border-color:rgba(46,204,113,.5);box-shadow:0 0 20px rgba(46,204,113,.15);}
+.sb-player.eliminated{opacity:.35;filter:grayscale(1);}
+.sb-avatar{width:42px;height:42px;border-radius:50%;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .sb-info{flex:1;min-width:0;}
 .sb-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sb-hearts{font-size:12px;margin-top:1px;}
-.sb-pts{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
+.sb-hearts{font-size:12px;margin-top:3px;letter-spacing:.04em;}
+.sb-pts{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);flex-shrink:0;}
+
+/* TURN POPUP */
+.turn-popup{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);}
+.turn-popup.hidden{display:none;}
+.turn-popup-card{background:var(--surface);border-radius:24px;padding:40px 48px;text-align:center;border:2px solid rgba(46,204,113,.45);box-shadow:0 0 60px rgba(46,204,113,.25);animation:popIn .35s ease;max-width:340px;width:90%;}
+.turn-popup-icon{font-size:60px;margin-bottom:8px;}
+.turn-popup-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.05em;color:var(--green);}
+.turn-popup-sub{font-size:14px;color:var(--muted);margin-top:6px;}
+.turn-popup-btn{margin-top:24px;background:var(--green);border:none;border-radius:12px;color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:800;padding:14px 44px;cursor:pointer;transition:all .2s;display:block;width:100%;}
+.turn-popup-btn:hover{filter:brightness(1.1);}
 
 /* FLASH */
 .result-flash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:400;pointer-events:none;opacity:0;transition:opacity .2s;}
@@ -313,11 +328,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="game-topbar">
     <div class="round-badge" id="round-badge">RUNDE 1</div>
     <div class="game-title-mid">HIGHER OR LOWER</div>
-    <div class="cat-badge" id="cat-badge">–</div>
     <button id="horl-host-skip-btn" class="btn-icon" onclick="horlHostSkipCategory()" style="display:none;border-color:rgba(245,200,66,.4);color:var(--gold);" title="Nächste Kategorie">⏭</button>
     <button class="btn-icon" onclick="horlConfirmQuit()">✕</button>
   </div>
   <div class="game-layout">
+    <div class="category-bar">
+      <div class="category-bar-label">Kategorie</div>
+      <div class="category-bar-name" id="category-bar-name">–</div>
+    </div>
     <div class="scale-section">
       <div class="scale-end-labels">
         <span class="scale-end-label low" id="lbl-low">◀ niedrig</span>
@@ -369,6 +387,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <div class="result-flash" id="result-flash"><div class="rfi" id="rfi">✓</div></div>
+<div class="turn-popup hidden" id="turn-popup">
+  <div class="turn-popup-card">
+    <div class="turn-popup-icon">🎯</div>
+    <div class="turn-popup-title">DU BIST DRAN!</div>
+    <div class="turn-popup-sub">Wähle ein Item aus dem Pool ↓</div>
+    <button class="turn-popup-btn" onclick="document.getElementById('turn-popup').classList.add('hidden')">Los geht's!</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -386,6 +412,7 @@ let horlEditorFromOverlay = false;
 let horlLobbyHearts = 3;
 let horlState = null;
 let lastFlashId = 0;
+let lastActiveName = '';
 
 // ── UTILS ──
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -539,10 +566,12 @@ function renderLobby(){
   players.forEach((p, i)=>{
     const color = COLORS[i % COLORS.length];
     const el = document.createElement('div');
-    el.className = 'lobby-player';
-    el.innerHTML = '<div class="lobby-player-avatar" style="background:'+color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
-      +'<div class="lobby-player-name">'+esc(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:11px;">(du)</span>':'')+'</div>'
-      +(p.isHost?'<div class="lobby-player-badge">HOST</div>':'<div class="lobby-player-badge">Bereit</div>');
+    el.style.cssText = 'display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--surface2);border-radius:14px;border:1px solid var(--border);';
+    el.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;font-family:\'Bebas Neue\',sans-serif;font-size:19px;color:#fff;flex-shrink:0;">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div style="flex:1;font-size:15px;font-weight:700;">'+esc(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:12px;font-weight:400;">(du)</span>':'')+'</div>'
+      +(p.isHost
+        ?'<span style="font-size:10px;padding:3px 12px;background:rgba(46,204,113,.12);color:var(--green);border-radius:20px;font-weight:800;letter-spacing:.1em;">HOST</span>'
+        :'<span style="font-size:10px;padding:3px 12px;background:var(--surface);color:var(--muted);border-radius:20px;font-weight:700;border:1px solid var(--border);">Bereit</span>');
     list.appendChild(el);
   });
 
@@ -766,13 +795,21 @@ function renderGameView(){
   const isMyTurn = active && active.name === myName;
 
   document.getElementById('round-badge').textContent = 'RUNDE '+(horlState.currentRound+1);
-  document.getElementById('cat-badge').textContent = round.category;
+  document.getElementById('category-bar-name').textContent = round.category;
   document.getElementById('lbl-low').textContent = '◀ '+(round.labelLow||'niedrig');
   document.getElementById('lbl-high').textContent = (round.labelHigh||'hoch')+' ▶';
 
   // Host skip button
   const skipBtn = document.getElementById('horl-host-skip-btn');
   if(skipBtn) skipBtn.style.display = (isHost && horlState.phase==='playing') ? 'flex' : 'none';
+
+  // Turn popup: show once when turn switches to this player
+  if(active && active.name !== lastActiveName && horlState.phase === 'playing'){
+    lastActiveName = active.name;
+    if(isMyTurn){
+      document.getElementById('turn-popup').classList.remove('hidden');
+    }
+  }
 
   // Detect kicked player
   const amInGame = isHost || horlState.players.some(p=>p.name===myName);
@@ -925,19 +962,24 @@ function renderPoolOnline(round, isMyTurn){
 function updateTurnBarOnline(active, isMyTurn, round){
   const bar = document.getElementById('turn-bar');
   if(!active){ bar.innerHTML = '–'; return; }
+  const avatarHtml = '<div class="turn-avatar" style="background:'+active.color+'">'+esc(active.name.charAt(0).toUpperCase())+'</div>';
   if(isMyTurn){
     if(horlState.selectedItemIdx !== null){
-      bar.innerHTML = '<span style="color:var(--green);font-weight:800;">Du</span> → '
-        +'<span style="color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</span>'
-        +' ausgewählt — klicke eine Zone ↑';
+      bar.innerHTML = avatarHtml
+        +'<span><span style="color:var(--green);font-weight:800;">Du</span> — '
+        +'<em style="font-style:normal;color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</em>'
+        +' ausgewählt → Zone in der Skala wählen ↑</span>';
     } else {
-      bar.innerHTML = '<span style="color:var(--green);font-weight:800;">Du bist dran!</span> Wähle ein Item aus dem Pool ↓';
+      bar.innerHTML = avatarHtml
+        +'<span><span style="color:var(--green);font-weight:800;">Du bist dran!</span>'
+        +' <span style="color:var(--muted);font-size:13px;">Wähle ein Item ↓</span></span>';
     }
   } else {
     const selText = horlState.selectedItemIdx !== null
-      ? ' → <span style="color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</span> ausgewählt...'
-      : ' ist dran — wählt ein Item...';
-    bar.innerHTML = '<span style="color:'+esc(active.color)+';font-weight:800;">'+esc(active.name)+'</span>'+selText;
+      ? ' — <em style="font-style:normal;color:var(--green);">'+esc(round.items[horlState.selectedItemIdx].name)+'</em> ausgewählt...'
+      : ' ist dran';
+    bar.innerHTML = avatarHtml
+      +'<span><span style="color:'+active.color+';font-weight:800;">'+esc(active.name)+'</span>'+selText+'</span>';
   }
 }
 
@@ -952,8 +994,9 @@ function updateSidebarOnline(){
     const kickBtn = isHost
       ? '<button onclick="horlKickPlayer(\''+esc(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:2px 7px;cursor:pointer;flex-shrink:0;" title="Kicken">✕</button>'
       : '';
+    const youBadge = p.name===myName ? ' <span style="font-size:10px;color:var(--muted);">(du)</span>' : '';
     el.innerHTML = '<div class="sb-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
-      +'<div class="sb-info"><div class="sb-name">'+esc(p.name)+(p.eliminated?' 💀':'')+'</div>'
+      +'<div class="sb-info"><div class="sb-name">'+esc(p.name)+youBadge+(p.eliminated?' 💀':'')+'</div>'
       +'<div class="sb-hearts">'+hearts+'</div></div>'
       +'<div class="sb-pts">'+p.score+'</div>'
       +kickBtn;
