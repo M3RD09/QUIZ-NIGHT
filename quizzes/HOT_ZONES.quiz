@@ -1,0 +1,70 @@
+{
+  "name": "HOT ZONES",
+  "categories": [
+    {
+      "name": "SCHULPFLICHT",
+      "labelLeft": "sinnlos",
+      "labelRight": "lebenswichtig"
+    },
+    {
+      "name": "MUSIKGENRE",
+      "labelLeft": "unerträglich",
+      "labelRight": "banger"
+    },
+    {
+      "name": "SERIEN-GENRE",
+      "labelLeft": "langweilig",
+      "labelRight": "binge-würdig"
+    },
+    {
+      "name": "SOCIAL MEDIA",
+      "labelLeft": "tot",
+      "labelRight": "unverzichtbar"
+    },
+    {
+      "name": "SUPERHELD",
+      "labelLeft": "nutzlos",
+      "labelRight": "Legende"
+    },
+    {
+      "name": "WETTER",
+      "labelLeft": "Albtraum",
+      "labelRight": "Traumwetter"
+    },
+    {
+      "name": "HAUSARBEIT",
+      "labelLeft": "hasse ich",
+      "labelRight": "macht Spaß"
+    },
+    {
+      "name": "PROMI IN DER WILDNIS",
+      "labelLeft": "erste Leiche",
+      "labelRight": "Survivor"
+    },
+    {
+      "name": "EMOJI",
+      "labelLeft": "cringe",
+      "labelRight": "top"
+    },
+    {
+      "name": "ÜBERLEBENSSZENARIO",
+      "labelLeft": "sicherer Tod",
+      "labelRight": "easy überleben"
+    },
+    {
+      "name": "KATASTROPHENFILM",
+      "labelLeft": "einschlafen",
+      "labelRight": "Meisterwerk"
+    },
+    {
+      "name": "SUPERHELDENPOWER",
+      "labelLeft": "wertlos",
+      "labelRight": "overpowered"
+    },
+    {
+      "name": "SPORTART ZUSCHAUEN",
+      "labelLeft": "Folter",
+      "labelRight": "Suchtgefahr"
+    }
+  ]
+}

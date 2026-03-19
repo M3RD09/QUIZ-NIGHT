@@ -6,11 +6,18 @@
       "labelLow": "niedriger",
       "labelHigh": "höher",
       "items": [
-        { "name": "Kölner Dom", "value": 157, "imageUrl": "" },
         { "name": "Freiheitsstatue", "value": 93, "imageUrl": "" },
+        { "name": "Kölner Dom", "value": 157, "imageUrl": "" },
+        { "name": "Chrysler Building", "value": 319, "imageUrl": "" },
         { "name": "Eiffelturm", "value": 330, "imageUrl": "" },
+        { "name": "Berliner Fernsehturm", "value": 368, "imageUrl": "" },
         { "name": "Empire State Building", "value": 443, "imageUrl": "" },
+        { "name": "Petronas Towers", "value": 452, "imageUrl": "" },
+        { "name": "Taipei 101", "value": 508, "imageUrl": "" },
         { "name": "One World Trade Center", "value": 541, "imageUrl": "" },
+        { "name": "CN Tower Toronto", "value": 553, "imageUrl": "" },
+        { "name": "Ping An Finance Centre", "value": 599, "imageUrl": "" },
+        { "name": "Makkah Clock Tower", "value": 601, "imageUrl": "" },
         { "name": "Shanghai Tower", "value": 632, "imageUrl": "" },
         { "name": "Burj Khalifa", "value": 828, "imageUrl": "" }
       ]
@@ -21,12 +28,19 @@
       "labelHigh": "tiefer",
       "items": [
         { "name": "Ostsee (tiefste Stelle)", "value": 459, "imageUrl": "" },
-        { "name": "Mittelmeer (tiefste Stelle)", "value": 5267, "imageUrl": "" },
         { "name": "Kaspisches Meer", "value": 1025, "imageUrl": "" },
+        { "name": "Schwarzes Meer", "value": 2212, "imageUrl": "" },
+        { "name": "Mittelmeer (tiefste Stelle)", "value": 5267, "imageUrl": "" },
+        { "name": "Arabisches Meer", "value": 5803, "imageUrl": "" },
+        { "name": "Indischer Ozean (tiefstes Becken)", "value": 7187, "imageUrl": "" },
         { "name": "Nordatlantik (tiefstes Becken)", "value": 8376, "imageUrl": "" },
-        { "name": "Marianengraben (Challengertief)", "value": 11034, "imageUrl": "" },
+        { "name": "Puerto-Rico-Graben", "value": 8376, "imageUrl": "" },
+        { "name": "Japangraben", "value": 8413, "imageUrl": "" },
+        { "name": "Kermadeckgraben", "value": 10047, "imageUrl": "" },
+        { "name": "Philippinengraben", "value": 10540, "imageUrl": "" },
         { "name": "Tongagraben", "value": 10882, "imageUrl": "" },
-        { "name": "Philippinengraben", "value": 10540, "imageUrl": "" }
+        { "name": "Marianengraben (Challengertief)", "value": 11034, "imageUrl": "" },
+        { "name": "Rotes Meer (tiefste Stelle)", "value": 3040, "imageUrl": "" }
       ]
     },
     {
@@ -34,13 +48,20 @@
       "labelLow": "kürzer",
       "labelHigh": "länger",
       "items": [
+        { "name": "Elbe", "value": 1091, "imageUrl": "" },
         { "name": "Rhein", "value": 1230, "imageUrl": "" },
         { "name": "Donau", "value": 2860, "imageUrl": "" },
+        { "name": "Mississippi", "value": 3730, "imageUrl": "" },
+        { "name": "Missouri", "value": 3767, "imageUrl": "" },
+        { "name": "Wolga", "value": 3690, "imageUrl": "" },
         { "name": "Niger", "value": 4180, "imageUrl": "" },
-        { "name": "Amazonas", "value": 6992, "imageUrl": "" },
-        { "name": "Nil", "value": 6853, "imageUrl": "" },
+        { "name": "Lena", "value": 4400, "imageUrl": "" },
+        { "name": "Kongo", "value": 4370, "imageUrl": "" },
+        { "name": "Ob", "value": 5410, "imageUrl": "" },
+        { "name": "Huang He (Gelber Fluss)", "value": 5464, "imageUrl": "" },
         { "name": "Jangtse", "value": 6300, "imageUrl": "" },
-        { "name": "Missouri", "value": 3767, "imageUrl": "" }
+        { "name": "Nil", "value": 6853, "imageUrl": "" },
+        { "name": "Amazonas", "value": 6992, "imageUrl": "" }
       ]
     },
     {
@@ -48,26 +69,40 @@
       "labelLow": "kleiner",
       "labelHigh": "größer",
       "items": [
+        { "name": "Schweiz", "value": 41, "imageUrl": "" },
         { "name": "Deutschland", "value": 357, "imageUrl": "" },
+        { "name": "Japan", "value": 378, "imageUrl": "" },
         { "name": "Frankreich", "value": 552, "imageUrl": "" },
+        { "name": "Türkei", "value": 785, "imageUrl": "" },
+        { "name": "Mexiko", "value": 1964, "imageUrl": "" },
+        { "name": "Saudi-Arabien", "value": 2150, "imageUrl": "" },
+        { "name": "Algerien", "value": 2382, "imageUrl": "" },
         { "name": "Indien", "value": 3287, "imageUrl": "" },
-        { "name": "USA", "value": 9834, "imageUrl": "" },
+        { "name": "Australien", "value": 7692, "imageUrl": "" },
+        { "name": "Brasilien", "value": 8516, "imageUrl": "" },
         { "name": "China", "value": 9597, "imageUrl": "" },
-        { "name": "Kanada", "value": 9985, "imageUrl": "" },
-        { "name": "Russland", "value": 17098, "imageUrl": "" }
+        { "name": "USA", "value": 9834, "imageUrl": "" },
+        { "name": "Kanada", "value": 9985, "imageUrl": "" }
       ]
     },
     {
-      "category": "Rekordtemperaturen auf der Erde (°C)",
+      "category": "Rekordtemperaturen auf der Erde und im Sonnensystem (°C)",
       "labelLow": "kälter",
       "labelHigh": "wärmer",
       "items": [
+        { "name": "Mond (Nachtseite)", "value": -183, "imageUrl": "" },
         { "name": "Kältester Ort: Wostok-Station (Antarktis)", "value": -89, "imageUrl": "" },
-        { "name": "Gefrierpunkt Wasser", "value": 0, "imageUrl": "" },
-        { "name": "Durchschnitt Sahara (Sommer)", "value": 40, "imageUrl": "" },
-        { "name": "Heißester gemessener Wert: Death Valley", "value": 57, "imageUrl": "" },
-        { "name": "Durchschnitt Norddeutschland (Juli)", "value": 22, "imageUrl": "" },
         { "name": "Kältester bewohnter Ort: Oimjakon", "value": -50, "imageUrl": "" },
+        { "name": "Nordpol (Winter, Durchschnitt)", "value": -40, "imageUrl": "" },
+        { "name": "Sibirien (Winterdurchschnitt)", "value": -25, "imageUrl": "" },
+        { "name": "Gefrierpunkt Wasser", "value": 0, "imageUrl": "" },
+        { "name": "Durchschnitt Norddeutschland (Juli)", "value": 22, "imageUrl": "" },
+        { "name": "Äquator (Durchschnitt)", "value": 30, "imageUrl": "" },
+        { "name": "Durchschnitt Sahara (Sommer)", "value": 40, "imageUrl": "" },
+        { "name": "Australien Hitzewelle (Rekord)", "value": 51, "imageUrl": "" },
+        { "name": "Heißester gemessener Wert: Death Valley", "value": 57, "imageUrl": "" },
+        { "name": "Venus (Oberfläche)", "value": 465, "imageUrl": "" },
+        { "name": "Schmelzpunkt Eisen", "value": 1538, "imageUrl": "" },
         { "name": "Oberfläche der Sonne", "value": 5500, "imageUrl": "" }
       ]
     }

@@ -616,6 +616,11 @@ function horlCopyCode(){
   navigator.clipboard.writeText(url).then(()=>showToast('📋 Link kopiert!')).catch(()=>showToast('Code: '+mpRoom.code));
 }
 
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+
 // ── START GAME ──
 function horlStartGame(){
   if(!quizData||!quizData.rounds.length){ showToast('⚠️ Quiz erforderlich!'); return; }
@@ -626,13 +631,13 @@ function horlStartGame(){
   horlState = {
     phase: 'playing',
     quizData: quizData,
-    players: nonHostPlayers.map((p, i)=>({
+    players: shuffleArray(nonHostPlayers.map((p, i)=>({
       name: p.name,
       hearts: horlLobbyHearts,
       score: 0,
       eliminated: false,
       color: COLORS[i % COLORS.length]
-    })),
+    }))),
     currentRound: 0,
     currentPlayerIdx: 0,
     scaleItemIndices: [startIdx],
@@ -746,10 +751,9 @@ function horlContinue(){
   horlState.phase = 'playing';
   horlState.revealReason = null;
   horlState.lastAction = null;
-  // If all were eliminated, reset hearts for the new category
-  if(wasEliminated){
-    horlState.players.forEach(p=>{ p.eliminated=false; p.hearts=horlState.maxHearts; });
-  }
+  // Reset hearts and shuffle player order for the new category
+  horlState.players.forEach(p=>{ p.eliminated=false; p.hearts=horlState.maxHearts; });
+  shuffleArray(horlState.players);
   horlState.currentPlayerIdx = 0;
   horlNextPlayer();
   broadcastState();

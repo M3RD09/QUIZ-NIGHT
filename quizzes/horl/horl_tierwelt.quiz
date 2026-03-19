@@ -7,12 +7,19 @@
       "labelHigh": "schneller",
       "items": [
         { "name": "Seepferdchen", "value": 2, "imageUrl": "" },
+        { "name": "Schildkröte", "value": 1, "imageUrl": "" },
         { "name": "Elefant", "value": 25, "imageUrl": "" },
+        { "name": "Grizzlybär", "value": 48, "imageUrl": "" },
         { "name": "Nashorn", "value": 50, "imageUrl": "" },
+        { "name": "Tümmler (Delfin)", "value": 55, "imageUrl": "" },
+        { "name": "Pferd", "value": 70, "imageUrl": "" },
         { "name": "Löwe", "value": 80, "imageUrl": "" },
+        { "name": "Segelflossiger Fisch", "value": 110, "imageUrl": "" },
         { "name": "Gepard", "value": 120, "imageUrl": "" },
+        { "name": "Adler (Sturzflug)", "value": 160, "imageUrl": "" },
+        { "name": "Schwalbe", "value": 200, "imageUrl": "" },
         { "name": "Wanderfalke (Sturzflug)", "value": 389, "imageUrl": "" },
-        { "name": "Segelflossiger Fisch", "value": 110, "imageUrl": "" }
+        { "name": "Mauersegler (Horizontalflug)", "value": 170, "imageUrl": "" }
       ]
     },
     {
@@ -21,12 +28,19 @@
       "labelHigh": "länger lebend",
       "items": [
         { "name": "Hausmaus", "value": 2, "imageUrl": "" },
+        { "name": "Hamster", "value": 3, "imageUrl": "" },
+        { "name": "Goldfisch", "value": 10, "imageUrl": "" },
         { "name": "Hund", "value": 13, "imageUrl": "" },
-        { "name": "Elefant", "value": 65, "imageUrl": "" },
-        { "name": "Grönlandwal", "value": 200, "imageUrl": "" },
-        { "name": "Aldabra-Riesenschildkröte", "value": 150, "imageUrl": "" },
+        { "name": "Krähe", "value": 20, "imageUrl": "" },
+        { "name": "Schimpanse", "value": 45, "imageUrl": "" },
         { "name": "Papagei (Ara)", "value": 50, "imageUrl": "" },
-        { "name": "Goldfisch", "value": 10, "imageUrl": "" }
+        { "name": "Elefant", "value": 65, "imageUrl": "" },
+        { "name": "Krokodil", "value": 70, "imageUrl": "" },
+        { "name": "Orca", "value": 90, "imageUrl": "" },
+        { "name": "Flamingo", "value": 40, "imageUrl": "" },
+        { "name": "Nacktmull", "value": 30, "imageUrl": "" },
+        { "name": "Aldabra-Riesenschildkröte", "value": 150, "imageUrl": "" },
+        { "name": "Grönlandwal", "value": 200, "imageUrl": "" }
       ]
     },
     {
@@ -36,11 +50,18 @@
       "items": [
         { "name": "Kolibri", "value": 0, "imageUrl": "" },
         { "name": "Hauskatze", "value": 4, "imageUrl": "" },
-        { "name": "Großer weißer Hai", "value": 1100, "imageUrl": "" },
-        { "name": "Afrikanischer Elefant", "value": 6000, "imageUrl": "" },
+        { "name": "Hund (Schäferhund)", "value": 30, "imageUrl": "" },
+        { "name": "Großer Panda", "value": 130, "imageUrl": "" },
         { "name": "Gorilla", "value": 180, "imageUrl": "" },
-        { "name": "Blauwal", "value": 150000, "imageUrl": "" },
-        { "name": "Nilpferd", "value": 3000, "imageUrl": "" }
+        { "name": "Löwe", "value": 200, "imageUrl": "" },
+        { "name": "Eisbär", "value": 450, "imageUrl": "" },
+        { "name": "Krokodil", "value": 500, "imageUrl": "" },
+        { "name": "Walross", "value": 900, "imageUrl": "" },
+        { "name": "Großer weißer Hai", "value": 1100, "imageUrl": "" },
+        { "name": "Giraffe", "value": 1200, "imageUrl": "" },
+        { "name": "Nilpferd", "value": 3000, "imageUrl": "" },
+        { "name": "Afrikanischer Elefant", "value": 6000, "imageUrl": "" },
+        { "name": "Blauwal", "value": 150000, "imageUrl": "" }
       ]
     },
     {
@@ -48,13 +69,20 @@
       "labelLow": "kleiner",
       "labelHigh": "größer",
       "items": [
-        { "name": "Biene", "value": 1, "imageUrl": "" },
+        { "name": "Ameise", "value": 1, "imageUrl": "" },
+        { "name": "Biene", "value": 2, "imageUrl": "" },
+        { "name": "Hamster", "value": 15, "imageUrl": "" },
         { "name": "Hauskatze", "value": 50, "imageUrl": "" },
+        { "name": "Pinguin (Kaiser)", "value": 110, "imageUrl": "" },
+        { "name": "Känguru", "value": 180, "imageUrl": "" },
+        { "name": "Strauß", "value": 210, "imageUrl": "" },
+        { "name": "Komodowaran", "value": 300, "imageUrl": "" },
+        { "name": "Weißer Hai", "value": 450, "imageUrl": "" },
         { "name": "Krokodil", "value": 500, "imageUrl": "" },
         { "name": "Giraffe (Höhe)", "value": 550, "imageUrl": "" },
+        { "name": "Riesenschlange (Anakonda)", "value": 900, "imageUrl": "" },
         { "name": "Riesentintenfisch", "value": 1300, "imageUrl": "" },
-        { "name": "Wal (Blauwal)", "value": 3000, "imageUrl": "" },
-        { "name": "Riesenschlange (Anakonda)", "value": 900, "imageUrl": "" }
+        { "name": "Wal (Blauwal)", "value": 3000, "imageUrl": "" }
       ]
     },
     {
@@ -63,12 +91,19 @@
       "labelHigh": "mehr Zähne",
       "items": [
         { "name": "Vogel (Taube)", "value": 0, "imageUrl": "" },
-        { "name": "Mensch", "value": 32, "imageUrl": "" },
-        { "name": "Hund", "value": 42, "imageUrl": "" },
-        { "name": "Hai (Großer Weißer)", "value": 300, "imageUrl": "" },
-        { "name": "Schnecke", "value": 25000, "imageUrl": "" },
+        { "name": "Frosch", "value": 0, "imageUrl": "" },
+        { "name": "Elefant", "value": 26, "imageUrl": "" },
+        { "name": "Kaninchen", "value": 28, "imageUrl": "" },
         { "name": "Katze", "value": 30, "imageUrl": "" },
-        { "name": "Kuh", "value": 32, "imageUrl": "" }
+        { "name": "Mensch", "value": 32, "imageUrl": "" },
+        { "name": "Kuh", "value": 32, "imageUrl": "" },
+        { "name": "Pferd", "value": 40, "imageUrl": "" },
+        { "name": "Hund", "value": 42, "imageUrl": "" },
+        { "name": "Alligator", "value": 80, "imageUrl": "" },
+        { "name": "Delfin", "value": 100, "imageUrl": "" },
+        { "name": "Krokodil", "value": 68, "imageUrl": "" },
+        { "name": "Hai (Großer Weißer)", "value": 300, "imageUrl": "" },
+        { "name": "Schnecke", "value": 25000, "imageUrl": "" }
       ]
     }
   ]

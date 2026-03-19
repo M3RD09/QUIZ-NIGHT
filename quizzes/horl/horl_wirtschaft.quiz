@@ -6,27 +6,41 @@
       "labelLow": "geringerer Wert",
       "labelHigh": "höherer Wert",
       "items": [
+        { "name": "BMW", "value": 65, "imageUrl": "" },
+        { "name": "Volkswagen", "value": 75, "imageUrl": "" },
+        { "name": "Nike", "value": 150, "imageUrl": "" },
+        { "name": "Alibaba", "value": 200, "imageUrl": "" },
         { "name": "McDonald's", "value": 220, "imageUrl": "" },
         { "name": "Netflix", "value": 280, "imageUrl": "" },
+        { "name": "Samsung", "value": 350, "imageUrl": "" },
         { "name": "Tesla", "value": 700, "imageUrl": "" },
+        { "name": "Meta (Facebook)", "value": 1400, "imageUrl": "" },
         { "name": "Amazon", "value": 2000, "imageUrl": "" },
         { "name": "Google (Alphabet)", "value": 2200, "imageUrl": "" },
+        { "name": "Nvidia", "value": 3000, "imageUrl": "" },
         { "name": "Microsoft", "value": 3200, "imageUrl": "" },
         { "name": "Apple", "value": 3500, "imageUrl": "" }
       ]
     },
     {
-      "category": "Einwohnerzahl asiatischer Megastädte (Mio.)",
+      "category": "Einwohnerzahl von Megastädten (Mio.)",
       "labelLow": "weniger Einwohner",
       "labelHigh": "mehr Einwohner",
       "items": [
+        { "name": "Dubai", "value": 3, "imageUrl": "" },
         { "name": "Singapur", "value": 6, "imageUrl": "" },
         { "name": "Bangkok", "value": 11, "imageUrl": "" },
+        { "name": "Jakarta", "value": 11, "imageUrl": "" },
+        { "name": "Karachi", "value": 16, "imageUrl": "" },
+        { "name": "Lagos", "value": 15, "imageUrl": "" },
+        { "name": "New York", "value": 19, "imageUrl": "" },
         { "name": "Mumbai", "value": 21, "imageUrl": "" },
+        { "name": "Mexiko-Stadt", "value": 22, "imageUrl": "" },
         { "name": "Peking", "value": 22, "imageUrl": "" },
-        { "name": "Tokio", "value": 37, "imageUrl": "" },
+        { "name": "Dhaka", "value": 23, "imageUrl": "" },
         { "name": "Schanghai", "value": 29, "imageUrl": "" },
-        { "name": "Dhaka", "value": 23, "imageUrl": "" }
+        { "name": "Kairo", "value": 22, "imageUrl": "" },
+        { "name": "Tokio", "value": 37, "imageUrl": "" }
       ]
     },
     {
@@ -35,11 +49,18 @@
       "labelHigh": "später gegründet",
       "items": [
         { "name": "IBM", "value": 1911, "imageUrl": "" },
+        { "name": "HP", "value": 1939, "imageUrl": "" },
+        { "name": "Sony", "value": 1946, "imageUrl": "" },
         { "name": "Intel", "value": 1968, "imageUrl": "" },
+        { "name": "Samsung (Elektronik)", "value": 1969, "imageUrl": "" },
         { "name": "Microsoft", "value": 1975, "imageUrl": "" },
         { "name": "Apple", "value": 1976, "imageUrl": "" },
+        { "name": "Oracle", "value": 1977, "imageUrl": "" },
+        { "name": "Cisco", "value": 1984, "imageUrl": "" },
         { "name": "Amazon", "value": 1994, "imageUrl": "" },
+        { "name": "Yahoo", "value": 1995, "imageUrl": "" },
         { "name": "Google", "value": 1998, "imageUrl": "" },
+        { "name": "Facebook", "value": 2004, "imageUrl": "" },
         { "name": "TikTok (ByteDance)", "value": 2012, "imageUrl": "" }
       ]
     },
@@ -48,13 +69,20 @@
       "labelLow": "weniger Filialen",
       "labelHigh": "mehr Filialen",
       "items": [
+        { "name": "Five Guys", "value": 1800, "imageUrl": "" },
+        { "name": "Jollibee", "value": 1700, "imageUrl": "" },
+        { "name": "Wingstop", "value": 2000, "imageUrl": "" },
+        { "name": "Chipotle", "value": 3400, "imageUrl": "" },
+        { "name": "Papa John's", "value": 5800, "imageUrl": "" },
+        { "name": "Tim Hortons", "value": 5700, "imageUrl": "" },
+        { "name": "Dunkin'", "value": 12000, "imageUrl": "" },
+        { "name": "Domino's Pizza", "value": 19000, "imageUrl": "" },
         { "name": "Burger King", "value": 18000, "imageUrl": "" },
+        { "name": "Pizza Hut", "value": 18000, "imageUrl": "" },
         { "name": "KFC", "value": 27000, "imageUrl": "" },
         { "name": "Starbucks", "value": 36000, "imageUrl": "" },
-        { "name": "McDonald's", "value": 40000, "imageUrl": "" },
         { "name": "Subway", "value": 37000, "imageUrl": "" },
-        { "name": "Domino's Pizza", "value": 19000, "imageUrl": "" },
-        { "name": "Dunkin'", "value": 12000, "imageUrl": "" }
+        { "name": "McDonald's", "value": 40000, "imageUrl": "" }
       ]
     },
     {
@@ -62,9 +90,16 @@
       "labelLow": "geringeres BIP",
       "labelHigh": "höheres BIP",
       "items": [
+        { "name": "Polen", "value": 800, "imageUrl": "" },
         { "name": "Schweiz", "value": 905, "imageUrl": "" },
+        { "name": "Niederlande", "value": 1100, "imageUrl": "" },
+        { "name": "Türkei", "value": 1200, "imageUrl": "" },
+        { "name": "Südkorea", "value": 1800, "imageUrl": "" },
         { "name": "Australien", "value": 1720, "imageUrl": "" },
+        { "name": "Russland", "value": 2200, "imageUrl": "" },
+        { "name": "Brasilien", "value": 2100, "imageUrl": "" },
         { "name": "Frankreich", "value": 3050, "imageUrl": "" },
+        { "name": "Indien", "value": 3700, "imageUrl": "" },
         { "name": "Deutschland", "value": 4200, "imageUrl": "" },
         { "name": "Japan", "value": 4200, "imageUrl": "" },
         { "name": "China", "value": 17800, "imageUrl": "" },

@@ -6,41 +6,62 @@
       "labelLow": "weniger Titel",
       "labelHigh": "mehr Titel",
       "items": [
+        { "name": "Belgien", "value": 0, "imageUrl": "" },
+        { "name": "Portugal", "value": 0, "imageUrl": "" },
         { "name": "England", "value": 1, "imageUrl": "" },
         { "name": "Spanien", "value": 1, "imageUrl": "" },
+        { "name": "Uruguay", "value": 2, "imageUrl": "" },
         { "name": "Frankreich", "value": 2, "imageUrl": "" },
+        { "name": "Argentinien", "value": 3, "imageUrl": "" },
         { "name": "Deutschland", "value": 4, "imageUrl": "" },
         { "name": "Italien", "value": 4, "imageUrl": "" },
-        { "name": "Argentinien", "value": 3, "imageUrl": "" },
-        { "name": "Brasilien", "value": 5, "imageUrl": "" }
+        { "name": "Brasilien", "value": 5, "imageUrl": "" },
+        { "name": "Niederlande", "value": 0, "imageUrl": "" },
+        { "name": "Kroatien", "value": 0, "imageUrl": "" },
+        { "name": "Schweiz", "value": 0, "imageUrl": "" },
+        { "name": "USA", "value": 0, "imageUrl": "" }
       ]
     },
     {
-      "category": "Jahresgehalt von Fußball-Superstars (Mio. € brutto, ca. 2023)",
+      "category": "Jahresgehalt von Fußball-Superstars (Mio. € brutto, ca. 2024)",
       "labelLow": "weniger verdienend",
       "labelHigh": "mehr verdienend",
       "items": [
+        { "name": "Trent Alexander-Arnold", "value": 12, "imageUrl": "" },
         { "name": "Jamal Musiala", "value": 15, "imageUrl": "" },
-        { "name": "Kylian Mbappé", "value": 72, "imageUrl": "" },
-        { "name": "Lionel Messi", "value": 60, "imageUrl": "" },
-        { "name": "Cristiano Ronaldo", "value": 200, "imageUrl": "" },
-        { "name": "Neymar Jr.", "value": 100, "imageUrl": "" },
+        { "name": "Sadio Mané", "value": 20, "imageUrl": "" },
+        { "name": "Mohamed Salah", "value": 23, "imageUrl": "" },
+        { "name": "Phil Foden", "value": 22, "imageUrl": "" },
+        { "name": "Robert Lewandowski", "value": 25, "imageUrl": "" },
+        { "name": "Vinicius Jr.", "value": 30, "imageUrl": "" },
         { "name": "Erling Haaland", "value": 35, "imageUrl": "" },
-        { "name": "Vinicius Jr.", "value": 30, "imageUrl": "" }
+        { "name": "Lionel Messi", "value": 60, "imageUrl": "" },
+        { "name": "Kylian Mbappé", "value": 72, "imageUrl": "" },
+        { "name": "Neymar Jr.", "value": 100, "imageUrl": "" },
+        { "name": "Kevin De Bruyne", "value": 26, "imageUrl": "" },
+        { "name": "Luka Modrić", "value": 18, "imageUrl": "" },
+        { "name": "Cristiano Ronaldo", "value": 200, "imageUrl": "" }
       ]
     },
     {
-      "category": "Weltrekord im Sprint (Sekunden für 100m)",
-      "labelLow": "langsamer (mehr Sekunden)",
-      "labelHigh": "schneller (weniger Sekunden)",
+      "category": "100m-Bestzeit der Athleten (Hundertstel, z.B. 9,58s → 958)",
+      "labelLow": "langsamer (mehr Hundertstel)",
+      "labelHigh": "schneller (weniger Hundertstel)",
       "items": [
-        { "name": "Usain Bolt — Weltrekord (9,58 → Wert 958)", "value": 958, "imageUrl": "" },
-        { "name": "Tyson Gay (9,69)", "value": 969, "imageUrl": "" },
-        { "name": "Yohan Blake (9,69)", "value": 969, "imageUrl": "" },
-        { "name": "Asafa Powell (9,72)", "value": 972, "imageUrl": "" },
-        { "name": "Justin Gatlin (9,74)", "value": 974, "imageUrl": "" },
-        { "name": "Christian Coleman (9,76)", "value": 976, "imageUrl": "" },
-        { "name": "Marcell Jacobs (9,80)", "value": 980, "imageUrl": "" }
+        { "name": "Usain Bolt — Weltrekord (9,58s)", "value": 958, "imageUrl": "" },
+        { "name": "Tyson Gay (9,69s)", "value": 969, "imageUrl": "" },
+        { "name": "Yohan Blake (9,69s)", "value": 969, "imageUrl": "" },
+        { "name": "Asafa Powell (9,72s)", "value": 972, "imageUrl": "" },
+        { "name": "Justin Gatlin (9,74s)", "value": 974, "imageUrl": "" },
+        { "name": "Christian Coleman (9,76s)", "value": 976, "imageUrl": "" },
+        { "name": "Kishane Thompson (9,77s)", "value": 977, "imageUrl": "" },
+        { "name": "Noah Lyles (9,83s)", "value": 983, "imageUrl": "" },
+        { "name": "Marcell Jacobs (9,80s)", "value": 980, "imageUrl": "" },
+        { "name": "Fred Kerley (9,84s)", "value": 984, "imageUrl": "" },
+        { "name": "Oblique Seville (9,82s)", "value": 982, "imageUrl": "" },
+        { "name": "Zharnel Hughes (9,83s)", "value": 983, "imageUrl": "" },
+        { "name": "Nesta Carter (9,78s)", "value": 978, "imageUrl": "" },
+        { "name": "Akani Simbine (9,82s)", "value": 982, "imageUrl": "" }
       ]
     },
     {
@@ -48,13 +69,20 @@
       "labelLow": "weniger Titel",
       "labelHigh": "mehr Titel",
       "items": [
+        { "name": "Ivan Lendl", "value": 8, "imageUrl": "" },
+        { "name": "Jimmy Connors", "value": 8, "imageUrl": "" },
+        { "name": "Andre Agassi", "value": 8, "imageUrl": "" },
+        { "name": "John McEnroe", "value": 7, "imageUrl": "" },
+        { "name": "Mats Wilander", "value": 7, "imageUrl": "" },
+        { "name": "Björn Borg", "value": 11, "imageUrl": "" },
         { "name": "Andy Murray", "value": 3, "imageUrl": "" },
         { "name": "Stefan Edberg", "value": 6, "imageUrl": "" },
         { "name": "Boris Becker", "value": 6, "imageUrl": "" },
         { "name": "Pete Sampras", "value": 14, "imageUrl": "" },
         { "name": "Roger Federer", "value": 20, "imageUrl": "" },
         { "name": "Rafael Nadal", "value": 22, "imageUrl": "" },
-        { "name": "Novak Djokovic", "value": 24, "imageUrl": "" }
+        { "name": "Novak Djokovic", "value": 24, "imageUrl": "" },
+        { "name": "Ilie Năstase", "value": 2, "imageUrl": "" }
       ]
     },
     {
@@ -62,13 +90,20 @@
       "labelLow": "weniger Gold",
       "labelHigh": "mehr Gold",
       "items": [
+        { "name": "Brasilien", "value": 3, "imageUrl": "" },
+        { "name": "Kenia", "value": 4, "imageUrl": "" },
+        { "name": "Ungarn", "value": 6, "imageUrl": "" },
+        { "name": "Kanada", "value": 9, "imageUrl": "" },
+        { "name": "Neuseeland", "value": 10, "imageUrl": "" },
         { "name": "Deutschland", "value": 12, "imageUrl": "" },
+        { "name": "Großbritannien", "value": 14, "imageUrl": "" },
+        { "name": "Niederlande", "value": 15, "imageUrl": "" },
         { "name": "Frankreich", "value": 16, "imageUrl": "" },
         { "name": "Australien", "value": 18, "imageUrl": "" },
-        { "name": "Großbritannien", "value": 14, "imageUrl": "" },
+        { "name": "Japan", "value": 20, "imageUrl": "" },
         { "name": "China", "value": 40, "imageUrl": "" },
         { "name": "USA", "value": 40, "imageUrl": "" },
-        { "name": "Japan", "value": 20, "imageUrl": "" }
+        { "name": "Schweden", "value": 4, "imageUrl": "" }
       ]
     }
   ]
