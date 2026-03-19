@@ -1,0 +1,17 @@
+{
+  "name": "Buzzer Beater — Geografie",
+  "questions": [
+    { "question": "Wie heißt die Hauptstadt von Australien?", "answer": "Canberra" },
+    { "question": "Welcher Fluss fließt durch Budapest?", "answer": "Donau" },
+    { "question": "In welchem Land liegt der Kilimandscharo?", "answer": "Tansania" },
+    { "question": "Welches ist das flächenmäßig größte Land der Welt?", "answer": "Russland" },
+    { "question": "Wie heißt die Hauptstadt von Kanada?", "answer": "Ottawa" },
+    { "question": "In welchem Land liegt Machu Picchu?", "answer": "Peru" },
+    { "question": "Wie heißt der längste Fluss Europas?", "answer": "Wolga" },
+    { "question": "In welchem Land liegt das Taj Mahal?", "answer": "Indien" },
+    { "question": "Welches Meer trennt Europa von Afrika?", "answer": "Mittelmeer" },
+    { "question": "Welcher Kontinent ist der größte der Erde?", "answer": "Asien" },
+    { "question": "Wie heißt die Hauptstadt von Argentinien?", "answer": "Buenos Aires" },
+    { "question": "In welchem Land liegt der größte Teil des Amazonas-Regenwaldes?", "answer": "Brasilien" }
+  ]
+}

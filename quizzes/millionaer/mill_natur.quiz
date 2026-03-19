@@ -1,0 +1,95 @@
+{
+  "name": "Wer wird Millionär — Natur & Wissenschaft",
+  "questions": [
+    {
+      "question": "Wie viele Beine hat eine Spinne?",
+      "answers": ["6", "8", "10", "12"],
+      "correct": 1,
+      "points": 100
+    },
+    {
+      "question": "Was ist H₂O?",
+      "answers": ["Wasserstoffperoxid", "Wasser", "Salzsäure", "Sauerstoff"],
+      "correct": 1,
+      "points": 200
+    },
+    {
+      "question": "Was ist das häufigste Gas in der Erdatmosphäre?",
+      "answers": ["Sauerstoff", "Kohlendioxid", "Stickstoff", "Argon"],
+      "correct": 2,
+      "points": 300
+    },
+    {
+      "question": "Wie nennt man den Prozess, bei dem Pflanzen Licht in Zucker umwandeln?",
+      "answers": ["Respiration", "Osmose", "Photosynthese", "Transpiration"],
+      "correct": 2,
+      "points": 500
+    },
+    {
+      "question": "Welches Organ reinigt das Blut von Giftstoffen?",
+      "answers": ["Niere", "Lunge", "Milz", "Leber"],
+      "correct": 3,
+      "points": 750
+    },
+    {
+      "question": "Wie nennt man Tiere, die sich hauptsächlich von Pflanzen ernähren?",
+      "answers": ["Karnivoren", "Herbivoren", "Omnivoren", "Detrivoren"],
+      "correct": 1,
+      "points": 1000
+    },
+    {
+      "question": "Wie viele Chromosomenpaare besitzt ein gesunder Mensch?",
+      "answers": ["21", "22", "23", "24"],
+      "correct": 2,
+      "points": 1500
+    },
+    {
+      "question": "Welches Tier hat das größte Herz im Tierreich?",
+      "answers": ["Afrikanischer Elefant", "Gepard", "Blauwal", "Nilpferd"],
+      "correct": 2,
+      "points": 2000
+    },
+    {
+      "question": "Was versteht man unter dem pH-Wert von 7?",
+      "answers": ["Sauer", "Neutral", "Basisch", "Toxisch"],
+      "correct": 1,
+      "points": 3000
+    },
+    {
+      "question": "Wie heißt der Wissenschaftszweig, der sich mit Erdbeben beschäftigt?",
+      "answers": ["Meteorologie", "Vulkanologie", "Seismologie", "Geologie"],
+      "correct": 2,
+      "points": 5000
+    },
+    {
+      "question": "Welches Metall ist bei Raumtemperatur flüssig?",
+      "answers": ["Gallium", "Cäsium", "Quecksilber", "Natrium"],
+      "correct": 2,
+      "points": 7500
+    },
+    {
+      "question": "Welches Tier kann seine Farbe am schnellsten wechseln?",
+      "answers": ["Chamäleon", "Tintenfisch", "Tintenfisch (Oktopus)", "Wimpelfisch"],
+      "correct": 2,
+      "points": 10000
+    },
+    {
+      "question": "Wie nennt man die Schicht der Atmosphäre, in der Flugzeuge fliegen?",
+      "answers": ["Stratosphäre", "Troposphäre", "Mesosphäre", "Thermosphäre"],
+      "correct": 1,
+      "points": 15000
+    },
+    {
+      "question": "Welches chemische Element hat die Ordnungszahl 79?",
+      "answers": ["Platin", "Quecksilber", "Gold", "Silber"],
+      "correct": 2,
+      "points": 25000
+    },
+    {
+      "question": "Wie nennt man die Theorie, die besagt, dass sich die Kontinente früher in einem einzigen Superkontinent befanden?",
+      "answers": ["Plattentektonik", "Pangäa-Theorie", "Kontinentaldrift", "Isostasie"],
+      "correct": 2,
+      "points": 50000
+    }
+  ]
+}

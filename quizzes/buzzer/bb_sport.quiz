@@ -1,0 +1,17 @@
+{
+  "name": "Buzzer Beater — Sport",
+  "questions": [
+    { "question": "Wie viele Spieler hat eine Fußballmannschaft gleichzeitig auf dem Feld?", "answer": "11" },
+    { "question": "In welchem Land fanden die ersten modernen Olympischen Spiele (1896) statt?", "answer": "Griechenland" },
+    { "question": "Wie viele Ringe hat das olympische Symbol?", "answer": "5" },
+    { "question": "Welches Land hat die meisten Fußball-Weltmeistertitel gewonnen?", "answer": "Brasilien" },
+    { "question": "Wer hält den Weltrekord im 100-Meter-Sprint?", "answer": "Usain Bolt" },
+    { "question": "Wie viele Spieler hat eine Basketballmannschaft gleichzeitig auf dem Feld?", "answer": "5" },
+    { "question": "In welchem Land wurde der Sport Sumo erfunden?", "answer": "Japan" },
+    { "question": "Wie lange dauert eine reguläre Fußballpartie?", "answer": "90 Minuten" },
+    { "question": "Welches Land gewann die Fußball-Weltmeisterschaft 2014?", "answer": "Deutschland" },
+    { "question": "Wie viele Sterne ziert das Trikot der deutschen Fußball-Nationalmannschaft?", "answer": "4" },
+    { "question": "Wie viele Spieler hat eine Volleyballmannschaft auf dem Feld?", "answer": "6" },
+    { "question": "In welchem Sport führt man einen 'Slam Dunk' aus?", "answer": "Basketball" }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "name": "Wer wird Millionär — Sport & Rekorde",
+  "questions": [
+    {
+      "question": "Wie viele Spieler stehen in einer Basketballmannschaft auf dem Feld?",
+      "answers": ["4", "5", "6", "7"],
+      "correct": 1,
+      "points": 100
+    },
+    {
+      "question": "In welchem Land fanden die Olympischen Sommerspiele 2024 statt?",
+      "answers": ["Japan", "Großbritannien", "Frankreich", "Spanien"],
+      "correct": 2,
+      "points": 200
+    },
+    {
+      "question": "Welches Land gewann die Fußball-WM 2014?",
+      "answers": ["Argentinien", "Brasilien", "Frankreich", "Deutschland"],
+      "correct": 3,
+      "points": 300
+    },
+    {
+      "question": "Wer hält den 100m-Weltrekord der Männer?",
+      "answers": ["Tyson Gay", "Christian Coleman", "Usain Bolt", "Yohan Blake"],
+      "correct": 2,
+      "points": 500
+    },
+    {
+      "question": "Wie viele Ringe hat das olympische Symbol?",
+      "answers": ["4", "5", "6", "7"],
+      "correct": 1,
+      "points": 750
+    },
+    {
+      "question": "In welchem Sport gibt es einen 'Slam Dunk'?",
+      "answers": ["Volleyball", "Tennis", "Basketball", "Handball"],
+      "correct": 2,
+      "points": 1000
+    },
+    {
+      "question": "Welche Tennisspieler hat die meisten Grand-Slam-Titel gewonnen (Stand 2024)?",
+      "answers": ["Roger Federer", "Rafael Nadal", "Novak Djokovic", "Pete Sampras"],
+      "correct": 2,
+      "points": 1500
+    },
+    {
+      "question": "In welcher Stadt fanden die ersten modernen Olympischen Spiele 1896 statt?",
+      "answers": ["Paris", "London", "Athen", "Stockholm"],
+      "correct": 2,
+      "points": 2000
+    },
+    {
+      "question": "Welcher Formel-1-Fahrer gewann 7 Weltmeisterschaften?",
+      "answers": ["Ayrton Senna", "Michael Schumacher", "Lewis Hamilton", "Beide B und C"],
+      "correct": 3,
+      "points": 3000
+    },
+    {
+      "question": "In welchem Land wurde Cricket erfunden?",
+      "answers": ["Australien", "Indien", "England", "Südafrika"],
+      "correct": 2,
+      "points": 5000
+    },
+    {
+      "question": "Wie heißt das größte Tennisstadion der Welt (in New York)?",
+      "answers": ["Center Court", "Arthur Ashe Stadium", "Rod Laver Arena", "Philippe-Chatrier"],
+      "correct": 1,
+      "points": 7500
+    },
+    {
+      "question": "Welches Land hat die meisten FIFA-Weltmeistertitel (5 Stück)?",
+      "answers": ["Deutschland", "Frankreich", "Brasilien", "Argentinien"],
+      "correct": 2,
+      "points": 10000
+    },
+    {
+      "question": "Wie nennt man im Boxen den K.o. durch Auszählen ohne Niederschlag?",
+      "answers": ["TKO", "KO", "RSC", "DQ"],
+      "correct": 0,
+      "points": 15000
+    },
+    {
+      "question": "Wer gewann bei den Olympischen Spielen 2008 in Peking 8 Goldmedaillen im Schwimmen?",
+      "answers": ["Ian Thorpe", "Ryan Lochte", "Michael Phelps", "Mark Spitz"],
+      "correct": 2,
+      "points": 25000
+    },
+    {
+      "question": "In welchem Jahr gewann Deutschland erstmals die Fußball-Weltmeisterschaft?",
+      "answers": ["1950", "1954", "1958", "1962"],
+      "correct": 1,
+      "points": 50000
+    }
+  ]
+}

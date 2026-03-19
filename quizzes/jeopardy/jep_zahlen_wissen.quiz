@@ -1,0 +1,55 @@
+{
+  "name": "Jeopardy — Zahlen & Wissen",
+  "categories": [
+    {
+      "name": "Mathematik",
+      "questions": [
+        { "points": 200, "question": "Wie viele Seiten hat ein Hexagon?", "answer": "6" },
+        { "points": 400, "question": "Was ist die Quadratwurzel von 144?", "answer": "12" },
+        { "points": 600, "question": "Wie nennt man eine Zahl, die nur durch 1 und sich selbst teilbar ist?", "answer": "Primzahl" },
+        { "points": 800, "question": "Was ergibt Pi gerundet auf zwei Dezimalstellen?", "answer": "3,14" },
+        { "points": 1000, "question": "Wie nennt man das mathematische Prinzip, nach dem ein Ereignis unwahrscheinlicher wird, je häufiger es aufgetreten ist?", "answer": "Gambler's Fallacy (Spielerfehlschluss)" }
+      ]
+    },
+    {
+      "name": "Religion & Mythologie",
+      "questions": [
+        { "points": 200, "question": "Gott des Donners in der nordischen Mythologie", "answer": "Thor" },
+        { "points": 400, "question": "Heiligster Ort des Islam in Saudi-Arabien", "answer": "Mekka" },
+        { "points": 600, "question": "Griechischer Gott des Meeres", "answer": "Poseidon" },
+        { "points": 800, "question": "Wie heißt die heilige Schrift der Muslime?", "answer": "Koran" },
+        { "points": 1000, "question": "Name des Einäugigen Göttervaters in der nordischen Mythologie", "answer": "Odin" }
+      ]
+    },
+    {
+      "name": "Länder & Flaggen",
+      "questions": [
+        { "points": 200, "question": "Welches Land hat eine Flagge mit einem Ahornblatt?", "answer": "Kanada" },
+        { "points": 400, "question": "Welches Land hat eine rein rote Flagge?", "answer": "China (mit gelben Sternen) — rein rot: kein Land! Oder: Japan hat Rot-Weiß" },
+        { "points": 600, "question": "Land, dessen Flagge einen Zedernbaum zeigt", "answer": "Libanon" },
+        { "points": 800, "question": "Einziges Land mit einer nicht-rechteckigen Flagge", "answer": "Nepal" },
+        { "points": 1000, "question": "Land, das als erstes eine Trikolore als Nationalflagge einführte", "answer": "Frankreich (1794)" }
+      ]
+    },
+    {
+      "name": "Wetter & Klima",
+      "questions": [
+        { "points": 200, "question": "Wie nennt man einen Wirbelsturm im Atlantik?", "answer": "Hurrikan" },
+        { "points": 400, "question": "Bei welcher Temperatur siedet Wasser auf Meereshöhe?", "answer": "100 Grad Celsius" },
+        { "points": 600, "question": "Wie nennt man das Klimaphänomen, bei dem der Pazifik ungewöhnlich warm wird?", "answer": "El Niño" },
+        { "points": 800, "question": "In welcher Schicht der Atmosphäre entstehen Wolken?", "answer": "Troposphäre" },
+        { "points": 1000, "question": "Wie nennt man die Grenzfläche zwischen zwei Luftmassen unterschiedlicher Temperatur?", "answer": "Front / Wetterfront" }
+      ]
+    },
+    {
+      "name": "Berühmte Persönlichkeiten",
+      "questions": [
+        { "points": 200, "question": "Erster Mensch auf dem Mond", "answer": "Neil Armstrong" },
+        { "points": 400, "question": "Maler der 'Mona Lisa'", "answer": "Leonardo da Vinci" },
+        { "points": 600, "question": "Physikerin, die zweimal den Nobelpreis gewann", "answer": "Marie Curie" },
+        { "points": 800, "question": "Bürgerrechtler, der die Rede 'I Have a Dream' hielt", "answer": "Martin Luther King Jr." },
+        { "points": 1000, "question": "Österreichisch-amerikanischer Physiker, der die Quantenmechanik entscheidend mitentwickelte", "answer": "Erwin Schrödinger / Wolfgang Pauli" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Buzzer Beater — Wissenschaft & Natur",
+  "questions": [
+    { "question": "Welches chemische Element hat das Symbol Au?", "answer": "Gold" },
+    { "question": "Welches Organ produziert Insulin im menschlichen Körper?", "answer": "Bauchspeicheldrüse" },
+    { "question": "Wie viele Chromosomen hat ein gesunder Mensch?", "answer": "46" },
+    { "question": "Wie lautet der wissenschaftliche Name des Menschen?", "answer": "Homo sapiens" },
+    { "question": "Wie viele Herzkammern hat ein menschliches Herz?", "answer": "4" },
+    { "question": "Welches Gas ist am häufigsten in der Erdatmosphäre?", "answer": "Stickstoff" },
+    { "question": "Wie nennt man den Prozess, durch den Pflanzen Licht in Energie umwandeln?", "answer": "Photosynthese" },
+    { "question": "Aus welchen zwei Elementen besteht Wasser chemisch?", "answer": "Wasserstoff und Sauerstoff" },
+    { "question": "Wie nennt man die äußerste feste Schicht der Erde?", "answer": "Erdkruste" },
+    { "question": "Welches Tier ist das größte der Welt?", "answer": "Blauwal" },
+    { "question": "Wie nennt man eine explodierende Stern am Ende seines Lebens?", "answer": "Supernova" },
+    { "question": "Welches chemische Element hat die Ordnungszahl 1?", "answer": "Wasserstoff" }
+  ]
+}

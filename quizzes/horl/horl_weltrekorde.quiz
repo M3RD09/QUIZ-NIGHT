@@ -1,0 +1,75 @@
+{
+  "name": "Higher or Lower — Weltrekorde & Extreme",
+  "rounds": [
+    {
+      "category": "Höhe der höchsten Gebäude der Welt (m)",
+      "labelLow": "niedriger",
+      "labelHigh": "höher",
+      "items": [
+        { "name": "Kölner Dom", "value": 157, "imageUrl": "" },
+        { "name": "Freiheitsstatue", "value": 93, "imageUrl": "" },
+        { "name": "Eiffelturm", "value": 330, "imageUrl": "" },
+        { "name": "Empire State Building", "value": 443, "imageUrl": "" },
+        { "name": "One World Trade Center", "value": 541, "imageUrl": "" },
+        { "name": "Shanghai Tower", "value": 632, "imageUrl": "" },
+        { "name": "Burj Khalifa", "value": 828, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Tiefe der tiefsten Meerespunkte (m)",
+      "labelLow": "weniger tief",
+      "labelHigh": "tiefer",
+      "items": [
+        { "name": "Ostsee (tiefste Stelle)", "value": 459, "imageUrl": "" },
+        { "name": "Mittelmeer (tiefste Stelle)", "value": 5267, "imageUrl": "" },
+        { "name": "Kaspisches Meer", "value": 1025, "imageUrl": "" },
+        { "name": "Nordatlantik (tiefstes Becken)", "value": 8376, "imageUrl": "" },
+        { "name": "Marianengraben (Challengertief)", "value": 11034, "imageUrl": "" },
+        { "name": "Tongagraben", "value": 10882, "imageUrl": "" },
+        { "name": "Philippinengraben", "value": 10540, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Länge der längsten Flüsse der Welt (km)",
+      "labelLow": "kürzer",
+      "labelHigh": "länger",
+      "items": [
+        { "name": "Rhein", "value": 1230, "imageUrl": "" },
+        { "name": "Donau", "value": 2860, "imageUrl": "" },
+        { "name": "Niger", "value": 4180, "imageUrl": "" },
+        { "name": "Amazonas", "value": 6992, "imageUrl": "" },
+        { "name": "Nil", "value": 6853, "imageUrl": "" },
+        { "name": "Jangtse", "value": 6300, "imageUrl": "" },
+        { "name": "Missouri", "value": 3767, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Fläche der größten Länder der Welt (1.000 km²)",
+      "labelLow": "kleiner",
+      "labelHigh": "größer",
+      "items": [
+        { "name": "Deutschland", "value": 357, "imageUrl": "" },
+        { "name": "Frankreich", "value": 552, "imageUrl": "" },
+        { "name": "Indien", "value": 3287, "imageUrl": "" },
+        { "name": "USA", "value": 9834, "imageUrl": "" },
+        { "name": "China", "value": 9597, "imageUrl": "" },
+        { "name": "Kanada", "value": 9985, "imageUrl": "" },
+        { "name": "Russland", "value": 17098, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Rekordtemperaturen auf der Erde (°C)",
+      "labelLow": "kälter",
+      "labelHigh": "wärmer",
+      "items": [
+        { "name": "Kältester Ort: Wostok-Station (Antarktis)", "value": -89, "imageUrl": "" },
+        { "name": "Gefrierpunkt Wasser", "value": 0, "imageUrl": "" },
+        { "name": "Durchschnitt Sahara (Sommer)", "value": 40, "imageUrl": "" },
+        { "name": "Heißester gemessener Wert: Death Valley", "value": 57, "imageUrl": "" },
+        { "name": "Durchschnitt Norddeutschland (Juli)", "value": 22, "imageUrl": "" },
+        { "name": "Kältester bewohnter Ort: Oimjakon", "value": -50, "imageUrl": "" },
+        { "name": "Oberfläche der Sonne", "value": 5500, "imageUrl": "" }
+      ]
+    }
+  ]
+}

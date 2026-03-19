@@ -1,0 +1,14 @@
+{
+  "name": "Hot Zones — Sport & Bewegung",
+  "categories": [
+    { "name": "Wie populär ist Fußball in Deutschland im Vergleich zu anderen Sportarten?", "labelLeft": "kaum bekannt", "labelRight": "absoluter Nationalsport" },
+    { "name": "Wie körperlich anstrengend ist ein Ironman-Triathlon?", "labelLeft": "leichter Spaziergang", "labelRight": "menschlicher Grenzbereich" },
+    { "name": "Wie gefährlich gilt Boxen als Sport?", "labelLeft": "harmloser Hobbysport", "labelRight": "lebensgefährlich" },
+    { "name": "Wie beliebt ist eSports bei der Generation Z?", "labelLeft": "totales Nischenthema", "labelRight": "größer als traditioneller Sport" },
+    { "name": "Wie hoch ist die durchschnittliche Herzfrequenz eines Sprinters beim 100m-Lauf?", "labelLeft": "ruhepuls (60)", "labelRight": "absolutes Maximum (220)" },
+    { "name": "Wie teuer sind Tickets für ein Champions-League-Finale?", "labelLeft": "kostenlos / 10€", "labelRight": "1.000€ und mehr" },
+    { "name": "Wie schwierig ist es, einen schwarzen Gürtel in Karate zu erreichen?", "labelLeft": "nach einem Monat machbar", "labelRight": "jahrzehntelange Arbeit" },
+    { "name": "Wie verbreitet ist Yoga in Deutschland?", "labelLeft": "fast niemand macht es", "labelRight": "jeder dritte macht es" },
+    { "name": "Wie hoch ist der Anteil von Frauen im professionellen Fußball?", "labelLeft": "praktisch 0%", "labelRight": "gleichwertig zum Männerfußball" }
+  ]
+}

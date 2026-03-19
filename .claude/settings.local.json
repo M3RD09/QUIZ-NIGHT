@@ -4,7 +4,12 @@
       "Bash(wc:*)",
       "Bash(node --check buzzer.html)",
       "Bash(ls:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "WebSearch",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:upload.wikimedia.org)",
+      "WebFetch(domain:www.mediawiki.org)"
     ]
   }
 }

@@ -1,0 +1,55 @@
+{
+  "name": "Jeopardy — Popkultur & Entertainment",
+  "categories": [
+    {
+      "name": "Marvel & DC",
+      "questions": [
+        { "points": 200, "question": "Superkraft von Spider-Man", "answer": "Spinnennetze schießen / an Wänden klettern" },
+        { "points": 400, "question": "Schauspieler, der Thor in den MCU-Filmen spielt", "answer": "Chris Hemsworth" },
+        { "points": 600, "question": "Bürgerlicher Name von Batman", "answer": "Bruce Wayne" },
+        { "points": 800, "question": "Herkunftsplanet von Superman", "answer": "Krypton" },
+        { "points": 1000, "question": "Marvel-Charakter mit dem Decknamen 'The Merc with a Mouth'", "answer": "Deadpool" }
+      ]
+    },
+    {
+      "name": "Serien & Streaming",
+      "questions": [
+        { "points": 200, "question": "Streamingdienst, der 'Stranger Things' produziert", "answer": "Netflix" },
+        { "points": 400, "question": "Hauptcharakter in 'The Witcher'", "answer": "Geralt von Riva" },
+        { "points": 600, "question": "Serie, in der Walter White Drogen kocht", "answer": "Breaking Bad" },
+        { "points": 800, "question": "Name der koreanischen Überlebensserie mit Kinderspielen (2021)", "answer": "Squid Game" },
+        { "points": 1000, "question": "HBO-Serie basierend auf George R.R. Martins Büchern", "answer": "Game of Thrones" }
+      ]
+    },
+    {
+      "name": "Musik",
+      "questions": [
+        { "points": 200, "question": "Sängerin von 'Bad Blood' und 'Shake It Off'", "answer": "Taylor Swift" },
+        { "points": 400, "question": "Britische Band, die 'Bohemian Rhapsody' aufnahm", "answer": "Queen" },
+        { "points": 600, "question": "Rapper, der für 'HUMBLE.' und 'DAMN.' bekannt ist", "answer": "Kendrick Lamar" },
+        { "points": 800, "question": "Sänger des Liedes 'Shape of You' (2017)", "answer": "Ed Sheeran" },
+        { "points": 1000, "question": "Deutsches DJ-Duo, das 'Animals' und 'Lean On' produzierte", "answer": "Martin Garrix / Major Lazer (Lean On ist Major Lazer) — Animals ist Martin Garrix" }
+      ]
+    },
+    {
+      "name": "Social Media",
+      "questions": [
+        { "points": 200, "question": "Gründer von Facebook", "answer": "Mark Zuckerberg" },
+        { "points": 400, "question": "Plattform, bekannt für kurze Videos (15–60 Sek.), urspr. aus China", "answer": "TikTok" },
+        { "points": 600, "question": "Mikroblogging-Dienst mit 280-Zeichen-Limit (jetzt X)", "answer": "Twitter / X" },
+        { "points": 800, "question": "Person mit den meisten Instagram-Followern weltweit (Stand 2024)", "answer": "Cristiano Ronaldo" },
+        { "points": 1000, "question": "Ursprünglicher Name von Snapchat bei Gründung (2011)", "answer": "Picaboo" }
+      ]
+    },
+    {
+      "name": "Anime & Manga",
+      "questions": [
+        { "points": 200, "question": "Name des Hauptcharakters in 'Naruto'", "answer": "Naruto Uzumaki" },
+        { "points": 400, "question": "Studio, das 'Spirited Away' produzierte", "answer": "Studio Ghibli" },
+        { "points": 600, "question": "Manga über Piraten von Eiichiro Oda", "answer": "One Piece" },
+        { "points": 800, "question": "Kampfsport-Anime mit Son Goku als Hauptfigur", "answer": "Dragon Ball / Dragon Ball Z" },
+        { "points": 1000, "question": "Name des Antagonisten in 'Death Note'", "answer": "Light Yagami ist Protagonist / Antagonist je nach Perspektive — oder: Ryuk (Shinigami)" }
+      ]
+    }
+  ]
+}

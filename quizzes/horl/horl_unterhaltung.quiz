@@ -1,0 +1,75 @@
+{
+  "name": "Higher or Lower — Unterhaltung & Medien",
+  "rounds": [
+    {
+      "category": "Einspielergebnis von Kinofilmen weltweit (Mrd. $)",
+      "labelLow": "weniger eingespielt",
+      "labelHigh": "mehr eingespielt",
+      "items": [
+        { "name": "Joker (2019)", "value": 1, "imageUrl": "" },
+        { "name": "The Dark Knight (2008)", "value": 1, "imageUrl": "" },
+        { "name": "Spider-Man: No Way Home", "value": 2, "imageUrl": "" },
+        { "name": "Avengers: Infinity War", "value": 2, "imageUrl": "" },
+        { "name": "Titanic (1997)", "value": 2, "imageUrl": "" },
+        { "name": "Avengers: Endgame", "value": 3, "imageUrl": "" },
+        { "name": "Avatar (2009)", "value": 3, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Laufzeit von Filmen (Minuten)",
+      "labelLow": "kürzer",
+      "labelHigh": "länger",
+      "items": [
+        { "name": "Shrek (2001)", "value": 90, "imageUrl": "" },
+        { "name": "Kevin allein zu Haus (1990)", "value": 103, "imageUrl": "" },
+        { "name": "Forrest Gump (1994)", "value": 142, "imageUrl": "" },
+        { "name": "Schindlers Liste (1993)", "value": 195, "imageUrl": "" },
+        { "name": "Herr der Ringe: Rückkehr des Königs (extended)", "value": 251, "imageUrl": "" },
+        { "name": "Oppenheimer (2023)", "value": 180, "imageUrl": "" },
+        { "name": "Interstellar (2014)", "value": 169, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Alter bekannter Persönlichkeiten bei ihrem Tod (Jahre)",
+      "labelLow": "jünger gestorben",
+      "labelHigh": "älter gestorben",
+      "items": [
+        { "name": "Marilyn Monroe", "value": 36, "imageUrl": "" },
+        { "name": "Michael Jackson", "value": 50, "imageUrl": "" },
+        { "name": "Elvis Presley", "value": 42, "imageUrl": "" },
+        { "name": "Queen Elizabeth II.", "value": 96, "imageUrl": "" },
+        { "name": "David Bowie", "value": 69, "imageUrl": "" },
+        { "name": "Nelson Mandela", "value": 95, "imageUrl": "" },
+        { "name": "Leonardo da Vinci", "value": 67, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Spotify-Streams des meistgehörten Albums (Mrd.)",
+      "labelLow": "weniger Streams",
+      "labelHigh": "mehr Streams",
+      "items": [
+        { "name": "Harry Styles — Harry's House", "value": 10, "imageUrl": "" },
+        { "name": "Drake — Certified Lover Boy", "value": 14, "imageUrl": "" },
+        { "name": "Billie Eilish — Happier Than Ever", "value": 12, "imageUrl": "" },
+        { "name": "Taylor Swift — Midnights", "value": 30, "imageUrl": "" },
+        { "name": "The Weeknd — After Hours", "value": 20, "imageUrl": "" },
+        { "name": "Bad Bunny — Un Verano Sin Ti", "value": 35, "imageUrl": "" },
+        { "name": "Morgan Wallen — One Thing at a Time", "value": 18, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Erscheinungsjahr bekannter Videospiele",
+      "labelLow": "früher erschienen",
+      "labelHigh": "später erschienen",
+      "items": [
+        { "name": "Pac-Man", "value": 1980, "imageUrl": "" },
+        { "name": "Super Mario Bros.", "value": 1985, "imageUrl": "" },
+        { "name": "The Legend of Zelda", "value": 1986, "imageUrl": "" },
+        { "name": "Minecraft", "value": 2011, "imageUrl": "" },
+        { "name": "Fortnite", "value": 2017, "imageUrl": "" },
+        { "name": "Grand Theft Auto V", "value": 2013, "imageUrl": "" },
+        { "name": "Among Us", "value": 2018, "imageUrl": "" }
+      ]
+    }
+  ]
+}

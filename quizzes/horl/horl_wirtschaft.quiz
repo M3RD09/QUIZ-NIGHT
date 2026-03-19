@@ -1,0 +1,75 @@
+{
+  "name": "Higher or Lower — Wirtschaft & Zahlen",
+  "rounds": [
+    {
+      "category": "Börsenwert bekannter Unternehmen (Mrd. $, ca. 2024)",
+      "labelLow": "geringerer Wert",
+      "labelHigh": "höherer Wert",
+      "items": [
+        { "name": "McDonald's", "value": 220, "imageUrl": "" },
+        { "name": "Netflix", "value": 280, "imageUrl": "" },
+        { "name": "Tesla", "value": 700, "imageUrl": "" },
+        { "name": "Amazon", "value": 2000, "imageUrl": "" },
+        { "name": "Google (Alphabet)", "value": 2200, "imageUrl": "" },
+        { "name": "Microsoft", "value": 3200, "imageUrl": "" },
+        { "name": "Apple", "value": 3500, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Einwohnerzahl asiatischer Megastädte (Mio.)",
+      "labelLow": "weniger Einwohner",
+      "labelHigh": "mehr Einwohner",
+      "items": [
+        { "name": "Singapur", "value": 6, "imageUrl": "" },
+        { "name": "Bangkok", "value": 11, "imageUrl": "" },
+        { "name": "Mumbai", "value": 21, "imageUrl": "" },
+        { "name": "Peking", "value": 22, "imageUrl": "" },
+        { "name": "Tokio", "value": 37, "imageUrl": "" },
+        { "name": "Schanghai", "value": 29, "imageUrl": "" },
+        { "name": "Dhaka", "value": 23, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Gründungsjahr bekannter Technologiefirmen",
+      "labelLow": "früher gegründet",
+      "labelHigh": "später gegründet",
+      "items": [
+        { "name": "IBM", "value": 1911, "imageUrl": "" },
+        { "name": "Intel", "value": 1968, "imageUrl": "" },
+        { "name": "Microsoft", "value": 1975, "imageUrl": "" },
+        { "name": "Apple", "value": 1976, "imageUrl": "" },
+        { "name": "Amazon", "value": 1994, "imageUrl": "" },
+        { "name": "Google", "value": 1998, "imageUrl": "" },
+        { "name": "TikTok (ByteDance)", "value": 2012, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl weltweiter Filialen bekannter Fast-Food-Ketten (ca. 2024)",
+      "labelLow": "weniger Filialen",
+      "labelHigh": "mehr Filialen",
+      "items": [
+        { "name": "Burger King", "value": 18000, "imageUrl": "" },
+        { "name": "KFC", "value": 27000, "imageUrl": "" },
+        { "name": "Starbucks", "value": 36000, "imageUrl": "" },
+        { "name": "McDonald's", "value": 40000, "imageUrl": "" },
+        { "name": "Subway", "value": 37000, "imageUrl": "" },
+        { "name": "Domino's Pizza", "value": 19000, "imageUrl": "" },
+        { "name": "Dunkin'", "value": 12000, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "BIP von Ländern (Mrd. $, ca. 2024)",
+      "labelLow": "geringeres BIP",
+      "labelHigh": "höheres BIP",
+      "items": [
+        { "name": "Schweiz", "value": 905, "imageUrl": "" },
+        { "name": "Australien", "value": 1720, "imageUrl": "" },
+        { "name": "Frankreich", "value": 3050, "imageUrl": "" },
+        { "name": "Deutschland", "value": 4200, "imageUrl": "" },
+        { "name": "Japan", "value": 4200, "imageUrl": "" },
+        { "name": "China", "value": 17800, "imageUrl": "" },
+        { "name": "USA", "value": 27400, "imageUrl": "" }
+      ]
+    }
+  ]
+}

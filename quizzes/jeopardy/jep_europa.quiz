@@ -1,0 +1,55 @@
+{
+  "name": "Jeopardy — Europa & Sprachen",
+  "categories": [
+    {
+      "name": "Europa",
+      "questions": [
+        { "points": 200, "question": "Hauptstadt von Österreich", "answer": "Wien" },
+        { "points": 400, "question": "Höchster Berg der Alpen", "answer": "Mont Blanc" },
+        { "points": 600, "question": "Land mit den meisten EU-Mitgliedsjahren (Gründungsmitglied 1957)", "answer": "Deutschland / Frankreich / Italien / Belgien / Niederlande / Luxemburg" },
+        { "points": 800, "question": "Europäisches Land mit der meisten Küstenlinie", "answer": "Norwegen" },
+        { "points": 1000, "question": "Name des Vertrags, der die Europäische Union 1993 gründete", "answer": "Maastrichter Vertrag" }
+      ]
+    },
+    {
+      "name": "Sprache & Literatur",
+      "questions": [
+        { "points": 200, "question": "Autor von 'Romeo und Julia'", "answer": "William Shakespeare" },
+        { "points": 400, "question": "Sprache mit den meisten Muttersprachlern weltweit", "answer": "Mandarin-Chinesisch" },
+        { "points": 600, "question": "Deutschsprachiger Autor von 'Der Prozess' und 'Die Verwandlung'", "answer": "Franz Kafka" },
+        { "points": 800, "question": "Name des Buches, in dem Odysseus seine Reise beschreibt (Homer)", "answer": "Odyssee" },
+        { "points": 1000, "question": "Russischer Schriftsteller von 'Krieg und Frieden'", "answer": "Leo Tolstoi" }
+      ]
+    },
+    {
+      "name": "Technik & Erfindungen",
+      "questions": [
+        { "points": 200, "question": "Wer erfand das Telefon?", "answer": "Alexander Graham Bell" },
+        { "points": 400, "question": "In welchem Jahr wurde das World Wide Web erfunden?", "answer": "1989 / 1991" },
+        { "points": 600, "question": "Unternehmen, das das erste Smartphone mit Touchscreen-Oberfläche massentauglich machte (2007)", "answer": "Apple" },
+        { "points": 800, "question": "Name des ersten kommerziellen Internets der Welt (USA, 1989)", "answer": "CompuServe / AOL" },
+        { "points": 1000, "question": "Physiker, der das Prinzip der Quantenmechanik mit 'Schrödingers Katze' illustrierte", "answer": "Erwin Schrödinger" }
+      ]
+    },
+    {
+      "name": "Deutschland",
+      "questions": [
+        { "points": 200, "question": "Hauptstadt von Bayern", "answer": "München" },
+        { "points": 400, "question": "Fluss, der durch Köln fließt", "answer": "Rhein" },
+        { "points": 600, "question": "Erfinder des Automobils (1885)", "answer": "Carl Benz" },
+        { "points": 800, "question": "Jahr der Gründung der Bundesrepublik Deutschland", "answer": "1949" },
+        { "points": 1000, "question": "Name der deutschen Hymne", "answer": "Das Lied der Deutschen / Deutschlandlied" }
+      ]
+    },
+    {
+      "name": "Weltraum",
+      "questions": [
+        { "points": 200, "question": "Der Planet am nächsten zur Sonne", "answer": "Merkur" },
+        { "points": 400, "question": "Anzahl der Planeten in unserem Sonnensystem", "answer": "8" },
+        { "points": 600, "question": "Name der Galaxie, in der unser Sonnensystem liegt", "answer": "Milchstraße" },
+        { "points": 800, "question": "Erste Frau im Weltraum (1963)", "answer": "Valentina Tereschkowa" },
+        { "points": 1000, "question": "Durchmesser der Sonne in km (ca.)", "answer": "1.392.000 km" }
+      ]
+    }
+  ]
+}

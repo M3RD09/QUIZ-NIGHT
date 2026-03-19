@@ -1,0 +1,17 @@
+{
+  "name": "Buzzer Beater — Geschichte",
+  "questions": [
+    { "question": "In welchem Jahr begann der Erste Weltkrieg?", "answer": "1914" },
+    { "question": "Wer war der erste Präsident der Vereinigten Staaten?", "answer": "George Washington" },
+    { "question": "In welchem Jahr fiel die Berliner Mauer?", "answer": "1989" },
+    { "question": "In welchem Jahr landeten Menschen erstmals auf dem Mond?", "answer": "1969" },
+    { "question": "Wer bemalte die Decke der Sixtinischen Kapelle?", "answer": "Michelangelo" },
+    { "question": "In welchem Jahr endete der Zweite Weltkrieg?", "answer": "1945" },
+    { "question": "Wer war der erste Mensch im Weltraum?", "answer": "Juri Gagarin" },
+    { "question": "In welchem Jahr versank die Titanic?", "answer": "1912" },
+    { "question": "In welchem Jahr wurde Deutschland wiedervereinigt?", "answer": "1990" },
+    { "question": "Wer erfand den Buchdruck mit beweglichen Lettern?", "answer": "Johannes Gutenberg" },
+    { "question": "Welche Stadt wurde 79 n.Chr. durch den Vesuv begraben?", "answer": "Pompeji" },
+    { "question": "Wer war der erste Kaiser Frankreichs?", "answer": "Napoleon Bonaparte" }
+  ]
+}

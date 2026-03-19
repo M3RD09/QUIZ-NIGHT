@@ -1,0 +1,245 @@
+{
+  "name": "Higher or Lower — Allgemeinwissen",
+  "rounds": [
+    {
+      "category": "Einwohnerzahl europäischer Länder (in Millionen)",
+      "labelLow": "weniger Einwohner",
+      "labelHigh": "mehr Einwohner",
+      "items": [
+        {
+          "name": "Deutschland",
+          "value": 84,
+          "imageUrl": ""
+        },
+        {
+          "name": "Frankreich",
+          "value": 68,
+          "imageUrl": ""
+        },
+        {
+          "name": "Polen",
+          "value": 38,
+          "imageUrl": ""
+        },
+        {
+          "name": "Niederlande",
+          "value": 17,
+          "imageUrl": ""
+        },
+        {
+          "name": "Österreich",
+          "value": 9,
+          "imageUrl": ""
+        },
+        {
+          "name": "Schweiz",
+          "value": 8,
+          "imageUrl": ""
+        },
+        {
+          "name": "Portugal",
+          "value": 10,
+          "imageUrl": ""
+        },
+        {
+          "name": "Belgien",
+          "value": 11,
+          "imageUrl": ""
+        }
+      ]
+    },
+    {
+      "category": "Laufzeit bekannter Filme (in Minuten)",
+      "labelLow": "kürzer",
+      "labelHigh": "länger",
+      "items": [
+        {
+          "name": "Titanic (1997)",
+          "value": 195,
+          "imageUrl": ""
+        },
+        {
+          "name": "Avengers: Endgame",
+          "value": 181,
+          "imageUrl": ""
+        },
+        {
+          "name": "Interstellar",
+          "value": 169,
+          "imageUrl": ""
+        },
+        {
+          "name": "The Dark Knight",
+          "value": 152,
+          "imageUrl": ""
+        },
+        {
+          "name": "Forrest Gump",
+          "value": 142,
+          "imageUrl": ""
+        },
+        {
+          "name": "Harry Potter 1",
+          "value": 152,
+          "imageUrl": ""
+        },
+        {
+          "name": "Kevin allein zu Haus",
+          "value": 103,
+          "imageUrl": ""
+        },
+        {
+          "name": "Shrek",
+          "value": 90,
+          "imageUrl": ""
+        }
+      ]
+    },
+    {
+      "category": "Gründungsjahr bekannter Firmen",
+      "labelLow": "früher gegründet",
+      "labelHigh": "später gegründet",
+      "items": [
+        {
+          "name": "McDonald's",
+          "value": 1940,
+          "imageUrl": ""
+        },
+        {
+          "name": "Lego",
+          "value": 1932,
+          "imageUrl": ""
+        },
+        {
+          "name": "Samsung",
+          "value": 1938,
+          "imageUrl": ""
+        },
+        {
+          "name": "Nike",
+          "value": 1964,
+          "imageUrl": ""
+        },
+        {
+          "name": "Apple",
+          "value": 1976,
+          "imageUrl": ""
+        },
+        {
+          "name": "Netflix",
+          "value": 1997,
+          "imageUrl": ""
+        },
+        {
+          "name": "Google",
+          "value": 1998,
+          "imageUrl": ""
+        },
+        {
+          "name": "Instagram",
+          "value": 2010,
+          "imageUrl": ""
+        }
+      ]
+    },
+    {
+      "category": "Höhe bekannter Bauwerke (in Metern)",
+      "labelLow": "niedriger",
+      "labelHigh": "höher",
+      "items": [
+        {
+          "name": "Christusstatue Rio",
+          "value": 38,
+          "imageUrl": ""
+        },
+        {
+          "name": "Big Ben (Turm)",
+          "value": 96,
+          "imageUrl": ""
+        },
+        {
+          "name": "Freiheitsstatue",
+          "value": 93,
+          "imageUrl": ""
+        },
+        {
+          "name": "Kölner Dom",
+          "value": 157,
+          "imageUrl": ""
+        },
+        {
+          "name": "Eiffelturm",
+          "value": 330,
+          "imageUrl": ""
+        },
+        {
+          "name": "Empire State Building",
+          "value": 443,
+          "imageUrl": ""
+        },
+        {
+          "name": "Burj Khalifa",
+          "value": 828,
+          "imageUrl": ""
+        }
+      ]
+    },
+    {
+      "category": "Instagram-Follower [DE] (in Millionen)",
+      "labelLow": "weniger Follower",
+      "labelHigh": "mehr Follower",
+      "items": [
+        {
+          "name": "Toni Kroos",
+          "value": 49,
+          "imageUrl": ""
+        },
+        {
+          "name": "Bastian Schweinsteiger",
+          "value": 16,
+          "imageUrl": ""
+        },
+        {
+          "name": "Dennis Schröder",
+          "value": 5,
+          "imageUrl": ""
+        },
+        {
+          "name": "Thomas Müller",
+          "value": 14,
+          "imageUrl": ""
+        },
+        {
+          "name": "Manuel Neuer",
+          "value": 14,
+          "imageUrl": ""
+        },
+        {
+          "name": "Bibi",
+          "value": 7,
+          "imageUrl": ""
+        },
+        {
+          "name": "Heidi Klum",
+          "value": 12,
+          "imageUrl": ""
+        },
+        {
+          "name": "Pamela Reif",
+          "value": 8,
+          "imageUrl": ""
+        },
+        {
+          "name": "Tagesschau",
+          "value": 6,
+          "imageUrl": ""
+        },
+        {
+          "name": "Faktastisch - Das Original",
+          "value": 7,
+          "imageUrl": ""
+        }
+      ]
+    }
+  ]
+}

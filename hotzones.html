@@ -623,6 +623,8 @@ function hzInitGame(){
     secretNumber:rnd(1,10),
     hintWord:null,
     guesses:{},
+    teamSelections:{},
+    teamGuess:null,
     individualScores,
     quizData,
     usedCatIndices:[]
@@ -658,7 +660,7 @@ function hzPickCategory(){
 function hzOnAction(action,payload){
   if(action==='hz_state'){
     hzState=payload;
-    myGuessSubmitted=!!(hzState.guesses&&hzState.guesses.hasOwnProperty(mpMyName));
+    myGuessSubmitted=!!(hzState.teamGuess!==null&&hzState.teamGuess!==undefined);
     myHintSubmitted=!!(hzState.hintWord);
     showView('view-game');
     renderGameView();
@@ -666,14 +668,18 @@ function hzOnAction(action,payload){
     hzState.hintWord=payload.word;
     hzState.phase='guessing';
     hzState.guesses={};
+    hzState.teamSelections={};
+    hzState.teamGuess=null;
+    mpSend('hz_state',hzState);
+  } else if(action==='hz_team_select'&&mpIsHost){
+    if(!hzState.teamSelections)hzState.teamSelections={};
+    hzState.teamSelections[payload.name]=payload.number;
     mpSend('hz_state',hzState);
   } else if(action==='hz_guess'&&mpIsHost){
-    hzState.guesses[payload.name]=payload.number;
-    const team=hzState.teams[hzState.currentTeamIdx];
-    const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
-    const allDone=guessers.length>0&&guessers.every(p=>hzState.guesses.hasOwnProperty(p));
+    if(hzState.teamGuess!==null&&hzState.teamGuess!==undefined)return;
+    hzState.teamGuess=payload.number;
     mpSend('hz_state',hzState);
-    if(allDone)setTimeout(()=>hzReveal(),800);
+    setTimeout(()=>hzReveal(),800);
   } else if(action==='hz_next'&&mpIsHost){
     hzNextRound();
   }
@@ -696,8 +702,9 @@ function hzSelectNum(n,btn){
   selectedGuessNum=n;
   document.querySelectorAll('.hz-num-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  document.getElementById('hz-guess-status-txt').textContent='Deine Wahl: '+n;
+  document.getElementById('hz-guess-status-txt').textContent='Deine Wahl: '+n+' — jetzt bestätigen?';
   document.getElementById('hz-confirm-btn').disabled=false;
+  mpSend('hz_team_select',{name:mpMyName,number:n});
 }
 function hzConfirmGuess(){
   if(selectedGuessNum===null||myGuessSubmitted)return;
@@ -705,7 +712,15 @@ function hzConfirmGuess(){
   document.getElementById('hz-confirm-btn').disabled=true;
   document.getElementById('hz-confirm-btn').textContent='✅ Abgeschickt!';
   document.querySelectorAll('.hz-num-btn').forEach(b=>b.disabled=true);
-  mpSend('hz_guess',{name:mpMyName,number:selectedGuessNum});
+  // Compute majority from current team selections
+  const sel=hzState.teamSelections||{};
+  const team=hzState.teams[hzState.currentTeamIdx];
+  const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
+  const votes={};
+  guessers.forEach(p=>{if(sel[p]!==undefined)votes[sel[p]]=(votes[sel[p]]||0)+1;});
+  let max=0,teamAnswer=selectedGuessNum;
+  Object.entries(votes).forEach(([n,v])=>{if(v>max){max=v;teamAnswer=parseInt(n);}});
+  mpSend('hz_guess',{number:teamAnswer});
 }
 
 // ── Host reveals ──
@@ -713,13 +728,13 @@ function hzReveal(){
   if(!mpIsHost)return;
   const team=hzState.teams[hzState.currentTeamIdx];
   const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
+  const guess=hzState.teamGuess;
+  if(guess===null||guess===undefined)return;
+  const diff=Math.abs(guess-hzState.secretNumber);
+  const pts=diff===0?3:diff===1?1:diff===2?0:-2;
+  hzState.teams[hzState.currentTeamIdx].score+=pts;
   guessers.forEach(p=>{
-    const guess=hzState.guesses[p];
-    if(guess===undefined)return;
-    const diff=Math.abs(guess-hzState.secretNumber);
-    const pts=diff===0?3:diff===1?1:diff===2?0:-2;
     hzState.individualScores[p]=(hzState.individualScores[p]||0)+pts;
-    hzState.teams[hzState.currentTeamIdx].score+= pts;
   });
   hzState.phase='reveal';
   mpSend('hz_state',hzState);
@@ -738,6 +753,8 @@ function hzNextRound(){
   hzState.phase='hint_giving';
   hzState.hintWord=null;
   hzState.guesses={};
+  hzState.teamSelections={};
+  hzState.teamGuess=null;
   hzState.secretNumber=rnd(1,10);
   // Spiel endet wenn alle Kategorien verbraucht
   if(!hzPickCategory())hzState.phase='end';
@@ -782,7 +799,7 @@ function renderGameView(){
       // Restore number selection across re-renders
       if(selectedGuessNum!==null&&!myGuessSubmitted){
         const btn=document.getElementById('nb'+selectedGuessNum);
-        if(btn){btn.classList.add('sel');document.getElementById('hz-confirm-btn').disabled=false;document.getElementById('hz-guess-status-txt').textContent='Deine Wahl: '+selectedGuessNum;}
+        if(btn){btn.classList.add('sel');document.getElementById('hz-confirm-btn').disabled=false;document.getElementById('hz-guess-status-txt').textContent='Deine Wahl: '+selectedGuessNum+' — jetzt bestätigen?';}
       }
     } else c.innerHTML=renderSpectatorGuessing();
   } else if(phase==='reveal'){
@@ -806,16 +823,29 @@ function catCard(showSecret){
   </div>`;
 }
 
+// Scale display (read-only, for all observer views)
+function renderScale(cat){
+  const c=cat||hzState.currentCat||{labelLeft:'',labelRight:''};
+  let numBtns='';
+  for(let i=1;i<=10;i++) numBtns+=`<button class="hz-num-btn" disabled>${i}</button>`;
+  return `<div class="hz-scale-section" style="padding:12px 0 4px;">
+    <div class="hz-scale-row"><span class="hz-scale-l">${escHtml(c.labelLeft||'1')}</span><span class="hz-scale-r">${escHtml(c.labelRight||'10')}</span></div>
+    <div class="hz-gradient-bar"></div>
+    <div class="hz-numbers-row">${numBtns}</div>
+  </div>`;
+}
+
 // Host hint-giving view
 function renderHostHintGiving(){
   const team=hzState.teams[hzState.currentTeamIdx];
-  const cat=hzState.currentCat||{name:'?'};
+  const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
   return `<div class="hz-host-panel">
     <div class="hz-host-section">
       <div class="hz-host-sec-title">Aktuelle Runde</div>
       ${teamBadge(hzState.currentTeamIdx)}
       <div style="font-size:14px;margin-bottom:6px;"><strong>${escHtml(hzState.currentHintGiver)}</strong> gibt einen Hint</div>
-      <div style="font-size:12px;color:var(--muted);">Kategorie: <strong style="color:var(--red);">${escHtml(cat.name)}</strong> · Geheimzahl: <strong style="color:var(--gold);">${hzState.secretNumber}</strong></div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Kategorie: <strong style="color:var(--red);">${escHtml(cat.name)}</strong> · Geheimzahl: <strong style="color:var(--gold);">${hzState.secretNumber}</strong></div>
+      ${renderScale(cat)}
     </div>
     <div class="hz-host-section">
       <div class="hz-host-sec-title">Status</div>
@@ -829,14 +859,15 @@ function renderHostHintGiving(){
 function renderHostGuessing(){
   const team=hzState.teams[hzState.currentTeamIdx];
   const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
-  const doneCount=guessers.filter(p=>hzState.guesses&&hzState.guesses.hasOwnProperty(p)).length;
-  const cat=hzState.currentCat||{name:'?'};
+  const teamConfirmed=hzState.teamGuess!==null&&hzState.teamGuess!==undefined;
+  const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
+  const sel=hzState.teamSelections||{};
   let progressHtml='';
   guessers.forEach(p=>{
-    const done=hzState.guesses&&hzState.guesses.hasOwnProperty(p);
+    const chosen=sel[p];
     progressHtml+=`<div class="hz-progress-row">
       <div class="hz-progress-name">${escHtml(p)}</div>
-      <span class="${done?'hz-progress-done':'hz-progress-wait'}">${done?'✅':'⏳'}</span>
+      ${chosen!==undefined?`<span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);">${chosen}</span>`:'<span class="hz-progress-wait">⏳</span>'}
     </div>`;
   });
   return `<div class="hz-host-panel">
@@ -845,12 +876,13 @@ function renderHostGuessing(){
       ${teamBadge(hzState.currentTeamIdx)}
       <div style="font-size:14px;margin-bottom:4px;">Kategorie: <strong style="color:var(--red);">${escHtml(cat.name)}</strong></div>
       <div style="font-size:14px;margin-bottom:4px;">Hint-Wort: <strong style="color:var(--gold);">${escHtml(hzState.hintWord||'?')}</strong></div>
-      <div style="font-size:12px;color:var(--muted);">Geheimzahl: <strong>${hzState.secretNumber}</strong></div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Geheimzahl: <strong>${hzState.secretNumber}</strong></div>
+      ${renderScale(cat)}
     </div>
     <div class="hz-host-section">
-      <div class="hz-host-sec-title">Schätzungen (${doneCount}/${guessers.length})</div>
-      ${progressHtml}
-      ${doneCount===guessers.length&&guessers.length>0?`<button class="btn-primary" style="margin-top:10px;" onclick="hzReveal()">🎯 Auflösen</button>`:''}
+      <div class="hz-host-sec-title">Team-Abstimmung</div>
+      ${progressHtml||'<div style="font-size:13px;color:var(--muted);">Warte auf Auswahl...</div>'}
+      ${teamConfirmed?`<div style="margin-top:8px;font-size:14px;">Team-Antwort: <strong style="color:var(--gold);font-size:18px;font-family:'Bebas Neue',sans-serif;">${hzState.teamGuess}</strong></div>`:''}
     </div>
     ${renderScoreCards()}
   </div>`;
@@ -882,22 +914,26 @@ function renderHintGiverCard(){
 
 // Teammate waiting during hint-giving phase
 function renderTeamWaiting(){
+  const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
   return `<div class="hz-wait-wrap">
     ${teamBadge(hzState.currentTeamIdx)}
     <div class="hz-wait-icon">👀</div>
     <div class="hz-wait-title">Warte auf Hint</div>
-    <div class="hz-wait-sub"><strong>${escHtml(hzState.currentHintGiver)}</strong> denkt sich gerade einen Hint aus...<br><br>Kategorie: <strong style="color:var(--red);">${escHtml((hzState.currentCat||{name:'?'}).name)}</strong></div>
+    <div class="hz-wait-sub"><strong>${escHtml(hzState.currentHintGiver)}</strong> denkt sich gerade einen Hint aus...<br><br>Kategorie: <strong style="color:var(--red);">${escHtml(cat.name)}</strong></div>
+    ${renderScale(cat)}
   </div>`;
 }
 
 // Other team waiting
 function renderOtherTeamWaiting(){
   const myTeamIdx=hzState.teams.findIndex(t=>t.players.includes(mpMyName));
+  const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
   return `<div class="hz-wait-wrap">
     ${myTeamIdx>=0?teamBadge(myTeamIdx):''}
     <div class="hz-wait-icon">⏸️</div>
     <div class="hz-wait-title">${escHtml(hzState.teams[hzState.currentTeamIdx].name)} ist dran</div>
-    <div class="hz-wait-sub"><strong>${escHtml(hzState.currentHintGiver)}</strong> gibt einen Hint für sein Team...<br><br>Warte auf deinen Einsatz 🔥</div>
+    <div class="hz-wait-sub"><strong>${escHtml(hzState.currentHintGiver)}</strong> gibt einen Hint für sein Team...<br><br>Kategorie: <strong style="color:var(--red);">${escHtml(cat.name)}</strong></div>
+    ${renderScale(cat)}
   </div>`;
 }
 
@@ -905,28 +941,65 @@ function renderOtherTeamWaiting(){
 function renderHintGiverWaiting(){
   const team=hzState.teams[hzState.currentTeamIdx];
   const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
-  const doneCount=guessers.filter(p=>hzState.guesses&&hzState.guesses.hasOwnProperty(p)).length;
-  return `<div class="hz-wait-wrap">
-    ${teamBadge(hzState.currentTeamIdx)}
-    <div class="hz-wait-icon">🎯</div>
-    <div class="hz-wait-title">Dein Hint wurde abgesendet!</div>
-    <div class="hz-wait-sub">
-      Hint-Wort: <strong style="color:var(--gold);">${escHtml(hzState.hintWord||'?')}</strong><br><br>
-      ${doneCount}/${guessers.length} Spieler haben geschätzt...
+  const sel=hzState.teamSelections||{};
+  const teamConfirmed=hzState.teamGuess!==null&&hzState.teamGuess!==undefined;
+  const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
+  let voteRows='';
+  guessers.forEach(p=>{
+    const chosen=sel[p];
+    voteRows+=`<div class="hz-progress-row">
+      <div class="hz-progress-name">${escHtml(p)}</div>
+      ${chosen!==undefined?`<span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);">${chosen}</span>`:'<span class="hz-progress-wait">⏳</span>'}
+    </div>`;
+  });
+  return `<div style="padding:20px;">
+    <div style="text-align:center;margin-bottom:16px;">
+      ${teamBadge(hzState.currentTeamIdx)}
+      <div style="font-size:32px;margin:8px 0;">🎯</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;color:var(--muted);">DEIN HINT WURDE ABGESENDET!</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:6px;">Hint-Wort: <strong style="color:var(--gold);">${escHtml(hzState.hintWord||'?')}</strong></div>
+      ${teamConfirmed?`<div style="margin-top:8px;font-size:14px;">Team-Antwort: <strong style="color:var(--gold);font-size:20px;font-family:'Bebas Neue',sans-serif;">${hzState.teamGuess}</strong></div>`:''}
     </div>
+    ${renderScale(cat)}
+    ${guessers.length?`<div class="hz-host-section" style="margin-top:12px;">
+      <div class="hz-host-sec-title">Team-Abstimmung</div>
+      ${voteRows}
+    </div>`:''}
   </div>`;
 }
 
 // Guesser card
 function renderGuesserCard(){
   const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
+  const team=hzState.teams[hzState.currentTeamIdx];
+  const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
+  const sel=hzState.teamSelections||{};
+  const teamConfirmed=hzState.teamGuess!==null&&hzState.teamGuess!==undefined;
   let numBtns='';
   for(let i=1;i<=10;i++){
-    numBtns+=`<button class="hz-num-btn${myGuessSubmitted?' sel':''}" onclick="hzSelectNum(${i},this)" ${myGuessSubmitted?'disabled':''} id="nb${i}">${i}</button>`;
+    numBtns+=`<button class="hz-num-btn${teamConfirmed?' sel':''}" onclick="hzSelectNum(${i},this)" ${teamConfirmed?'disabled':''} id="nb${i}">${i}</button>`;
   }
+  // Team vote display (other players' current selections)
+  let teamVoteHtml='';
+  if(guessers.length>1){
+    let rows='';
+    guessers.forEach(p=>{
+      const chosen=sel[p];
+      const isMe=p===mpMyName;
+      rows+=`<div class="hz-progress-row">
+        <div class="hz-progress-name">${escHtml(p)}${isMe?' <span style="color:var(--muted);font-size:11px;">(Du)</span>':''}</div>
+        ${chosen!==undefined?`<span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);">${chosen}</span>`:'<span class="hz-progress-wait">⏳</span>'}
+      </div>`;
+    });
+    teamVoteHtml=`<div style="padding:0 16px 10px;">
+      <div class="hz-host-sec-title">Team-Abstimmung</div>
+      ${rows}
+    </div>`;
+  }
+  const statusText=teamConfirmed?`✅ Team-Antwort: ${hzState.teamGuess} — warte auf Auflösung...`:(selectedGuessNum!==null?'Deine Wahl: '+selectedGuessNum+' — jetzt bestätigen?':'Wähle eine Zahl zwischen 1 und 10');
   return `<div>
     <div class="hz-guess-header">
-      <div class="hz-guess-info">${escHtml(hzState.teams[hzState.currentTeamIdx].name)} — schätze jetzt!</div>
+      <div class="hz-guess-info">${escHtml(team.name)} — Team-Abstimmung!</div>
       <div class="hz-guess-cat">${escHtml(cat.name)}</div>
     </div>
     <div class="hz-hint-display">
@@ -938,10 +1011,11 @@ function renderGuesserCard(){
       <div class="hz-gradient-bar"></div>
       <div class="hz-numbers-row">${numBtns}</div>
     </div>
-    <div style="padding:0 16px;"><div class="hz-guess-status" id="hz-guess-status-txt">${myGuessSubmitted?'✅ Antwort abgesendet — warte auf andere...':'Wähle eine Zahl zwischen 1 und 10'}</div></div>
+    ${teamVoteHtml}
+    <div style="padding:0 16px;"><div class="hz-guess-status" id="hz-guess-status-txt">${statusText}</div></div>
     <div class="hz-guess-footer">
-      <button class="btn-primary" id="hz-confirm-btn" onclick="hzConfirmGuess()" ${(myGuessSubmitted||selectedGuessNum===null)?'disabled':''}>
-        ${myGuessSubmitted?'✅ Abgeschickt!':'Antwort bestätigen'}
+      <button class="btn-primary" id="hz-confirm-btn" onclick="hzConfirmGuess()" ${(teamConfirmed||selectedGuessNum===null)?'disabled':''}>
+        ${teamConfirmed?'✅ Abgeschickt!':'Team-Antwort bestätigen'}
       </button>
     </div>
   </div>`;
@@ -953,16 +1027,20 @@ function renderSpectatorGuessing(){
   const myTeamIdx=hzState.teams.findIndex(t=>t.players.includes(mpMyName));
   return `<div>
     <div class="hz-guess-header">
-      <div class="hz-guess-info">👀 ${escHtml(hzState.teams[hzState.currentTeamIdx].name)} schätzt gerade</div>
+      <div class="hz-guess-info">👀 ${escHtml(hzState.teams[hzState.currentTeamIdx].name)} stimmt ab</div>
       <div class="hz-guess-cat">${escHtml(cat.name)}</div>
     </div>
     <div class="hz-hint-display">
       <div class="hz-hint-word-lbl">HINT-WORT</div>
       <div class="hz-hint-word">${escHtml(hzState.hintWord||'?')}</div>
     </div>
-    <div class="hz-wait-wrap" style="min-height:200px;">
+    <div class="hz-scale-section" style="padding:14px 16px;">
+      <div class="hz-scale-row"><span class="hz-scale-l">${escHtml(cat.labelLeft||'1')}</span><span class="hz-scale-r">${escHtml(cat.labelRight||'10')}</span></div>
+      <div class="hz-gradient-bar"></div>
+    </div>
+    <div style="padding:16px;text-align:center;">
       ${myTeamIdx>=0?teamBadge(myTeamIdx):''}
-      <div class="hz-wait-sub">Das andere Team schätzt...<br>Warte auf deine Runde 🔥</div>
+      <div class="hz-wait-sub" style="margin-top:8px;">Das andere Team stimmt ab...<br>Warte auf deine Runde 🔥</div>
     </div>
   </div>`;
 }
@@ -972,30 +1050,37 @@ function renderRevealView(){
   const cat=hzState.currentCat||{name:'?',labelLeft:'',labelRight:''};
   const team=hzState.teams[hzState.currentTeamIdx];
   const guessers=team.players.filter(p=>p!==hzState.currentHintGiver);
+  const sel=hzState.teamSelections||{};
+  const teamAnswer=hzState.teamGuess;
+  const diff=teamAnswer!==null&&teamAnswer!==undefined?Math.abs(teamAnswer-hzState.secretNumber):null;
+  const pts=diff===null?0:diff===0?3:diff===1?1:diff===2?0:-2;
+  const pClass=pts===3?'p3':pts===1?'p1':pts===0?'p0':'pm2';
+  const icon=pts===3?'🎯':pts===1?'🔥':pts===0?'😐':'❌';
 
-  let guessRows='';
+  // Individual votes (what each person selected)
+  let voteRows='';
   guessers.forEach(p=>{
-    const guess=hzState.guesses&&hzState.guesses[p];
-    if(guess===undefined){
-      guessRows+=`<div class="hz-guess-result-row"><div class="hz-gr-name">${escHtml(p)}</div><span style="font-size:12px;color:var(--muted);">keine Antwort</span><div class="hz-gr-pts p0">0</div></div>`;
-      return;
-    }
-    const diff=Math.abs(guess-hzState.secretNumber);
-    const pts=diff===0?3:diff===1?1:diff===2?0:-2;
-    const pClass=pts===3?'p3':pts===1?'p1':pts===0?'p0':'pm2';
-    const icon=pts===3?'🎯':pts===1?'🔥':pts===0?'😐':'❌';
-    guessRows+=`<div class="hz-guess-result-row">
+    const voted=sel[p];
+    voteRows+=`<div class="hz-guess-result-row">
       <div class="hz-gr-name">${escHtml(p)}</div>
-      <div class="hz-gr-guess" style="color:var(--text);">${guess}</div>
-      <div class="hz-gr-pts ${pClass}">${icon} ${pts>0?'+':''}${pts}</div>
+      <div class="hz-gr-guess" style="color:var(--muted);">${voted!==undefined?voted:'—'}</div>
     </div>`;
   });
 
-  // Number scale with reveal
+  // Team answer row with score
+  const teamAnswerRow=teamAnswer!==null&&teamAnswer!==undefined?`
+    <div class="hz-guess-result-row" style="border:1px solid rgba(245,200,66,.4);border-radius:10px;margin-top:8px;">
+      <div class="hz-gr-name" style="color:var(--gold);">Team-Antwort</div>
+      <div class="hz-gr-guess" style="color:var(--gold);">${teamAnswer}</div>
+      <div class="hz-gr-pts ${pClass}">${icon} ${pts>0?'+':''}${pts}</div>
+    </div>`:'';
+
+  // Number scale with reveal — highlight secret (green) and team answer (orange if different)
   let numBtns='';
   for(let i=1;i<=10;i++){
     const isSecret=i===hzState.secretNumber;
-    const cls=isSecret?'hz-num-btn rv-correct':'hz-num-btn rv-wrong';
+    const isTeamAnswer=i===teamAnswer&&!isSecret;
+    const cls=isSecret?'hz-num-btn rv-correct':(isTeamAnswer?'hz-num-btn rv-close':'hz-num-btn rv-wrong');
     numBtns+=`<button class="${cls}" disabled>${i}</button>`;
   }
 
@@ -1010,8 +1095,9 @@ function renderRevealView(){
       <div style="font-size:13px;color:var(--muted);margin-top:6px;">Hint: <strong style="color:var(--gold);">${escHtml(hzState.hintWord||'?')}</strong> · Kategorie: <strong style="color:var(--red);">${escHtml(cat.name)}</strong></div>
     </div>
     <div class="hz-host-section" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;">
-      <div class="hz-host-sec-title">Schätzungen</div>
-      ${guessRows||'<div style="color:var(--muted);font-size:13px;">Keine Schätzungen</div>'}
+      <div class="hz-host-sec-title">Abstimmung</div>
+      ${voteRows||'<div style="color:var(--muted);font-size:13px;">Keine Abstimmung</div>'}
+      ${teamAnswerRow}
     </div>
     <div style="margin-bottom:14px;">
       <div class="hz-scale-section" style="padding:0 0 12px;">

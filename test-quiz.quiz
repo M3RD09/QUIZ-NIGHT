@@ -1,0 +1,53 @@
+{
+  "name": "Joker Test Quiz",
+  "questions": [
+    {
+      "question": "Was ist die Hauptstadt von Australien?",
+      "answer": "Canberra"
+    },
+    {
+      "question": "Wie viele Planeten hat unser Sonnensystem?",
+      "answer": "8"
+    },
+    {
+      "question": "In welchem Jahr fiel die Berliner Mauer?",
+      "answer": "1989"
+    },
+    {
+      "question": "Wer hat die Mona Lisa gemalt?",
+      "answer": "Leonardo da Vinci"
+    },
+    {
+      "question": "Wie heißt der längste Fluss der Welt?",
+      "answer": "Nil"
+    },
+    {
+      "question": "Aus wie vielen Sternen besteht das Sternbild Großer Wagen?",
+      "answer": "7"
+    },
+    {
+      "question": "Welches Element hat das chemische Symbol Au?",
+      "answer": "Gold"
+    },
+    {
+      "question": "In welchem Land wurde Pizza erfunden?",
+      "answer": "Italien"
+    },
+    {
+      "question": "Wie viele Knochen hat ein erwachsener Mensch?",
+      "answer": "206"
+    },
+    {
+      "question": "Wer schrieb das Theaterstück 'Romeo und Julia'?",
+      "answer": "William Shakespeare"
+    },
+    {
+      "question": "Welches Tier ist das schnellste Landtier der Welt?",
+      "answer": "Gepard"
+    },
+    {
+      "question": "Wie viele Saiten hat eine Standardgitarre?",
+      "answer": "6"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Jeopardy — Klassiker",
+  "categories": [
+    {
+      "name": "Hauptstädte",
+      "questions": [
+        { "points": 200, "question": "Hauptstadt von Australien", "answer": "Canberra" },
+        { "points": 400, "question": "Hauptstadt von Kanada", "answer": "Ottawa" },
+        { "points": 600, "question": "Hauptstadt von Argentinien", "answer": "Buenos Aires" },
+        { "points": 800, "question": "Hauptstadt von Neuseeland", "answer": "Wellington" },
+        { "points": 1000, "question": "Hauptstadt von Kasachstan", "answer": "Astana" }
+      ]
+    },
+    {
+      "name": "Tiere & Natur",
+      "questions": [
+        { "points": 200, "question": "Das schnellste Landtier der Welt", "answer": "Gepard" },
+        { "points": 400, "question": "Das größte Tier der Welt", "answer": "Blauwal" },
+        { "points": 600, "question": "Das einzige Säugetier, das fliegen kann", "answer": "Fledermaus" },
+        { "points": 800, "question": "Der Baum mit der längsten Lebensdauer (Borstenkiefer)", "answer": "Langlebige Kiefer / Borstenkiefer" },
+        { "points": 1000, "question": "Das giftigste Landtier der Welt (Würfelqualle ist Meerestier)", "answer": "Inlandtaipan-Schlange" }
+      ]
+    },
+    {
+      "name": "Film & Musik",
+      "questions": [
+        { "points": 200, "question": "Regisseur von Titanic und Avatar", "answer": "James Cameron" },
+        { "points": 400, "question": "Sängerin des Songs 'Rolling in the Deep' (2010)", "answer": "Adele" },
+        { "points": 600, "question": "Filmreihe, in der James Bond erstmals 1962 erschien", "answer": "007 / James Bond" },
+        { "points": 800, "question": "Band, die das Album 'Thriller' aufnahm — Warte: Welcher Künstler machte 'Thriller'?", "answer": "Michael Jackson" },
+        { "points": 1000, "question": "Oscarpreisgekrönter Film von 1994 über das Leben eines Mannes aus Alabama", "answer": "Forrest Gump" }
+      ]
+    },
+    {
+      "name": "Geschichte",
+      "questions": [
+        { "points": 200, "question": "Jahr des Beginns des Ersten Weltkriegs", "answer": "1914" },
+        { "points": 400, "question": "Ägyptische Königin, die mit Julius Caesar verbündet war", "answer": "Kleopatra" },
+        { "points": 600, "question": "Name des ersten künstlichen Erdsatelliten (1957)", "answer": "Sputnik 1" },
+        { "points": 800, "question": "Kaiser, der 49 v. Chr. den Rubikon überquerte", "answer": "Julius Caesar" },
+        { "points": 1000, "question": "Vertrag, der den Ersten Weltkrieg 1919 offiziell beendete", "answer": "Versailler Vertrag" }
+      ]
+    },
+    {
+      "name": "Wissenschaft",
+      "questions": [
+        { "points": 200, "question": "Symbol des chemischen Elements Eisen", "answer": "Fe" },
+        { "points": 400, "question": "Wissenschaft, die sich mit dem Studium von Gestirnen befasst", "answer": "Astronomie" },
+        { "points": 600, "question": "Name der Theorie, die Einstein 1905 formulierte", "answer": "Spezielle Relativitätstheorie" },
+        { "points": 800, "question": "Das einzige bekannte Element, das bei Raumtemperatur flüssig ist (außer Brom)", "answer": "Quecksilber" },
+        { "points": 1000, "question": "Wissenschaftlicher Begriff für die Entstehung des Universums vor ca. 13,8 Mrd. Jahren", "answer": "Urknall / Big Bang" }
+      ]
+    }
+  ]
+}

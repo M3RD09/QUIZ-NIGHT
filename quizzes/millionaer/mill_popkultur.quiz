@@ -1,0 +1,95 @@
+{
+  "name": "Wer wird Millionär — Popkultur & Entertainment",
+  "questions": [
+    {
+      "question": "Wie heißt der Zauberer in Harry Potter?",
+      "answers": ["Harry Potter", "Ron Weasley", "Neville Longbottom", "Draco Malfoy"],
+      "correct": 0,
+      "points": 100
+    },
+    {
+      "question": "Welcher Streaming-Dienst produzierte 'Stranger Things'?",
+      "answers": ["Amazon Prime", "Disney+", "Netflix", "Apple TV+"],
+      "correct": 2,
+      "points": 200
+    },
+    {
+      "question": "Wer spielte Iron Man in den Marvel-Filmen?",
+      "answers": ["Chris Evans", "Robert Downey Jr.", "Chris Hemsworth", "Mark Ruffalo"],
+      "correct": 1,
+      "points": 300
+    },
+    {
+      "question": "In welchem Jahr erschien das erste iPhone?",
+      "answers": ["2005", "2006", "2007", "2008"],
+      "correct": 2,
+      "points": 500
+    },
+    {
+      "question": "Wie heißt der Protagonist in 'The Legend of Zelda'?",
+      "answers": ["Zelda", "Link", "Ganon", "Impa"],
+      "correct": 1,
+      "points": 750
+    },
+    {
+      "question": "Welche britische Band veröffentlichte das Album 'Abbey Road'?",
+      "answers": ["The Rolling Stones", "The Kinks", "The Beatles", "Led Zeppelin"],
+      "correct": 2,
+      "points": 1000
+    },
+    {
+      "question": "In welchem Film sagt der Charakter 'Ich sehe tote Menschen'?",
+      "answers": ["The Shining", "Sixth Sense", "Poltergeist", "Insidious"],
+      "correct": 1,
+      "points": 1500
+    },
+    {
+      "question": "Wie heißt der Antagonist in der Star-Wars-Originaltrilogie?",
+      "answers": ["Kylo Ren", "The Emperor", "Darth Vader", "General Grievous"],
+      "correct": 2,
+      "points": 2000
+    },
+    {
+      "question": "Welche Sängerin veröffentlichte das Album '1989'?",
+      "answers": ["Ariana Grande", "Beyoncé", "Taylor Swift", "Katy Perry"],
+      "correct": 2,
+      "points": 3000
+    },
+    {
+      "question": "In welchem Land spielt die Serie 'Money Heist' (La Casa de Papel)?",
+      "answers": ["Argentinien", "Mexiko", "Spanien", "Portugal"],
+      "correct": 2,
+      "points": 5000
+    },
+    {
+      "question": "Wer schrieb den Roman 'Der Herr der Ringe'?",
+      "answers": ["C.S. Lewis", "J.R.R. Tolkien", "George R.R. Martin", "Terry Pratchett"],
+      "correct": 1,
+      "points": 7500
+    },
+    {
+      "question": "In welchem Jahr erschien das Videospiel 'Minecraft' offiziell?",
+      "answers": ["2009", "2010", "2011", "2012"],
+      "correct": 2,
+      "points": 10000
+    },
+    {
+      "question": "Wie heißt der Schöpfer der Simpsons?",
+      "answers": ["Seth MacFarlane", "Matt Groening", "Mike Judge", "Trey Parker"],
+      "correct": 1,
+      "points": 15000
+    },
+    {
+      "question": "Welcher Künstler malte 'Die Sternennacht' (1889)?",
+      "answers": ["Paul Gauguin", "Claude Monet", "Vincent van Gogh", "Henri Matisse"],
+      "correct": 2,
+      "points": 25000
+    },
+    {
+      "question": "In welchem Jahr gründete Elon Musk das Unternehmen SpaceX?",
+      "answers": ["2000", "2002", "2004", "2006"],
+      "correct": 1,
+      "points": 50000
+    }
+  ]
+}

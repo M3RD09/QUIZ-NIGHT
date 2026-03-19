@@ -1,0 +1,17 @@
+{
+  "name": "Buzzer Beater — Popkultur & Entertainment",
+  "questions": [
+    { "question": "Wer sang den Song 'Thriller' (1982)?", "answer": "Michael Jackson" },
+    { "question": "Wie heißt der Hauptschurke in Harry Potter?", "answer": "Voldemort" },
+    { "question": "In welchem Land wurde K-Pop populär?", "answer": "Südkorea" },
+    { "question": "Welcher Schauspieler spielt Iron Man im MCU?", "answer": "Robert Downey Jr." },
+    { "question": "Wie heißt der Löwe in 'Der König der Löwen'?", "answer": "Simba" },
+    { "question": "Wer schrieb die Harry-Potter-Buchreihe?", "answer": "J.K. Rowling" },
+    { "question": "Wie heißt der Hobbit-Hauptcharakter in 'Herr der Ringe'?", "answer": "Frodo Beutlin" },
+    { "question": "In welchem Jahr erschien das erste iPhone?", "answer": "2007" },
+    { "question": "Wer gründete Facebook?", "answer": "Mark Zuckerberg" },
+    { "question": "Wie heißt der Chemielehrer in 'Breaking Bad'?", "answer": "Walter White" },
+    { "question": "Wie heißt der Zug, der Hogwarts-Schüler zur Zauberschule bringt?", "answer": "Hogwarts Express" },
+    { "question": "In welchem Film spielt Kapitän Jack Sparrow die Hauptrolle?", "answer": "Fluch der Karibik" }
+  ]
+}

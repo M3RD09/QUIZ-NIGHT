@@ -1,0 +1,14 @@
+{
+  "name": "Hot Zones — Technologie & Zahlen",
+  "categories": [
+    { "name": "Wie stark hat KI (Künstliche Intelligenz) unseren Alltag bereits verändert?", "labelLeft": "kaum spürbar", "labelRight": "revolutioniert alles" },
+    { "name": "Wie viel Zeit verbringt ein Teenager im Schnitt täglich mit seinem Smartphone?", "labelLeft": "weniger als 1 Stunde", "labelRight": "mehr als 8 Stunden" },
+    { "name": "Wie teuer war das erste kommerzielle Handy der Welt (1983, Motorola DynaTAC)?", "labelLeft": "wie heute (300€)", "labelRight": "ein Monatslohn oder mehr" },
+    { "name": "Wie viele Websites existieren aktuell im Internet?", "labelLeft": "einige Tausend", "labelRight": "über eine Milliarde" },
+    { "name": "Wie schnell entwickelt sich die Rechenleistung von Chips (Mooresches Gesetz)?", "labelLeft": "kaum Fortschritt", "labelRight": "verdoppelt sich jedes Jahr" },
+    { "name": "Wie verbreitet ist bargeldloses Bezahlen in Schweden?", "labelLeft": "seltener als in Deutschland", "labelRight": "fast kein Bargeld mehr im Umlauf" },
+    { "name": "Wie gefährlich sind Cyberangriffe für kritische Infrastruktur (Krankenhäuser, Strom)?", "labelLeft": "vernachlässigbares Risiko", "labelRight": "reale Bedrohung für Menschenleben" },
+    { "name": "Wie hoch ist der Energieverbrauch eines Bitcoin-Transfers im Vergleich zu einer VISA-Transaktion?", "labelLeft": "gleich viel", "labelRight": "millionenfach mehr" },
+    { "name": "Wie viel Prozent aller E-Mails weltweit sind Spam?", "labelLeft": "unter 5%", "labelRight": "über 80%" }
+  ]
+}

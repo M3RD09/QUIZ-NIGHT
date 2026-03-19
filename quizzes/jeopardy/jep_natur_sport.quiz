@@ -1,0 +1,55 @@
+{
+  "name": "Jeopardy — Natur & Sport",
+  "categories": [
+    {
+      "name": "Geografie",
+      "questions": [
+        { "points": 200, "question": "Der längste Fluss der Welt", "answer": "Nil" },
+        { "points": 400, "question": "Der höchste Berg der Welt", "answer": "Mount Everest" },
+        { "points": 600, "question": "Der größte See der Welt", "answer": "Kaspisches Meer" },
+        { "points": 800, "question": "Das Land mit den meisten Zeitzonen weltweit (14)", "answer": "Russland" },
+        { "points": 1000, "question": "Die Hauptstadt des US-Bundesstaates Alaska", "answer": "Juneau" }
+      ]
+    },
+    {
+      "name": "Körper & Gesundheit",
+      "questions": [
+        { "points": 200, "question": "Das Organ, das Blut durch den Körper pumpt", "answer": "Herz" },
+        { "points": 400, "question": "Die Anzahl der Knochen im menschlichen Körper", "answer": "206" },
+        { "points": 600, "question": "Der längste Knochen des menschlichen Körpers", "answer": "Oberschenkelknochen / Femur" },
+        { "points": 800, "question": "Das Vitamin, das durch Sonnenlicht produziert wird", "answer": "Vitamin D" },
+        { "points": 1000, "question": "Der medizinische Begriff für Herzinfarkt", "answer": "Myokardinfarkt" }
+      ]
+    },
+    {
+      "name": "Fußball",
+      "questions": [
+        { "points": 200, "question": "Anzahl der Spieler einer Mannschaft auf dem Feld", "answer": "11" },
+        { "points": 400, "question": "Land, das die meisten WM-Titel trägt (5 Stück)", "answer": "Brasilien" },
+        { "points": 600, "question": "Deutsche Stadt mit dem größten Fußballstadion (Dortmund)", "answer": "Signal Iduna Park / BVB-Stadion" },
+        { "points": 800, "question": "Torwartlegende, der 2014 den WM-Pokal für Deutschland hielt", "answer": "Manuel Neuer" },
+        { "points": 1000, "question": "Name des Golftours-Systems, nach dem UEFA-Vereinsmeisterschaften benannt sind", "answer": "Champions League" }
+      ]
+    },
+    {
+      "name": "Essen & Trinken",
+      "questions": [
+        { "points": 200, "question": "Herkunftsland der Pizza", "answer": "Italien" },
+        { "points": 400, "question": "Das Gewürz, das aus der getrockneten Rinde des Zimtbaums stammt", "answer": "Zimt" },
+        { "points": 600, "question": "Käsesorte, die in Parma (Italien) hergestellt wird", "answer": "Parmesan" },
+        { "points": 800, "question": "Herkunftsland des Getränks Sake", "answer": "Japan" },
+        { "points": 1000, "question": "Spanisches Gericht aus rohem Meeresfrüchten in Zitronensaft 'gegart'", "answer": "Ceviche (eigentlich peruanisch, aber bekannt in Spanien)" }
+      ]
+    },
+    {
+      "name": "Rekorde",
+      "questions": [
+        { "points": 200, "question": "Sportler, der den 100m-Weltrekord von 9,58 Sek. hält", "answer": "Usain Bolt" },
+        { "points": 400, "question": "Das am schnellsten verkaufte Buch der Geschichte (Harry Potter)", "answer": "Harry Potter und die Heiligtümer des Todes" },
+        { "points": 600, "question": "Person mit den meisten Oscar-Nominierungen aller Zeiten", "answer": "Meryl Streep" },
+        { "points": 800, "question": "Das meistverkaufte Videospiel aller Zeiten", "answer": "Minecraft" },
+        { "points": 1000, "question": "Erster Mensch, der allein und non-stop die Welt umsegelte (1968)", "answer": "Robin Knox-Johnston" }
+      ]
+    }
+  ]
+}

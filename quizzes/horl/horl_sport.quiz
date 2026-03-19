@@ -1,0 +1,75 @@
+{
+  "name": "Higher or Lower — Sport & Rekorde",
+  "rounds": [
+    {
+      "category": "Anzahl Fußball-WM-Titel pro Nation (historisch)",
+      "labelLow": "weniger Titel",
+      "labelHigh": "mehr Titel",
+      "items": [
+        { "name": "England", "value": 1, "imageUrl": "" },
+        { "name": "Spanien", "value": 1, "imageUrl": "" },
+        { "name": "Frankreich", "value": 2, "imageUrl": "" },
+        { "name": "Deutschland", "value": 4, "imageUrl": "" },
+        { "name": "Italien", "value": 4, "imageUrl": "" },
+        { "name": "Argentinien", "value": 3, "imageUrl": "" },
+        { "name": "Brasilien", "value": 5, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Jahresgehalt von Fußball-Superstars (Mio. € brutto, ca. 2023)",
+      "labelLow": "weniger verdienend",
+      "labelHigh": "mehr verdienend",
+      "items": [
+        { "name": "Jamal Musiala", "value": 15, "imageUrl": "" },
+        { "name": "Kylian Mbappé", "value": 72, "imageUrl": "" },
+        { "name": "Lionel Messi", "value": 60, "imageUrl": "" },
+        { "name": "Cristiano Ronaldo", "value": 200, "imageUrl": "" },
+        { "name": "Neymar Jr.", "value": 100, "imageUrl": "" },
+        { "name": "Erling Haaland", "value": 35, "imageUrl": "" },
+        { "name": "Vinicius Jr.", "value": 30, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Weltrekord im Sprint (Sekunden für 100m)",
+      "labelLow": "langsamer (mehr Sekunden)",
+      "labelHigh": "schneller (weniger Sekunden)",
+      "items": [
+        { "name": "Usain Bolt — Weltrekord (9,58 → Wert 958)", "value": 958, "imageUrl": "" },
+        { "name": "Tyson Gay (9,69)", "value": 969, "imageUrl": "" },
+        { "name": "Yohan Blake (9,69)", "value": 969, "imageUrl": "" },
+        { "name": "Asafa Powell (9,72)", "value": 972, "imageUrl": "" },
+        { "name": "Justin Gatlin (9,74)", "value": 974, "imageUrl": "" },
+        { "name": "Christian Coleman (9,76)", "value": 976, "imageUrl": "" },
+        { "name": "Marcell Jacobs (9,80)", "value": 980, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Grand-Slam-Titel im Tennis (Herren, historisch)",
+      "labelLow": "weniger Titel",
+      "labelHigh": "mehr Titel",
+      "items": [
+        { "name": "Andy Murray", "value": 3, "imageUrl": "" },
+        { "name": "Stefan Edberg", "value": 6, "imageUrl": "" },
+        { "name": "Boris Becker", "value": 6, "imageUrl": "" },
+        { "name": "Pete Sampras", "value": 14, "imageUrl": "" },
+        { "name": "Roger Federer", "value": 20, "imageUrl": "" },
+        { "name": "Rafael Nadal", "value": 22, "imageUrl": "" },
+        { "name": "Novak Djokovic", "value": 24, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Olympischer Goldmedaillen eines Landes (Sommerspiele 2024, Paris)",
+      "labelLow": "weniger Gold",
+      "labelHigh": "mehr Gold",
+      "items": [
+        { "name": "Deutschland", "value": 12, "imageUrl": "" },
+        { "name": "Frankreich", "value": 16, "imageUrl": "" },
+        { "name": "Australien", "value": 18, "imageUrl": "" },
+        { "name": "Großbritannien", "value": 14, "imageUrl": "" },
+        { "name": "China", "value": 40, "imageUrl": "" },
+        { "name": "USA", "value": 40, "imageUrl": "" },
+        { "name": "Japan", "value": 20, "imageUrl": "" }
+      ]
+    }
+  ]
+}
