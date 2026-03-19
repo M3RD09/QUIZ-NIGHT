@@ -314,6 +314,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="round-badge" id="round-badge">RUNDE 1</div>
     <div class="game-title-mid">HIGHER OR LOWER</div>
     <div class="cat-badge" id="cat-badge">–</div>
+    <button id="horl-host-skip-btn" class="btn-icon" onclick="horlHostSkipCategory()" style="display:none;border-color:rgba(245,200,66,.4);color:var(--gold);" title="Nächste Kategorie">⏭</button>
     <button class="btn-icon" onclick="horlConfirmQuit()">✕</button>
   </div>
   <div class="game-layout">
@@ -702,13 +703,7 @@ function horlNextPlayer(){
 
 function horlContinue(){
   if(!isHost || !horlState || horlState.phase !== 'reveal') return;
-  if(horlState.revealReason === 'eliminated'){
-    horlState.phase = 'end';
-    broadcastState();
-    renderGameView();
-    return;
-  }
-  // complete: advance to next round
+  const wasEliminated = horlState.revealReason === 'eliminated';
   horlState.currentRound++;
   if(horlState.currentRound >= horlState.quizData.rounds.length){
     horlState.phase = 'end';
@@ -722,7 +717,41 @@ function horlContinue(){
   horlState.phase = 'playing';
   horlState.revealReason = null;
   horlState.lastAction = null;
+  // If all were eliminated, reset hearts for the new category
+  if(wasEliminated){
+    horlState.players.forEach(p=>{ p.eliminated=false; p.hearts=horlState.maxHearts; });
+  }
+  horlState.currentPlayerIdx = 0;
   horlNextPlayer();
+  broadcastState();
+  renderGameView();
+}
+
+function horlHostSkipCategory(){
+  if(!isHost || !horlState || horlState.phase !== 'playing') return;
+  if(!confirm('Aktuelle Kategorie überspringen und Skala aufdecken?')) return;
+  horlState.phase = 'reveal';
+  horlState.revealReason = 'skipped';
+  broadcastState();
+  renderGameView();
+}
+
+function horlKickPlayer(playerName){
+  if(!isHost || !horlState) return;
+  if(!confirm('"'+playerName+'" aus dem Spiel entfernen?')) return;
+  const idx = horlState.players.findIndex(p=>p.name===playerName);
+  if(idx === -1) return;
+  horlState.players.splice(idx, 1);
+  if(!horlState.players.length){ horlState.phase='end'; broadcastState(); renderGameView(); return; }
+  if(horlState.currentPlayerIdx >= horlState.players.length) horlState.currentPlayerIdx = 0;
+  horlState.selectedItemIdx = null;
+  if(horlState.players.every(p=>p.eliminated)){
+    horlState.phase='reveal'; horlState.revealReason='eliminated'; broadcastState(); renderGameView(); return;
+  }
+  let tries=0, n=horlState.players.length;
+  while(horlState.players[horlState.currentPlayerIdx].eliminated && tries<n){
+    horlState.currentPlayerIdx=(horlState.currentPlayerIdx+1)%n; tries++;
+  }
   broadcastState();
   renderGameView();
 }
@@ -741,11 +770,22 @@ function renderGameView(){
   document.getElementById('lbl-low').textContent = '◀ '+(round.labelLow||'niedrig');
   document.getElementById('lbl-high').textContent = (round.labelHigh||'hoch')+' ▶';
 
+  // Host skip button
+  const skipBtn = document.getElementById('horl-host-skip-btn');
+  if(skipBtn) skipBtn.style.display = (isHost && horlState.phase==='playing') ? 'flex' : 'none';
+
+  // Detect kicked player
+  const amInGame = isHost || horlState.players.some(p=>p.name===myName);
+
   // Last action strip (always update)
   updateLastActionStrip(round);
 
   if(horlState.phase === 'reveal'){
     renderRevealPhase(round);
+  } else if(!amInGame){
+    document.getElementById('turn-bar').innerHTML = '<span style="color:var(--red);">Du wurdest aus dem Spiel entfernt.</span>';
+    renderScaleOnline(round, false);
+    renderPoolOnline(round, false);
   } else {
     renderScaleOnline(round, isMyTurn);
     renderPoolOnline(round, isMyTurn);
@@ -780,22 +820,22 @@ function updateLastActionStrip(round){
 
 function renderRevealPhase(round){
   const turnBar = document.getElementById('turn-bar');
-  if(horlState.revealReason === 'complete'){
-    turnBar.innerHTML = '🎉 <span style="color:var(--gold);font-weight:800;">Alle Items platziert!</span> Die korrekten Werte werden aufgedeckt.';
-  } else {
-    turnBar.innerHTML = '💀 <span style="color:var(--muted);font-weight:800;">Alle Spieler eliminiert!</span> Die korrekten Werte werden aufgedeckt.';
-  }
+  const msgs = {
+    complete: '🎉 <span style="color:var(--gold);font-weight:800;">Alle Items platziert!</span> Korrekte Werte aufgedeckt.',
+    eliminated: '💀 <span style="color:var(--muted);font-weight:800;">Alle Spieler eliminiert!</span> Korrekte Werte aufgedeckt.',
+    skipped: '⏭ <span style="color:var(--gold);font-weight:800;">Kategorie übersprungen.</span> Korrekte Werte aufgedeckt.'
+  };
+  turnBar.innerHTML = msgs[horlState.revealReason] || msgs.skipped;
   renderRevealScale(round);
   const pool = document.getElementById('pool-area');
   pool.innerHTML = '';
   pool.style.cssText = 'display:flex;align-items:center;justify-content:center;padding:20px 16px;';
   if(isHost){
     const isLastRound = horlState.currentRound >= horlState.quizData.rounds.length - 1;
-    const isEnd = horlState.revealReason === 'eliminated' || isLastRound;
     const btn = document.createElement('button');
     btn.className = 'btn-primary';
     btn.style.maxWidth = '280px';
-    btn.textContent = isEnd ? '🏆 Ergebnisse anzeigen' : '➡ Nächste Kategorie';
+    btn.textContent = isLastRound ? '🏆 Ergebnisse anzeigen' : '➡ Nächste Kategorie';
     btn.onclick = horlContinue;
     pool.appendChild(btn);
   } else {
@@ -909,10 +949,14 @@ function updateSidebarOnline(){
     const el = document.createElement('div');
     el.className = 'sb-player'+(isActive?' active':'')+(p.eliminated?' eliminated':'');
     const hearts = '❤️'.repeat(p.hearts)+'🖤'.repeat(Math.max(0, horlState.maxHearts - p.hearts));
+    const kickBtn = isHost
+      ? '<button onclick="horlKickPlayer(\''+esc(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:2px 7px;cursor:pointer;flex-shrink:0;" title="Kicken">✕</button>'
+      : '';
     el.innerHTML = '<div class="sb-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
       +'<div class="sb-info"><div class="sb-name">'+esc(p.name)+(p.eliminated?' 💀':'')+'</div>'
       +'<div class="sb-hearts">'+hearts+'</div></div>'
-      +'<div class="sb-pts">'+p.score+'</div>';
+      +'<div class="sb-pts">'+p.score+'</div>'
+      +kickBtn;
     con.appendChild(el);
   });
 }
