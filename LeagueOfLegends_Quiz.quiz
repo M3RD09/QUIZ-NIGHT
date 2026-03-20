@@ -1,0 +1,280 @@
+{
+  "name": "League of Legends Quiz",
+  "categories": [
+    {
+      "name": "Champions",
+      "questions": [
+        {
+          "question": "Welcher Demacia-Champion schreit seinen Schlachtruf beim Aktivieren seiner Ultimate und dreht sich dabei?",
+          "answer": "Garen",
+          "points": 200
+        },
+        {
+          "question": "Wie heißt der blinde Mönch-Jungler, der mit Kicks und Drachen-Fähigkeiten kämpft?",
+          "answer": "Lee Sin",
+          "points": 400
+        },
+        {
+          "question": "Welcher Champion wird durch seine Passive 'Guerrilla Warfare' unsichtbar, wenn er sich lange genug nicht bewegt?",
+          "answer": "Teemo",
+          "points": 600
+        },
+        {
+          "question": "Wie heißt Katarinas Passive, die ihren Ultimate-Cooldown nach einem Kill oder Assist zurücksetzt?",
+          "answer": "Voracity",
+          "points": 800
+        },
+        {
+          "question": "Welcher Champion ist laut Lore ein Darkin-Dämon, der ein Schwert besessen hat?",
+          "answer": "Aatrox",
+          "points": 1000
+        },
+        {
+          "question": "Wie heißt die E-Fähigkeit von Bard, mit der er Portale durch Terrain legen kann?",
+          "answer": "Magical Journey",
+          "points": 1200
+        },
+        {
+          "question": "Welcher Champion hat eine Passive namens 'Hemorrhage', die Blutungs-Stacks auf Gegner stapelt?",
+          "answer": "Darius",
+          "points": 1400
+        },
+        {
+          "question": "Wie heißt Viego's Passive, die es ihm erlaubt getötete feindliche Champions temporär zu besitzen?",
+          "answer": "Sovereign's Domination",
+          "points": 1600
+        },
+        {
+          "question": "Wie heißt der Stacking-Mechanismus von Aurelion Sol nach seinem Rework (2023), der seine Sternenexplosionen stärker macht?",
+          "answer": "Stardust",
+          "points": 1800
+        },
+        {
+          "question": "Wie heißen die zwei Transformationsformen, in die sich Kayn im Spielverlauf entwickeln kann?",
+          "answer": "Rhaast (Darkin-Form) und Shadow Assassin",
+          "points": 2000
+        }
+      ]
+    },
+    {
+      "name": "Gameplay & Mechaniken",
+      "questions": [
+        {
+          "question": "Wie heißt die Ressource, die die meisten Champions für ihre Fähigkeiten verbrauchen?",
+          "answer": "Mana",
+          "points": 200
+        },
+        {
+          "question": "Was bedeutet die Abkürzung 'CS' in League of Legends?",
+          "answer": "Creep Score – Anzahl der getöteten Minions",
+          "points": 400
+        },
+        {
+          "question": "Was ist ein 'Gank' im Jungle-Kontext?",
+          "answer": "Ein Besuch des Junglers auf einer Lane um dem Laner beim Töten des Gegners zu helfen",
+          "points": 600
+        },
+        {
+          "question": "Was ist der Unterschied zwischen 'Hard CC' und 'Soft CC'?",
+          "answer": "Hard CC verhindert alle Aktionen (Stun, Knockup); Soft CC behindert nur (Slow, Blind, Silence)",
+          "points": 800
+        },
+        {
+          "question": "Was bedeutet 'Kiting' in League of Legends?",
+          "answer": "Angreifen und dabei Abstand halten durch Bewegung zwischen den Angriffen (Attack-Move)",
+          "points": 1000
+        },
+        {
+          "question": "Was ist 'Turret Plating' und bis wann sind die Platten aktiv?",
+          "answer": "Türme haben 5 Panzerplatten die Gold geben wenn zerstört; sie fallen nach Minute 14 weg",
+          "points": 1200
+        },
+        {
+          "question": "Wie heißt die Mechanik, bei der man eine Minion-Welle absichtlich nah an der eigenen Turm hält um den Gegner zu denyen?",
+          "answer": "Freezing (die Wave einfrieren)",
+          "points": 1400
+        },
+        {
+          "question": "Was ist ein 'Rift Herald' und wofür wird er genutzt?",
+          "answer": "Neutrales Monster auf der Top-Seite; nach dem Töten erhält man ein Item das man einsetzen kann um einen Angriff auf einen feindlichen Turm zu starten",
+          "points": 1600
+        },
+        {
+          "question": "Was bedeutet 'Splitpush' als Strategie und wann ist er besonders effektiv?",
+          "answer": "Ein Spieler pushed alleine eine Side-Lane um die gegnerische Aufmerksamkeit zu teilen; am stärksten wenn man den gegnerischen 1v1 gewinnt",
+          "points": 1800
+        },
+        {
+          "question": "Was ist 'Proxy Farming' und welcher Champion ist in der Profi-Szene dafür berüchtigt?",
+          "answer": "Man farmt Minions zwischen den eigenen und gegnerischen Türmen (hinter der feindlichen Linie); Singed ist der bekannteste Proxy-Farmer",
+          "points": 2000
+        }
+      ]
+    },
+    {
+      "name": "Lore & Regionen",
+      "questions": [
+        {
+          "question": "Aus welcher Region kommt der Champion Garen?",
+          "answer": "Demacia",
+          "points": 200
+        },
+        {
+          "question": "Welche beiden Städte stehen im Mittelpunkt der Netflix-Serie 'Arcane'?",
+          "answer": "Piltover und Zaun",
+          "points": 400
+        },
+        {
+          "question": "Wie heißt Jinx' echter Name, der in der Arcane-Serie enthüllt wird?",
+          "answer": "Powder",
+          "points": 600
+        },
+        {
+          "question": "Wie heißt der Champion, der die 'Ruination' ausgelöst hat und als 'der ruinierte König' bekannt ist?",
+          "answer": "Viego",
+          "points": 800
+        },
+        {
+          "question": "Wie heißt die Organisation in Demacia, die Magier aufspürt und gefangen nimmt?",
+          "answer": "Mageseekers",
+          "points": 1000
+        },
+        {
+          "question": "Welche Region gilt als Ursprung des 'Void', aus dem Champions wie Cho'Gath und Kog'Maw stammen?",
+          "answer": "Icathia (die antike Stadt die das Void-Tor öffnete)",
+          "points": 1200
+        },
+        {
+          "question": "Wie heißt der Orden, den Zed verließ um die 'Order of Shadow' zu gründen?",
+          "answer": "Kinkou-Orden (Kinkou Order)",
+          "points": 1400
+        },
+        {
+          "question": "Was löste den Fall des Reiches Shurima aus – und wer war dafür verantwortlich?",
+          "answer": "Xeraths Verrat: Er sabotierte Azirs Aufstieg, um die Macht selbst zu stehlen, was Shurima zerstörte",
+          "points": 1600
+        },
+        {
+          "question": "Wie heißt Vi's Schwester in der Arcane-Serie, bevor sie zu Jinx wurde?",
+          "answer": "Powder",
+          "points": 1800
+        },
+        {
+          "question": "Wie heißt Viego's verstorbene Königin, deren Tod ihn in den Wahnsinn trieb und die Ruination auslöste?",
+          "answer": "Isolde",
+          "points": 2000
+        }
+      ]
+    },
+    {
+      "name": "Items & Runen",
+      "questions": [
+        {
+          "question": "Wie heißt das Starter-Item für ADCs, das Angriffsschaden und Lifesteal gibt?",
+          "answer": "Doran's Blade",
+          "points": 200
+        },
+        {
+          "question": "Wie heißt das Item, das bei Aktivierung den Champion für 2,5 Sekunden in Stasis versetzt (unverwundbar aber handlungsunfähig)?",
+          "answer": "Zhonya's Hourglass",
+          "points": 400
+        },
+        {
+          "question": "Wie heißt die Keystone-Rune der Assassinen, die nach 3 verschiedenen Treffern innerhalb von 3 Sekunden Elektroschaden auslöst?",
+          "answer": "Electrocute",
+          "points": 600
+        },
+        {
+          "question": "Was macht Rabadon's Deathcap einzigartig unter den AP-Items?",
+          "answer": "Es erhöht die gesamte Ability Power des Trägers um 40%",
+          "points": 800
+        },
+        {
+          "question": "Wie heißt die Keystone-Rune für Tanks, die alle 4 Sekunden beim Angriff HP stiehlt und die maximale HP dauerhaft erhöht?",
+          "answer": "Grasp of the Undying",
+          "points": 1000
+        },
+        {
+          "question": "Was ist der Unterschied zwischen einem Mythic-Item und einem Legendary-Item?",
+          "answer": "Man kann nur 1 Mythic tragen; es gibt Passiv-Boni für jedes zusätzlich gekaufte Legendary Item",
+          "points": 1200
+        },
+        {
+          "question": "Wie heißt das Item, das Lifesteal gibt und bei niedrigem Leben automatisch eine Schutzhülle aktiviert?",
+          "answer": "Immortal Shieldbow",
+          "points": 1400
+        },
+        {
+          "question": "Wie heißt die Keystone-Rune für ADCs, die nach mehreren Angriffen einen massiven Angriffsgeschwindigkeits-Boost gibt?",
+          "answer": "Lethal Tempo",
+          "points": 1600
+        },
+        {
+          "question": "Wie heißt die kleine Rune (kein Keystone) im Precision-Pfad, die nach einem Kill oder Assist sofort HP regeneriert?",
+          "answer": "Triumph",
+          "points": 1800
+        },
+        {
+          "question": "Welche drei Keystones befinden sich im Runenpfad 'Precision'?",
+          "answer": "Lethal Tempo, Press the Attack, Fleet Footwork",
+          "points": 2000
+        }
+      ]
+    },
+    {
+      "name": "Esports",
+      "questions": [
+        {
+          "question": "Wie heißt der bekannteste LoL-Profi-Spieler der Welt, der als 'Unsterblicher Dämonenkönig' für T1 spielt?",
+          "answer": "Faker",
+          "points": 200
+        },
+        {
+          "question": "Wie heißt das jährliche Weltturnier im League of Legends?",
+          "answer": "League of Legends World Championship (Worlds)",
+          "points": 400
+        },
+        {
+          "question": "In welchem Jahr fand die erste League of Legends World Championship statt?",
+          "answer": "2011",
+          "points": 600
+        },
+        {
+          "question": "Welches Team gewann die Worlds 2022 in einem historischen Underdog-Sieg gegen T1?",
+          "answer": "DRX",
+          "points": 800
+        },
+        {
+          "question": "Wie heißt die europäische Profi-Liga, die 2019 aus der EU LCS umbenannt wurde?",
+          "answer": "LEC (League of Legends EMEA Championship)",
+          "points": 1000
+        },
+        {
+          "question": "Wie oft hat Faker die World Championship bisher gewonnen (Stand 2024)?",
+          "answer": "4 Mal (2013, 2015, 2016, 2023)",
+          "points": 1200
+        },
+        {
+          "question": "Wie heißt das internationale Turnier, das jedes Jahr zur Saisonmitte zwischen den Regional-Meistern stattfindet?",
+          "answer": "Mid-Season Invitational (MSI)",
+          "points": 1400
+        },
+        {
+          "question": "Welche Region hat historisch die meisten Worlds-Titel gewonnen?",
+          "answer": "Korea (LCK) – durch SKT T1 / T1 und Samsung",
+          "points": 1600
+        },
+        {
+          "question": "Wie heißt Fakers bürgerlicher Name?",
+          "answer": "Lee Sang-hyeok",
+          "points": 1800
+        },
+        {
+          "question": "Welches koreanische Team gewann die Worlds 2013, 2015 und 2016 und legte damit die Grundlage für T1?",
+          "answer": "SKT T1",
+          "points": 2000
+        }
+      ]
+    }
+  ]
+}

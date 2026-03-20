@@ -652,13 +652,8 @@ function loadIntoEditor(d){
   // Clear existing categories
   document.getElementById('cat-container').innerHTML='';
   catCount=0;
-  // Load each category with its questions
-  (d.categories||[]).forEach(cat=>{
-    addCategory(cat);
-    // addCategory creates the block — now add questions
-    const id=catCount-1;
-    (cat.questions||[]).forEach(q=>addQuestion(id,q));
-  });
+  // Load each category with its questions (addCategory handles questions internally)
+  (d.categories||[]).forEach(cat=>addCategory(cat));
   showView('view-editor');
 }
 
