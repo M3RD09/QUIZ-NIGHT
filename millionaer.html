@@ -1503,6 +1503,7 @@ function useSpy(){
   }
   if(!canUseJoker('s','joker-spy')) return;
   consumeJoker('s');
+  mpSend('joker_used',{type:'s', playerName:mpMyName});
 
   // Request current vote distribution from host
   mpSend('spy_request',{playerName: mpMyName});
