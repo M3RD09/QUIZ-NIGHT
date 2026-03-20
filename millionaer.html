@@ -812,7 +812,7 @@ function _localSelectAnswer(idx){
 let editorQCount=0;
 
 function addEditorQuestion(qData){
-  const _PTS=[100,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,25000,50000];
+  const _PTS=[100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500];
   const con=document.getElementById('q-editor-container');
   const idx=editorQCount++;
   const pts=qData?qData.points:(_PTS[idx]||idx*100+100);
