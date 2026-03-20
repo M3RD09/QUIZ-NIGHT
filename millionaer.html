@@ -929,9 +929,24 @@ function mpConnect(cb){
   s.onload=()=>{
     mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
     mpSocket.once('connect',cb);
-    mpSocket.on('connect',()=>{if(mpRoom)showToast('🔄 Verbindung wiederhergestellt',2000);});
-    mpSocket.on('disconnect',()=>{if(mpRoom)showToast('⚠️ Verbindung getrennt – versuche neu zu verbinden...',3000);});
-    mpSocket.on('player_joined',({room})=>{mpRoom=room;lobbyRender();});
+    mpSocket.on('connect',()=>{
+      if(!mpRoom||!mpRoom.code)return;
+      showReconnectOverlay();
+      mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
+      mpSocket.once('room_joined',({room})=>{
+        mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+        if(mpIsHost&&players&&players.length&&document.getElementById('view-game').classList.contains('active')){
+          setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+        }
+      });
+    });
+    mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
+    mpSocket.on('player_joined',({room})=>{
+      mpRoom=room;lobbyRender();
+      if(mpIsHost&&players&&players.length&&document.getElementById('view-game').classList.contains('active')){
+        setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+      }
+    });
     mpSocket.on('player_left',({room})=>{mpRoom=room;lobbyRender();});
     mpSocket.on('room_update',({room})=>{mpRoom=room;lobbyRender();});
     mpSocket.on('game_started',({room,quizData:qd})=>{
@@ -1278,6 +1293,7 @@ function mpOnAction(action,payload){
   }
 
   if(action==='init'){
+    hideReconnectOverlay();
     if(payload.quizData) quizData=payload.quizData;
     if(payload.players) players=payload.players.map(p=>({...p, choice:null, jokers:p.jokers||{f:true,r:true}}));
     if(typeof payload.currentQIdx==='number') currentQIdx=payload.currentQIdx;
@@ -1968,5 +1984,20 @@ document.addEventListener('click',function(e){
     </button>
   </div>
 </div>
+
+<div id="reconnect-overlay"><div class="rc-box"><div class="rc-spinner"></div><div class="rc-title">Verbindung getrennt</div><div class="rc-sub">Versuche neu zu verbinden…</div></div></div>
+<style>
+#reconnect-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;}
+#reconnect-overlay.visible{display:flex;}
+.rc-box{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px;background:var(--surface);border-radius:20px;border:1px solid var(--border);max-width:320px;width:90%;text-align:center;}
+.rc-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:rcspin 1s linear infinite;}
+.rc-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--text);}
+.rc-sub{font-size:13px;color:var(--muted);}
+@keyframes rcspin{to{transform:rotate(360deg)}}
+</style>
+<script>
+function showReconnectOverlay(){document.getElementById('reconnect-overlay').classList.add('visible');}
+function hideReconnectOverlay(){document.getElementById('reconnect-overlay').classList.remove('visible');}
+</script>
 </body>
 </html>

@@ -480,8 +480,14 @@ function mpConnect(cb){
   s.src = 'https://cdn.socket.io/4.7.2/socket.io.min.js';
   s.onload = ()=>{
     mpSocket = io(SERVER_URL, {transports:['websocket','polling']});
-    mpSocket.on('connect', cb);
-    mpSocket.on('player_joined', ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
+    mpSocket.once('connect', cb);
+    mpSocket.on('connect',()=>{
+      if(!mpRoom||!mpRoom.code)return;
+      showReconnectOverlay();
+      mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
+      mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);if(isHost&&horlState)setTimeout(broadcastState,300);});
+    });
+    mpSocket.on('player_joined', ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); else if(isHost&&horlState)setTimeout(broadcastState,300); });
     mpSocket.on('player_left',   ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
     mpSocket.on('room_update',   ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
     mpSocket.on('game_started',  ({room})=>{ if(room) mpRoom=room; });
@@ -501,6 +507,7 @@ function mpConnect(cb){
       }
       if(action === 'horl_state'){
         horlState = payload;
+        hideReconnectOverlay();
         if(!document.getElementById('view-game').classList.contains('active')){
           showView('view-game');
         }
@@ -510,7 +517,7 @@ function mpConnect(cb){
       if(isHost) horlProcessAction(action, payload);
     });
     mpSocket.on('error', ({msg})=>{ showHorlStatus('err','❌ '+(msg||'Fehler')); showToast('❌ '+(msg||'Fehler')); });
-    mpSocket.on('disconnect', ()=>{ showToast('🔌 Verbindung getrennt'); });
+    mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
   };
   document.head.appendChild(s);
 }
@@ -1316,6 +1323,21 @@ document.addEventListener('click',function(e){
   }
 });
 (function(){ setTheme(localStorage.getItem('quizTheme')||'midnight'); })();
+</script>
+
+<div id="reconnect-overlay"><div class="rc-box"><div class="rc-spinner"></div><div class="rc-title">Verbindung getrennt</div><div class="rc-sub">Versuche neu zu verbinden…</div></div></div>
+<style>
+#reconnect-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;}
+#reconnect-overlay.visible{display:flex;}
+.rc-box{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px;background:var(--surface);border-radius:20px;border:1px solid var(--border);max-width:320px;width:90%;text-align:center;}
+.rc-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:rcspin 1s linear infinite;}
+.rc-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--text);}
+.rc-sub{font-size:13px;color:var(--muted);}
+@keyframes rcspin{to{transform:rotate(360deg)}}
+</style>
+<script>
+function showReconnectOverlay(){document.getElementById('reconnect-overlay').classList.add('visible');}
+function hideReconnectOverlay(){document.getElementById('reconnect-overlay').classList.remove('visible');}
 </script>
 
 </body>
