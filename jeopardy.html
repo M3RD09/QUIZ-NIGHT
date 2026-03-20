@@ -627,6 +627,7 @@ let timerInt=null;
 let timerSecs=30;
 let currentQ=null;
 let soloMode=false;
+let soloScores=[];
 const CIRC=2*Math.PI*35;
 
 // ── IMPORT ──
@@ -707,7 +708,7 @@ function startGame(){
   teams[1].name=document.getElementById('t2-name').value.trim()||'Team Rot';
   teams[0].score=0;teams[1].score=0;
   if(!teams[0].players.length)teams[0].players=['Spieler 1'];
-  if(soloMode){teams[1].players=[];}
+  if(soloMode){teams[1].players=[];soloScores=new Array(teams[0].players.length).fill(0);}
   else if(!teams[1].players.length)teams[1].players=['Spieler 1'];
   buildTurnOrder();
   turnIdx=0;
@@ -835,6 +836,7 @@ function resetBoard(){
   if(!quizData)return;
   turnIdx=0;
   teams[0].score=0;teams[1].score=0;
+  if(soloMode)soloScores=new Array(teams[0].players.length).fill(0);
   gameHistory=[];
   buildTurnOrder();
   buildBoard();
@@ -854,9 +856,25 @@ function buildScoreArea(){
 }
 
 function updateScores(){
-  document.getElementById('score-row-1').style.display=soloMode?'none':'';
+  if(soloMode){
+    const container=document.querySelector('.sidebar-scores');
+    if(!container)return;
+    container.innerHTML='<div class="sidebar-section-label">🏆 SCORES</div>';
+    const t=currentTurn();
+    const sorted=[...soloScores.map((s,i)=>({i,s,name:teams[0].players[i]}))].sort((a,b)=>b.s-a.s);
+    sorted.forEach((p,rank)=>{
+      const isActive=t.pi===p.i;
+      const row=document.createElement('div');
+      row.className='score-row'+(isActive?' leading':'');
+      row.innerHTML='<div class="score-rank">'+(rank+1)+'</div>'
+        +'<div class="score-info"><div class="score-tname" style="color:var(--gold)">'+escHtml(p.name)+'</div></div>'
+        +'<div class="score-num">'+p.s+'</div>';
+      container.appendChild(row);
+    });
+    return;
+  }
+  document.getElementById('score-row-1').style.display='';
   teams.forEach((team,ti)=>{
-    if(soloMode&&ti===1)return;
     document.getElementById('sname-'+ti).textContent=team.name;
     document.getElementById('spts-'+ti).textContent=team.score;
     const dotsEl=document.getElementById('sdots-'+ti);
@@ -868,11 +886,9 @@ function updateScores(){
       dotsEl.appendChild(d);
     });
     const row=document.getElementById('score-row-'+ti);
-    if(!soloMode){
-      const isLeading=team.score>teams[1-ti].score;
-      if(isLeading)row.classList.add('leading');
-      else row.classList.remove('leading');
-    }
+    const isLeading=team.score>teams[1-ti].score;
+    if(isLeading)row.classList.add('leading');
+    else row.classList.remove('leading');
   });
 }
 
@@ -949,7 +965,8 @@ function timeUp(){
   const catName=quizData.categories[currentQ.ci].name;
   const {ci:tci,qi:tqi}=currentQ;
   const playerName=teams[t.ti].players[t.pi];
-  teams[t.ti].score-=currentQ.points;
+  if(soloMode)soloScores[t.pi]-=currentQ.points;
+  else teams[t.ti].score-=currentQ.points;
   updateScores();
   addToHistory(playerName,t.ti,catName,currentQ.points,'wrong');
 
@@ -987,8 +1004,14 @@ function verdict(correct){
   const playerName=teams[t.ti].players[t.pi];
   const result=correct===true?'correct':correct===false?'wrong':'skip';
 
-  if(correct===true){teams[t.ti].score+=currentQ.points;updateScores();showToast('✅ +'+currentQ.points+' für '+teams[t.ti].name+'!',2500);}
-  else if(correct===false){teams[t.ti].score-=currentQ.points;updateScores();showToast('❌ -'+currentQ.points+' für '+teams[t.ti].name,2500);}
+  if(soloMode){
+    if(correct===true){soloScores[t.pi]+=currentQ.points;showToast('✅ +'+currentQ.points+' für '+playerName+'!',2500);}
+    else if(correct===false){soloScores[t.pi]-=currentQ.points;showToast('❌ -'+currentQ.points+' für '+playerName,2500);}
+    updateScores();
+  }else{
+    if(correct===true){teams[t.ti].score+=currentQ.points;updateScores();showToast('✅ +'+currentQ.points+' für '+teams[t.ti].name+'!',2500);}
+    else if(correct===false){teams[t.ti].score-=currentQ.points;updateScores();showToast('❌ -'+currentQ.points+' für '+teams[t.ti].name,2500);}
+  }
 
   addToHistory(playerName,t.ti,catName,currentQ.points,result);
 
@@ -1015,11 +1038,16 @@ function showWinner(){
   const fg=document.getElementById('final-grid');
   fg.innerHTML='';
   if(soloMode){
-    document.getElementById('winner-name').textContent='Spiel beendet!';
-    const el=document.createElement('div');
-    el.className='final-card t1';
-    el.innerHTML='<div class="fc-name">'+escHtml(teams[0].name)+'</div><div class="fc-pts">'+teams[0].score+' Pkt.</div>';
-    fg.appendChild(el);
+    const sorted=[...soloScores.map((s,i)=>({s,name:teams[0].players[i]}))].sort((a,b)=>b.s-a.s);
+    const top=sorted[0];
+    const tied=sorted.length>1&&sorted[0].s===sorted[1].s;
+    document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':top.name+' gewinnt!';
+    sorted.forEach((p,rank)=>{
+      const el=document.createElement('div');
+      el.className='final-card '+(rank===0&&!tied?'t1':'t2');
+      el.innerHTML='<div class="fc-name">'+escHtml(p.name)+'</div><div class="fc-pts">'+p.s+' Pkt.</div>';
+      fg.appendChild(el);
+    });
   }else{
     const tied=teams[0].score===teams[1].score;
     const winner=teams[0].score>teams[1].score?teams[0]:teams[1];

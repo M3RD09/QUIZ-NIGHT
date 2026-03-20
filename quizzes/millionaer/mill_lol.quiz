@@ -1,0 +1,95 @@
+{
+  "name": "Wer wird Millionär — League of Legends",
+  "questions": [
+    {
+      "question": "Welcher Champion aus Demacia schreit seinen Schlachtruf beim Aktivieren seiner Ultimate?",
+      "answers": ["Jarvan IV", "Garen", "Lux", "Fiora"],
+      "correct": 1,
+      "points": 100
+    },
+    {
+      "question": "Wie heißt der blinde Mönch-Jungler, der mit Kicks und Drachen-Fähigkeiten kämpft?",
+      "answers": ["Udyr", "Nocturne", "Lee Sin", "Volibear"],
+      "correct": 2,
+      "points": 200
+    },
+    {
+      "question": "Aus welcher Region stammt die Champion Ahri?",
+      "answers": ["Demacia", "Noxus", "Ionia", "Piltover"],
+      "correct": 2,
+      "points": 300
+    },
+    {
+      "question": "Was bedeutet die Abkürzung 'CS' in League of Legends?",
+      "answers": ["Champion Score", "Creep Score", "Combat Speed", "Critical Strike"],
+      "correct": 1,
+      "points": 500
+    },
+    {
+      "question": "Wie heißt Jinx' echter Name, der in der Netflix-Serie 'Arcane' enthüllt wird?",
+      "answers": ["Violet", "Cinder", "Powder", "Luna"],
+      "correct": 2,
+      "points": 750
+    },
+    {
+      "question": "Welcher LoL-Profi-Spieler ist als 'Unsterblicher Dämonenkönig' bekannt und spielt für T1?",
+      "answers": ["Uzi", "Caps", "Ruler", "Faker"],
+      "correct": 3,
+      "points": 1000
+    },
+    {
+      "question": "Wie heißt Katarinas Passive, die ihren Ultimate-Cooldown nach einem Kill oder Assist zurücksetzt?",
+      "answers": ["Bounty Hunter", "Voracity", "Preparation", "Death Mark"],
+      "correct": 1,
+      "points": 1500
+    },
+    {
+      "question": "Welcher Champion ist laut Lore ein Darkin-Dämon, der ein Schwert besessen hat?",
+      "answers": ["Kayn", "Zed", "Viego", "Aatrox"],
+      "correct": 3,
+      "points": 2000
+    },
+    {
+      "question": "Wie oft hat Faker die World Championship bisher gewonnen (Stand 2024)?",
+      "answers": ["2 Mal", "3 Mal", "4 Mal", "5 Mal"],
+      "correct": 2,
+      "points": 3000
+    },
+    {
+      "question": "Welches Team gewann die Worlds 2022 in einem historischen Underdog-Sieg gegen T1?",
+      "answers": ["Gen.G", "DRX", "Cloud9", "EDward Gaming"],
+      "correct": 1,
+      "points": 5000
+    },
+    {
+      "question": "Wie heißt Viego's verstorbene Königin, deren Tod die Ruination auslöste?",
+      "answers": ["Karma", "Senna", "Isolde", "Syndra"],
+      "correct": 2,
+      "points": 7500
+    },
+    {
+      "question": "Bis zu welcher Spielminute sind Turm-Panzerplatten (Turret Plating) aktiv?",
+      "answers": ["Minute 10", "Minute 12", "Minute 14", "Minute 16"],
+      "correct": 2,
+      "points": 10000
+    },
+    {
+      "question": "Wie heißt Bard's E-Fähigkeit, mit der er Portale durch Terrain legen kann?",
+      "answers": ["Caretaker's Shrine", "Tempered Fate", "Cosmic Binding", "Magical Journey"],
+      "correct": 3,
+      "points": 15000
+    },
+    {
+      "question": "Wie heißt der Stacking-Mechanismus von Aurelion Sol nach seinem großen Rework im Jahr 2023?",
+      "answers": ["Starfire", "Comet Trail", "Stardust", "Stellar Drift"],
+      "correct": 2,
+      "points": 25000
+    },
+    {
+      "question": "Wie viele Stacks braucht Nasus' Q ('Siphoning Strike'), um genau +300 Bonusschaden zu verursachen?",
+      "answers": ["50 Stacks", "100 Stacks", "200 Stacks", "300 Stacks"],
+      "correct": 1,
+      "points": 50000
+    }
+  ]
+}
