@@ -928,7 +928,9 @@ function mpConnect(cb){
   s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
   s.onload=()=>{
     mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
-    mpSocket.on('connect',cb);
+    mpSocket.once('connect',cb);
+    mpSocket.on('connect',()=>{if(mpRoom)showToast('🔄 Verbindung wiederhergestellt',2000);});
+    mpSocket.on('disconnect',()=>{if(mpRoom)showToast('⚠️ Verbindung getrennt – versuche neu zu verbinden...',3000);});
     mpSocket.on('player_joined',({room})=>{mpRoom=room;lobbyRender();});
     mpSocket.on('player_left',({room})=>{mpRoom=room;lobbyRender();});
     mpSocket.on('room_update',({room})=>{mpRoom=room;lobbyRender();});
