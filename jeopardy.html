@@ -857,6 +857,21 @@ function addToHistory(playerName,teamIdx,category,points,result){
 }
 
 // ── QUESTION ──
+function renderOverlay(ci,qi,ti,pi){
+  const cat=quizData.categories[ci];
+  const q=cat.questions[qi];
+  document.getElementById('qo-cat').textContent=(cat.name||'Kategorie').toUpperCase();
+  document.getElementById('qo-pts').textContent=q.points;
+  document.getElementById('qo-whose').textContent=teams[ti].name+' — '+teams[ti].players[pi]+' ist dran';
+  document.getElementById('qo-text').textContent=q.question||q.text||'';
+  document.getElementById('time-up-box').style.display='none';
+  document.getElementById('btn-reveal').style.display='';
+  document.getElementById('ans-box').style.display='none';
+  document.getElementById('ans-box').textContent='';
+  document.getElementById('verdict-wrap').style.display='none';
+  document.getElementById('q-overlay').classList.add('open');
+}
+
 function openQuestion(ci,qi,cell){
   if(cell.classList.contains('used'))return;
   const t=currentTurn();
@@ -1003,7 +1018,7 @@ function launchConfetti(canvasId){
 
 // ── EDITOR ──
 let catCount=0,qCount=0;
-const PTS=[200,400,600,800,1000];
+const PTS=[200,400,600,800,1000,1200,1400,1600,1800,2000];
 
 function addCategory(catData){
   const id=catCount++;
