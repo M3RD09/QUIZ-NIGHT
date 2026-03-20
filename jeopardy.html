@@ -44,6 +44,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
 
 /* SETUP */
+.mode-toggle{display:flex;gap:8px;margin-bottom:16px;}
+.btn-mode{flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;}
+.btn-mode.active{border-color:var(--gold);background:rgba(245,200,66,.1);color:var(--gold);}
 .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .team-card{background:var(--surface);border-radius:14px;padding:14px;border-top:3px solid var(--tc);}
 .team-card.t1{--tc:var(--team1);}
@@ -434,9 +437,13 @@ to{opacity:1;}}
     <div class="topbar-title">🎯 Teams aufstellen</div>
   </div>
   <div class="view-body">
+    <div class="mode-toggle">
+      <button id="btn-mode-teams" class="btn-mode active" onclick="setSoloMode(false)">👥 Teams</button>
+      <button id="btn-mode-solo" class="btn-mode" onclick="setSoloMode(true)">👤 Einzelspieler</button>
+    </div>
     <div class="team-grid">
-      <div class="team-card t1">
-        <div class="team-label">TEAM 1</div>
+      <div class="team-card t1" id="team1-card">
+        <div class="team-label" id="team1-label">TEAM 1</div>
         <input class="team-name-inp" id="t1-name" placeholder="Teamname" value="Team Blau" maxlength="16">
         <div class="player-list" id="t1-players"></div>
         <div class="player-add-row">
@@ -445,7 +452,7 @@ to{opacity:1;}}
           <button class="btn-add-p-inline" onclick="addPlayer(1)">＋</button>
         </div>
       </div>
-      <div class="team-card t2">
+      <div class="team-card t2" id="team2-card">
         <div class="team-label">TEAM 2</div>
         <input class="team-name-inp" id="t2-name" placeholder="Teamname" value="Team Rot" maxlength="16">
         <div class="player-list" id="t2-players"></div>
@@ -619,6 +626,7 @@ let turnIdx=0;
 let timerInt=null;
 let timerSecs=30;
 let currentQ=null;
+let soloMode=false;
 const CIRC=2*Math.PI*35;
 
 // ── IMPORT ──
@@ -656,10 +664,21 @@ function loadIntoEditor(d){
 
 // ── SETUP ──
 function goToSetup(){
+  soloMode=false;
+  setSoloMode(false);
   teams[0].players=[];teams[1].players=[];
   teams[0].score=0;teams[1].score=0;
   renderPlayers(1);renderPlayers(2);
   showView('view-setup');
+}
+
+function setSoloMode(v){
+  soloMode=v;
+  document.getElementById('team2-card').style.display=v?'none':'';
+  document.getElementById('t1-name').style.display=v?'none':'';
+  document.getElementById('team1-label').textContent=v?'SPIELER':'TEAM 1';
+  document.getElementById('btn-mode-teams').classList.toggle('active',!v);
+  document.getElementById('btn-mode-solo').classList.toggle('active',v);
 }
 
 function renderPlayers(t){
@@ -689,11 +708,12 @@ function removePlayer(t,i){
 }
 
 function startGame(){
-  teams[0].name=document.getElementById('t1-name').value.trim()||'Team Blau';
+  teams[0].name=soloMode?'Spieler':document.getElementById('t1-name').value.trim()||'Team Blau';
   teams[1].name=document.getElementById('t2-name').value.trim()||'Team Rot';
   teams[0].score=0;teams[1].score=0;
   if(!teams[0].players.length)teams[0].players=['Spieler 1'];
-  if(!teams[1].players.length)teams[1].players=['Spieler 1'];
+  if(soloMode){teams[1].players=[];}
+  else if(!teams[1].players.length)teams[1].players=['Spieler 1'];
   buildTurnOrder();
   turnIdx=0;
   gameHistory=[];
@@ -706,10 +726,14 @@ function startGame(){
 
 function buildTurnOrder(){
   turnOrder=[];
-  const max=Math.max(teams[0].players.length,teams[1].players.length);
-  for(let i=0;i<max;i++){
-    if(i<teams[0].players.length)turnOrder.push({ti:0,pi:i});
-    if(i<teams[1].players.length)turnOrder.push({ti:1,pi:i});
+  if(soloMode){
+    teams[0].players.forEach((_,pi)=>turnOrder.push({ti:0,pi}));
+  }else{
+    const max=Math.max(teams[0].players.length,teams[1].players.length);
+    for(let i=0;i<max;i++){
+      if(i<teams[0].players.length)turnOrder.push({ti:0,pi:i});
+      if(i<teams[1].players.length)turnOrder.push({ti:1,pi:i});
+    }
   }
 }
 
@@ -719,13 +743,14 @@ function updateTurnBanner(){
   const t=currentTurn();
   const name=teams[t.ti].players[t.pi];
   document.getElementById('st-avatar').textContent=name.charAt(0).toUpperCase();
-  document.getElementById('st-avatar').style.background=t.ti===0
-    ?'linear-gradient(135deg,#3a8ef6,#1a5cd8)'
-    :'linear-gradient(135deg,#e8354a,#c0293b)';
-  document.getElementById('st-avatar').style.boxShadow=t.ti===0
-    ?'0 0 16px rgba(58,142,246,.4)':'0 0 16px rgba(232,53,74,.4)';
+  document.getElementById('st-avatar').style.background=soloMode
+    ?'linear-gradient(135deg,#f5c842,#d4a017)'
+    :t.ti===0?'linear-gradient(135deg,#3a8ef6,#1a5cd8)':'linear-gradient(135deg,#e8354a,#c0293b)';
+  document.getElementById('st-avatar').style.boxShadow=soloMode
+    ?'0 0 16px rgba(245,200,66,.4)'
+    :t.ti===0?'0 0 16px rgba(58,142,246,.4)':'0 0 16px rgba(232,53,74,.4)';
   document.getElementById('st-name').textContent=name;
-  document.getElementById('st-team').textContent=teams[t.ti].name;
+  document.getElementById('st-team').textContent=soloMode?'':teams[t.ti].name;
   document.getElementById('st-team').style.color=t.ti===0?'var(--team1)':'var(--team2)';
 }
 
@@ -733,6 +758,22 @@ function updateTeamsSidebar(){
   const container=document.getElementById('sb-teams');
   if(!container)return;
   const t=currentTurn();
+  if(soloMode){
+    container.innerHTML='<div class="sidebar-section-label">👤 SPIELER</div>';
+    const block=document.createElement('div');
+    block.className='sb-team-block';
+    block.innerHTML='<div class="sb-team-players-list" id="sbtp-0"></div>';
+    container.appendChild(block);
+    const plist=document.getElementById('sbtp-0');
+    teams[0].players.forEach((p,pi)=>{
+      const isActive=t.pi===pi;
+      const el=document.createElement('div');
+      el.className='sb-team-player-item'+(isActive?' active-player':'');
+      el.innerHTML=(isActive?'<div class="sb-active-dot"></div>':'')+escHtml(p);
+      plist.appendChild(el);
+    });
+    return;
+  }
   container.innerHTML='<div class="sidebar-section-label">👥 TEAMS</div>';
   teams.forEach((team,ti)=>{
     const color=ti===0?'var(--team1)':'var(--team2)';
@@ -818,7 +859,9 @@ function buildScoreArea(){
 }
 
 function updateScores(){
+  document.getElementById('score-row-1').style.display=soloMode?'none':'';
   teams.forEach((team,ti)=>{
+    if(soloMode&&ti===1)return;
     document.getElementById('sname-'+ti).textContent=team.name;
     document.getElementById('spts-'+ti).textContent=team.score;
     const dotsEl=document.getElementById('sdots-'+ti);
@@ -830,9 +873,11 @@ function updateScores(){
       dotsEl.appendChild(d);
     });
     const row=document.getElementById('score-row-'+ti);
-    const isLeading=team.score>teams[1-ti].score;
-    if(isLeading)row.classList.add('leading');
-    else row.classList.remove('leading');
+    if(!soloMode){
+      const isLeading=team.score>teams[1-ti].score;
+      if(isLeading)row.classList.add('leading');
+      else row.classList.remove('leading');
+    }
   });
 }
 
@@ -862,7 +907,7 @@ function renderOverlay(ci,qi,ti,pi){
   const q=cat.questions[qi];
   document.getElementById('qo-cat').textContent=(cat.name||'Kategorie').toUpperCase();
   document.getElementById('qo-pts').textContent=q.points;
-  document.getElementById('qo-whose').textContent=teams[ti].name+' — '+teams[ti].players[pi]+' ist dran';
+  document.getElementById('qo-whose').textContent=soloMode?teams[ti].players[pi]+' ist dran':teams[ti].name+' — '+teams[ti].players[pi]+' ist dran';
   document.getElementById('qo-text').textContent=q.question||q.text||'';
   document.getElementById('time-up-box').style.display='none';
   document.getElementById('btn-reveal').style.display='';
@@ -972,17 +1017,25 @@ function verdict(correct){
 
 
 function showWinner(){
-  const tied=teams[0].score===teams[1].score;
-  const winner=teams[0].score>teams[1].score?teams[0]:teams[1];
-  document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':winner.name;
   const fg=document.getElementById('final-grid');
   fg.innerHTML='';
-  teams.forEach((team,ti)=>{
+  if(soloMode){
+    document.getElementById('winner-name').textContent='Spiel beendet!';
     const el=document.createElement('div');
-    el.className='final-card '+(ti===0?'t1':'t2');
-    el.innerHTML='<div class="fc-name">'+escHtml(team.name)+'</div><div class="fc-pts">'+team.score+'</div>';
+    el.className='final-card t1';
+    el.innerHTML='<div class="fc-name">'+escHtml(teams[0].name)+'</div><div class="fc-pts">'+teams[0].score+' Pkt.</div>';
     fg.appendChild(el);
-  });
+  }else{
+    const tied=teams[0].score===teams[1].score;
+    const winner=teams[0].score>teams[1].score?teams[0]:teams[1];
+    document.getElementById('winner-name').textContent=tied?'Unentschieden! 🤝':winner.name;
+    teams.forEach((team,ti)=>{
+      const el=document.createElement('div');
+      el.className='final-card '+(ti===0?'t1':'t2');
+      el.innerHTML='<div class="fc-name">'+escHtml(team.name)+'</div><div class="fc-pts">'+team.score+'</div>';
+      fg.appendChild(el);
+    });
+  }
   showView('view-winner');
   setTimeout(()=>launchConfetti('confetti-canvas-j'),400);
 }
