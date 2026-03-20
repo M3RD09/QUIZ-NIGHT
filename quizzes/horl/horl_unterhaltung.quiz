@@ -6,19 +6,19 @@
       "labelLow": "weniger eingespielt",
       "labelHigh": "mehr eingespielt",
       "items": [
-        { "name": "The Hunger Games (2012)", "value": 1, "imageUrl": "" },
         { "name": "Joker (2019)", "value": 1, "imageUrl": "" },
         { "name": "The Dark Knight (2008)", "value": 1, "imageUrl": "" },
-        { "name": "Shrek 2 (2004)", "value": 1, "imageUrl": "" },
+        { "name": "Barbie (2023)", "value": 1, "imageUrl": "" },
+        { "name": "Top Gun: Maverick (2022)", "value": 1, "imageUrl": "" },
         { "name": "The Avengers (2012)", "value": 2, "imageUrl": "" },
-        { "name": "Spider-Man: No Way Home", "value": 2, "imageUrl": "" },
-        { "name": "Avengers: Infinity War", "value": 2, "imageUrl": "" },
+        { "name": "Spider-Man: No Way Home (2021)", "value": 2, "imageUrl": "" },
+        { "name": "Avengers: Infinity War (2018)", "value": 2, "imageUrl": "" },
         { "name": "The Lion King (2019)", "value": 2, "imageUrl": "" },
         { "name": "Titanic (1997)", "value": 2, "imageUrl": "" },
-        { "name": "Fast & Furious 7", "value": 2, "imageUrl": "" },
-        { "name": "Jurassic World (2015)", "value": 2, "imageUrl": "" },
-        { "name": "Star Wars: The Force Awakens", "value": 2, "imageUrl": "" },
-        { "name": "Avengers: Endgame", "value": 3, "imageUrl": "" },
+        { "name": "Star Wars: The Force Awakens (2015)", "value": 2, "imageUrl": "" },
+        { "name": "Avatar: The Way of Water (2022)", "value": 2, "imageUrl": "" },
+        { "name": "Fast & Furious 7 (2015)", "value": 2, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2019)", "value": 3, "imageUrl": "" },
         { "name": "Avatar (2009)", "value": 3, "imageUrl": "" }
       ]
     },
@@ -31,10 +31,10 @@
         { "name": "Shrek (2001)", "value": 90, "imageUrl": "" },
         { "name": "Kevin allein zu Haus (1990)", "value": 103, "imageUrl": "" },
         { "name": "Joker (2019)", "value": 122, "imageUrl": "" },
+        { "name": "Forrest Gump (1994)", "value": 142, "imageUrl": "" },
         { "name": "Inception (2010)", "value": 148, "imageUrl": "" },
         { "name": "Dune: Part Two (2024)", "value": 166, "imageUrl": "" },
         { "name": "Interstellar (2014)", "value": 169, "imageUrl": "" },
-        { "name": "Forrest Gump (1994)", "value": 142, "imageUrl": "" },
         { "name": "The Godfather (1972)", "value": 175, "imageUrl": "" },
         { "name": "Oppenheimer (2023)", "value": 180, "imageUrl": "" },
         { "name": "Avengers: Endgame (2019)", "value": 182, "imageUrl": "" },
@@ -65,24 +65,24 @@
       ]
     },
     {
-      "category": "Anzahl Spotify-Streams des meistgehörten Albums (Mrd.)",
+      "category": "Anzahl Spotify-Streams des Albums (Mrd., ca. Anfang 2026)",
       "labelLow": "weniger Streams",
       "labelHigh": "mehr Streams",
       "items": [
-        { "name": "Olivia Rodrigo — SOUR", "value": 8, "imageUrl": "" },
-        { "name": "Doja Cat — Planet Her", "value": 9, "imageUrl": "" },
-        { "name": "Harry Styles — Harry's House", "value": 10, "imageUrl": "" },
-        { "name": "Billie Eilish — Happier Than Ever", "value": 12, "imageUrl": "" },
-        { "name": "Drake — Certified Lover Boy", "value": 14, "imageUrl": "" },
-        { "name": "Post Malone — Hollywood's Bleeding", "value": 15, "imageUrl": "" },
-        { "name": "Ariana Grande — Thank U, Next", "value": 16, "imageUrl": "" },
-        { "name": "Morgan Wallen — One Thing at a Time", "value": 18, "imageUrl": "" },
-        { "name": "The Weeknd — After Hours", "value": 20, "imageUrl": "" },
-        { "name": "SZA — SOS", "value": 22, "imageUrl": "" },
-        { "name": "Dua Lipa — Future Nostalgia", "value": 25, "imageUrl": "" },
-        { "name": "Ed Sheeran — Divide", "value": 28, "imageUrl": "" },
-        { "name": "Taylor Swift — Midnights", "value": 30, "imageUrl": "" },
-        { "name": "Bad Bunny — Un Verano Sin Ti", "value": 35, "imageUrl": "" }
+        { "name": "Olivia Rodrigo — SOUR (2021)", "value": 8, "imageUrl": "" },
+        { "name": "Doja Cat — Planet Her (2021)", "value": 9, "imageUrl": "" },
+        { "name": "Harry Styles — Harry's House (2022)", "value": 10, "imageUrl": "" },
+        { "name": "Kendrick Lamar — GNX (2024)", "value": 12, "imageUrl": "" },
+        { "name": "Billie Eilish — Happier Than Ever (2021)", "value": 13, "imageUrl": "" },
+        { "name": "Drake — Certified Lover Boy (2021)", "value": 14, "imageUrl": "" },
+        { "name": "Post Malone — Hollywood's Bleeding (2019)", "value": 15, "imageUrl": "" },
+        { "name": "Ariana Grande — Thank U, Next (2019)", "value": 16, "imageUrl": "" },
+        { "name": "Sabrina Carpenter — Short n' Sweet (2024)", "value": 18, "imageUrl": "" },
+        { "name": "The Weeknd — After Hours (2020)", "value": 21, "imageUrl": "" },
+        { "name": "SZA — SOS (2022)", "value": 25, "imageUrl": "" },
+        { "name": "Dua Lipa — Future Nostalgia (2020)", "value": 26, "imageUrl": "" },
+        { "name": "Bad Bunny — Un Verano Sin Ti (2022)", "value": 38, "imageUrl": "" },
+        { "name": "Taylor Swift — The Tortured Poets Department (2024)", "value": 45, "imageUrl": "" }
       ]
     },
     {
@@ -96,14 +96,14 @@
         { "name": "Super Mario Bros.", "value": 1985, "imageUrl": "" },
         { "name": "The Legend of Zelda", "value": 1986, "imageUrl": "" },
         { "name": "Doom", "value": 1993, "imageUrl": "" },
-        { "name": "Half-Life", "value": 1998, "imageUrl": "" },
         { "name": "World of Warcraft", "value": 2004, "imageUrl": "" },
-        { "name": "Call of Duty 4: Modern Warfare", "value": 2007, "imageUrl": "" },
         { "name": "Minecraft", "value": 2011, "imageUrl": "" },
         { "name": "Grand Theft Auto V", "value": 2013, "imageUrl": "" },
         { "name": "The Witcher 3", "value": 2015, "imageUrl": "" },
         { "name": "Fortnite", "value": 2017, "imageUrl": "" },
-        { "name": "Among Us", "value": 2018, "imageUrl": "" }
+        { "name": "Cyberpunk 2077", "value": 2020, "imageUrl": "" },
+        { "name": "Elden Ring", "value": 2022, "imageUrl": "" },
+        { "name": "Hogwarts Legacy", "value": 2023, "imageUrl": "" }
       ]
     }
   ]

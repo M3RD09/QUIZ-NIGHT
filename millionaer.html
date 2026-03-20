@@ -154,6 +154,9 @@ body::before{
 .joker-btn.spy-disabled{opacity:.3;cursor:not-allowed;}
 
 @keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(243,156,18,.2);}50%{box-shadow:0 0 18px rgba(243,156,18,.5);}}
+#mill-timer-display{width:36px;height:36px;border-radius:50%;display:none;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;font-weight:bold;transition:background .4s;flex-shrink:0;}
+#mill-timer-display.timer-urgent{animation:timerPulse .5s ease infinite;}
+@keyframes timerPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 
 /* RISIKO MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(16px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
@@ -413,6 +416,17 @@ body::before{
       ⏳ Warte auf Spieler...
     </div>
 
+    <!-- Timer setting (host only) -->
+    <div id="lobby-timer-row" style="display:none;width:100%;max-width:420px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--muted);margin-bottom:10px;">TIMER PRO FRAGE</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 15px;display:flex;align-items:center;gap:12px;">
+        <span style="flex:1;font-size:13px;color:var(--muted);">⏱ Sekunden pro Frage</span>
+        <button class="btn-icon" onclick="millChangeTimer(-15)">−</button>
+        <span id="lobby-timer-val" style="font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:50px;text-align:center;">Aus</span>
+        <button class="btn-icon" onclick="millChangeTimer(15)">＋</button>
+      </div>
+    </div>
+
     <!-- Start button -->
     <button id="lobby-start-btn" onclick="lobbyStart()"
       style="width:100%;max-width:420px;padding:16px;background:var(--gold);border:none;border-radius:14px;color:#000;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:800;cursor:pointer;display:none;">
@@ -439,6 +453,7 @@ body::before{
     <button class="btn-icon" onclick="confirmQuit()">←</button>
     <div class="topbar-title" id="game-title">💰 Millionär</div>
     <div id="q-counter" style="font-size:12px;color:var(--muted);">Frage 1/15</div>
+    <div id="mill-timer-display"></div>
   </div>
 
   <div class="game-layout">
@@ -551,6 +566,48 @@ let risikoActive=false;
 let answered=false;
 let correctIdx=-1;
 const LETTERS=['A','B','C','D'];
+let millTimerDuration=0;   // 0 = deaktiviert
+let millTimerInterval=null;
+let millTimeLeft=0;
+
+function millChangeTimer(d){
+  millTimerDuration=Math.max(0,Math.min(120,millTimerDuration+d));
+  const el=document.getElementById('lobby-timer-val');
+  if(el) el.textContent=millTimerDuration===0?'Aus':millTimerDuration+'s';
+}
+function millStartTimer(){
+  clearInterval(millTimerInterval);
+  millTimerInterval=null;
+  if(!millTimerDuration){millUpdateTimerDisplay();return;}
+  millTimeLeft=millTimerDuration;
+  millUpdateTimerDisplay();
+  millTimerInterval=setInterval(()=>{
+    millTimeLeft--;
+    millUpdateTimerDisplay();
+    if(millTimeLeft<=0){
+      clearInterval(millTimerInterval);
+      millTimerInterval=null;
+      if(mpIsHost) mpHostReveal();
+    }
+  },1000);
+}
+function millStopTimer(){
+  clearInterval(millTimerInterval);
+  millTimerInterval=null;
+  const el=document.getElementById('mill-timer-display');
+  if(el){el.style.display='none';el.classList.remove('timer-urgent');}
+}
+function millUpdateTimerDisplay(){
+  const el=document.getElementById('mill-timer-display');
+  if(!el) return;
+  if(!millTimerDuration||millTimeLeft<=0){el.style.display='none';el.classList.remove('timer-urgent');return;}
+  el.style.display='flex';
+  el.textContent=millTimeLeft;
+  const ratio=millTimeLeft/millTimerDuration;
+  if(ratio>0.5){el.style.background='linear-gradient(135deg,#2ecc71,#27ae60)';el.classList.remove('timer-urgent');}
+  else if(ratio>0.25){el.style.background='linear-gradient(135deg,#f39c12,#e67e22)';el.classList.remove('timer-urgent');}
+  else{el.style.background='linear-gradient(135deg,#e8354a,#c0392b)';el.classList.add('timer-urgent');}
+}
 
 // ── IMPORT ──
 function importAndPlay(ev){
@@ -704,6 +761,7 @@ function loadQuestion(){
   });
 
   updateSidebar();
+  millStartTimer();
 }
 
 function _localSelectAnswer(idx){
@@ -909,6 +967,8 @@ function lobbyRender(){
   document.getElementById('lobby-status').textContent=
     playerCount===0?'⏳ Warte auf Spieler...':
     `✅ ${playerCount} Spieler bereit`;
+  const timerRow=document.getElementById('lobby-timer-row');
+  if(timerRow) timerRow.style.display=mpIsHost?'block':'none';
 }
 
 function lobbyLinkCopy(){
@@ -972,7 +1032,8 @@ function mpBeginGame(){
     setTimeout(()=>mpSend('init',{
       quizData,
       players: players.map(p=>({name:p.name,score:p.score,jokers:p.jokers})),
-      currentQIdx
+      currentQIdx,
+      timerDuration: millTimerDuration
     }),500);
   } else {
     // Clients: enable voting, hide next button
@@ -1082,6 +1143,7 @@ function mpSendSpyCounts(forPlayer){
 function mpHostReveal(){
   if(mpPhase==='revealed') return;
   mpPhase='revealed';
+  millStopTimer();
 
   const q=quizData.questions[currentQIdx];
   const cIdx=q.correct;
@@ -1186,6 +1248,7 @@ function mpOnAction(action,payload){
     if(payload.quizData) quizData=payload.quizData;
     if(payload.players) players=payload.players.map(p=>({...p, choice:null, jokers:p.jokers||{f:true,r:true}}));
     if(typeof payload.currentQIdx==='number') currentQIdx=payload.currentQIdx;
+    if(typeof payload.timerDuration==='number') millTimerDuration=payload.timerDuration;
     risikoActive=false; answered=false; mpVotes={};
     buildSidebar(); buildLadder(); loadQuestion();
     showView('view-game');
@@ -1194,6 +1257,7 @@ function mpOnAction(action,payload){
   }
 
   if(action==='reveal'){
+    millStopTimer();
     const {correctIdx:cIdx, results, scores, risikoActive:ra}=payload;
     risikoActive=ra||false;
     // Update scores

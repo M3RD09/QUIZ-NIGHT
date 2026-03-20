@@ -2,24 +2,24 @@
   "name": "Higher or Lower — Wirtschaft & Zahlen",
   "rounds": [
     {
-      "category": "Börsenwert bekannter Unternehmen (Mrd. $, ca. 2024)",
+      "category": "Börsenwert bekannter Unternehmen (Mrd. $, ca. Anfang 2026)",
       "labelLow": "geringerer Wert",
       "labelHigh": "höherer Wert",
       "items": [
-        { "name": "BMW", "value": 65, "imageUrl": "" },
-        { "name": "Volkswagen", "value": 75, "imageUrl": "" },
-        { "name": "Nike", "value": 150, "imageUrl": "" },
-        { "name": "Alibaba", "value": 200, "imageUrl": "" },
-        { "name": "McDonald's", "value": 220, "imageUrl": "" },
-        { "name": "Netflix", "value": 280, "imageUrl": "" },
-        { "name": "Samsung", "value": 350, "imageUrl": "" },
-        { "name": "Tesla", "value": 700, "imageUrl": "" },
-        { "name": "Meta (Facebook)", "value": 1400, "imageUrl": "" },
-        { "name": "Amazon", "value": 2000, "imageUrl": "" },
-        { "name": "Google (Alphabet)", "value": 2200, "imageUrl": "" },
-        { "name": "Nvidia", "value": 3000, "imageUrl": "" },
-        { "name": "Microsoft", "value": 3200, "imageUrl": "" },
-        { "name": "Apple", "value": 3500, "imageUrl": "" }
+        { "name": "Volkswagen", "value": 52, "imageUrl": "" },
+        { "name": "BMW", "value": 64, "imageUrl": "" },
+        { "name": "McDonald's", "value": 210, "imageUrl": "" },
+        { "name": "Alibaba", "value": 300, "imageUrl": "" },
+        { "name": "Netflix", "value": 350, "imageUrl": "" },
+        { "name": "Samsung", "value": 900, "imageUrl": "" },
+        { "name": "Tesla", "value": 1470, "imageUrl": "" },
+        { "name": "TSMC", "value": 1760, "imageUrl": "" },
+        { "name": "Meta (Facebook)", "value": 1620, "imageUrl": "" },
+        { "name": "Amazon", "value": 2250, "imageUrl": "" },
+        { "name": "Microsoft", "value": 3010, "imageUrl": "" },
+        { "name": "Alphabet (Google)", "value": 3650, "imageUrl": "" },
+        { "name": "Apple", "value": 3770, "imageUrl": "" },
+        { "name": "Nvidia", "value": 4370, "imageUrl": "" }
       ]
     },
     {
@@ -31,15 +31,15 @@
         { "name": "Singapur", "value": 6, "imageUrl": "" },
         { "name": "Bangkok", "value": 11, "imageUrl": "" },
         { "name": "Jakarta", "value": 11, "imageUrl": "" },
-        { "name": "Karachi", "value": 16, "imageUrl": "" },
         { "name": "Lagos", "value": 15, "imageUrl": "" },
+        { "name": "Karachi", "value": 16, "imageUrl": "" },
         { "name": "New York", "value": 19, "imageUrl": "" },
         { "name": "Mumbai", "value": 21, "imageUrl": "" },
         { "name": "Mexiko-Stadt", "value": 22, "imageUrl": "" },
         { "name": "Peking", "value": 22, "imageUrl": "" },
+        { "name": "Kairo", "value": 22, "imageUrl": "" },
         { "name": "Dhaka", "value": 23, "imageUrl": "" },
         { "name": "Schanghai", "value": 29, "imageUrl": "" },
-        { "name": "Kairo", "value": 22, "imageUrl": "" },
         { "name": "Tokio", "value": 37, "imageUrl": "" }
       ]
     },
@@ -65,45 +65,45 @@
       ]
     },
     {
-      "category": "Anzahl weltweiter Filialen bekannter Fast-Food-Ketten (ca. 2024)",
+      "category": "Anzahl weltweiter Filialen bekannter Fast-Food-Ketten (ca. 2025)",
       "labelLow": "weniger Filialen",
       "labelHigh": "mehr Filialen",
       "items": [
         { "name": "Five Guys", "value": 1800, "imageUrl": "" },
         { "name": "Jollibee", "value": 1700, "imageUrl": "" },
-        { "name": "Wingstop", "value": 2000, "imageUrl": "" },
-        { "name": "Chipotle", "value": 3400, "imageUrl": "" },
-        { "name": "Papa John's", "value": 5800, "imageUrl": "" },
+        { "name": "Wingstop", "value": 2200, "imageUrl": "" },
+        { "name": "Chipotle", "value": 3500, "imageUrl": "" },
         { "name": "Tim Hortons", "value": 5700, "imageUrl": "" },
-        { "name": "Dunkin'", "value": 12000, "imageUrl": "" },
-        { "name": "Domino's Pizza", "value": 19000, "imageUrl": "" },
-        { "name": "Burger King", "value": 18000, "imageUrl": "" },
-        { "name": "Pizza Hut", "value": 18000, "imageUrl": "" },
-        { "name": "KFC", "value": 27000, "imageUrl": "" },
-        { "name": "Starbucks", "value": 36000, "imageUrl": "" },
+        { "name": "Papa John's", "value": 5800, "imageUrl": "" },
+        { "name": "Dunkin'", "value": 12500, "imageUrl": "" },
+        { "name": "Burger King", "value": 19000, "imageUrl": "" },
+        { "name": "Pizza Hut", "value": 18500, "imageUrl": "" },
+        { "name": "Domino's Pizza", "value": 20000, "imageUrl": "" },
+        { "name": "KFC", "value": 28000, "imageUrl": "" },
+        { "name": "Starbucks", "value": 40000, "imageUrl": "" },
         { "name": "Subway", "value": 37000, "imageUrl": "" },
-        { "name": "McDonald's", "value": 40000, "imageUrl": "" }
+        { "name": "McDonald's", "value": 42000, "imageUrl": "" }
       ]
     },
     {
-      "category": "BIP von Ländern (Mrd. $, ca. 2024)",
+      "category": "BIP von Ländern (Mrd. $, IMF-Schätzung 2025)",
       "labelLow": "geringeres BIP",
       "labelHigh": "höheres BIP",
       "items": [
-        { "name": "Polen", "value": 800, "imageUrl": "" },
-        { "name": "Schweiz", "value": 905, "imageUrl": "" },
-        { "name": "Niederlande", "value": 1100, "imageUrl": "" },
-        { "name": "Türkei", "value": 1200, "imageUrl": "" },
+        { "name": "Niederlande", "value": 1150, "imageUrl": "" },
+        { "name": "Türkei", "value": 1350, "imageUrl": "" },
+        { "name": "Australien", "value": 1800, "imageUrl": "" },
         { "name": "Südkorea", "value": 1800, "imageUrl": "" },
-        { "name": "Australien", "value": 1720, "imageUrl": "" },
-        { "name": "Russland", "value": 2200, "imageUrl": "" },
-        { "name": "Brasilien", "value": 2100, "imageUrl": "" },
-        { "name": "Frankreich", "value": 3050, "imageUrl": "" },
-        { "name": "Indien", "value": 3700, "imageUrl": "" },
-        { "name": "Deutschland", "value": 4200, "imageUrl": "" },
-        { "name": "Japan", "value": 4200, "imageUrl": "" },
-        { "name": "China", "value": 17800, "imageUrl": "" },
-        { "name": "USA", "value": 27400, "imageUrl": "" }
+        { "name": "Russland", "value": 2000, "imageUrl": "" },
+        { "name": "Brasilien", "value": 2300, "imageUrl": "" },
+        { "name": "Frankreich", "value": 2700, "imageUrl": "" },
+        { "name": "Indien", "value": 4300, "imageUrl": "" },
+        { "name": "Japan", "value": 4400, "imageUrl": "" },
+        { "name": "Deutschland", "value": 4900, "imageUrl": "" },
+        { "name": "Schweiz", "value": 900, "imageUrl": "" },
+        { "name": "Polen", "value": 800, "imageUrl": "" },
+        { "name": "China", "value": 18500, "imageUrl": "" },
+        { "name": "USA", "value": 29200, "imageUrl": "" }
       ]
     }
   ]

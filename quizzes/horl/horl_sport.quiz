@@ -2,12 +2,14 @@
   "name": "Higher or Lower — Sport & Rekorde",
   "rounds": [
     {
-      "category": "Anzahl Fußball-WM-Titel pro Nation (historisch)",
+      "category": "Anzahl Fußball-WM-Titel pro Nation (historisch, vor WM 2026)",
       "labelLow": "weniger Titel",
       "labelHigh": "mehr Titel",
       "items": [
         { "name": "Belgien", "value": 0, "imageUrl": "" },
         { "name": "Portugal", "value": 0, "imageUrl": "" },
+        { "name": "Niederlande", "value": 0, "imageUrl": "" },
+        { "name": "Kroatien", "value": 0, "imageUrl": "" },
         { "name": "England", "value": 1, "imageUrl": "" },
         { "name": "Spanien", "value": 1, "imageUrl": "" },
         { "name": "Uruguay", "value": 2, "imageUrl": "" },
@@ -16,31 +18,29 @@
         { "name": "Deutschland", "value": 4, "imageUrl": "" },
         { "name": "Italien", "value": 4, "imageUrl": "" },
         { "name": "Brasilien", "value": 5, "imageUrl": "" },
-        { "name": "Niederlande", "value": 0, "imageUrl": "" },
-        { "name": "Kroatien", "value": 0, "imageUrl": "" },
-        { "name": "Schweiz", "value": 0, "imageUrl": "" },
-        { "name": "USA", "value": 0, "imageUrl": "" }
+        { "name": "USA", "value": 0, "imageUrl": "" },
+        { "name": "Schweiz", "value": 0, "imageUrl": "" }
       ]
     },
     {
-      "category": "Jahresgehalt von Fußball-Superstars (Mio. € brutto, ca. 2024)",
+      "category": "Jahresgehalt von Fußball-Superstars (Mio. €, ca. 2025/2026)",
       "labelLow": "weniger verdienend",
       "labelHigh": "mehr verdienend",
       "items": [
-        { "name": "Trent Alexander-Arnold", "value": 12, "imageUrl": "" },
-        { "name": "Jamal Musiala", "value": 15, "imageUrl": "" },
-        { "name": "Sadio Mané", "value": 20, "imageUrl": "" },
-        { "name": "Mohamed Salah", "value": 23, "imageUrl": "" },
-        { "name": "Phil Foden", "value": 22, "imageUrl": "" },
-        { "name": "Robert Lewandowski", "value": 25, "imageUrl": "" },
-        { "name": "Vinicius Jr.", "value": 30, "imageUrl": "" },
-        { "name": "Erling Haaland", "value": 35, "imageUrl": "" },
-        { "name": "Lionel Messi", "value": 60, "imageUrl": "" },
-        { "name": "Kylian Mbappé", "value": 72, "imageUrl": "" },
-        { "name": "Neymar Jr.", "value": 100, "imageUrl": "" },
-        { "name": "Kevin De Bruyne", "value": 26, "imageUrl": "" },
-        { "name": "Luka Modrić", "value": 18, "imageUrl": "" },
-        { "name": "Cristiano Ronaldo", "value": 200, "imageUrl": "" }
+        { "name": "Jamal Musiala (Bayern)", "value": 26, "imageUrl": "" },
+        { "name": "Jude Bellingham (Real Madrid)", "value": 27, "imageUrl": "" },
+        { "name": "Mohamed Salah (Liverpool)", "value": 34, "imageUrl": "" },
+        { "name": "Vinicius Jr. (Real Madrid)", "value": 40, "imageUrl": "" },
+        { "name": "Erling Haaland (Man City)", "value": 52, "imageUrl": "" },
+        { "name": "Lionel Messi (Inter Miami)", "value": 60, "imageUrl": "" },
+        { "name": "Kylian Mbappé (Real Madrid)", "value": 70, "imageUrl": "" },
+        { "name": "Cristiano Ronaldo (Al-Nassr)", "value": 200, "imageUrl": "" },
+        { "name": "Phil Foden (Man City)", "value": 22, "imageUrl": "" },
+        { "name": "Rodri (Man City)", "value": 20, "imageUrl": "" },
+        { "name": "Trent Alexander-Arnold (Real Madrid)", "value": 18, "imageUrl": "" },
+        { "name": "Robert Lewandowski (Barcelona)", "value": 26, "imageUrl": "" },
+        { "name": "Pedri (Barcelona)", "value": 20, "imageUrl": "" },
+        { "name": "Lamine Yamal (Barcelona)", "value": 15, "imageUrl": "" }
       ]
     },
     {
@@ -55,34 +55,34 @@
         { "name": "Justin Gatlin (9,74s)", "value": 974, "imageUrl": "" },
         { "name": "Christian Coleman (9,76s)", "value": 976, "imageUrl": "" },
         { "name": "Kishane Thompson (9,77s)", "value": 977, "imageUrl": "" },
-        { "name": "Noah Lyles (9,83s)", "value": 983, "imageUrl": "" },
-        { "name": "Marcell Jacobs (9,80s)", "value": 980, "imageUrl": "" },
-        { "name": "Fred Kerley (9,84s)", "value": 984, "imageUrl": "" },
-        { "name": "Oblique Seville (9,82s)", "value": 982, "imageUrl": "" },
-        { "name": "Zharnel Hughes (9,83s)", "value": 983, "imageUrl": "" },
         { "name": "Nesta Carter (9,78s)", "value": 978, "imageUrl": "" },
+        { "name": "Marcell Jacobs (9,80s)", "value": 980, "imageUrl": "" },
+        { "name": "Oblique Seville (9,82s)", "value": 982, "imageUrl": "" },
+        { "name": "Noah Lyles — Olympiasieger 2024 (9,79s)", "value": 979, "imageUrl": "" },
+        { "name": "Fred Kerley (9,84s)", "value": 984, "imageUrl": "" },
+        { "name": "Zharnel Hughes (9,83s)", "value": 983, "imageUrl": "" },
         { "name": "Akani Simbine (9,82s)", "value": 982, "imageUrl": "" }
       ]
     },
     {
-      "category": "Anzahl Grand-Slam-Titel im Tennis (Herren, historisch)",
+      "category": "Anzahl Grand-Slam-Titel im Tennis (Herren, Stand Anfang 2026)",
       "labelLow": "weniger Titel",
       "labelHigh": "mehr Titel",
       "items": [
-        { "name": "Ivan Lendl", "value": 8, "imageUrl": "" },
-        { "name": "Jimmy Connors", "value": 8, "imageUrl": "" },
-        { "name": "Andre Agassi", "value": 8, "imageUrl": "" },
-        { "name": "John McEnroe", "value": 7, "imageUrl": "" },
-        { "name": "Mats Wilander", "value": 7, "imageUrl": "" },
-        { "name": "Björn Borg", "value": 11, "imageUrl": "" },
+        { "name": "Ilie Năstase", "value": 2, "imageUrl": "" },
         { "name": "Andy Murray", "value": 3, "imageUrl": "" },
+        { "name": "Jannik Sinner (aktiv)", "value": 4, "imageUrl": "" },
         { "name": "Stefan Edberg", "value": 6, "imageUrl": "" },
         { "name": "Boris Becker", "value": 6, "imageUrl": "" },
+        { "name": "Carlos Alcaraz (aktiv)", "value": 7, "imageUrl": "" },
+        { "name": "John McEnroe", "value": 7, "imageUrl": "" },
+        { "name": "Mats Wilander", "value": 7, "imageUrl": "" },
+        { "name": "Ivan Lendl", "value": 8, "imageUrl": "" },
+        { "name": "Andre Agassi", "value": 8, "imageUrl": "" },
+        { "name": "Björn Borg", "value": 11, "imageUrl": "" },
         { "name": "Pete Sampras", "value": 14, "imageUrl": "" },
-        { "name": "Roger Federer", "value": 20, "imageUrl": "" },
-        { "name": "Rafael Nadal", "value": 22, "imageUrl": "" },
-        { "name": "Novak Djokovic", "value": 24, "imageUrl": "" },
-        { "name": "Ilie Năstase", "value": 2, "imageUrl": "" }
+        { "name": "Roger Federer (zurückgetreten)", "value": 20, "imageUrl": "" },
+        { "name": "Rafael Nadal (zurückgetreten)", "value": 22, "imageUrl": "" }
       ]
     },
     {
@@ -92,6 +92,7 @@
       "items": [
         { "name": "Brasilien", "value": 3, "imageUrl": "" },
         { "name": "Kenia", "value": 4, "imageUrl": "" },
+        { "name": "Schweden", "value": 4, "imageUrl": "" },
         { "name": "Ungarn", "value": 6, "imageUrl": "" },
         { "name": "Kanada", "value": 9, "imageUrl": "" },
         { "name": "Neuseeland", "value": 10, "imageUrl": "" },
@@ -102,8 +103,7 @@
         { "name": "Australien", "value": 18, "imageUrl": "" },
         { "name": "Japan", "value": 20, "imageUrl": "" },
         { "name": "China", "value": 40, "imageUrl": "" },
-        { "name": "USA", "value": 40, "imageUrl": "" },
-        { "name": "Schweden", "value": 4, "imageUrl": "" }
+        { "name": "USA", "value": 40, "imageUrl": "" }
       ]
     }
   ]
