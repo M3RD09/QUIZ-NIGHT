@@ -486,6 +486,19 @@ function mpConnect(cb){
     mpSocket.on('room_update',   ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
     mpSocket.on('game_started',  ({room})=>{ if(room) mpRoom=room; });
     mpSocket.on('game_action', ({action, payload})=>{
+      if(action === 'kick_player'){
+        if(payload.name === myName){
+          showToast('❌ Du wurdest aus dem Raum entfernt.');
+          if(mpSocket){ mpSocket.disconnect(); mpSocket = null; }
+          horlState = null; mpRoom = null; isHost = false;
+          showView('view-menu');
+          horlShowOverlay();
+        } else if(mpRoom){
+          mpRoom.players = mpRoom.players.filter(p=>p.name!==payload.name);
+          if(document.getElementById('view-lobby').classList.contains('active')) renderLobby();
+        }
+        return;
+      }
       if(action === 'horl_state'){
         horlState = payload;
         if(!document.getElementById('view-game').classList.contains('active')){
@@ -571,7 +584,8 @@ function renderLobby(){
       +'<div style="flex:1;font-size:15px;font-weight:700;">'+esc(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:12px;font-weight:400;">(du)</span>':'')+'</div>'
       +(p.isHost
         ?'<span style="font-size:10px;padding:3px 12px;background:rgba(46,204,113,.12);color:var(--green);border-radius:20px;font-weight:800;letter-spacing:.1em;">HOST</span>'
-        :'<span style="font-size:10px;padding:3px 12px;background:var(--surface);color:var(--muted);border-radius:20px;font-weight:700;border:1px solid var(--border);">Bereit</span>');
+        :'<span style="font-size:10px;padding:3px 12px;background:var(--surface);color:var(--muted);border-radius:20px;font-weight:700;border:1px solid var(--border);">Bereit</span>')
+      +(isHost&&!p.isHost?'<button onclick="horlKickFromLobby(\''+esc(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:3px 8px;cursor:pointer;flex-shrink:0;margin-left:4px;" title="Kicken">✕</button>':'');
     list.appendChild(el);
   });
 
@@ -769,9 +783,18 @@ function horlHostSkipCategory(){
   renderGameView();
 }
 
+function horlKickFromLobby(playerName){
+  if(!isHost) return;
+  if(!confirm('"'+playerName+'" aus der Lobby kicken?')) return;
+  mpSend('kick_player', {name: playerName});
+  if(mpRoom) mpRoom.players = mpRoom.players.filter(p=>p.name!==playerName);
+  renderLobby();
+}
+
 function horlKickPlayer(playerName){
   if(!isHost || !horlState) return;
   if(!confirm('"'+playerName+'" aus dem Spiel entfernen?')) return;
+  mpSend('kick_player', {name: playerName});
   const idx = horlState.players.findIndex(p=>p.name===playerName);
   if(idx === -1) return;
   horlState.players.splice(idx, 1);

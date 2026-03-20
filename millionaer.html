@@ -693,7 +693,8 @@ function updateSidebar(){
     const colors=['#3a8ef6','#e8354a','#2ecc71','#f39c12','#9b59b6'];
     el.innerHTML='<div class="sb-avatar" style="background:'+colors[orig%colors.length]+'">'+escHtml(p.name.charAt(0).toUpperCase())+'</div>'
       +'<div class="sb-name">'+escHtml(p.name)+'</div>'
-      +'<div class="sb-score">'+p.score+'</div>';
+      +'<div class="sb-score">'+p.score+'</div>'
+      +(mpIsHost?'<button onclick="mpKickFromGame(\''+escHtml(p.name)+'\')" style="background:none;border:none;color:rgba(232,53,74,.5);font-size:13px;cursor:pointer;padding:2px 4px;margin-left:2px;" title="Kicken">✕</button>':'');
     container.appendChild(el);
   });
 }
@@ -959,7 +960,8 @@ function lobbyRender(){
     el.style.cssText='display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-radius:12px;';
     el.innerHTML=`<div style="width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">${escHtml(p.name.charAt(0).toUpperCase())}</div>
       <div style="flex:1;font-weight:600;">${escHtml(p.name)}${p.name===mpMyName?' <span style="color:var(--muted);font-size:12px;">(du)</span>':''}</div>
-      ${p.isHost?'<span style="font-size:10px;padding:2px 8px;background:rgba(245,200,66,.15);color:var(--gold);border-radius:20px;font-weight:700;">HOST</span>':''}`;
+      ${p.isHost?'<span style="font-size:10px;padding:2px 8px;background:rgba(245,200,66,.15);color:var(--gold);border-radius:20px;font-weight:700;">HOST</span>':''}
+      ${mpIsHost&&!p.isHost?'<button onclick="mpKickFromLobby(\''+escHtml(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:3px 8px;cursor:pointer;flex-shrink:0;margin-left:4px;" title="Kicken">✕</button>':''}`;
     list.appendChild(el);
   });
 
@@ -982,6 +984,23 @@ function lobbyStart(){
   const playerCount=mpRoom.players.filter(p=>!p.isHost).length;
   if(playerCount===0){showToast('⚠️ Mindestens 1 Spieler muss beitreten!');return;}
   mpSocket.emit('start_game',{code:mpRoom.code});
+}
+
+function mpKickFromLobby(playerName){
+  if(!mpIsHost)return;
+  if(!confirm('"'+playerName+'" aus der Lobby kicken?'))return;
+  mpSend('kick_player',{name:playerName});
+  if(mpRoom)mpRoom.players=mpRoom.players.filter(p=>p.name!==playerName);
+  lobbyRender();
+}
+
+function mpKickFromGame(playerName){
+  if(!mpIsHost)return;
+  if(!confirm('"'+playerName+'" aus dem Spiel entfernen?'))return;
+  mpSend('kick_player',{name:playerName});
+  players=players.filter(p=>p.name!==playerName);
+  updateSidebar();
+  mpSend('score_update',{players:players.map(p=>({name:p.name,score:p.score,eliminated:p.eliminated,qAnswered:p.qAnswered,jokers:p.jokers}))});
 }
 
 function lobbyLeave(){
@@ -1229,6 +1248,18 @@ function mpHostNext(){
 
 // ── CLIENT: receive actions ──
 function mpOnAction(action,payload){
+  if(action==='kick_player'){
+    if(payload.name===mpMyName){
+      showToast('❌ Du wurdest aus dem Raum entfernt.');
+      if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+      mpRoom=null;mpIsHost=false;
+      showView('view-menu');
+    } else if(mpRoom){
+      mpRoom.players=mpRoom.players.filter(p=>p.name!==payload.name);
+      if(document.getElementById('view-lobby').classList.contains('active'))lobbyRender();
+    }
+    return;
+  }
   if(mpIsHost){
     if(action==='vote') mpOnVote(payload.playerName, payload.choice, payload.hasRisiko);
     if(action==='joker_used'){

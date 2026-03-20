@@ -485,6 +485,19 @@ function mpConnect(cb){
     mpSocket.on('room_update',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
     mpSocket.on('game_started', ({room})=>{if(room)mpRoom=room;});
     mpSocket.on('game_action',({action,payload})=>{
+      if(action==='kick_player'){
+        if(payload.name===myName){
+          showToast('❌ Du wurdest aus dem Raum entfernt.');
+          if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+          bbState=null;mpRoom=null;isHost=false;
+          showView('view-menu');
+          bbShowOverlay();
+        } else if(mpRoom){
+          mpRoom.players=mpRoom.players.filter(p=>p.name!==payload.name);
+          if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
+        }
+        return;
+      }
       if(action==='bb_state'){
         bbState=payload;
         if(!document.getElementById('view-game').classList.contains('active'))showView('view-game');
@@ -549,7 +562,8 @@ function renderLobby(){
     el.className='lobby-player';
     el.innerHTML='<div class="lobby-avatar" style="background:'+color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
       +'<div class="lobby-player-name">'+esc(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:11px;">(du)</span>':'')+'</div>'
-      +(p.isHost?'<div class="lobby-badge">HOST</div>':'<div class="lobby-badge">Bereit</div>');
+      +(p.isHost?'<div class="lobby-badge">HOST</div>':'<div class="lobby-badge">Bereit</div>')
+      +(isHost&&!p.isHost?'<button onclick="bbKickFromLobby(\''+esc(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:3px 8px;cursor:pointer;flex-shrink:0;margin-left:4px;" title="Kicken">✕</button>':'');
     list.appendChild(el);
   });
   const hostSec=document.getElementById('bb-lobby-host-sec');
@@ -635,6 +649,23 @@ function bbRenderPlayerAssignments(players){
 function bbAssignPlayer(playerName,teamIdx){
   bbPlayerTeams[playerName]=teamIdx;
   bbRenderPlayerAssignments((mpRoom?.players||[]).filter(p=>!p.isHost));
+}
+
+function bbKickFromLobby(playerName){
+  if(!isHost)return;
+  if(!confirm('"'+playerName+'" aus der Lobby kicken?'))return;
+  mpSend('kick_player',{name:playerName});
+  if(mpRoom)mpRoom.players=mpRoom.players.filter(p=>p.name!==playerName);
+  renderLobby();
+}
+
+function bbKickFromGame(playerName){
+  if(!isHost||!bbState)return;
+  if(!confirm('"'+playerName+'" aus dem Spiel entfernen?'))return;
+  mpSend('kick_player',{name:playerName});
+  bbState.players=bbState.players.filter(p=>p.name!==playerName);
+  broadcastBBState();
+  renderGameView();
 }
 
 function bbLobbyLeave(){
@@ -1129,9 +1160,11 @@ function renderScoresSidebar(){
   bbState.players.forEach(p=>{
     const el=document.createElement('div');
     el.className='bb-score-card';
+    el.style.position='relative';
     el.innerHTML='<div class="bb-score-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
       +'<div class="bb-score-name">'+esc(p.name)+'</div>'
-      +'<div class="bb-score-pts">'+p.score+'</div>';
+      +'<div class="bb-score-pts">'+p.score+'</div>'
+      +(isHost?'<button onclick="bbKickFromGame(\''+esc(p.name)+'\')" style="background:none;border:none;color:rgba(232,53,74,.5);font-size:13px;cursor:pointer;padding:2px 4px;flex-shrink:0;" title="Kicken">✕</button>':'');
     wrap.appendChild(el);
   });
 }

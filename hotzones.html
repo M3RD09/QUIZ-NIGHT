@@ -421,7 +421,22 @@ function mpConnect(cb){
       if(room)mpRoom=room;
       if(!mpIsHost){showView('view-game');renderGameView();}
     });
-    mpSocket.on('game_action',({action,payload})=>hzOnAction(action,payload));
+    mpSocket.on('game_action',({action,payload})=>{
+      if(action==='kick_player'){
+        if(payload.name===mpMyName){
+          showToast('❌ Du wurdest aus dem Raum entfernt.');
+          if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+          hzState=null;mpRoom=null;mpIsHost=false;
+          showView('view-menu');
+          showOnlineOverlay();
+        } else if(mpRoom){
+          mpRoom.players=mpRoom.players.filter(p=>p.name!==payload.name);
+          if(document.getElementById('view-lobby').classList.contains('active'))lobbyRender();
+        }
+        return;
+      }
+      hzOnAction(action,payload);
+    });
     mpSocket.on('disconnect',()=>{
       if(document.getElementById('view-game').classList.contains('active')||
          document.getElementById('view-end').classList.contains('active')){
@@ -516,7 +531,8 @@ function lobbyRender(){
     el.className='lobby-player-row';
     el.innerHTML=`<div class="lobby-player-avatar" style="background:${color}20;color:${color};">${escHtml(p.name.charAt(0).toUpperCase())}</div>
       <div class="lobby-player-name">${escHtml(p.name)}${p.name===mpMyName?' <span style="color:var(--muted);font-size:11px;">(du)</span>':''}</div>
-      ${p.isHost?'<span class="lobby-player-badge badge-host">HOST</span>':'<span class="lobby-player-badge badge-ready">Bereit</span>'}`;
+      ${p.isHost?'<span class="lobby-player-badge badge-host">HOST</span>':'<span class="lobby-player-badge badge-ready">Bereit</span>'}
+      ${mpIsHost&&!p.isHost?'<button onclick="hzKickFromLobby(\''+escHtml(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:3px 8px;cursor:pointer;flex-shrink:0;margin-left:4px;" title="Kicken">✕</button>':''}`;
     list.appendChild(el);
   });
 
@@ -578,6 +594,14 @@ function lobbyStart(){
     showView('view-game');
     renderGameView();
   },350);
+}
+
+function hzKickFromLobby(playerName){
+  if(!mpIsHost)return;
+  if(!confirm('"'+playerName+'" aus der Lobby kicken?'))return;
+  mpSend('kick_player',{name:playerName});
+  if(mpRoom)mpRoom.players=mpRoom.players.filter(p=>p.name!==playerName);
+  lobbyRender();
 }
 
 function lobbyLeave(){
