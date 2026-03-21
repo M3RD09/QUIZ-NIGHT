@@ -76,14 +76,16 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
 .info-box-title{font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:6px;}
 
 /* GAME LAYOUT */
-.game-layout{display:flex;flex:1;overflow:hidden;min-height:0;min-height:calc(100vh - 58px);}
-.game-left{flex:1;display:flex;flex-direction:column;overflow:auto;-webkit-overflow-scrolling:touch;align-items:flex-start;justify-content:center;}
-.game-sidebar{width:220px;flex-shrink:0;background:rgba(5,13,31,0.8);border-left:1px solid rgba(0,191,255,0.1);backdrop-filter:blur(10px);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.game-layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 58px);}
+.game-left{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.game-sidebar{width:240px;flex-shrink:0;background:rgba(5,13,31,0.8);border-left:1px solid rgba(0,191,255,0.1);backdrop-filter:blur(10px);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 @media(max-width:600px){
-  .game-layout{flex-direction:column;}
-  .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:340px;}
-  .game-left{justify-content:flex-start;}
+  .game-layout{flex-direction:column;height:auto;}
+  .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:300px;}
+  .board-scroll{flex:none;overflow-x:auto;padding:8px;}
+  .board{width:max-content;height:auto;}
+  .board-cell{width:80px;min-height:55px;}
 }
 
 /* CURRENT TURN */
@@ -139,13 +141,14 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
 .turn-banner.t1{background:linear-gradient(90deg,rgba(58,142,246,.0),rgba(58,142,246,.18),rgba(58,142,246,.0));color:var(--team1);border-bottom:2px solid var(--team1);}
 .turn-banner.t2{background:linear-gradient(90deg,rgba(232,53,74,.0),rgba(232,53,74,.18),rgba(232,53,74,.0));color:var(--team2);border-bottom:2px solid var(--team2);}
 
-.board-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;display:flex;justify-content:center;background:radial-gradient(ellipse at center,rgba(0,50,150,0.1) 0%,transparent 70%);}
-.board{display:grid;gap:6px;padding:14px;min-width:max-content;}
+.board-scroll{flex:1;display:flex;padding:12px;background:radial-gradient(ellipse at center,rgba(0,50,150,0.12) 0%,transparent 70%);}
+.board{display:grid;gap:8px;width:100%;height:100%;}
 
 .board-cell{
-  width:108px;height:72px;border-radius:12px;
+  width:100%;border-radius:12px;
   display:flex;align-items:center;justify-content:center;
   font-family:'Bebas Neue',sans-serif;text-align:center;padding:8px;
+  min-height:0;
 }
 
 /* Category header cells — herausstechen! */
@@ -153,18 +156,17 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
   background:linear-gradient(135deg,#1e3a6e,#0d2244);
   border:2px solid var(--blue);
   color:#fff;
-  font-size:11px;font-family:'DM Sans',sans-serif;font-weight:800;
-  text-transform:uppercase;letter-spacing:.08em;line-height:1.3;
+  font-size:clamp(9px,1.1vw,14px);font-family:'DM Sans',sans-serif;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em;line-height:1.3;
   box-shadow:0 0 18px rgba(58,142,246,.3), inset 0 1px 0 rgba(255,255,255,.08),0 2px 20px rgba(0,191,255,0.15);
   text-shadow:0 0 10px rgba(0,191,255,0.5);
-  height:60px;
 }
 
 /* Point cells */
 .board-point{
   background:linear-gradient(160deg,#0f2040,#091628);
   border:1px solid rgba(58,142,246,.2);
-  color:var(--gold);font-size:28px;
+  color:var(--gold);font-size:clamp(18px,2.5vw,40px);
   text-shadow:0 0 15px rgba(245,200,66,0.6);
   cursor:pointer;
   transition:all .18s;
@@ -949,7 +951,9 @@ function showBoardOverview(){
 function buildBoard(){
   const board=document.getElementById('game-board');
   const cats=quizData.categories;
-  board.style.gridTemplateColumns='repeat('+cats.length+', 100px)';
+  const maxQCount=Math.max(...cats.map(c=>c.questions.length));
+  board.style.gridTemplateColumns='repeat('+cats.length+', 1fr)';
+  board.style.gridTemplateRows='repeat('+(maxQCount+1)+', 1fr)';
   board.innerHTML='';
   cats.forEach(cat=>{
     const c=document.createElement('div');
@@ -957,8 +961,7 @@ function buildBoard(){
     c.textContent=(cat.name||'Kategorie').toUpperCase();
     board.appendChild(c);
   });
-  const maxQ=Math.max(...cats.map(c=>c.questions.length));
-  for(let qi=0;qi<maxQ;qi++){
+  for(let qi=0;qi<maxQCount;qi++){
     cats.forEach((cat,ci)=>{
       const c=document.createElement('div');
       const q=cat.questions[qi];
