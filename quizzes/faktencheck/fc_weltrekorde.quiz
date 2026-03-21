@@ -2,44 +2,52 @@
   "name": "Faktencheck — Weltrekorde & Extremes",
   "questions": [
     {
-      "statement": "Der schnellste jemals gemessene Tennisball-Aufschlag erreichte eine Geschwindigkeit von...",
-      "answer": "263 km/h"
+      "statement": "Der Mann mit dem längsten jemals gemessenen Bart der Welt ließ ihn wachsen bis auf eine Länge von...",
+      "answer": "5,33 Meter (Hans Langseth, Norwegen)"
     },
     {
-      "statement": "Das teuerste Videospiel, das je verkauft wurde, erzielte auf einer Auktion...",
-      "answer": "1,56 Millionen Dollar"
+      "statement": "Das meistgestohlene Buch der Welt ist nicht die Bibel, sondern...",
+      "answer": "das Guinness-Buch der Rekorde"
     },
     {
-      "statement": "Der tiefste Punkt des Ozeans — der Marianengraben — ist tiefer als der Mount Everest hoch ist, und zwar um...",
-      "answer": "etwa 2 km"
+      "statement": "Der längste jemals gemessene Fingernagel einer Frau (Lee Redmond, USA) war insgesamt so lang, dass man damit...",
+      "answer": "fast 9 Meter Nagel an einer einzigen Hand hatte"
     },
     {
-      "statement": "Der längste Kuss aller Zeiten dauerte...",
-      "answer": "58 Stunden, 35 Minuten und 58 Sekunden"
+      "statement": "Der Rekord für die meisten Niesen in Folge gehört einer Britin, die 978 Tage lang am Stück niesen musste — das sind über...",
+      "answer": "2,5 Jahre ohne Pause zu niesen"
     },
     {
-      "statement": "Das größte Pizza aller Zeiten wog...",
-      "answer": "26.883 kg"
+      "statement": "Der teuerste je verkaufte Parkplatz der Welt befindet sich in Hongkong und wurde 2019 für umgerechnet...",
+      "answer": "760.000 Euro versteigert"
     },
     {
-      "statement": "Der älteste lebende Mensch, dessen Alter dokumentiert ist, wurde...",
-      "answer": "122 Jahre und 164 Tage alt"
+      "statement": "Die lauteste jemals gemessene Frittenpfanne (belgisches Team, 2018) erzeugte beim Kochen einen Lärmpegel von...",
+      "answer": "122 Dezibel — lauter als ein Presslufthammer"
     },
     {
-      "statement": "Das schnellste Landtier der Erde, der Gepard, erreicht Höchstgeschwindigkeiten von...",
-      "answer": "112 km/h"
+      "statement": "Der Weltrekord für die meisten Socken, die gleichzeitig an einem Fuß getragen wurden, liegt bei...",
+      "answer": "152 Socken übereinander"
     },
     {
-      "statement": "Die meisten Tattoos auf einem einzigen Menschen: Rolph Buchholz aus Deutschland hat... Piercings und Tattoos am Körper.",
-      "answer": "453"
+      "statement": "Das größte Mosaik der Welt besteht vollständig aus... und ist über 4.000 Quadratmeter groß.",
+      "answer": "Kronkorken (Flaschenverschlüssen)"
     },
     {
-      "statement": "Der weltgrößte Pool befindet sich in Chile und ist so lang wie...",
-      "answer": "20 Fußballfelder hintereinander"
+      "statement": "Der jüngste professionelle Chirurg aller Zeiten führte mit 21 Jahren seine erste Operation durch — er war ein Brite namens...",
+      "answer": "Akrit Jaswal, der seinen ersten Eingriff bereits mit 7 Jahren selbst durchführte"
     },
     {
-      "statement": "Der lauteste Schrei eines Menschen wurde mit... Dezibel gemessen.",
-      "answer": "129 dB"
+      "statement": "Der Weltrekord im schnellsten Ausziehen einer Jacke mit dem Mund liegt bei...",
+      "answer": "under 5 Sekunden (genau: 4,59 Sekunden)"
+    },
+    {
+      "statement": "Die teuerste Pizza der Welt kostet 12.000 Euro und ist belegt mit...",
+      "answer": "Hummer, Kaviar, edlem Schinken und 24-karätigem Blattgold"
+    },
+    {
+      "statement": "Der Weltrekord im Traubenfangen mit dem Mund liegt bei... Trauben pro Minute — geworfen aus 5 Metern Entfernung.",
+      "answer": "11 Trauben pro Minute"
     }
   ]
 }

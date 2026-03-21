@@ -1,0 +1,53 @@
+{
+  "name": "Faktencheck — Tiere & Natur",
+  "questions": [
+    {
+      "statement": "Flamingos sind nicht von Natur aus pink — sie werden erst rosa durch ihre Ernährung. Ohne ihr spezielles Futter wären sie...",
+      "answer": "komplett weiß"
+    },
+    {
+      "statement": "Schnecken können nach einer langen Trockenheit bis zu... schlafen, ohne aufzuwachen.",
+      "answer": "3 Jahre"
+    },
+    {
+      "statement": "Ein Oktopus hat nicht nur blaues Blut, sondern auch...",
+      "answer": "drei Herzen — zwei pumpen Blut zu den Kiemen, eines zum restlichen Körper"
+    },
+    {
+      "statement": "Eichhörnchen vergessen den Großteil ihrer vergrabenen Nüsse — ihr Vergessen ist aber für die Natur nützlich, weil...",
+      "answer": "die vergrabenen, vergessenen Nüsse keimen und so neue Bäume entstehen"
+    },
+    {
+      "statement": "Die Zunge eines Blauwals ist so groß, dass darauf...",
+      "answer": "bis zu 50 Menschen gleichzeitig stehen könnten"
+    },
+    {
+      "statement": "Hummer altern faktisch nicht. Sie werden nicht schwächer, langsamer oder weniger fruchtbar — sie sterben meistens, weil...",
+      "answer": "der Aufwand, sich zu häuten, mit zunehmendem Alter zu viel Energie kostet und sie daran erschöpft sterben"
+    },
+    {
+      "statement": "Ein Krokodil kann seinen Rachen nicht öffnen, wenn man ihn von außen zuhält — die Muskeln zum Öffnen des Mauls sind so schwach, dass man sie mit...",
+      "answer": "einem einzigen Klebeband dauerhaft geschlossen halten könnte"
+    },
+    {
+      "statement": "Pinguine machen ihren Partnerinnen einen Heiratsantrag, indem sie ihnen...",
+      "answer": "einen sorgfältig ausgewählten Kieselstein schenken"
+    },
+    {
+      "statement": "Kühe haben beste Freunde. Wissenschaftler fanden heraus, dass Kühe, die von ihrer besten Freundin getrennt werden,...",
+      "answer": "erhöhten Blutdruck, Stress und deutlich weniger Milchproduktion zeigen"
+    },
+    {
+      "statement": "Der Pistolenkrevette ist das lauteste Tier der Meere — sie erzeugt mit ihrer Schere eine Schockwelle, die so heiß ist, dass sie kurzfristig...",
+      "answer": "die Temperatur der Sonnenoberfläche erreicht (rund 8.000 Grad Celsius)"
+    },
+    {
+      "statement": "Schmetterlinge schmecken mit...",
+      "answer": "ihren Füßen — sie haben Geschmackssensoren an den Fußsohlen"
+    },
+    {
+      "statement": "Ein Nashorn und ein Einhorn sind im Grunde dasselbe Wort — 'Einhorn' ist die alte deutsche Übersetzung von 'Unicorn', was aus dem Lateinischen kommt und bedeutet...",
+      "answer": "ein Horn (uni = eins, cornu = Horn)"
+    }
+  ]
+}

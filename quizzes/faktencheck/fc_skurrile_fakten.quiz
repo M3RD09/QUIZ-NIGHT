@@ -2,44 +2,52 @@
   "name": "Faktencheck — Skurrile Fakten",
   "questions": [
     {
-      "statement": "Der Eiffelturm wächst im Sommer aufgrund von Wärmeausdehnung um bis zu...",
-      "answer": "15 cm"
+      "statement": "In Frankreich ist es seit 1981 per Gesetz verboten, seinem Schwein den Namen...",
+      "answer": "Napoleon zu geben"
     },
     {
-      "statement": "Eine Schnecke kann nach dem Einschlafen bis zu... schlafen, ohne aufzuwachen.",
-      "answer": "3 Jahre"
+      "statement": "In der Schweiz schreibt das Tierschutzgesetz vor, dass Meerschweinchen, Goldfische und Papageien niemals allein gehalten werden dürfen — man muss ihnen immer...",
+      "answer": "mindestens einen Artgenossen als Gesellschaft halten"
     },
     {
-      "statement": "Das menschliche Gehirn erzeugt genug Strom, um...",
-      "answer": "eine LED-Glühbirne zu betreiben"
+      "statement": "In Singapur ist seit 1992 der Kauf, Verkauf und Import von... verboten und wird mit Geldstrafen bis zu 100.000 Singapur-Dollar bestraft.",
+      "answer": "Kaugummi"
     },
     {
-      "statement": "Kleopatra lebte zeitlich näher an der Mondlandung als an...",
-      "answer": "dem Bau der Pyramiden von Gizeh"
+      "statement": "In Thailand kann man bis zu 15 Jahre Gefängnis bekommen, wenn man auf eine Münze tritt — weil...",
+      "answer": "das Gesicht des Königs darauf abgebildet ist und das als Majestätsbeleidigung gilt"
     },
     {
-      "statement": "Ein einzelner Blitz enthält genug Energie, um...",
-      "answer": "100 Watt-Glühbirnen für 3 Monate zu betreiben"
+      "statement": "In Alaska, USA ist es per Bundesgesetz verboten,...",
+      "answer": "einem Elch Alkohol zu verabreichen"
     },
     {
-      "statement": "Oktopusse haben...",
-      "answer": "drei Herzen"
+      "statement": "In Japan ist es in der Stadt Yamato (Kanagawa) seit 2020 per Gesetz unter Strafe verboten,...",
+      "answer": "beim Gehen auf der Straße auf sein Smartphone zu schauen"
     },
     {
-      "statement": "Das Wort 'Quiz' wurde angeblich in einer einzigen Nacht durch eine Wette berühmt gemacht — der Urheber malte es auf...",
-      "answer": "Wände und Türen in Dublin"
+      "statement": "In Kanada darf ein Verkäufer laut dem Währungsgesetz eine Zahlung komplett ablehnen, wenn jemand einen Betrag über 25 Cent...",
+      "answer": "ausschließlich mit Eincentmünzen (Pennies) bezahlen will"
     },
     {
-      "statement": "Honig fault nicht. In ägyptischen Pyramiden gefundener Honig war noch... alt und immer noch essbar.",
-      "answer": "3000 Jahre"
+      "statement": "In Großbritannien ist es nach einem Gesetz aus dem Jahr 1313 Mitgliedern des Parlaments verboten,...",
+      "answer": "gepanzerte Rüstung im Parlament zu tragen"
     },
     {
-      "statement": "Eine Wolke wiegt im Durchschnitt...",
-      "answer": "500 Tonnen"
+      "statement": "In Florida, USA ist es in mehreren Städten illegal, einen Elefanten...",
+      "answer": "an einem öffentlichen Parkautomaten anzubinden"
     },
     {
-      "statement": "Auf der Erde gibt es mehr...",
-      "answer": "Bäume als Sterne in der Milchstraße"
+      "statement": "In den Vereinigten Arabischen Emiraten ist es verboten, sich in der Öffentlichkeit zu küssen — selbst Eheleute riskieren bei einem Kuss auf der Straße...",
+      "answer": "eine Geldstrafe oder Abschiebung"
+    },
+    {
+      "statement": "In Australien (Bundesstaat Victoria) ist es illegal, zwischen 22 Uhr und 8 Uhr...",
+      "answer": "das Gras in seinem eigenen Garten zu mähen oder Lärm durch elektrische Geräte zu machen"
+    },
+    {
+      "statement": "In Schottland ist man gesetzlich verpflichtet, jedem Fremden, der an die Tür klopft und darum bittet,...",
+      "answer": "die Benutzung der Toilette zu erlauben"
     }
   ]
 }

@@ -1,0 +1,53 @@
+{
+  "name": "Faktencheck — Wissenschaft & Technik",
+  "questions": [
+    {
+      "statement": "Kleopatra lebte zeitlich nicht näher an der Erbauung der Pyramiden von Gizeh — sie lebte tatsächlich zeitlich näher an...",
+      "answer": "der Mondlandung (1969) als an dem Bau der Pyramiden (ca. 2560 v. Chr.)"
+    },
+    {
+      "statement": "Das erste iPhone wurde 2007 vorgestellt. In diesem Jahr existierte noch keine einzige App dafür — Steve Jobs bestand darauf, dass das iPhone...",
+      "answer": "keine Apps von Drittanbietern haben sollte, weil es 'perfekt' war wie es war"
+    },
+    {
+      "statement": "Das Internet macht täglich riesige Mengen Strom verbrauchen. Wenn das Internet ein Land wäre, wäre es nach Stromverbrauch auf Platz...",
+      "answer": "3 der Welt — direkt hinter den USA und China"
+    },
+    {
+      "statement": "In unserem Körper gibt es mehr Bakterienzellen als menschliche Körperzellen — das Verhältnis beträgt ungefähr...",
+      "answer": "1,3 zu 1 (leicht mehr Bakterien als eigene Körperzellen)"
+    },
+    {
+      "statement": "Die NASA hat eine Playlist entwickelt, mit der Astronauten im Weltall täglich geweckt werden. Der meistgespielte Song dabei ist...",
+      "answer": "'Good Morning' — Songs werden von Familien oder Freunden ausgewählt und zur ISS übertragen"
+    },
+    {
+      "statement": "Ein Blitz ist heißer als die Oberfläche der Sonne. Während die Sonnenoberfläche rund 5.500°C heiß ist, erreicht ein Blitz...",
+      "answer": "bis zu 30.000 Grad Celsius — etwa 5 Mal heißer als die Sonnenoberfläche"
+    },
+    {
+      "statement": "Das erste Computerprogramm der Welt wurde nicht von einem Mann geschrieben, sondern von einer Frau — und das bereits im Jahr 1843. Ihr Name war...",
+      "answer": "Ada Lovelace — sie schrieb einen Algorithmus für Charles Babbages analytische Maschine"
+    },
+    {
+      "statement": "Wenn man alle DNA aus einem einzigen menschlichen Körper auseinanderstrecken würde, wäre sie so lang, dass sie...",
+      "answer": "von der Erde zur Sonne und zurück mehr als 300 Mal reichen würde"
+    },
+    {
+      "statement": "Der Schall braucht so lange, um sich durch Luft zu bewegen, dass wenn man 15 Meter von einem Schlagzeuger entfernt sitzt, man den Schlag...",
+      "answer": "etwas früher sieht als hört — das menschliche Auge ist schneller als der Schall über diese Distanz"
+    },
+    {
+      "statement": "Das Licht, das wir heute von der Sonne sehen, hat die Sonne verlassen, bevor...",
+      "answer": "das Licht im Kern der Sonne erzeugt wurde — es braucht 100.000 Jahre bis an die Sonnenoberfläche, aber nur 8 Minuten bis zur Erde"
+    },
+    {
+      "statement": "Wenn man die gesamte leere Fläche aus allen Atomen aller Menschen auf der Erde herausnehmen würde, würden alle 8 Milliarden Menschen zusammen in einen Würfel passen, der...",
+      "answer": "gerade mal 1,5 cm groß wäre — Atome bestehen zu 99,9999% aus leerem Raum"
+    },
+    {
+      "statement": "Das QWERTY-Tastaturlayout (die heutige Tastatur) wurde nicht entwickelt, um das Tippen schneller zu machen — sondern um...",
+      "answer": "das Verhaken der Tasten bei Schreibmaschinen zu vermeiden, indem häufig zusammen genutzte Buchstaben auseinandergerückt wurden"
+    }
+  ]
+}

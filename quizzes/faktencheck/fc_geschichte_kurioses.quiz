@@ -1,0 +1,53 @@
+{
+  "name": "Faktencheck — Geschichte & Kurioses",
+  "questions": [
+    {
+      "statement": "Oxford University ist älter als die Azteken. Sie wurde um 1096 gegründet — das Aztekenreich entstand erst...",
+      "answer": "1428, also über 300 Jahre später"
+    },
+    {
+      "statement": "Napoleon Bonaparte war entgegen dem Klischee gar nicht besonders klein. Er maß 1,69 m — für seine Zeit fast durchschnittlich. Das Gerücht entstand, weil...",
+      "answer": "seine Soldaten ihn liebevoll 'le petit caporal' nannten (was 'der kleine Korporal' bedeutet, aber damals Ausdruck von Zuneigung war) und britische Karikaturisten ihn absichtlich klein zeichneten"
+    },
+    {
+      "statement": "Russland und die USA sind so nah beieinander, dass zwischen ihren Grenzen in der Beringsee nur...",
+      "answer": "3,8 Kilometer liegen — zwischen der Großen Diomedes-Insel (Russland) und der Kleinen Diomedes-Insel (USA)"
+    },
+    {
+      "statement": "Die Fax-Maschine wurde erfunden, bevor das Telefon existierte. Das erste Fax wurde verschickt im Jahr...",
+      "answer": "1843 — das Telefon wurde erst 1876 erfunden"
+    },
+    {
+      "statement": "Der Zweite Weltkrieg und die Veröffentlichung des ersten Pokémon-Spiels trennt weniger Zeit voneinander als das erste und das...",
+      "answer": "letzte Pokemon-Spiel — Pokemon erschien 1996, der 2. Weltkrieg endete 1945 (51 Jahre), aber zwischen dem ersten Pokemon-Spiel (1996) und heute liegen auch fast 30 Jahre"
+    },
+    {
+      "statement": "Der Erbauer der Titanic war so überzeugt von seiner Konstruktion, dass das Schiff von der Presse als 'unsinkbar' bezeichnet wurde — er selbst sagte aber in einem Interview kurz vorher...",
+      "answer": "nie, dass es unsinkbar sei — der Begriff 'unsinkbar' wurde von Journalisten erfunden, nie vom Hersteller White Star Line"
+    },
+    {
+      "statement": "In der Antike zahlten die alten Römer ihre Soldaten teilweise in Salz — daher kommt das deutsche Wort...",
+      "answer": "Sold und das englische Wort 'Salary' (Gehalt) — beide stammen vom lateinischen 'sal' (Salz)"
+    },
+    {
+      "statement": "Heinz-Ketchup wird so langsam aus der Flasche gedrückt, dass Heinz offiziell eine Grenzgeschwindigkeit definiert hat: Ketchup, das schneller als... fließt, ist laut Heinz zu flüssig.",
+      "answer": "0,045 km/h — das entspricht dem Tempo einer sehr, sehr langsamen Schildkröte"
+    },
+    {
+      "statement": "Das erste Foto eines Menschen wurde 1838 in Paris gemacht — auf dem Bild ist aber eigentlich die Straße leer, weil die Belichtungszeit so lang war. Nur eine Person ist zu sehen, weil...",
+      "answer": "er lange genug still stand, um sich zu fotografieren lassen — er ließ sich die Schuhe putzen und stand damit lange genug auf der Stelle"
+    },
+    {
+      "statement": "Das Wort 'Clue' (Hinweis auf Englisch) kommt ursprünglich vom altgriechischen Wort 'Clew', was bedeutet...",
+      "answer": "Wollknäuel — Theseus soll einen Wollfaden benutzt haben, um aus dem Labyrinth des Minotaurus wieder herauszufinden"
+    },
+    {
+      "statement": "Der Krieg zwischen den Niederlanden und den Scilly-Inseln (ein kleines Archipel vor England) begann 1651 und endete offiziell erst...",
+      "answer": "1986 — also 335 Jahre später. Es gab während dieser ganzen Zeit keine einzige Kampfhandlung"
+    },
+    {
+      "statement": "Auf dem Mars gibt es einen Vulkan, der so groß ist, dass man von seinem Gipfel nicht sieht, dass man auf einem Vulkan steht — er ist so breit, dass seine Ränder hinter dem Horizont verschwinden. Sein Name ist...",
+      "answer": "Olympus Mons — er ist 26 km hoch und 600 km breit, der größte bekannte Vulkan im Sonnensystem"
+    }
+  ]
+}
