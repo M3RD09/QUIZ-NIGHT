@@ -173,15 +173,20 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
 
-  /* Card accent colors */
-  .card-jeopardy { --accent: #3a8ef6; }
-  .card-millionaire { --accent: #f5c842; }
-  .card-hotzones { --accent: #e8354a; }
-  .card-horl { --accent: #2ecc71; }
-  .card-buzzer { --accent: #e8354a; }
+  /* Card accent colors — unique identity per game */
+  .card-jeopardy  { --accent: #00bfff; }   /* Neon Electric Blue */
+  .card-millionaire { --accent: #f5a623; } /* Amber Gold Hot Seat */
+  .card-hotzones  { --accent: #ff4500; }   /* Volcanic Lava */
+  .card-horl      { --accent: #a855f7; }   /* Cosmic Purple */
+  .card-buzzer    { --accent: #00ff87; }   /* Electric Neon Green */
 
-  .game-card:hover { border-color: var(--accent); }
-  .game-card:hover::before { opacity: 1; background: radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%); }
+  .game-card:hover { border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px color-mix(in srgb, var(--accent) 15%, transparent); }
+  .game-card:hover::before { opacity: 1; background: radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%); }
+  .card-jeopardy:hover  { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0,191,255,0.2); }
+  .card-millionaire:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(245,166,35,0.2); }
+  .card-hotzones:hover  { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(255,69,0,0.2); }
+  .card-horl:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(168,85,247,0.2); }
+  .card-buzzer:hover    { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0,255,135,0.2); }
 
   .card-badge {
     position: absolute;
