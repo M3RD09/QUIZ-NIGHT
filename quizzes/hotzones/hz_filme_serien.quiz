@@ -1,19 +1,19 @@
 {
   "name": "Hot Zones — Filme & Serien",
   "categories": [
-    { "name": "HORRORFILME", "labelLeft": "schlafe danach nie mehr ein", "labelRight": "mein absolutes Lieblingsgenre" },
-    { "name": "HAPPY ENDINGS", "labelLeft": "unrealistisch und langweilig", "labelRight": "alles andere macht mich traurig" },
-    { "name": "CLIFFHANGER AM STAFFELENDE", "labelLeft": "respektlos gegenüber dem Zuschauer", "labelRight": "hält die Spannung am Leben" },
-    { "name": "ROMCOM (ROMANTISCHE KOMÖDIE)", "labelLeft": "totaler Kitsch", "labelRight": "beste Filmgattung ever" },
-    { "name": "SUPERHELDEN-FILME", "labelLeft": "Übersättigung, nie mehr", "labelRight": "könnte ewig davon schauen" },
-    { "name": "DEUTSCHE SYNCHRONISATION", "labelLeft": "zerstört jedes Original", "labelRight": "besser als die Originalsprache" },
-    { "name": "SPOILER LESEN VORHER", "labelLeft": "absolutes Verbrechen", "labelRight": "genieße Filme viel mehr damit" },
-    { "name": "DOKUMENTARFILME", "labelLeft": "langweilig wie Schule", "labelRight": "lehrreicher als alles andere" },
-    { "name": "SERIEN MIT 10+ STAFFELN", "labelLeft": "verliere den Überblick, höre auf", "labelRight": "je länger, desto treuer" },
-    { "name": "KINO ALLEINE", "labelLeft": "peinlich und einsam", "labelRight": "das reinste Kinoerlebnis" },
-    { "name": "FILM MIT SCHLECHTEM ENDE", "labelLeft": "Geldverschwendung meiner Zeit", "labelRight": "die realistischsten und besten Filme" },
-    { "name": "SEQUELS & PREQUELS", "labelLeft": "ruinieren das Original immer", "labelRight": "mehr von meinen Lieblingscharakteren" },
-    { "name": "ANIME ALS FILMFORMAT", "labelLeft": "kindisch und überzeichnet", "labelRight": "tiefgründigste Filmkunst" },
-    { "name": "FILME NEU STATT LESEN DES BUCHS", "labelLeft": "das Buch ist immer besser", "labelRight": "spart Zeit und ist genauso gut" }
+    { "name": "FILMGENRES FÜR EINEN ABEND ALLEINE", "labelLeft": "mache ich sofort aus", "labelRight": "schaue ich immer bis zum Ende" },
+    { "name": "SERIEN-KLISCHEES", "labelLeft": "bringt mich zum Abbrechen", "labelRight": "ich liebe genau das" },
+    { "name": "CHARAKTER-TYPEN IN SERIEN", "labelLeft": "nervt mich immer extrem", "labelRight": "mein absoluter Lieblingscharakter-Typ" },
+    { "name": "GRÜNDE EINEN FILM ABZUBRECHEN", "labelLeft": "stört mich nicht", "labelRight": "sofort ausgemacht" },
+    { "name": "STREAMING SERIEN GENRES", "labelLeft": "nie in meiner Watchlist", "labelRight": "sofort bingen" },
+    { "name": "SCHAUSPIELER-TYPEN IN HOLLYWOOD", "labelLeft": "mag ich gar nicht", "labelRight": "gehe wegen denen ins Kino" },
+    { "name": "FILMKLASSIKER-JAHRZEHNTE", "labelLeft": "interessiert mich nicht", "labelRight": "schaue ich am liebsten" },
+    { "name": "KINO-ERLEBNISSE", "labelLeft": "mag ich im Kino nie", "labelRight": "liebe ich im Kino" },
+    { "name": "ANIME SERIEN GENRES", "labelLeft": "würde ich nie schauen", "labelRight": "direkt auf Watchlist" },
+    { "name": "FILM-ENDEN TYPEN", "labelLeft": "mag ich gar nicht", "labelRight": "perfektes Ende für mich" },
+    { "name": "GRÜNDE EINEN FILM NOCHMAL ZU SCHAUEN", "labelLeft": "schaue ich nie zweimal deswegen", "labelRight": "Hauptgrund für Rewatches" },
+    { "name": "DOKUMENTARFILM THEMEN", "labelLeft": "interessiert mich null", "labelRight": "schaue ich immer komplett" },
+    { "name": "FILMZITAT-TYPEN", "labelLeft": "sage ich nie", "labelRight": "sage ich täglich" },
+    { "name": "SERIENFINALE TYPEN", "labelLeft": "schlimmstes Ende ever", "labelRight": "perfekter Serienabschluss" }
   ]
 }

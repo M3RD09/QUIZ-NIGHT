@@ -1,18 +1,19 @@
 {
   "name": "Hot Zones — Marken & Fashion",
   "categories": [
-    { "name": "CROCS", "labelLeft": "peinlichstes Schuhwerk ever", "labelRight": "Komfort über alles, trage ich täglich" },
-    { "name": "GUCCI TASCHEN", "labelLeft": "sinnloseste Geldverschwendung", "labelRight": "absolutes Traumobjekt" },
-    { "name": "FAST FASHION (SHEIN ETC.)", "labelLeft": "verweigere ich komplett", "labelRight": "kaufe ich regelmäßig" },
-    { "name": "VINTAGE KLEIDUNG", "labelLeft": "anderer Leute alte Klamotten, nein danke", "labelRight": "das Nachhaltigste und Coolste" },
-    { "name": "SNEAKER SAMMELN", "labelLeft": "kompletter Wahnsinn", "labelRight": "meine größte Leidenschaft" },
-    { "name": "MARKENKLAMOTTEN GENERELL", "labelLeft": "zahle nie für Logos", "labelRight": "Marken sagen alles über mich aus" },
-    { "name": "PARFÜM ÜBER 200 EURO", "labelLeft": "absoluter Schwachsinn", "labelRight": "einzig wahre Investition in sich selbst" },
-    { "name": "SKINCARE ROUTINE", "labelLeft": "Wasser und fertig", "labelRight": "12-Schritte-Routine, täglich" },
-    { "name": "SUPREME DROPS", "labelLeft": "Hype um nichts", "labelRight": "stehe nachts an um mitzumachen" },
-    { "name": "LOUIS VUITTON MONOGRAM", "labelLeft": "zu auffällig und protzig", "labelRight": "zeitloser Klassiker" },
-    { "name": "PYJAMA IN DER ÖFFENTLICHKEIT", "labelLeft": "geht gar nicht", "labelRight": "warum nicht? Komfort zuerst" },
-    { "name": "DESIGNER-SONNENBRILLEN", "labelLeft": "zahle nie mehr als 20 Euro", "labelRight": "mein wichtigstes Accessoire" },
-    { "name": "STREETWEAR TRENDS", "labelLeft": "für Teenies, nicht für mich", "labelRight": "ich bin voll drin" }
+    { "name": "SCHUHMARKEN", "labelLeft": "würde ich nie tragen", "labelRight": "sofort kaufen" },
+    { "name": "LUXUSMARKEN", "labelLeft": "sinnlose Geldverschwendung", "labelRight": "absolutes Traumobjekt" },
+    { "name": "MODE-ACCESSOIRES", "labelLeft": "trage ich nie", "labelRight": "gehört immer dazu" },
+    { "name": "PARFÜM-TYPEN", "labelLeft": "riecht schrecklich", "labelRight": "sofort kaufen" },
+    { "name": "FASHION TRENDS DER LETZTEN JAHRE", "labelLeft": "schlechtester Trend ever", "labelRight": "goldene Ära der Mode" },
+    { "name": "STREETWEAR BRANDS", "labelLeft": "nie auf meinem Körper", "labelRight": "sofort alles kaufen" },
+    { "name": "KLEIDUNGSSTÜCKE FÜR ZUHAUSE", "labelLeft": "trage ich zuhause nie", "labelRight": "läuft bei mir den ganzen Tag" },
+    { "name": "FRISUREN", "labelLeft": "würde ich nie haben wollen", "labelRight": "sofort zum Friseur damit" },
+    { "name": "SCHMUCK-TYPEN", "labelLeft": "trage ich nie", "labelRight": "immer dabei" },
+    { "name": "SNEAKER KOLLEKTIONEN", "labelLeft": "würde ich nie kaufen", "labelRight": "sofort in der Warteschlange" },
+    { "name": "BEAUTY & SKINCARE PRODUKTE", "labelLeft": "brauche ich nicht", "labelRight": "täglich unverzichtbar" },
+    { "name": "OUTFIT-KOMBINATIONEN", "labelLeft": "geht gar nicht", "labelRight": "perfektes Outfit" },
+    { "name": "KLEIDUNGSMARKEN FÜR DEN ALLTAG", "labelLeft": "kaufe ich nie", "labelRight": "meine absolute Go-To Marke" },
+    { "name": "DINGE DIE EINEN STYLE AUSMACHEN", "labelLeft": "macht jeden Style schlechter", "labelRight": "das i-Tüpfelchen" }
   ]
 }

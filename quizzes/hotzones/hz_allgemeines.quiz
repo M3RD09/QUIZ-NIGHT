@@ -1,19 +1,19 @@
 {
   "name": "Hot Zones — Allgemeines",
   "categories": [
-    { "name": "MONTAGMORGEN", "labelLeft": "absolute Qual", "labelRight": "entspannt und motiviert" },
-    { "name": "ANANAS AUF PIZZA", "labelLeft": "Verbrechen gegen die Menschheit", "labelRight": "absolut köstlich" },
-    { "name": "REGENWETTER", "labelLeft": "macht mich deprimiert", "labelRight": "liebe ich, perfekt zum Kuscheln" },
-    { "name": "KATZEN", "labelLeft": "unausstehliche Tiere", "labelRight": "beste Haustiere überhaupt" },
-    { "name": "FRÜH AUFSTEHEN", "labelLeft": "unmöglich, nie wieder", "labelRight": "ich bin ein Morgenmensch" },
-    { "name": "KALTE DUSCHE", "labelLeft": "niemals freiwillig", "labelRight": "täglich, belebt total" },
-    { "name": "WARTEZEIT BEI ARZT", "labelLeft": "macht mich wahnsinnig", "labelRight": "kein Problem, ich bin geduldig" },
-    { "name": "SPINNEN IN DER WOHNUNG", "labelLeft": "sofort raus!", "labelRight": "meine Mitbewohner, will ich behalten" },
-    { "name": "SCHLAFEN BIS MITTAG", "labelLeft": "schlechte Gewohnheit, mag ich nicht", "labelRight": "das pure Glück" },
-    { "name": "KOCHEN SELBST", "labelLeft": "ich hasse kochen", "labelRight": "mein größtes Hobby" },
-    { "name": "ÖFFENTLICHE VERKEHRSMITTEL", "labelLeft": "grauenhaft, niemals", "labelRight": "entspannt, umweltfreundlich super" },
-    { "name": "HAUSTIERE GENERELL", "labelLeft": "zu viel Aufwand, nein danke", "labelRight": "das Schönste auf der Welt" },
-    { "name": "STAU AUF DER AUTOBAHN", "labelLeft": "bringt mich zur Weißglut", "labelRight": "ich nutze die Zeit produktiv" },
-    { "name": "JOGGEN AM MORGEN", "labelLeft": "nie, danke", "labelRight": "beste Aktivität des Tages" }
+    { "name": "DÖNER ZUTATEN", "labelLeft": "gehört nicht drauf", "labelRight": "absolut unverzichtbar" },
+    { "name": "ERSTE DATE IDEEN", "labelLeft": "nie im Leben", "labelRight": "perfekte Date-Idee" },
+    { "name": "PARTY MITBRINGSEL", "labelLeft": "wird nicht angerührt", "labelRight": "sofort leer, alle wollen mehr" },
+    { "name": "AUSREDEN FÜR ZU-SPÄT-KOMMEN", "labelLeft": "glaubt niemand", "labelRight": "klingt immer wahr" },
+    { "name": "MORGENRITUALE", "labelLeft": "klingt qualvoll", "labelRight": "startet den Tag perfekt" },
+    { "name": "SUPERKRÄFTE", "labelLeft": "komplett nutzlos im Alltag", "labelRight": "ultimative Fähigkeit" },
+    { "name": "SITZNACHBARN IM FLUGZEUG", "labelLeft": "10-Stunden-Horrortrip", "labelRight": "Traum-Sitznachbar" },
+    { "name": "GESPRÄCHSTHEMEN IM FAHRSTUHL", "labelLeft": "sofort awkward", "labelRight": "perfekter Small Talk" },
+    { "name": "SONNTAGSAKTIVITÄTEN", "labelLeft": "kein Sonntag für mich", "labelRight": "perfekter Sonntag" },
+    { "name": "DINGE IM KÜHLSCHRANK", "labelLeft": "darf nie drin sein", "labelRight": "immer Pflichtbestand" },
+    { "name": "DINGE DIE SOFORT GLÜCKLICH MACHEN", "labelLeft": "egal, kein Effekt", "labelRight": "sofortiger Stimmungsbooster" },
+    { "name": "AUSREDEN BEIM ARZT", "labelLeft": "glaubt kein Mensch", "labelRight": "Arzt nickt sofort" },
+    { "name": "DINGE IM HANDGEPÄCK", "labelLeft": "nehme ich nie mit", "labelRight": "immer dabei, absolut wichtig" },
+    { "name": "FÄHIGKEITEN IM NOTFALL", "labelLeft": "völlig nutzlos in Notfällen", "labelRight": "überlebenswichtig" }
   ]
 }

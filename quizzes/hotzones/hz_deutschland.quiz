@@ -1,19 +1,19 @@
 {
   "name": "Hot Zones — Deutschland",
   "categories": [
-    { "name": "OKTOBERFEST", "labelLeft": "überteuert und überfüllt", "labelRight": "auf die Bucket-List!" },
-    { "name": "AUTOBAHN OHNE TEMPOLIMIT", "labelLeft": "gefährlicher Irrsinn", "labelRight": "deutsches Kulturgut, niemals abschaffen" },
-    { "name": "BERLINER CURRYWURST", "labelLeft": "überbewertet", "labelRight": "deutsches Nationalgericht Nr. 1" },
-    { "name": "KARNEVAL / FASCHING", "labelLeft": "ich verlasse Deutschland im Februar", "labelRight": "die beste Zeit des Jahres" },
-    { "name": "DEUTSCHE PÜNKTLICHKEIT", "labelLeft": "macht mich nervös", "labelRight": "wichtigstes Kulturgut" },
-    { "name": "FUSSBALL BUNDESLIGA", "labelLeft": "finde ich langweilig", "labelRight": "jedes Spiel live vor Ort" },
-    { "name": "BRÖTCHEN AM SONNTAGMORGEN", "labelLeft": "kann ich nicht wertschätzen", "labelRight": "heiliges deutsches Ritual" },
-    { "name": "DEUTSCHE BAHN", "labelLeft": "Alptraum, immer Verspätung", "labelRight": "ich reise nur damit" },
-    { "name": "MÜLLTRENNUNG", "labelLeft": "viel zu kompliziert", "labelRight": "mache es mit Leidenschaft" },
-    { "name": "BIERGARTEN", "labelLeft": "sitze lieber drinnen", "labelRight": "Lebensqualität pur" },
-    { "name": "SILVESTER IN BERLIN", "labelLeft": "zu gefährlich, nie wieder", "labelRight": "einmal muss man es erlebt haben" },
-    { "name": "DEUTSCHE SPRACHE LERNEN", "labelLeft": "unmöglich schwer", "labelRight": "wunderschöne Sprache" },
-    { "name": "BAYERISCHE TRACHT", "labelLeft": "kitschig und touristisch", "labelRight": "stolze Tradition, trage ich gerne" },
-    { "name": "SCHREBERGARTEN", "labelLeft": "typisch spießig deutsch", "labelRight": "Traum für Ruhe und Natur" }
+    { "name": "DEUTSCHE STÄDTE ALS WOHNORT", "labelLeft": "da würde ich nie wohnen", "labelRight": "sofort umziehen" },
+    { "name": "DEUTSCHE GERICHTE", "labelLeft": "fasse ich nicht an", "labelRight": "Lieblingsessen schlechthin" },
+    { "name": "TYPISCH DEUTSCHE FESTE & TRADITIONEN", "labelLeft": "boykottiere ich komplett", "labelRight": "feste Jahreszeit für mich" },
+    { "name": "DEUTSCHE GETRÄNKE", "labelLeft": "nie wieder", "labelRight": "könnte ich täglich trinken" },
+    { "name": "TYPISCH DEUTSCHE VERHALTENSWEISEN", "labelLeft": "so bin ich überhaupt nicht", "labelRight": "das bin ich zu 100%" },
+    { "name": "DEUTSCHE URLAUBSZIELE", "labelLeft": "da fahr ich nie hin", "labelRight": "sofort Urlaub buchen" },
+    { "name": "DEUTSCHE TV-SENDUNGEN", "labelLeft": "nie einschalten", "labelRight": "jede Folge geschaut" },
+    { "name": "DINGE AN DEUTSCHLAND DIE NERVEN", "labelLeft": "stört mich kaum", "labelRight": "bringt mich auf die Palme" },
+    { "name": "TYPISCHE DEUTSCHE AUSREDEN", "labelLeft": "sagt doch keiner wirklich", "labelRight": "höre ich täglich" },
+    { "name": "DEUTSCHE MARKEN & PRODUKTE", "labelLeft": "kaufe ich nie", "labelRight": "kaufe ich immer" },
+    { "name": "DEUTSCHE BAHN ERLEBNISSE", "labelLeft": "ist mir nie passiert", "labelRight": "passiert mir jeden Dienstag" },
+    { "name": "DEUTSCHE WÖRTER & REDEWENDUNGEN", "labelLeft": "sage ich nie", "labelRight": "sage ich täglich" },
+    { "name": "TYPISCHE URLAUBSAKTIVITÄTEN IN DEUTSCHLAND", "labelLeft": "nie im Urlaub", "labelRight": "klassischer Deutschlandurlaub für mich" },
+    { "name": "BÜROKRATIE-ERLEBNISSE IN DEUTSCHLAND", "labelLeft": "passiert mir nie", "labelRight": "mein Alltag" }
   ]
 }

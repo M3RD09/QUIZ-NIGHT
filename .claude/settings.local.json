@@ -13,7 +13,8 @@
       "Bash(grep -n \"importAndPlay\\\\|horlOverlayLoadQuiz\\\\|bbOverlayLoadQuiz\\\\|mmOverlayLoadQuiz\\\\|lobbyImportQuiz\" /c/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/*.html)",
       "Bash(xargs -I {} basename {})",
       "Bash(node:*)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(ls \"C:\\\\Users\\\\mertb\\\\GITHUB-QUIZPROJEKT\\\\QUIZ-NIGHT\\\\quizzes\\\\hotzones\"\" 2>/dev/null || find \"C:UsersmertbGITHUB-QUIZPROJEKTQUIZ-NIGHT\" -name \"*.quiz \")"
     ]
   }
 }

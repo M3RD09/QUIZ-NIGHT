@@ -1,19 +1,19 @@
 {
   "name": "Hot Zones — Gaming",
   "categories": [
-    { "name": "LOOTBOXEN", "labelLeft": "legalisiertes Glücksspiel, Abzocke", "labelRight": "macht das Spiel aufregender" },
-    { "name": "BATTLE ROYALE GAMES", "labelLeft": "totes Genre, totaler Stress", "labelRight": "bestes Format ever" },
-    { "name": "GAMING BIS 4 UHR NACHTS", "labelLeft": "habe ich nie gemacht", "labelRight": "klassischer Freitagabend bei mir" },
-    { "name": "OPEN WORLD GAMES", "labelLeft": "zu groß, verliere mich", "labelRight": "unbegrenzte Freiheit, liebe es" },
-    { "name": "MOBILES GAMING", "labelLeft": "kein echtes Gaming", "labelRight": "spielbar überall, perfekt" },
-    { "name": "GAMING CONTROLLER VS MAUS", "labelLeft": "Controller ist überlegen", "labelRight": "Maus und Tastatur sind präziser" },
-    { "name": "EARLY ACCESS GAMES KAUFEN", "labelLeft": "zahle nicht für unfertige Produkte", "labelRight": "unterstütze Indie-Entwickler gerne" },
-    { "name": "SPEEDRUNNING", "labelLeft": "zerstört den Spielspaß", "labelRight": "faszinierende Kunst" },
-    { "name": "ESPORTS ZUSCHAUEN", "labelLeft": "ist kein echter Sport", "labelRight": "genauso spannend wie Fußball" },
-    { "name": "RETRO GAMING (ALTE KONSOLEN)", "labelLeft": "warum zurück wenn es Besseres gibt?", "labelRight": "Nostalgie pur, unschlagbar" },
-    { "name": "GAMING HEADSET BEIM SPIELEN", "labelLeft": "brauche ich nicht", "labelRight": "ohne geht gar nichts" },
-    { "name": "MIKROTRANSAKTIONEN IN SPIELEN", "labelLeft": "Verbrechen an der Spielerschaft", "labelRight": "zahle für Skins die mir gefallen" },
-    { "name": "ROGUELIKE GAMES (IMMER NEU ANFANGEN)", "labelLeft": "frustrierend und unfair", "labelRight": "macht süchtig durch Varianz" },
-    { "name": "GAMING ALS BERUF (STREAMER)", "labelLeft": "kein richtiger Job", "labelRight": "Traumkarriere" }
+    { "name": "GAMES FÜR EINE NACHT-SESSION", "labelLeft": "würde ich nie lange spielen", "labelRight": "könnte ich die ganze Nacht spielen" },
+    { "name": "GAMING SNACKS", "labelLeft": "nervt beim Zocken", "labelRight": "Pflicht-Snack am Setup" },
+    { "name": "GAMING GENRES", "labelLeft": "spiele ich nie", "labelRight": "mein absolutes Lieblingsgenre" },
+    { "name": "REAKTIONEN NACH EINER NIEDERLAGE", "labelLeft": "so reagiere ich nie", "labelRight": "bin ich zu 100% schuldig" },
+    { "name": "DINGE DIE BEIM ZOCKEN STÖREN", "labelLeft": "stört mich kaum", "labelRight": "sofort Pause gemacht" },
+    { "name": "INGAME KÄUFE", "labelLeft": "zahle ich nie", "labelRight": "sofort im Warenkorb" },
+    { "name": "STREAMER-TYPEN", "labelLeft": "schalte ich sofort weg", "labelRight": "schaue ich stundenlang" },
+    { "name": "GAMING GETRÄNKE", "labelLeft": "gehört nicht ans Setup", "labelRight": "Pflichtgetränk beim Zocken" },
+    { "name": "KOOP-SPIELE MIT FREUNDEN", "labelLeft": "zerstört jede Freundschaft", "labelRight": "perfekter Couch-Abend" },
+    { "name": "DINGE IN EINEM RPG", "labelLeft": "ignoriere ich komplett", "labelRight": "mache ich als allererstes" },
+    { "name": "GAMING ZUBEHÖR & SETUPS", "labelLeft": "braucht kein Mensch", "labelRight": "will ich unbedingt haben" },
+    { "name": "GAME SOUNDTRACKS", "labelLeft": "mache ich sofort stumm", "labelRight": "höre ich auch ohne Spiel" },
+    { "name": "GRÜNDE EINEN RUN NEU ZU STARTEN", "labelLeft": "starte ich nie neu deswegen", "labelRight": "sofort von vorne!" },
+    { "name": "AUSREDEN GEGENÜBER ELTERN FÜRS ZOCKEN", "labelLeft": "glaubt niemand", "labelRight": "klingt immer überzeugend" }
   ]
 }

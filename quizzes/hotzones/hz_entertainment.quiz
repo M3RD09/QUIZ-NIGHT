@@ -1,19 +1,19 @@
 {
   "name": "Hot Zones — Popkultur & Entertainment",
   "categories": [
-    { "name": "TIKTOK TANZVIDEOS", "labelLeft": "fremdschämen auf höchstem Niveau", "labelRight": "ich mache selbst welche" },
-    { "name": "REALITY TV SHOWS", "labelLeft": "Gehirnzellen sterben beim Schauen", "labelRight": "beste Unterhaltung ever" },
-    { "name": "NETFLIX BINGEN", "labelLeft": "habe nie Zeit dafür", "labelRight": "mein Lieblingssport" },
-    { "name": "DEUTSCHE RAPPER", "labelLeft": "nicht mein Ding", "labelRight": "höre ich täglich" },
-    { "name": "INSTAGRAM STORIES", "labelLeft": "total egal, skip immer", "labelRight": "schaue ich alle täglich" },
-    { "name": "KONZERTE BESUCHEN", "labelLeft": "zu laut, zu voll, nein danke", "labelRight": "das Beste auf der Welt" },
-    { "name": "K-POP MUSIK", "labelLeft": "verstehe den Hype nicht", "labelRight": "BTS ist mein Leben" },
-    { "name": "PODCAST HÖREN", "labelLeft": "langweilt mich total", "labelRight": "überall und immer" },
-    { "name": "YOUTUBE VIDEOS SCHAUEN", "labelLeft": "total verschwendete Zeit", "labelRight": "meine Hauptinformationsquelle" },
-    { "name": "LIVE STREAMS", "labelLeft": "wer hat dafür Zeit?", "labelRight": "täglich in mehreren gleichzeitig" },
-    { "name": "DSCHUNGELCAMP", "labelLeft": "wie können Menschen das schauen?", "labelRight": "feste Rituale darum gebaut" },
-    { "name": "INFLUENCER KAUFEMPFEHLUNGEN", "labelLeft": "totaler Schwachsinn", "labelRight": "kaufe fast alles danach" },
-    { "name": "MUSIK AUF VINYL", "labelLeft": "hipster Unsinn", "labelRight": "klingt einfach besser" },
-    { "name": "LATE NIGHT SHOWS", "labelLeft": "zu amerikanisch für mich", "labelRight": "schaue ich wenn ich nicht schlafen kann" }
+    { "name": "FILMGENRES FÜR EINEN ABEND", "labelLeft": "mache ich sofort aus", "labelRight": "schaue ich immer bis zum Ende" },
+    { "name": "KONZERT-GENRES LIVE", "labelLeft": "dafür kaufe ich nie Tickets", "labelRight": "sofort ausverkauft für mich" },
+    { "name": "PARTY PLAYLIST SONGS", "labelLeft": "sofort skippen", "labelRight": "Stimmungs-Garantie" },
+    { "name": "PODCAST THEMEN", "labelLeft": "interessiert mich null", "labelRight": "höre ich stundenlang" },
+    { "name": "STREAMING DIENSTE", "labelLeft": "lohnt kein Abo", "labelRight": "unverzichtbar in meinem Leben" },
+    { "name": "DEUTSCHE MUSIK ACTS", "labelLeft": "nie in meiner Playlist", "labelRight": "täglich auf Repeat" },
+    { "name": "CREATOR / YOUTUBER TYPEN", "labelLeft": "sofort weggeklickt", "labelRight": "subscribt ohne Nachzudenken" },
+    { "name": "SERIEN-KLISCHEES", "labelLeft": "bringt mich zum Aufhören", "labelRight": "ich liebe genau das" },
+    { "name": "SOCIAL MEDIA INHALTE", "labelLeft": "skip ich immer", "labelRight": "schaue ich täglich" },
+    { "name": "FILM SOUNDTRACKS", "labelLeft": "stört beim Film", "labelRight": "höre ich auch ohne Film" },
+    { "name": "ANIME GENRES", "labelLeft": "würde ich nie schauen", "labelRight": "schaue ich nächtelang" },
+    { "name": "REALITY TV FORMATE", "labelLeft": "pure Zeitverschwendung", "labelRight": "beste Unterhaltung ever" },
+    { "name": "MEME-TYPEN", "labelLeft": "verstehe ich nicht, skip", "labelRight": "schicke ich sofort an alle" },
+    { "name": "INSTAGRAM REEL KATEGORIEN", "labelLeft": "immer weggeklickt", "labelRight": "schaue ich täglich" }
   ]
 }
