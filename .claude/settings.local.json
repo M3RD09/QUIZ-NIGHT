@@ -12,7 +12,8 @@
       "WebFetch(domain:www.mediawiki.org)",
       "Bash(grep -n \"importAndPlay\\\\|horlOverlayLoadQuiz\\\\|bbOverlayLoadQuiz\\\\|mmOverlayLoadQuiz\\\\|lobbyImportQuiz\" /c/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/*.html)",
       "Bash(xargs -I {} basename {})",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(node -e \":*)"
     ]
   }
 }

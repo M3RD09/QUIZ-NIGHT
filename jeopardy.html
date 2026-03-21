@@ -505,7 +505,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
       <option value="quizzes/jeopardy/jep_filme_serien.quiz">Filme &amp; Serien</option>
       <option value="quizzes/jeopardy/jep_gaming.quiz">Gaming</option>
     </select>
-        <button class="btn-multiplayer" onclick="mpShowOverlay()" style="margin-top:4px;">🌐 Online spielen</button>
+        <button type="button" class="btn-multiplayer" onclick="mpShowOverlay()" style="margin-top:4px;">🌐 Online spielen</button>
     <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
@@ -1318,9 +1318,6 @@ addCategory({name:'KATEGORIE 2',questions:[]});
   } else if(action === 'editor'){
     showView('view-editor');
   }
-  if(window.location.hash==='#online'){
-    setTimeout(()=>mpShowOverlay(),300);
-  }
 })();
 
 
@@ -2045,15 +2042,16 @@ function checkGameOver(){
   return false;
 }
 
-// ── URL: auto-fill room code ──
+// ── URL handlers (run here where DOM + functions are all ready) ──
 (function(){
   const p=new URLSearchParams(window.location.search);
   const room=p.get('room');
   if(room){
-    setTimeout(()=>{
-      mpShowOverlay();mpSwitchTab('join');
-      const el=document.getElementById('mp-join-code');if(el)el.value=room.toUpperCase();
-    },300);
+    mpShowOverlay();mpSwitchTab('join');
+    const el=document.getElementById('mp-join-code');if(el)el.value=room.toUpperCase();
+  }
+  if(window.location.hash==='#online'){
+    mpShowOverlay();
   }
 })();
 </script>
