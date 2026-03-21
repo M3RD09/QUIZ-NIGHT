@@ -378,20 +378,106 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .theme-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
 
 
-/* ── MULTIPLAYER ── */
+/* ── MULTIPLAYER / ONLINE ── */
+.mp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);z-index:300;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
 .mp-overlay.hidden{display:none;}
+.mp-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:420px;overflow:hidden;animation:mpIn .2s ease;margin:auto;}
 @keyframes mpIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-.mp-tab.active{background:var(--green,#2ecc71);border-color:var(--green,#2ecc71);color:#fff;}
-.mp-input:focus{border-color:var(--green,#2ecc71);}
+.mp-header{display:flex;align-items:center;gap:10px;padding:18px 20px;border-bottom:1px solid var(--border);}
+.mp-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.08em;color:var(--blue);flex:1;}
+.mp-close{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mp-close:hover{border-color:var(--red);color:var(--red);}
+.mp-tabs{display:flex;gap:8px;padding:14px 20px 0;}
+.mp-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;}
+.mp-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.mp-panel{padding:14px 20px;display:flex;flex-direction:column;gap:10px;}
+.mp-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+.mp-input:focus{border-color:var(--blue);}
 .mp-input::placeholder{color:var(--muted2);}
-.mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green,#2ecc71);display:block;}
-.mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:#e8354a;display:block;}
-to{opacity:1;}}
-}
-
-
-
+.mp-status{padding:10px 14px;font-size:12px;border-radius:8px;margin:0 20px 10px;display:none;}
+.mp-status.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:var(--green);display:block;}
+.mp-status.err{background:rgba(232,53,74,.1);border:1px solid rgba(232,53,74,.2);color:var(--red);display:block;}
+.btn-multiplayer{background:linear-gradient(135deg,var(--blue),#1a5cd8);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;transition:all .2s;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;}
 .btn-multiplayer:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-multiplayer:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none;}
+/* LOBBY */
+#view-lobby{overflow-y:auto;}
+.lbl-section{font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;}
+.lobby-code-big{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.15em;color:var(--gold);text-align:center;line-height:1;}
+.lobby-link-txt{font-size:11px;color:var(--muted);text-align:center;cursor:pointer;margin-top:4px;transition:color .2s;}
+.lobby-link-txt:hover{color:var(--blue);}
+.lobby-player-row{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;}
+.lobby-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lobby-player-info{flex:1;min-width:0;}
+.lobby-player-name{font-size:13px;font-weight:700;}
+.lobby-player-badge{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);margin-top:1px;}
+.lobby-kick-btn{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .2s;}
+.lobby-kick-btn:hover{border-color:var(--red);color:var(--red);}
+.lobby-mode-toggle{display:flex;gap:8px;}
+.lobby-mode-btn{flex:1;padding:9px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;}
+.lobby-mode-btn.active{border-color:var(--gold);background:rgba(245,200,66,.1);color:var(--gold);}
+.lobby-team-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lobby-team-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;border-top:3px solid #888;}
+.lobby-team-inp{width:100%;background:none;border:none;outline:none;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.05em;margin-bottom:8px;}
+.lobby-team-member{display:flex;align-items:center;gap:6px;background:var(--surface);border-radius:7px;padding:5px 8px;font-size:12px;font-weight:600;margin-bottom:4px;}
+.lobby-team-member span{flex:1;}
+.lobby-team-member button{background:none;border:none;color:var(--muted2);font-size:12px;cursor:pointer;transition:color .15s;}
+.lobby-team-member button:hover{color:var(--red);}
+.lobby-add-player-btn{background:none;border:1px dashed var(--border);border-radius:7px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:5px 9px;cursor:pointer;transition:all .2s;margin:2px;}
+.lobby-add-player-btn:hover{border-color:var(--blue);color:var(--blue);}
+.lobby-solo-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;border-top:3px solid var(--gold);}
+.lobby-solo-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.05em;color:var(--gold);margin-bottom:8px;}
+.lobby-assign-row{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--surface);border-radius:7px;margin-bottom:4px;font-size:12px;}
+.lobby-assign-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;}
+.lobby-assign-btn.assigned{background:rgba(46,204,113,.1);border-color:var(--green);color:var(--green);}
+.lobby-quiz-box{background:rgba(58,142,246,.08);border:1px solid rgba(58,142,246,.25);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--blue);display:none;}
+/* TURN POPUP */
+.turn-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(160deg,rgba(10,20,40,.97),rgba(7,14,25,.97));border:2px solid var(--blue);border-radius:24px;padding:28px 40px;text-align:center;z-index:450;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(20px);min-width:240px;box-shadow:0 0 60px rgba(58,142,246,.2);}
+.turn-popup.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.tp-label{font-size:10px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.tp-name{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--text);letter-spacing:.04em;line-height:1;margin-bottom:6px;}
+.tp-pts{font-size:14px;color:var(--gold);font-weight:600;}
+/* CONFIRM CELL */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:260;display:none;align-items:center;justify-content:center;padding:20px;}
+.confirm-overlay.open{display:flex;}
+.confirm-modal{background:linear-gradient(160deg,#0d1f3a,#07111f);border:1px solid rgba(58,142,246,.4);border-radius:24px;padding:32px 28px;text-align:center;width:100%;max-width:360px;box-shadow:0 0 50px rgba(58,142,246,.15);}
+.confirm-cat-lbl{font-size:10px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:var(--blue);background:rgba(58,142,246,.1);border:1px solid rgba(58,142,246,.2);border-radius:20px;padding:4px 14px;display:inline-block;margin-bottom:12px;}
+.confirm-pts-big{font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--gold);line-height:1;text-shadow:0 0 30px rgba(245,200,66,.3);margin-bottom:6px;}
+.confirm-question-txt{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.confirm-actions{display:flex;gap:10px;}
+.confirm-actions .btn-primary,.confirm-actions .btn-secondary{flex:1;}
+/* ADMIN */
+.admin-btn-float{position:fixed;bottom:80px;right:68px;width:44px;height:44px;border-radius:50%;background:rgba(232,53,74,.9);border:none;color:#fff;font-size:18px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(232,53,74,.4);z-index:998;transition:all .2s;display:none;}
+.admin-btn-float.visible{display:flex;}
+.admin-btn-float:hover{transform:scale(1.12);}
+.admin-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:399;display:none;align-items:flex-end;justify-content:center;}
+.admin-panel-overlay.open{display:flex;}
+.admin-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;}
+.admin-panel-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--red);}
+.admin-action-btn{padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;width:100%;}
+.admin-action-btn:hover{border-color:var(--blue);color:var(--blue);}
+.admin-action-btn.danger:hover{border-color:var(--red);color:var(--red);}
+.admin-close-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:10px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;width:100%;}
+.admin-close-btn:hover{color:var(--text);}
+/* SCORE EDIT */
+.score-edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.score-edit-overlay.open{display:flex;}
+.score-edit-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;}
+.score-edit-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;color:var(--gold);}
+.score-edit-row{display:flex;align-items:center;gap:10px;}
+.score-edit-inp{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:90px;}
+.score-edit-inp:focus{border-color:var(--gold);}
+/* ONLINE ANSWER UI */
+.online-answer-wrap{display:none;flex-direction:column;gap:8px;margin-bottom:12px;}
+.online-answer-inp{width:100%;background:rgba(58,142,246,.08);border:1px solid rgba(58,142,246,.3);border-radius:12px;padding:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;text-align:center;}
+.online-answer-inp:focus{border-color:var(--blue);}
+.online-waiting-msg{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2);border-radius:10px;padding:11px;font-size:12px;color:var(--gold);text-align:center;display:none;margin-bottom:8px;}
+.online-host-answer{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.25);border-radius:12px;padding:14px;font-size:13px;display:none;margin-bottom:12px;}
+/* RECONNECT */
+.reconnect-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(10px);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:20px;}
+.reconnect-overlay.open{display:flex;}
+.reconnect-spin{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 </style>
 </head>
@@ -419,7 +505,8 @@ to{opacity:1;}}
       <option value="quizzes/jeopardy/jep_filme_serien.quiz">Filme &amp; Serien</option>
       <option value="quizzes/jeopardy/jep_gaming.quiz">Gaming</option>
     </select>
-        <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
+        <button class="btn-multiplayer" onclick="mpShowOverlay()" style="margin-top:4px;">🌐 Online spielen</button>
+    <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -617,6 +704,17 @@ to{opacity:1;}}
     </div>
     <div class="q-text" id="qo-text">Frage</div>
     <div class="time-up-box" id="time-up-box">⏰ Zeit abgelaufen!</div>
+
+    <!-- ONLINE: player answer input -->
+    <div class="online-answer-wrap" id="online-answer-wrap">
+      <input class="online-answer-inp" id="online-answer-input" placeholder="Deine Antwort eingeben..." maxlength="200"
+        onkeydown="if(event.key==='Enter')playerSubmitAnswer()">
+      <button class="btn-primary" onclick="playerSubmitAnswer()">✉️ Antwort abschicken</button>
+    </div>
+    <!-- ONLINE: waiting message (player after submit / other players) -->
+    <div class="online-waiting-msg" id="online-waiting-msg"></div>
+    <!-- ONLINE: host sees player's answer + correct answer -->
+    <div class="online-host-answer" id="online-host-answer"></div>
 
     <button class="btn-reveal-ans" id="btn-reveal" onclick="revealAnswer()">🔍 Antwort aufdecken</button>
     <div class="ans-box" id="ans-box"></div>
@@ -851,7 +949,7 @@ function buildBoard(){
         c.textContent=q.points;
         c.dataset.ci=ci;
         c.dataset.qi=qi;
-        c.onclick=()=>openQuestion(ci,qi,c);
+        c.onclick=()=>handleCellClick(ci,qi,c);
       }else{
         c.className='board-cell';
         c.style.background='transparent';
@@ -1056,9 +1154,14 @@ function verdict(correct){
   turnIdx++;
   updateTurnBanner();updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
-
+  if(isOnline&&isHost) onlineCurrentAnswer=null;
   currentQ=null;
-  checkGameOver();
+  if(isOnline&&isHost){
+    broadcastJepState();
+    if(!checkGameOver()) setTimeout(()=>showTurnPopup(),400);
+  } else if(!isOnline){
+    if(!checkGameOver()) setTimeout(()=>showTurnPopup(),400);
+  }
 }
 
 
@@ -1215,6 +1318,9 @@ addCategory({name:'KATEGORIE 2',questions:[]});
   } else if(action === 'editor'){
     showView('view-editor');
   }
+  if(window.location.hash==='#online'){
+    setTimeout(()=>mpShowOverlay(),300);
+  }
 })();
 
 
@@ -1243,16 +1349,6 @@ addCategory({name:'KATEGORIE 2',questions:[]});
 </div>
 
 
-<!-- THEME SWITCHER -->
-<button class="theme-btn" onclick="toggleThemePanel()" title="Design w&#228;hlen">&#127912;</button>
-<div class="theme-panel" id="theme-panel">
-  <div class="theme-panel-title">Design w&#228;hlen</div>
-  <button class="theme-option" onclick="setTheme('midnight')"><div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#3a8ef6)"></div>Midnight</button>
-  <button class="theme-option" onclick="setTheme('neon')"><div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon</button>
-  <button class="theme-option" onclick="setTheme('forest')"><div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest</button>
-  <button class="theme-option" onclick="setTheme('sunset')"><div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset</button>
-  <button class="theme-option" onclick="setTheme('arctic')"><div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic</button>
-</div>
 <script>
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
@@ -1282,20 +1378,684 @@ document.addEventListener('click',function(e){
   <div class="mp-box">
     <div class="mp-header">
       <span>🌐</span>
-      <div class="mp-title">MULTIPLAYER</div>
+      <div class="mp-title">ONLINE SPIELEN</div>
       <button class="mp-close" onclick="mpClose()">✕</button>
     </div>
-    <div class="mp-body" id="mp-body">
-      <!-- Dynamically rendered by JS -->
+    <div class="mp-tabs">
+      <button class="mp-tab active" id="mp-tab-create" onclick="mpSwitchTab('create')">Raum erstellen</button>
+      <button class="mp-tab" id="mp-tab-join" onclick="mpSwitchTab('join')">Beitreten</button>
+    </div>
+    <div class="mp-status" id="mp-status"></div>
+    <div class="mp-panel" id="mp-panel-create">
+      <input class="mp-input" id="mp-host-name" placeholder="Dein Name (Moderator)..." maxlength="20">
+      <button class="btn-multiplayer" onclick="mpCreate()">🚀 Raum erstellen</button>
+    </div>
+    <div class="mp-panel" id="mp-panel-join" style="display:none;">
+      <input class="mp-input" id="mp-join-name" placeholder="Dein Name..." maxlength="20">
+      <input class="mp-input" id="mp-join-code" placeholder="RAUM-CODE" maxlength="8"
+        style="text-transform:uppercase;letter-spacing:.15em;font-size:18px;text-align:center;"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter')mpJoin()">
+      <button class="btn-multiplayer" onclick="mpJoin()">🔗 Beitreten</button>
     </div>
   </div>
+</div>
+
+<!-- ══ LOBBY VIEW ══ -->
+<div class="view" id="view-lobby">
+  <div class="topbar">
+    <button class="btn-icon" onclick="lobbyLeave()">←</button>
+    <div class="topbar-title">🎯 Jeopardy! — Lobby</div>
+  </div>
+  <div class="view-body">
+    <div style="text-align:center;padding:4px 0 8px;">
+      <div class="lobby-code-big" id="lobby-code-display">----</div>
+      <div class="lobby-link-txt" id="lobby-link-el">🔗 Link kopieren</div>
+    </div>
+    <div class="lbl-section">Verbundene Spieler</div>
+    <div id="lobby-player-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <!-- HOST ONLY -->
+    <div id="lobby-host-section" style="display:none;flex-direction:column;gap:14px;">
+      <div class="lbl-section" style="margin-top:8px;">Spielmodus</div>
+      <div class="lobby-mode-toggle">
+        <button class="lobby-mode-btn active" id="lobby-btn-teams" onclick="setLobbyMode(false)">👥 Teams</button>
+        <button class="lobby-mode-btn" id="lobby-btn-solo" onclick="setLobbyMode(true)">👤 Einzelspieler</button>
+      </div>
+      <div id="lobby-team-area"></div>
+      <div class="lbl-section">Quiz laden</div>
+      <label class="btn-primary" style="cursor:pointer;justify-content:center;">
+        📂 Quiz-Datei auswählen
+        <input type="file" accept=".quiz,.json" onchange="lobbyLoadFile(event)" style="display:none">
+      </label>
+      <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;"
+        onchange="if(this.value){lobbyPresetLoad(this.value);this.value=''}">
+        <option value="">📋 Fertige Vorlage laden...</option>
+        <option value="quizzes/jeopardy/jep_allgemeines.quiz">Allgemeines</option>
+        <option value="quizzes/jeopardy/jep_entertainment.quiz">Popkultur &amp; Entertainment</option>
+        <option value="quizzes/jeopardy/jep_deutschland.quiz">Deutschland</option>
+        <option value="quizzes/jeopardy/jep_marken_fashion.quiz">Marken &amp; Fashion</option>
+        <option value="quizzes/jeopardy/jep_geografie.quiz">Geografie</option>
+        <option value="quizzes/jeopardy/jep_filme_serien.quiz">Filme &amp; Serien</option>
+        <option value="quizzes/jeopardy/jep_gaming.quiz">Gaming</option>
+      </select>
+      <div class="lobby-quiz-box" id="lobby-quiz-display"></div>
+      <button class="btn-multiplayer" id="lobby-start-btn" onclick="lobbyStartGame()" disabled>▶ Spiel starten!</button>
+    </div>
+    <!-- PLAYER ONLY -->
+    <div id="lobby-wait-section" style="display:none;text-align:center;padding:32px 20px;color:var(--muted);">
+      <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+      <div style="font-weight:700;font-size:15px;color:var(--text);">Warte auf den Moderator...</div>
+      <div style="font-size:12px;margin-top:8px;">Das Spiel startet wenn der Host bereit ist.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TURN POPUP ══ -->
+<div class="turn-popup" id="turn-popup">
+  <div class="tp-label">Jetzt am Zug</div>
+  <div class="tp-name" id="tp-name">Spieler</div>
+  <div class="tp-pts" id="tp-pts">0 Pkt.</div>
+</div>
+
+<!-- ══ CONFIRM CELL OVERLAY ══ -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-modal">
+    <div class="confirm-cat-lbl" id="confirm-cat-lbl">KATEGORIE</div>
+    <div class="confirm-pts-big" id="confirm-pts-big">400</div>
+    <div class="confirm-question-txt">Diese Frage wirklich spielen?</div>
+    <div class="confirm-actions">
+      <button class="btn-secondary" onclick="confirmCellNo()">Abbrechen</button>
+      <button class="btn-primary" onclick="confirmCellYes()">✓ Ja, spielen!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ══ -->
+<button class="admin-btn-float" id="admin-btn-float" onclick="toggleAdminPanel()" title="Moderator-Panel">⚙️</button>
+<div class="admin-panel-overlay" id="admin-panel-overlay" onclick="if(event.target===this)closeAdminPanel()">
+  <div class="admin-panel">
+    <div class="admin-panel-title">⚙️ Moderator-Panel</div>
+    <button class="admin-action-btn" onclick="adminEditScores()">✏️ Punkte bearbeiten</button>
+    <button class="admin-action-btn" onclick="adminRestart()">🔄 Spiel neu starten</button>
+    <button class="admin-action-btn danger" onclick="adminBackToLobby()">🏠 Zurück zur Lobby</button>
+    <div id="admin-kick-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+    <button class="admin-close-btn" onclick="closeAdminPanel()">Schließen</button>
+  </div>
+</div>
+
+<!-- ══ SCORE EDIT OVERLAY ══ -->
+<div class="score-edit-overlay" id="score-edit-overlay">
+  <div class="score-edit-modal">
+    <div class="score-edit-title">✏️ Punkte bearbeiten</div>
+    <div id="score-edit-fields"></div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn-secondary" onclick="document.getElementById('score-edit-overlay').classList.remove('open')" style="flex:1;">Abbrechen</button>
+      <button class="btn-gold" onclick="saveScoreEdit()" style="flex:1;">✓ Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RECONNECT OVERLAY ══ -->
+<div class="reconnect-overlay" id="reconnect-overlay">
+  <div class="reconnect-spin"></div>
+  <div style="font-weight:700;font-size:16px;color:var(--text);">Verbindung unterbrochen</div>
+  <div style="font-size:13px;color:var(--muted);">Versuche neu zu verbinden...</div>
 </div>
 
 
 
 <script>
+// ══════════════════════════════════════════════════════
+// JEOPARDY ONLINE MODE
+// ══════════════════════════════════════════════════════
+const JEP_SERVER='https://quiz-server-production-9398.up.railway.app';
+let isOnline=false,isHost=false,myName='',mpSocket=null,mpRoom=null;
+let onlineCurrentAnswer=null; // {playerName,text}
+let confirmCallback=null;
+let lobbyQuizData=null;
+let lobbyTeams=[{name:'Team Blau',color:'#3a8ef6',players:[]},{name:'Team Rot',color:'#e8354a',players:[]}];
+let lobbySoloMode=false;
 
+// ── SOCKET LOADER ──
+function loadSocketJep(cb){
+  if(window.io){cb();return;}
+  const s=document.createElement('script');
+  s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
+  s.onload=()=>{setupSocketJep();cb();};
+  document.head.appendChild(s);
+}
+function setupSocketJep(){
+  mpSocket=io(JEP_SERVER,{transports:['websocket','polling']});
+  mpSocket.on('connect',()=>{
+    if(mpRoom&&mpRoom.code){
+      mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
+      mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();if(isHost)broadcastJepState();});
+    }
+  });
+  mpSocket.on('disconnect',()=>{if(isOnline)showReconnectOverlay();});
+  mpSocket.on('player_joined',({room})=>{
+    mpRoom=room;
+    if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
+    else if(isHost)broadcastJepState();
+  });
+  mpSocket.on('player_left',({room})=>{
+    mpRoom=room;
+    if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
+  });
+  mpSocket.on('room_update',({room})=>{
+    mpRoom=room;
+    if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
+  });
+  mpSocket.on('game_action',({action,payload})=>handleJepAction(action,payload));
+}
 
+// ── OVERLAY ──
+function mpShowOverlay(){
+  document.getElementById('mp-overlay').classList.remove('hidden');
+  mpSwitchTab('create');
+  document.getElementById('mp-status').style.display='none';
+}
+function mpClose(){document.getElementById('mp-overlay').classList.add('hidden');}
+function mpSwitchTab(tab){
+  ['create','join'].forEach(t=>{
+    document.getElementById('mp-tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('mp-panel-'+t).style.display=t===tab?'flex':'none';
+  });
+  document.getElementById('mp-status').style.display='none';
+}
+function mpSetStatus(type,msg){
+  const el=document.getElementById('mp-status');
+  el.className='mp-status '+type;el.textContent=msg;el.style.display='block';
+}
+function mpCreate(){
+  const name=document.getElementById('mp-host-name').value.trim();
+  if(!name){mpSetStatus('err','⚠️ Bitte Namen eingeben.');return;}
+  myName=name;isHost=true;isOnline=true;
+  loadSocketJep(()=>{
+    mpSocket.emit('create_room',{game:'jeopardy',playerName:name,quizData:{}});
+    mpSocket.once('room_created',({code,room})=>{
+      mpRoom=room;mpRoom.code=code;
+      mpClose();
+      lobbyTeams=[{name:'Team Blau',color:'#3a8ef6',players:[]},{name:'Team Rot',color:'#e8354a',players:[]}];
+      lobbySoloMode=false;lobbyQuizData=null;
+      showView('view-lobby');renderLobby();
+    });
+  });
+}
+function mpJoin(){
+  const name=document.getElementById('mp-join-name').value.trim();
+  const code=document.getElementById('mp-join-code').value.trim().toUpperCase();
+  if(!name){mpSetStatus('err','⚠️ Bitte Namen eingeben.');return;}
+  if(!code){mpSetStatus('err','⚠️ Bitte Raum-Code eingeben.');return;}
+  myName=name;isHost=false;isOnline=true;
+  loadSocketJep(()=>{
+    mpSocket.emit('join_room',{code,playerName:name});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{
+      mpRoom=room;mpRoom.code=c||code;myName=yourName||name;
+      mpClose();showView('view-lobby');renderLobby();
+    });
+  });
+}
+
+// ── LOBBY ──
+function renderLobby(){
+  if(!mpRoom)return;
+  const players=mpRoom.players||[];
+  document.getElementById('lobby-code-display').textContent=mpRoom.code||'----';
+  const link=window.location.origin+window.location.pathname+'?room='+mpRoom.code;
+  const linkEl=document.getElementById('lobby-link-el');
+  if(linkEl){linkEl.onclick=()=>{navigator.clipboard?.writeText(link);showToast('🔗 Link kopiert!');};}
+  const list=document.getElementById('lobby-player-list');
+  list.innerHTML='';
+  players.forEach(p=>{
+    const el=document.createElement('div');el.className='lobby-player-row';
+    const col=getPlayerColor(p.name);
+    el.innerHTML='<div class="lobby-avatar" style="background:'+col+'">'+escHtml(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="lobby-player-info"><div class="lobby-player-name">'+escHtml(p.name)+(p.name===myName?' <span style="color:var(--muted);font-size:10px;">(du)</span>':'')+'</div>'
+      +'<div class="lobby-player-badge">'+(p.isHost?'HOST':'Spieler')+'</div></div>'
+      +(isHost&&!p.isHost?'<button class="lobby-kick-btn" onclick="mpKickFromLobby(\''+escHtml(p.name)+'\')">✕</button>':'');
+    list.appendChild(el);
+  });
+  const hostSec=document.getElementById('lobby-host-section');
+  const waitSec=document.getElementById('lobby-wait-section');
+  if(isHost){hostSec.style.display='flex';waitSec.style.display='none';renderLobbyTeamAssign(players);}
+  else{hostSec.style.display='none';waitSec.style.display='block';}
+}
+function getPlayerColor(name){
+  const cols=['#3a8ef6','#e8354a','#2ecc71','#f5c842','#9b59b6','#f39c12','#1abc9c','#e91e63'];
+  let h=0;for(const c of name)h=(h*31+c.charCodeAt(0))&0xffff;
+  return cols[h%cols.length];
+}
+function setLobbyMode(solo){
+  lobbySoloMode=solo;
+  document.getElementById('lobby-btn-teams').classList.toggle('active',!solo);
+  document.getElementById('lobby-btn-solo').classList.toggle('active',solo);
+  lobbyTeams.forEach(t=>t.players=[]);
+  renderLobby();
+}
+function renderLobbyTeamAssign(players){
+  const container=document.getElementById('lobby-team-area');
+  if(!container)return;
+  container.innerHTML='';
+  if(lobbySoloMode){
+    const card=document.createElement('div');card.className='lobby-solo-card';
+    card.innerHTML='<div class="lobby-solo-title">EINZELSPIELER</div><div id="lobby-solo-list"></div>';
+    container.appendChild(card);
+    const soloList=document.getElementById('lobby-solo-list');
+    players.forEach(p=>{
+      const isIn=lobbyTeams[0].players.includes(p.name);
+      const row=document.createElement('div');row.className='lobby-assign-row';
+      row.innerHTML='<span>'+escHtml(p.name)+'</span>'
+        +'<button class="lobby-assign-btn'+(isIn?' assigned':'')+'" onclick="toggleSoloPlayer(\''+escHtml(p.name)+'\')">'+(isIn?'✓ Dabei':'+ Hinzufügen')+'</button>';
+      soloList.appendChild(row);
+    });
+  } else {
+    const grid=document.createElement('div');grid.className='lobby-team-grid';
+    lobbyTeams.forEach((team,ti)=>{
+      const card=document.createElement('div');card.className='lobby-team-card';card.style.borderTopColor=team.color;
+      card.innerHTML='<input class="lobby-team-inp" value="'+escHtml(team.name)+'" maxlength="16" style="color:'+team.color+'" oninput="lobbyTeams['+ti+'].name=this.value">'
+        +'<div id="lteam-'+ti+'"></div><div id="lassign-'+ti+'"></div>';
+      grid.appendChild(card);
+    });
+    container.appendChild(grid);
+    lobbyTeams.forEach((team,ti)=>{
+      const memberList=document.getElementById('lteam-'+ti);
+      const assignList=document.getElementById('lassign-'+ti);
+      if(!memberList||!assignList)return;
+      team.players.forEach((pname,pi)=>{
+        const el=document.createElement('div');el.className='lobby-team-member';
+        el.innerHTML='<span>'+escHtml(pname)+'</span><button onclick="removeFromLobbyTeam('+ti+','+pi+')">✕</button>';
+        memberList.appendChild(el);
+      });
+      const allAssigned=lobbyTeams.flatMap(t=>t.players);
+      players.filter(p=>!allAssigned.includes(p.name)).forEach(p=>{
+        const btn=document.createElement('button');btn.className='lobby-add-player-btn';
+        btn.textContent='+ '+p.name;btn.onclick=()=>addToLobbyTeam(ti,p.name);
+        assignList.appendChild(btn);
+      });
+    });
+  }
+  const startBtn=document.getElementById('lobby-start-btn');
+  if(startBtn){
+    const hasP=lobbySoloMode?lobbyTeams[0].players.length>0:lobbyTeams.some(t=>t.players.length>0);
+    startBtn.disabled=!lobbyQuizData||!hasP;
+  }
+}
+function addToLobbyTeam(ti,name){
+  lobbyTeams.forEach(t=>{t.players=t.players.filter(p=>p!==name);});
+  lobbyTeams[ti].players.push(name);
+  renderLobby();
+}
+function removeFromLobbyTeam(ti,pi){lobbyTeams[ti].players.splice(pi,1);renderLobby();}
+function toggleSoloPlayer(name){
+  const idx=lobbyTeams[0].players.indexOf(name);
+  if(idx>=0)lobbyTeams[0].players.splice(idx,1);else lobbyTeams[0].players.push(name);
+  renderLobby();
+}
+function updateLobbyQuizDisplay(){
+  const box=document.getElementById('lobby-quiz-display');if(!box)return;
+  if(lobbyQuizData){box.style.display='block';box.textContent='📋 '+( lobbyQuizData.name||'Quiz')+' · '+lobbyQuizData.categories.length+' Kategorien';}
+  else{box.style.display='none';}
+}
+function lobbyLoadFile(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!d.categories)throw 0;lobbyQuizData=d;updateLobbyQuizDisplay();renderLobby();showToast('✅ Quiz geladen!');}catch{showToast('❌ Ungültige Quiz-Datei!');}};
+  r.readAsText(file);ev.target.value='';
+}
+async function lobbyPresetLoad(url){
+  if(!url)return;
+  try{const r=await fetch(url);if(!r.ok)throw 0;const d=JSON.parse(await r.text());if(!d.categories)throw 0;lobbyQuizData=d;updateLobbyQuizDisplay();renderLobby();showToast('✅ Quiz geladen!');}
+  catch{showToast('❌ Quiz konnte nicht geladen werden');}
+}
+function mpKickFromLobby(name){
+  if(!confirm('Spieler "'+name+'" entfernen?'))return;
+  mpSend('jep_kick_notify',{name});showToast('👢 '+name+' wurde entfernt.');
+}
+function lobbyLeave(){
+  if(!confirm('Raum verlassen?'))return;
+  isOnline=false;isHost=false;
+  if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+  mpRoom=null;lobbyQuizData=null;showView('view-menu');
+}
+function lobbyStartGame(){
+  if(!lobbyQuizData){showToast('⚠️ Kein Quiz geladen!');return;}
+  soloMode=lobbySoloMode;quizData=lobbyQuizData;
+  if(soloMode){
+    teams=[{name:'Spieler',players:[...lobbyTeams[0].players],score:0}];
+    soloScores=new Array(lobbyTeams[0].players.length).fill(0);
+  }else{
+    teams=lobbyTeams.map(t=>({name:t.name,players:[...t.players],score:0}));
+  }
+  buildTurnOrder();turnIdx=0;gameHistory=[];
+  document.getElementById('game-title').textContent='🎯 '+(quizData.name||'Jeopardy!');
+  buildBoard();buildScoreArea();updateTurnBanner();updateTeamsSidebar();
+  document.getElementById('admin-btn-float').classList.add('visible');
+  buildAdminKickList();
+  broadcastJepState();
+  showView('view-game');
+  setTimeout(()=>showTurnPopup(),600);
+}
+
+// ── STATE BROADCAST ──
+function buildJepState(){
+  const boardState={};
+  if(quizData){
+    quizData.categories.forEach((cat,ci)=>{
+      cat.questions.forEach((q,qi)=>{
+        const cell=document.querySelector('[data-ci="'+ci+'"][data-qi="'+qi+'"]');
+        if(cell&&cell.classList.contains('used')){
+          boardState[ci+'_'+qi]={
+            result:cell.classList.contains('res-correct')?'correct':cell.classList.contains('res-wrong')?'wrong':'skip',
+            html:cell.innerHTML
+          };
+        }
+      });
+    });
+  }
+  return{
+    phase:document.getElementById('view-winner').classList.contains('active')?'winner':'playing',
+    teams:teams.map(t=>({name:t.name,players:[...t.players],score:t.score})),
+    soloMode,soloScores:[...(soloScores||[])],
+    turnOrder:[...turnOrder],turnIdx,
+    boardState,gameHistory:gameHistory.slice(0,20),
+    quizData,
+    currentQ:currentQ?{ci:currentQ.ci,qi:currentQ.qi,points:currentQ.points}:null,
+    currentAnswer:onlineCurrentAnswer
+  };
+}
+function broadcastJepState(){
+  if(!isHost||!mpSocket||!mpRoom)return;
+  mpSend('jep_state',buildJepState());
+}
+function mpSend(action,payload){
+  if(!mpSocket||!mpRoom)return;
+  mpSocket.emit('game_action',{code:mpRoom.code,action,payload});
+}
+
+// ── ACTION HANDLER ──
+function handleJepAction(action,payload){
+  switch(action){
+    case 'jep_state': if(!isHost)applyJepState(payload);break;
+    case 'jep_select_cell': if(isHost)hostOpenCell(payload.ci,payload.qi);break;
+    case 'jep_submit_answer': if(isHost)hostReceiveAnswer(payload);break;
+    case 'jep_kick_notify':
+      if(payload.name===myName){showToast('⛔ Du wurdest vom Moderator entfernt.');setTimeout(()=>{isOnline=false;isHost=false;showView('view-menu');},2000);}
+      break;
+    case 'jep_back_to_lobby':
+      if(!isHost){
+        document.getElementById('q-overlay').classList.remove('open');
+        showView('view-lobby');
+      }
+      break;
+  }
+}
+
+// ── APPLY STATE (non-host) ──
+function applyJepState(state){
+  const prevTurnIdx=turnIdx;
+  quizData=state.quizData;teams=state.teams;soloMode=state.soloMode;
+  soloScores=state.soloScores||[];turnOrder=state.turnOrder;turnIdx=state.turnIdx;
+  gameHistory=state.gameHistory||[];
+  if(state.phase==='winner'){document.getElementById('q-overlay').classList.remove('open');showWinner();return;}
+  if(!document.getElementById('view-game').classList.contains('active')){buildBoard();showView('view-game');}
+  if(quizData){
+    quizData.categories.forEach((cat,ci)=>{
+      cat.questions.forEach((q,qi)=>{
+        const cell=document.querySelector('[data-ci="'+ci+'"][data-qi="'+qi+'"]');
+        if(!cell)return;
+        const key=ci+'_'+qi;
+        if(state.boardState[key]&&!cell.classList.contains('used')){
+          cell.classList.add('used','res-'+state.boardState[key].result);
+          cell.onclick=null;cell.style.cursor='default';cell.style.opacity='1';
+          cell.innerHTML=state.boardState[key].html;
+        }
+      });
+    });
+    refreshBoardClickability();
+  }
+  updateTurnBanner();updateTeamsSidebar();buildScoreArea();
+  document.getElementById('game-title').textContent='🎯 '+(quizData?.name||'Jeopardy!');
+  if(turnIdx!==prevTurnIdx)setTimeout(()=>showTurnPopup(),200);
+  if(state.currentQ){
+    currentQ={ci:state.currentQ.ci,qi:state.currentQ.qi,points:state.currentQ.points,
+      cell:document.querySelector('[data-ci="'+state.currentQ.ci+'"][data-qi="'+state.currentQ.qi+'"]')};
+    if(!document.getElementById('q-overlay').classList.contains('open')){
+      const t=currentTurn();renderOverlay(state.currentQ.ci,state.currentQ.qi,t.ti,t.pi);
+    }
+    const t=currentTurn();
+    const isMyTurn=teams[t.ti]&&teams[t.ti].players[t.pi]===myName;
+    refreshQuestionUI(isMyTurn,state.currentAnswer);
+  } else {
+    document.getElementById('q-overlay').classList.remove('open');
+    currentQ=null;onlineCurrentAnswer=null;
+  }
+}
+function refreshBoardClickability(){
+  if(!quizData)return;
+  const t=currentTurn();
+  const isMyTurn=isHost||(teams[t.ti]&&teams[t.ti].players[t.pi]===myName);
+  quizData.categories.forEach((cat,ci)=>{
+    cat.questions.forEach((q,qi)=>{
+      const cell=document.querySelector('[data-ci="'+ci+'"][data-qi="'+qi+'"]');
+      if(!cell||cell.classList.contains('used'))return;
+      if(isMyTurn){cell.onclick=()=>handleCellClick(ci,qi,cell);cell.style.opacity='1';cell.style.cursor='pointer';}
+      else{cell.onclick=null;cell.style.opacity='0.4';cell.style.cursor='not-allowed';}
+    });
+  });
+}
+function refreshQuestionUI(isMyTurn,currentAnswer){
+  const ansWrap=document.getElementById('online-answer-wrap');
+  const waitMsg=document.getElementById('online-waiting-msg');
+  const hostAns=document.getElementById('online-host-answer');
+  const revealBtn=document.getElementById('btn-reveal');
+  const verdictWrap=document.getElementById('verdict-wrap');
+  const timerWrap=document.querySelector('.timer-wrap');
+  if(timerWrap)timerWrap.style.display='none';
+  revealBtn.style.display='none';
+  if(isHost){
+    ansWrap&&(ansWrap.style.display='none');
+    if(currentAnswer){
+      const q=quizData?.categories[currentQ?.ci]?.questions[currentQ?.qi];
+      if(hostAns){
+        hostAns.style.display='block';
+        hostAns.innerHTML='<div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Antwort von '+escHtml(currentAnswer.playerName)+'</div>'
+          +'<div style="font-size:17px;font-weight:700;color:var(--text);">"'+escHtml(currentAnswer.text)+'"</div>'
+          +(q?.answer?'<div style="font-size:11px;color:var(--green);margin-top:8px;">✅ Richtig wäre: '+escHtml(q.answer)+'</div>':'');
+        verdictWrap.style.display='flex';
+      }
+      waitMsg&&(waitMsg.style.display='none');
+    } else {
+      hostAns&&(hostAns.style.display='none');verdictWrap.style.display='none';
+      if(waitMsg){waitMsg.style.display='block';waitMsg.textContent='⏳ Warte auf Antwort des Spielers...';}
+    }
+  } else {
+    verdictWrap.style.display='none';hostAns&&(hostAns.style.display='none');
+    if(currentAnswer&&currentAnswer.playerName===myName){
+      ansWrap&&(ansWrap.style.display='none');
+      if(waitMsg){waitMsg.style.display='block';waitMsg.textContent='⏳ Antwort abgeschickt — Moderator entscheidet...';}
+    } else if(isMyTurn){
+      ansWrap&&(ansWrap.style.display='flex');waitMsg&&(waitMsg.style.display='none');
+      const inp=document.getElementById('online-answer-input');if(inp)setTimeout(()=>inp.focus(),100);
+    } else {
+      ansWrap&&(ansWrap.style.display='none');
+      if(waitMsg){waitMsg.style.display='block';waitMsg.textContent='👀 Spieler gibt gerade seine Antwort ein...';}
+    }
+  }
+}
+
+// ── HOST: OPEN CELL ──
+function hostOpenCell(ci,qi){
+  const cell=document.querySelector('[data-ci="'+ci+'"][data-qi="'+qi+'"]');
+  if(!cell||cell.classList.contains('used'))return;
+  const t=currentTurn();const q=quizData.categories[ci].questions[qi];
+  currentQ={ci,qi,cell,points:q.points};onlineCurrentAnswer=null;stopTimer();
+  renderOverlay(ci,qi,t.ti,t.pi);refreshQuestionUI(true,null);broadcastJepState();
+}
+
+// ── HOST: RECEIVE ANSWER ──
+function hostReceiveAnswer(payload){
+  onlineCurrentAnswer=payload;
+  if(document.getElementById('q-overlay').classList.contains('open'))refreshQuestionUI(true,onlineCurrentAnswer);
+  broadcastJepState();
+}
+
+// ── PLAYER: SUBMIT ANSWER ──
+function playerSubmitAnswer(){
+  const inp=document.getElementById('online-answer-input');
+  const text=inp?inp.value.trim():'';
+  if(!text){showToast('⚠️ Bitte Antwort eingeben!');return;}
+  mpSend('jep_submit_answer',{playerName:myName,text});
+  if(inp)inp.value='';
+  const ansWrap=document.getElementById('online-answer-wrap');
+  const waitMsg=document.getElementById('online-waiting-msg');
+  if(ansWrap)ansWrap.style.display='none';
+  if(waitMsg){waitMsg.style.display='block';waitMsg.textContent='⏳ Antwort abgeschickt — Moderator entscheidet...';}
+}
+
+// ── CELL CLICK HANDLER ──
+function handleCellClick(ci,qi,cell){
+  if(cell.classList.contains('used'))return;
+  if(isOnline&&!isHost){
+    const t=currentTurn();
+    const isMyTurn=teams[t.ti]&&teams[t.ti].players[t.pi]===myName;
+    if(!isMyTurn){showToast('⏳ Du bist nicht dran!');return;}
+    showCellConfirm(ci,qi,()=>mpSend('jep_select_cell',{ci,qi}));
+  } else if(isOnline&&isHost){
+    showCellConfirm(ci,qi,()=>hostOpenCell(ci,qi));
+  } else {
+    showCellConfirm(ci,qi,()=>openQuestion(ci,qi,cell));
+  }
+}
+function showCellConfirm(ci,qi,onConfirm){
+  confirmCallback=onConfirm;
+  const cat=quizData.categories[ci];const q=cat.questions[qi];
+  document.getElementById('confirm-cat-lbl').textContent=(cat.name||'KATEGORIE').toUpperCase();
+  document.getElementById('confirm-pts-big').textContent=q.points;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+function confirmCellYes(){
+  document.getElementById('confirm-overlay').classList.remove('open');
+  if(confirmCallback){confirmCallback();confirmCallback=null;}
+}
+function confirmCellNo(){document.getElementById('confirm-overlay').classList.remove('open');confirmCallback=null;}
+
+// ── TURN POPUP ──
+function showTurnPopup(){
+  if(!quizData||!turnOrder.length)return;
+  const t=currentTurn();if(!teams[t.ti])return;
+  const player=teams[t.ti].players[t.pi]||'?';
+  const score=soloMode?(soloScores[t.pi]||0):teams[t.ti].score;
+  const scoreLbl=soloMode?score+' Pkt.':(teams[t.ti].name+' · '+score+' Pkt.');
+  document.getElementById('tp-name').textContent=player;
+  document.getElementById('tp-pts').textContent=scoreLbl;
+  const popup=document.getElementById('turn-popup');
+  popup.classList.add('show');setTimeout(()=>popup.classList.remove('show'),2500);
+}
+
+// ── ADMIN ──
+function buildAdminKickList(){
+  const container=document.getElementById('admin-kick-list');if(!container)return;
+  container.innerHTML='';
+  if(!mpRoom)return;
+  const players=(mpRoom.players||[]).filter(p=>!p.isHost);
+  if(players.length===0)return;
+  const lbl=document.createElement('div');lbl.className='lbl-section';lbl.style.marginTop='4px';lbl.textContent='Spieler kicken';
+  container.appendChild(lbl);
+  players.forEach(p=>{
+    const btn=document.createElement('button');btn.className='admin-action-btn danger';
+    btn.textContent='👢 '+p.name+' kicken';
+    btn.onclick=()=>mpKick(p.name);
+    container.appendChild(btn);
+  });
+}
+function toggleAdminPanel(){
+  buildAdminKickList();
+  document.getElementById('admin-panel-overlay').classList.toggle('open');
+}
+function closeAdminPanel(){document.getElementById('admin-panel-overlay').classList.remove('open');}
+function mpKick(name){
+  if(!confirm('Spieler "'+name+'" kicken?'))return;
+  mpSend('jep_kick_notify',{name});
+  teams.forEach(t=>{t.players=t.players.filter(p=>p!==name);});
+  if(soloMode)soloScores=new Array(teams[0].players.length).fill(0);
+  buildTurnOrder();updateTurnBanner();updateTeamsSidebar();updateScores();
+  broadcastJepState();showToast('👢 '+name+' wurde gekickt.');closeAdminPanel();
+}
+function adminEditScores(){
+  renderScoreEditModal();document.getElementById('score-edit-overlay').classList.add('open');closeAdminPanel();
+}
+function renderScoreEditModal(){
+  const c=document.getElementById('score-edit-fields');c.innerHTML='';
+  if(soloMode){
+    teams[0].players.forEach((name,pi)=>{
+      const row=document.createElement('div');row.className='score-edit-row';
+      row.innerHTML='<span style="flex:1;font-size:13px;">'+escHtml(name)+'</span>'
+        +'<input type="number" class="score-edit-inp" value="'+(soloScores[pi]||0)+'" oninput="soloScores['+pi+']=parseInt(this.value)||0">';
+      c.appendChild(row);
+    });
+  } else {
+    teams.forEach((team,ti)=>{
+      const row=document.createElement('div');row.className='score-edit-row';
+      row.innerHTML='<span style="flex:1;font-size:13px;font-weight:700;">'+escHtml(team.name)+'</span>'
+        +'<input type="number" class="score-edit-inp" value="'+team.score+'" oninput="teams['+ti+'].score=parseInt(this.value)||0">';
+      c.appendChild(row);
+    });
+  }
+}
+function saveScoreEdit(){
+  document.getElementById('score-edit-overlay').classList.remove('open');
+  updateScores();if(isOnline&&isHost)broadcastJepState();showToast('✅ Punkte aktualisiert!');
+}
+function adminRestart(){
+  if(!confirm('Spiel neu starten? Alle Punkte werden zurückgesetzt.'))return;
+  closeAdminPanel();resetBoard();
+  if(isOnline&&isHost){onlineCurrentAnswer=null;broadcastJepState();setTimeout(()=>showTurnPopup(),500);}
+}
+function adminBackToLobby(){
+  if(!confirm('Zurück zur Lobby? Das laufende Spiel wird beendet.'))return;
+  closeAdminPanel();mpSend('jep_back_to_lobby',{});
+  document.getElementById('q-overlay').classList.remove('open');
+  document.getElementById('admin-btn-float').classList.remove('visible');
+  currentQ=null;onlineCurrentAnswer=null;
+  lobbyTeams=[{name:'Team Blau',color:'#3a8ef6',players:[]},{name:'Team Rot',color:'#e8354a',players:[]}];
+  lobbySoloMode=false;showView('view-lobby');renderLobby();
+}
+
+// ── RECONNECT ──
+function showReconnectOverlay(){document.getElementById('reconnect-overlay').classList.add('open');}
+function hideReconnectOverlay(){document.getElementById('reconnect-overlay').classList.remove('open');}
+
+// ── CHECK GAME OVER ──
+function checkGameOver(){
+  if(!quizData)return false;
+  const allUsed=quizData.categories.every((cat,ci)=>
+    cat.questions.every((q,qi)=>{
+      const cell=document.querySelector('[data-ci="'+ci+'"][data-qi="'+qi+'"]');
+      return !cell||cell.classList.contains('used');
+    })
+  );
+  if(allUsed){
+    setTimeout(()=>{
+      if(isOnline&&isHost){const s=buildJepState();s.phase='winner';mpSend('jep_state',s);}
+      showWinner();
+    },600);
+    return true;
+  }
+  return false;
+}
+
+// ── URL: auto-fill room code ──
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  const room=p.get('room');
+  if(room){
+    setTimeout(()=>{
+      mpShowOverlay();mpSwitchTab('join');
+      const el=document.getElementById('mp-join-code');if(el)el.value=room.toUpperCase();
+    },300);
+  }
+})();
 </script>
 
 </body>

@@ -14,8 +14,7 @@
     {
       "name": "Netflix & Streaming-Hits",
       "questions": [
-        { "points": 200, "question": "In welcher Serie backt Wren mit Breaking-Bad-Hauptcharakter zusammen?", "answer": "Nein — Breaking Bad handelt vom Chemiker Walter White" },
-        { "points": 200, "question": "In welcher Netflix-Serie leben Kinder in einer Kleinstadt mit Übernatürlichem (Upside Down)?", "answer": "Stranger Things" },
+       	{ "points": 200, "question": "In welcher Netflix-Serie leben Kinder in einer Kleinstadt mit Übernatürlichem (Upside Down)?", "answer": "Stranger Things" },
         { "points": 400, "question": "Koreanische Survival-Serie, in der Kinder-Spiele gespielt werden (2021)", "answer": "Squid Game" },
         { "points": 600, "question": "Welche Serie zeigt das Leben von Adligen in der englischen Gentry um 1900 (Downton ...)?", "answer": "Downton Abbey" },
         { "points": 800, "question": "Welche deutsche Netflix-Serie aus Winden handelt von Zeitreisen?", "answer": "Dark" },
