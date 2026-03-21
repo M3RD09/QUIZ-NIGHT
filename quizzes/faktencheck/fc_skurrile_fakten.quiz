@@ -1,0 +1,45 @@
+{
+  "name": "Faktencheck — Skurrile Fakten",
+  "questions": [
+    {
+      "statement": "Der Eiffelturm wächst im Sommer aufgrund von Wärmeausdehnung um bis zu...",
+      "answer": "15 cm"
+    },
+    {
+      "statement": "Eine Schnecke kann nach dem Einschlafen bis zu... schlafen, ohne aufzuwachen.",
+      "answer": "3 Jahre"
+    },
+    {
+      "statement": "Das menschliche Gehirn erzeugt genug Strom, um...",
+      "answer": "eine LED-Glühbirne zu betreiben"
+    },
+    {
+      "statement": "Kleopatra lebte zeitlich näher an der Mondlandung als an...",
+      "answer": "dem Bau der Pyramiden von Gizeh"
+    },
+    {
+      "statement": "Ein einzelner Blitz enthält genug Energie, um...",
+      "answer": "100 Watt-Glühbirnen für 3 Monate zu betreiben"
+    },
+    {
+      "statement": "Oktopusse haben...",
+      "answer": "drei Herzen"
+    },
+    {
+      "statement": "Das Wort 'Quiz' wurde angeblich in einer einzigen Nacht durch eine Wette berühmt gemacht — der Urheber malte es auf...",
+      "answer": "Wände und Türen in Dublin"
+    },
+    {
+      "statement": "Honig fault nicht. In ägyptischen Pyramiden gefundener Honig war noch... alt und immer noch essbar.",
+      "answer": "3000 Jahre"
+    },
+    {
+      "statement": "Eine Wolke wiegt im Durchschnitt...",
+      "answer": "500 Tonnen"
+    },
+    {
+      "statement": "Auf der Erde gibt es mehr...",
+      "answer": "Bäume als Sterne in der Milchstraße"
+    }
+  ]
+}

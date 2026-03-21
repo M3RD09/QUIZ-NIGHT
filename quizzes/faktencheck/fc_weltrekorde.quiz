@@ -1,0 +1,45 @@
+{
+  "name": "Faktencheck — Weltrekorde & Extremes",
+  "questions": [
+    {
+      "statement": "Der schnellste jemals gemessene Tennisball-Aufschlag erreichte eine Geschwindigkeit von...",
+      "answer": "263 km/h"
+    },
+    {
+      "statement": "Das teuerste Videospiel, das je verkauft wurde, erzielte auf einer Auktion...",
+      "answer": "1,56 Millionen Dollar"
+    },
+    {
+      "statement": "Der tiefste Punkt des Ozeans — der Marianengraben — ist tiefer als der Mount Everest hoch ist, und zwar um...",
+      "answer": "etwa 2 km"
+    },
+    {
+      "statement": "Der längste Kuss aller Zeiten dauerte...",
+      "answer": "58 Stunden, 35 Minuten und 58 Sekunden"
+    },
+    {
+      "statement": "Das größte Pizza aller Zeiten wog...",
+      "answer": "26.883 kg"
+    },
+    {
+      "statement": "Der älteste lebende Mensch, dessen Alter dokumentiert ist, wurde...",
+      "answer": "122 Jahre und 164 Tage alt"
+    },
+    {
+      "statement": "Das schnellste Landtier der Erde, der Gepard, erreicht Höchstgeschwindigkeiten von...",
+      "answer": "112 km/h"
+    },
+    {
+      "statement": "Die meisten Tattoos auf einem einzigen Menschen: Rolph Buchholz aus Deutschland hat... Piercings und Tattoos am Körper.",
+      "answer": "453"
+    },
+    {
+      "statement": "Der weltgrößte Pool befindet sich in Chile und ist so lang wie...",
+      "answer": "20 Fußballfelder hintereinander"
+    },
+    {
+      "statement": "Der lauteste Schrei eines Menschen wurde mit... Dezibel gemessen.",
+      "answer": "129 dB"
+    }
+  ]
+}

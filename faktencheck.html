@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Faktencheck</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030812;--surface:#071428;--surface2:#0a1e38;
+  --border:rgba(0,229,255,0.15);
+  --cyan:#00e5ff;--cyan2:#00b8d9;
+  --green:#00ff87;--red:#ff4500;--gold:#f5c842;--purple:#bf5af2;
+  --text:#e8f8ff;--muted:rgba(232,248,255,0.5);--muted2:rgba(232,248,255,0.18);
+  --correct:#00ff87;--wrong:#ff4500;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 20% 80%,rgba(0,229,255,0.04) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%,rgba(0,255,135,0.03) 0%,transparent 50%);
+  animation:fcPulse 8s ease-in-out infinite alternate;}
+@keyframes fcPulse{0%{opacity:.6;}100%{opacity:1;}}
+.view{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:1;}
+.view.active{display:flex;}
+#view-game.active{height:100vh;overflow:hidden;}
+#view-menu,#view-editor{overflow-y:auto;}
+
+/* BUTTONS */
+.btn-primary{background:var(--cyan);color:#000;border:none;border-radius:12px;padding:14px 24px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{filter:brightness(1.12);transform:translateY(-1px);}
+.btn-secondary{background:none;border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 20px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--cyan);color:var(--cyan);}
+.btn-icon{background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.btn-icon:hover{color:var(--text);border-color:var(--muted);}
+
+/* MENU */
+#view-menu{align-items:center;justify-content:center;padding:40px 20px;min-height:100vh;}
+.menu-logo{text-align:center;margin-bottom:40px;}
+.menu-logo-icon{font-size:64px;margin-bottom:12px;}
+.menu-logo-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:.04em;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.menu-logo-sub{font-size:13px;color:var(--muted);margin-top:8px;}
+.menu-btns{width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;}
+
+/* ONLINE OVERLAY */
+.mp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.mp-overlay.open{display:flex;}
+.mp-sheet{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:28px 20px 36px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px;max-height:90vh;overflow-y:auto;}
+.mp-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.05em;color:var(--cyan);text-align:center;}
+.mp-tabs{display:flex;gap:8px;}
+.mp-tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.mp-tab.active{background:var(--cyan);color:#000;border-color:var(--cyan);}
+.mp-tab-content{display:none;flex-direction:column;gap:10px;}
+.mp-tab-content.active{display:flex;}
+.mp-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:100%;}
+.mp-input:focus{border-color:var(--cyan);}
+.mp-status{font-size:13px;color:var(--muted);min-height:18px;}
+.mp-status.err{color:var(--red);}
+.mp-status.ok{color:var(--green);}
+.mp-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+
+/* LOBBY */
+#view-lobby{padding:0;flex-direction:column;}
+.lobby-topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(7,20,40,0.95);border-bottom:1px solid var(--border);flex-shrink:0;}
+.lobby-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.05em;flex:1;}
+.lobby-code{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--cyan);letter-spacing:.15em;}
+.lobby-content{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.lobby-section-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;}
+.lobby-players{display:flex;flex-direction:column;gap:6px;}
+.lobby-player{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);}
+.lobby-player-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lobby-player-name{font-size:14px;font-weight:600;flex:1;}
+.lobby-actions{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding-top:12px;}
+.quiz-loader-area{background:var(--surface2);border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;font-size:14px;color:var(--muted);}
+.quiz-loader-area:hover{border-color:var(--cyan);color:var(--text);}
+.quiz-file-name{font-size:13px;color:var(--green);margin-top:6px;font-weight:600;}
+
+/* GAME TOPBAR */
+.game-topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(3,8,18,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0;z-index:10;}
+.game-title-bar{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.05em;flex:1;}
+.round-badge{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.05em;color:var(--cyan);}
+.timer-display{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--cyan);min-width:44px;text-align:center;transition:color .3s;}
+.timer-display.urgent{color:var(--red);animation:timerPulse .5s ease-in-out infinite;}
+@keyframes timerPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* GAME LAYOUT */
+.game-layout{flex:1;display:flex;overflow:hidden;}
+.game-main{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:16px;gap:14px;}
+.game-sidebar{width:190px;background:rgba(7,20,40,0.8);border-left:1px solid var(--border);overflow-y:auto;padding:12px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;}
+
+/* STATEMENT CARD */
+.statement-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid rgba(0,229,255,0.25);border-radius:16px;padding:20px;flex-shrink:0;}
+.statement-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--cyan);margin-bottom:8px;}
+.statement-text{font-size:clamp(14px,2.5vw,20px);font-weight:700;line-height:1.45;color:var(--text);}
+
+/* SUBMIT PHASE */
+.submit-area{display:flex;flex-direction:column;gap:12px;}
+.phase-label{font-size:13px;color:var(--muted);font-weight:600;}
+.submit-input{background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;outline:none;width:100%;transition:border-color .2s;}
+.submit-input:focus{border-color:var(--cyan);}
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--cyan);transition:width .4s ease;}
+.submitted-badge{background:rgba(0,255,135,0.08);border:1px solid rgba(0,255,135,0.25);border-radius:12px;padding:16px;text-align:center;color:var(--green);font-weight:700;font-size:15px;}
+
+/* VOTING PHASE */
+.voting-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.vote-option{padding:16px 14px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;line-height:1.3;word-break:break-word;}
+.vote-option:hover:not(.disabled){border-color:var(--cyan);background:rgba(0,229,255,0.1);transform:translateY(-2px);}
+.vote-option.selected{border-color:var(--cyan);background:rgba(0,229,255,0.18);color:var(--cyan);}
+.vote-option.disabled{pointer-events:none;opacity:.7;}
+
+/* REVEAL PHASE */
+.reveal-option{padding:14px 16px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);transition:all .3s;animation:revealIn .4s ease both;}
+@keyframes revealIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.reveal-option.real{border-color:var(--green);background:rgba(0,255,135,0.07);}
+.reveal-option.fake{border-color:rgba(255,69,0,0.35);}
+.reveal-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.reveal-badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;flex-shrink:0;}
+.reveal-badge.real{background:rgba(0,255,135,0.2);color:var(--green);}
+.reveal-badge.fake{background:rgba(255,69,0,0.18);color:var(--red);}
+.reveal-text{font-size:15px;font-weight:700;flex:1;}
+.reveal-pts{font-size:12px;color:var(--gold);font-weight:700;margin-left:auto;}
+.reveal-author{font-size:12px;color:var(--muted);margin-bottom:6px;}
+.reveal-voters{display:flex;flex-wrap:wrap;gap:4px;align-items:center;}
+.voter-chip{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--surface);border:1px solid var(--border);}
+.no-voters{font-size:12px;color:var(--muted2);}
+
+/* SIDEBAR */
+.sidebar-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;}
+.score-entry{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
+.score-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0;}
+.score-name{font-size:12px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.score-pts{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--cyan);}
+
+/* END SCREEN */
+.end-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:16px;}
+.end-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.04em;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.end-podium{width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px;}
+.end-entry{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);}
+.end-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);width:32px;flex-shrink:0;}
+.end-rank.gold{color:var(--gold);}
+.end-rank.silver{color:#c0c0c0;}
+.end-rank.bronze{color:#cd7f32;}
+.end-name{flex:1;font-weight:700;}
+.end-score{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--cyan);}
+
+/* EDITOR */
+#view-editor{padding:0;flex-direction:column;}
+.ed-question{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.ed-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.ed-q-header{display:flex;align-items:center;gap:8px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;z-index:9000;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+
+/* THEME SWITCHER */
+.theme-btn{position:fixed;bottom:80px;right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:999;transition:all .2s;}
+.theme-btn:hover{transform:scale(1.12);}
+.theme-panel{position:fixed;bottom:134px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;display:none;flex-direction:column;gap:7px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:999;width:158px;animation:panelIn .2s ease;}
+.theme-panel.open{display:flex;}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.96);}to{opacity:1;transform:none;}}
+.theme-panel-title{font-size:9px;font-weight:800;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.theme-option{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text);background:none;width:100%;text-align:left;}
+.theme-option:hover{background:var(--surface2);}
+.theme-option.active{background:var(--surface2);border-color:var(--cyan);}
+.theme-dot{width:18px;height:18px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="fc-toast"></div>
+
+<!-- ══ MENU ══ -->
+<div class="view active" id="view-menu">
+  <div class="menu-logo">
+    <div class="menu-logo-icon">🔍</div>
+    <div class="menu-logo-title">Faktencheck</div>
+    <div class="menu-logo-sub">Quiz Games by Mert</div>
+  </div>
+  <div class="menu-btns">
+    <button class="btn-primary" onclick="fcShowOverlay()">🌐 Online spielen</button>
+    <button class="btn-secondary" onclick="showView('view-editor');renderEditor()">✏️ Quiz erstellen</button>
+  </div>
+</div>
+
+<!-- ══ LOBBY ══ -->
+<div class="view" id="view-lobby">
+  <div class="lobby-topbar">
+    <button class="btn-icon" onclick="fcLobbyLeave()">←</button>
+    <div class="lobby-title">FAKTENCHECK</div>
+    <div class="lobby-code" id="fc-lobby-code"></div>
+    <button class="btn-icon" onclick="fcCopyCode()" title="Link kopieren">🔗</button>
+  </div>
+  <div class="lobby-content">
+    <div>
+      <div class="lobby-section-title">Spieler</div>
+      <div class="lobby-players" id="fc-lobby-players"></div>
+    </div>
+    <div id="fc-quiz-section" style="display:none;">
+      <div class="lobby-section-title">Quiz laden</div>
+      <div class="quiz-loader-area" onclick="document.getElementById('fc-quiz-file').click()">
+        📂 Quiz-Datei laden (.quiz)<div class="quiz-file-name" id="fc-quiz-file-name"></div>
+      </div>
+      <input type="file" id="fc-quiz-file" accept=".quiz,.json" style="display:none" onchange="fcLoadQuizFile(event)">
+      <div id="fc-preset-area" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <div class="lobby-actions">
+      <button class="btn-primary" id="fc-start-btn" onclick="fcStartGame()" style="display:none;">▶ Spiel starten</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div class="view" id="view-game">
+  <div class="game-topbar">
+    <button class="btn-icon" onclick="fcConfirmQuit()">←</button>
+    <div class="round-badge" id="fc-round-badge">RUNDE 1/1</div>
+    <div class="game-title-bar">FAKTENCHECK</div>
+    <div class="timer-display" id="fc-timer"></div>
+  </div>
+  <div class="game-layout">
+    <div class="game-main" id="fc-game-main"></div>
+    <div class="game-sidebar" id="fc-sidebar"></div>
+  </div>
+</div>
+
+<!-- ══ EDITOR ══ -->
+<div class="view" id="view-editor">
+  <div class="lobby-topbar">
+    <button class="btn-icon" onclick="showView('view-menu')">←</button>
+    <div class="lobby-title">QUIZ ERSTELLEN</div>
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:12px;max-width:600px;margin:0 auto;width:100%;">
+    <div>
+      <div class="ed-label">Quiz-Name</div>
+      <input class="mp-input" id="ed-name" placeholder="z.B. Skurrile Weltrekorde" value="Faktencheck Quiz" style="margin-top:6px;">
+    </div>
+    <div id="ed-questions" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <button class="btn-secondary" onclick="edAddQuestion()">+ Frage hinzufügen</button>
+    <button class="btn-primary" onclick="edSave()">💾 Quiz speichern</button>
+  </div>
+</div>
+
+<!-- ══ ONLINE OVERLAY ══ -->
+<div class="mp-overlay" id="fc-overlay" onclick="if(event.target===this)fcCloseOverlay()">
+  <div class="mp-sheet">
+    <div class="mp-title">🌐 ONLINE SPIELEN</div>
+    <div class="mp-tabs">
+      <button class="mp-tab active" id="fc-tab-create" onclick="fcSwitchTab('create')">Raum erstellen</button>
+      <button class="mp-tab" id="fc-tab-join" onclick="fcSwitchTab('join')">Beitreten</button>
+    </div>
+    <div class="mp-tab-content active" id="fc-tab-create-c">
+      <div class="mp-label">Dein Name</div>
+      <input class="mp-input" id="fc-create-name" placeholder="Name eingeben" maxlength="20">
+      <button class="btn-primary" onclick="fcHostCreate()">Raum erstellen</button>
+    </div>
+    <div class="mp-tab-content" id="fc-tab-join-c">
+      <div class="mp-label">Raumcode</div>
+      <input class="mp-input" id="fc-join-code" placeholder="XXXX" maxlength="6" style="text-transform:uppercase;letter-spacing:.2em;font-size:18px;text-align:center;">
+      <div class="mp-label">Dein Name</div>
+      <input class="mp-input" id="fc-join-name" placeholder="Name eingeben" maxlength="20">
+      <button class="btn-primary" onclick="fcPlayerJoin()">Beitreten</button>
+    </div>
+    <div class="mp-status" id="fc-status"></div>
+    <button class="btn-secondary" onclick="fcCloseOverlay()">Abbrechen</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FAKTENCHECK — CORE
+// ══════════════════════════════════════════
+const COLORS=['#3a8ef6','#e8354a','#00c853','#ff9500','#bf5af2','#ff375f','#30d158','#0a84ff','#ffd60a','#636366'];
+
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function showToast(msg,dur=2500){const t=document.getElementById('fc-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fcShowOverlay(){document.getElementById('fc-overlay').classList.add('open');}
+function fcCloseOverlay(){document.getElementById('fc-overlay').classList.remove('open');}
+function fcSwitchTab(t){['create','join'].forEach(tab=>{document.getElementById('fc-tab-'+tab).classList.toggle('active',tab===t);document.getElementById('fc-tab-'+tab+'-c').classList.toggle('active',tab===t);});}
+function fcShowStatus(type,msg){const el=document.getElementById('fc-status');el.className='mp-status'+(type==='err'?' err':type==='ok'?' ok':'');el.textContent=msg;}
+function fcConfirmQuit(){if(confirm('Spiel verlassen?'))fcLobbyLeave();}
+
+// ── EDITOR ──
+let edQuestions=[];
+function edAddQuestion(){edQuestions.push({statement:'',answer:''});renderEditor();}
+function edRemoveQuestion(i){edQuestions.splice(i,1);renderEditor();}
+function renderEditor(){
+  const c=document.getElementById('ed-questions');if(!c)return;c.innerHTML='';
+  edQuestions.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='ed-question';
+    d.innerHTML='<div class="ed-q-header"><div class="ed-label">Frage '+(i+1)+'</div><button onclick="edRemoveQuestion('+i+')" style="background:none;border:none;color:var(--red);cursor:pointer;margin-left:auto;font-size:13px;">✕</button></div>'
+      +'<div class="ed-label">Aussage / Statement</div>'
+      +'<input class="mp-input" placeholder="z.B. Der Eiffelturm wächst im Sommer um bis zu..." value="'+esc(q.statement)+'" oninput="edQuestions['+i+'].statement=this.value">'
+      +'<div class="ed-label">Richtige Antwort</div>'
+      +'<input class="mp-input" placeholder="z.B. 15 cm" value="'+esc(q.answer)+'" oninput="edQuestions['+i+'].answer=this.value">';
+    c.appendChild(d);
+  });
+}
+function edSave(){
+  const name=document.getElementById('ed-name').value.trim()||'Faktencheck Quiz';
+  const qs=edQuestions.filter(q=>q.statement.trim()&&q.answer.trim());
+  if(!qs.length){showToast('⚠️ Mindestens 1 Frage nötig!');return;}
+  const blob=new Blob([JSON.stringify({name,questions:qs},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name.replace(/\s+/g,'_')+'.quiz';a.click();
+  showToast('✅ Quiz gespeichert!');
+}
+edAddQuestion();
+
+// ── QUIZ LOADER ──
+let quizData=null;
+function fcLoadQuizFile(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{try{quizData=JSON.parse(e.target.result);document.getElementById('fc-quiz-file-name').textContent='✅ '+quizData.name+' ('+quizData.questions.length+' Fragen)';showToast('✅ Quiz geladen!');}catch{showToast('❌ Ungültiges Format!');}};
+  r.readAsText(f);
+}
+async function fcLoadPresets(){
+  const names=['skurrile_fakten','weltrekorde'];
+  const area=document.getElementById('fc-preset-area');if(!area)return;
+  for(const n of names){
+    try{
+      const r=await fetch('quizzes/faktencheck/fc_'+n+'.quiz');if(!r.ok)continue;
+      const data=await r.json();
+      const btn=document.createElement('button');btn.className='btn-secondary';btn.style.cssText='font-size:12px;padding:8px 12px;';
+      btn.textContent='📋 '+data.name;
+      btn.onclick=()=>{quizData=data;document.getElementById('fc-quiz-file-name').textContent='✅ '+data.name+' ('+data.questions.length+' Fragen)';showToast('✅ Quiz geladen!');};
+      area.appendChild(btn);
+    }catch{}
+  }
+}
+</script>
+
+<script>
+// ══════════════════════════════════════════
+// FAKTENCHECK — ONLINE MULTIPLAYER
+// ══════════════════════════════════════════
+const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
+let mpSocket=null,mpRoom=null,mpIsHost=false;
+let fcMyName='';
+let fcState=null;
+let mySubmission=null; // text I submitted as fake answer
+let myVote=null;       // optionId I voted for
+let fcTimerHandle=null;
+let fcTimerInterval=null;
+
+// Host-only internal state (contains sensitive data not broadcast)
+let fcInternal={submissions:{},votes:{},options:[],realAnswerOptIdx:null};
+
+function mpSend(action,payload){if(!mpSocket||!mpRoom)return;mpSocket.emit('game_action',{code:mpRoom.code,action,payload});}
+
+function buildSafeFcState(){
+  if(!fcState)return null;
+  const s={...fcState};
+  if(s.phase==='question'){
+    s.submittedCount=Object.keys(fcInternal.submissions).length;
+    delete s.submissions;
+  }
+  if(s.phase==='voting'){
+    s.votingOptions=fcInternal.options.map(o=>({id:o.id,text:o.text}));
+    s.votedCount=Object.keys(fcInternal.votes).length;
+  }
+  return s;
+}
+function broadcastFcState(){mpSend('fc_state',buildSafeFcState());}
+
+function fcConnect(cb){
+  if(mpSocket&&mpSocket.connected){cb();return;}
+  const s=document.createElement('script');s.src=SERVER_URL+'/socket.io/socket.io.js';
+  s.onload=()=>{
+    mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
+    mpSocket.once('connect',cb);
+    mpSocket.on('connect',()=>{
+      if(mpRoom){
+        mpSocket.emit('join_room',{code:mpRoom.code,playerName:fcMyName});
+        mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!');if(mpIsHost&&fcState)setTimeout(broadcastFcState,300);});
+      }
+    });
+    mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();else if(mpIsHost&&fcState)setTimeout(broadcastFcState,300);});
+    mpSocket.on('player_left',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+    mpSocket.on('room_update',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+    mpSocket.on('game_started',({room})=>{if(room)mpRoom=room;});
+    mpSocket.on('game_action',({action,payload})=>{
+      if(action==='kick_player'){
+        if(payload.name===fcMyName){
+          showToast('❌ Du wurdest entfernt.');
+          if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+          fcState=null;mpRoom=null;mpIsHost=false;
+          showView('view-menu');fcShowOverlay();
+        }else if(mpRoom){
+          mpRoom.players=mpRoom.players.filter(p=>p.name!==payload.name);
+          if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
+        }
+        return;
+      }
+      if(action==='fc_state'){
+        fcState=payload;
+        hideReconnectOverlay();
+        if(!document.getElementById('view-game').classList.contains('active'))showView('view-game');
+        renderGameView();
+        startClientTimer();
+        return;
+      }
+      if(action==='fc_back_to_lobby'){if(!mpIsHost){showView('view-lobby');renderLobby();}return;}
+      if(mpIsHost)fcHostProcessAction(action,payload);
+    });
+    mpSocket.on('error',({msg})=>fcShowStatus('err','❌ '+(msg||'Fehler')));
+    mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
+  };
+  document.head.appendChild(s);
+}
+
+function fcHostCreate(){
+  const name=document.getElementById('fc-create-name').value.trim();
+  if(!name){fcShowStatus('err','Name eingeben!');return;}
+  fcMyName=name;
+  fcConnect(()=>{
+    mpSocket.emit('create_room',{game:'faktencheck',playerName:name,quizData:{}});
+    mpSocket.once('room_created',({code,room})=>{
+      mpRoom=room;mpRoom.code=code;mpIsHost=true;
+      fcCloseOverlay();showView('view-lobby');renderLobby();
+      document.getElementById('fc-quiz-section').style.display='';
+      document.getElementById('fc-start-btn').style.display='';
+      fcLoadPresets();fcShowStatus('','');
+    });
+    mpSocket.once('error',({msg})=>fcShowStatus('err','❌ '+(msg||'Fehler')));
+  });
+}
+
+function fcPlayerJoin(){
+  const code=document.getElementById('fc-join-code').value.trim().toUpperCase();
+  const name=document.getElementById('fc-join-name').value.trim();
+  if(!code){fcShowStatus('err','Raumcode eingeben!');return;}
+  if(!name){fcShowStatus('err','Name eingeben!');return;}
+  fcMyName=name;
+  fcConnect(()=>{
+    mpSocket.emit('join_room',{code,playerName:name});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{
+      mpRoom=room;mpRoom.code=c||code;fcMyName=yourName;mpIsHost=false;
+      fcCloseOverlay();showView('view-lobby');renderLobby();
+      document.getElementById('fc-quiz-section').style.display='none';
+      document.getElementById('fc-start-btn').style.display='none';
+      fcShowStatus('','');
+    });
+    mpSocket.once('error',({msg})=>fcShowStatus('err','❌ '+(msg||'Fehler')));
+  });
+}
+
+function fcLobbyLeave(){
+  if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+  mpRoom=null;mpIsHost=false;fcState=null;mySubmission=null;myVote=null;
+  clearFcTimers();
+  document.getElementById('admin-btn-float').classList.remove('visible');
+  history.replaceState(null,'',window.location.pathname);
+  showView('view-menu');
+}
+
+function fcCopyCode(){
+  if(!mpRoom)return;
+  const url=window.location.origin+window.location.pathname+'?room='+mpRoom.code;
+  navigator.clipboard.writeText(url).then(()=>showToast('📋 Link kopiert!')).catch(()=>showToast('Code: '+mpRoom.code));
+}
+
+function renderLobby(){
+  const codeEl=document.getElementById('fc-lobby-code');
+  if(codeEl&&mpRoom)codeEl.textContent=mpRoom.code||'';
+  const list=document.getElementById('fc-lobby-players');if(!list)return;
+  list.innerHTML='';
+  (mpRoom?.players||[]).forEach((p,i)=>{
+    const color=COLORS[i%COLORS.length];
+    const d=document.createElement('div');d.className='lobby-player';
+    d.innerHTML='<div class="lobby-player-avatar" style="background:'+color+'30;color:'+color+';">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+      +'<div class="lobby-player-name">'+esc(p.name)+(p.name===fcMyName?' <span style="font-size:11px;color:var(--muted);">(du)</span>':'')+(p.isHost?' <span style="font-size:11px;color:var(--cyan);">HOST</span>':'')+'</div>'
+      +(mpIsHost&&!p.isHost?'<button onclick="fcKickFromLobby(\''+esc(p.name)+'\')" style="background:none;border:1px solid rgba(232,53,74,.3);color:rgba(232,53,74,.6);border-radius:7px;font-size:11px;padding:3px 8px;cursor:pointer;">✕</button>':'');
+    list.appendChild(d);
+  });
+}
+function fcKickFromLobby(name){
+  if(!mpIsHost)return;if(!confirm('"'+name+'" kicken?'))return;
+  mpSend('kick_player',{name});if(mpRoom)mpRoom.players=mpRoom.players.filter(p=>p.name!==name);renderLobby();
+}
+
+// ══════════════════════════════════════════
+// HOST GAME LOGIC
+// ══════════════════════════════════════════
+function fcStartGame(){
+  if(!quizData||!quizData.questions.length){showToast('⚠️ Quiz erforderlich!');return;}
+  const nonHost=(mpRoom.players||[]).filter(p=>!p.isHost);
+  if(!nonHost.length){showToast('⚠️ Mindestens 1 Spieler nötig!');return;}
+  fcInternal={submissions:{},votes:{},options:[],realAnswerOptIdx:null};
+  mySubmission=null;myVote=null;
+  fcState={
+    phase:'question',
+    qIdx:0,
+    totalQ:quizData.questions.length,
+    statement:quizData.questions[0].statement,
+    submittedCount:0,
+    totalPlayers:nonHost.length,
+    timerStart:Date.now(),
+    timerDuration:30,
+    scores:nonHost.map((p,i)=>({name:p.name,score:0,color:COLORS[i%COLORS.length]})),
+  };
+  mpSocket.emit('start_game',{code:mpRoom.code});
+  setTimeout(()=>{
+    broadcastFcState();
+    showView('view-game');
+    renderGameView();
+    document.getElementById('admin-btn-float').classList.add('visible');
+    startHostQuestionTimer();
+  },350);
+}
+
+function clearFcTimers(){
+  if(fcTimerHandle){clearTimeout(fcTimerHandle);fcTimerHandle=null;}
+  if(fcTimerInterval){clearInterval(fcTimerInterval);fcTimerInterval=null;}
+}
+function startHostQuestionTimer(){
+  clearFcTimers();
+  fcTimerHandle=setTimeout(()=>{if(fcState&&fcState.phase==='question')fcMoveToVoting();},fcState.timerDuration*1000);
+}
+function startHostVotingTimer(){
+  clearFcTimers();
+  fcTimerHandle=setTimeout(()=>{if(fcState&&fcState.phase==='voting')fcMoveToReveal();},fcState.timerDuration*1000);
+}
+
+function fcHostProcessAction(action,payload){
+  if(!fcState)return;
+  if(action==='fc_submit'){
+    if(fcState.phase!=='question')return;
+    const name=payload.playerName,text=(payload.answer||'').trim().slice(0,100);
+    if(!text||fcInternal.submissions[name]!==undefined)return;
+    fcInternal.submissions[name]=text;
+    fcState.submittedCount=Object.keys(fcInternal.submissions).length;
+    broadcastFcState();renderGameView();
+    if(fcState.submittedCount>=fcState.totalPlayers){clearTimeout(fcTimerHandle);setTimeout(fcMoveToVoting,800);}
+  }else if(action==='fc_vote'){
+    if(fcState.phase!=='voting')return;
+    const name=payload.playerName,optId=payload.optionId;
+    if(fcInternal.votes[name]!==undefined)return;
+    // Prevent self-vote: find if option text equals their own submission
+    const opt=fcInternal.options[optId];
+    if(opt&&fcInternal.submissions[name]&&opt.text.toLowerCase()===fcInternal.submissions[name].toLowerCase()&&!opt.isReal)return;
+    fcInternal.votes[name]=optId;
+    fcState.votedCount=Object.keys(fcInternal.votes).length;
+    broadcastFcState();renderGameView();
+    if(fcState.votedCount>=fcState.totalPlayers){clearTimeout(fcTimerHandle);setTimeout(fcMoveToReveal,800);}
+  }
+}
+
+function fcMoveToVoting(){
+  clearFcTimers();
+  if(!fcState||fcState.phase!=='question')return;
+  const q=quizData.questions[fcState.qIdx];
+  const realText=q.answer.trim();
+  let opts=[{id:0,text:realText,isReal:true,authors:[]}];
+  let id=1;
+  Object.entries(fcInternal.submissions).forEach(([name,text])=>{
+    if(text.toLowerCase()===realText.toLowerCase()){
+      // Player guessed real answer — reward them later, don't add to options
+      return;
+    }
+    const dup=opts.find(o=>!o.isReal&&o.text.toLowerCase()===text.toLowerCase());
+    if(dup){dup.authors.push(name);}
+    else{opts.push({id:id++,text,isReal:false,authors:[name]});}
+  });
+  opts.sort(()=>Math.random()-.5);
+  opts.forEach((o,i)=>o.id=i);
+  fcInternal.options=opts;
+  fcInternal.realAnswerOptIdx=opts.findIndex(o=>o.isReal);
+  fcInternal.votes={};
+  fcState.phase='voting';
+  fcState.votedCount=0;
+  fcState.timerStart=Date.now();
+  fcState.timerDuration=25;
+  delete fcState.submittedCount;
+  broadcastFcState();renderGameView();
+  startHostVotingTimer();
+}
+
+function fcMoveToReveal(){
+  clearFcTimers();
+  if(!fcState||fcState.phase!=='voting')return;
+  const q=quizData.questions[fcState.qIdx];
+  // Award points
+  Object.entries(fcInternal.votes).forEach(([voter,optId])=>{
+    const opt=fcInternal.options[optId];if(!opt)return;
+    if(opt.isReal){
+      const s=fcState.scores.find(p=>p.name===voter);if(s)s.score+=1000;
+    }else{
+      opt.authors.forEach(author=>{
+        const s=fcState.scores.find(p=>p.name===author);if(s)s.score+=500;
+      });
+    }
+  });
+  // Bonus for players who submitted the correct real answer
+  Object.entries(fcInternal.submissions).forEach(([name,text])=>{
+    if(text.toLowerCase()===q.answer.trim().toLowerCase()){
+      const s=fcState.scores.find(p=>p.name===name);if(s)s.score+=200;
+    }
+  });
+  // Build reveal data
+  const revealOptions=fcInternal.options.map(o=>({
+    id:o.id,text:o.text,isReal:o.isReal,
+    authors:o.isReal?[]:o.authors,
+    voters:Object.entries(fcInternal.votes).filter(([,vid])=>vid===o.id).map(([n])=>n),
+    pts:o.isReal?0:Object.entries(fcInternal.votes).filter(([,vid])=>vid===o.id).length*500,
+  }));
+  fcState.phase='reveal';
+  fcState.revealData={options:revealOptions};
+  fcState.timerStart=null;
+  broadcastFcState();renderGameView();
+}
+
+function fcNextQuestion(){
+  if(!fcState)return;
+  if(fcState.qIdx+1>=quizData.questions.length){fcMoveToEnd();return;}
+  const nextIdx=fcState.qIdx+1;
+  fcInternal={submissions:{},votes:{},options:[],realAnswerOptIdx:null};
+  mySubmission=null;myVote=null;
+  fcState={
+    phase:'question',qIdx:nextIdx,totalQ:fcState.totalQ,
+    statement:quizData.questions[nextIdx].statement,
+    submittedCount:0,totalPlayers:fcState.totalPlayers,
+    timerStart:Date.now(),timerDuration:30,
+    scores:fcState.scores,
+  };
+  broadcastFcState();renderGameView();startHostQuestionTimer();
+}
+
+function fcMoveToEnd(){
+  clearFcTimers();fcState.phase='end';fcState.timerStart=null;
+  broadcastFcState();renderGameView();
+}
+
+// ══════════════════════════════════════════
+// RENDERING
+// ══════════════════════════════════════════
+function renderGameView(){
+  if(!fcState)return;
+  document.getElementById('fc-round-badge').textContent='RUNDE '+(fcState.qIdx+1)+' / '+fcState.totalQ;
+  renderSidebar();
+  const main=document.getElementById('fc-game-main');main.innerHTML='';
+  if(fcState.phase==='question')renderQuestion(main);
+  else if(fcState.phase==='voting')renderVoting(main);
+  else if(fcState.phase==='reveal')renderReveal(main);
+  else if(fcState.phase==='end')renderEnd(main);
+}
+
+function renderSidebar(){
+  const s=document.getElementById('fc-sidebar');if(!s)return;
+  const scores=[...(fcState.scores||[])].sort((a,b)=>b.score-a.score);
+  s.innerHTML='<div class="sidebar-title">Punkte</div>'
+    +scores.map(p=>'<div class="score-entry"><div class="score-avatar" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</div>'
+    +'<div class="score-name">'+esc(p.name)+'</div><div class="score-pts">'+p.score+'</div></div>').join('');
+  if(mpIsHost&&fcState.phase==='reveal'){
+    s.innerHTML+='<button class="btn-primary" style="width:100%;margin-top:12px;font-size:13px;" onclick="fcNextQuestion()">'
+      +(fcState.qIdx+1>=fcState.totalQ?'🏁 Auswertung':'▶ Nächste Frage')+'</button>';
+  }
+}
+
+function renderQuestion(main){
+  const submitted=mySubmission!==null||mpIsHost;
+  const prog=fcState.submittedCount||0;
+  main.innerHTML='<div class="statement-card"><div class="statement-label">🔍 AUSSAGE</div>'
+    +'<div class="statement-text">'+esc(fcState.statement)+'</div></div>';
+  if(mpIsHost){
+    main.innerHTML+='<div class="submitted-badge" style="background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.25);color:var(--cyan);">👁️ Moderator — Fragen kommen rein<br><span style="font-size:13px;color:var(--muted);">'+prog+' / '+fcState.totalPlayers+' Antworten</span></div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+(fcState.totalPlayers?prog/fcState.totalPlayers*100:0)+'%"></div></div>'
+      +(prog>0?'<button class="btn-primary" style="width:100%;" onclick="fcMoveToVoting()">▶ Abstimmung starten ('+prog+' Antworten)</button>':'');
+  }else if(submitted){
+    main.innerHTML+='<div class="submitted-badge">✅ Antwort eingereicht!<br><span style="font-size:13px;color:var(--muted);">'+prog+' / '+fcState.totalPlayers+' fertig</span></div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+(fcState.totalPlayers?prog/fcState.totalPlayers*100:0)+'%"></div></div>';
+  }else{
+    main.innerHTML+='<div class="submit-area"><div class="phase-label">🤥 Erfinde eine glaubwürdige Lüge als Antwort:</div>'
+      +'<input class="submit-input" id="fc-answer-inp" placeholder="Deine falsche Antwort..." maxlength="100" onkeydown="if(event.key===\'Enter\')fcSubmitAnswer()">'
+      +'<button class="btn-primary" onclick="fcSubmitAnswer()" style="width:100%;">📤 Absenden</button>'
+      +'<div style="text-align:center;font-size:13px;color:var(--muted);">'+prog+' / '+fcState.totalPlayers+' Antworten eingegangen</div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+(fcState.totalPlayers?prog/fcState.totalPlayers*100:0)+'%"></div></div>'
+      +'</div>';
+  }
+}
+
+function renderVoting(main){
+  const voted=myVote!==null||mpIsHost;
+  const vcount=fcState.votedCount||0;
+  main.innerHTML='<div class="statement-card"><div class="statement-label">🕵️ WELCHE IST DIE ECHTE WAHRHEIT?</div>'
+    +'<div class="statement-text">'+esc(fcState.statement)+'</div></div>';
+  if(mpIsHost){
+    const opts=(fcState.votingOptions||[]);
+    main.innerHTML+='<div class="submitted-badge" style="background:rgba(0,229,255,0.07);border-color:rgba(0,229,255,0.25);color:var(--cyan);">👁️ Moderator<br><span style="font-size:13px;color:var(--muted);">'+vcount+' / '+fcState.totalPlayers+' Stimmen</span></div>'
+      +'<div class="progress-bar" style="margin-bottom:8px;"><div class="progress-fill" style="width:'+(fcState.totalPlayers?vcount/fcState.totalPlayers*100:0)+'%"></div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px;">'
+      +opts.map((o,i)=>'<div style="padding:10px 14px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);font-size:13px;"><span style="color:var(--muted);margin-right:8px;">'+(i+1)+'.</span>'+esc(o.text)+'</div>').join('')
+      +'</div>'
+      +(vcount>0?'<button class="btn-primary" style="width:100%;margin-top:8px;" onclick="fcMoveToReveal()">👁️ Auflösung zeigen</button>':'');
+  }else if(voted){
+    main.innerHTML+='<div class="submitted-badge">✅ Stimme abgegeben!<br><span style="font-size:13px;color:var(--muted);">'+vcount+' / '+fcState.totalPlayers+' Stimmen</span></div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+(fcState.totalPlayers?vcount/fcState.totalPlayers*100:0)+'%"></div></div>';
+  }else{
+    const opts=(fcState.votingOptions||[]);
+    // Filter out the player's own submission to prevent self-voting
+    const filtered=opts.filter(o=>!mySubmission||o.text.toLowerCase()!==mySubmission.toLowerCase());
+    main.innerHTML+='<div class="phase-label">Wähle die echte Antwort — täusch auch andere!</div>'
+      +'<div class="voting-grid">'+filtered.map(o=>'<button class="vote-option" data-id="'+o.id+'" onclick="fcVote('+o.id+',this)">'+esc(o.text)+'</button>').join('')+'</div>';
+  }
+}
+
+function renderReveal(main){
+  if(!fcState.revealData){main.innerHTML='<div style="color:var(--muted);text-align:center;padding:40px;">Lade Auflösung...</div>';return;}
+  main.innerHTML='<div class="statement-card"><div class="statement-label">🎯 AUFLÖSUNG</div>'
+    +'<div class="statement-text">'+esc(fcState.statement)+'</div></div>';
+  const opts=fcState.revealData.options;
+  let html='<div style="display:flex;flex-direction:column;gap:8px;">';
+  opts.forEach((o,i)=>{
+    const cls=o.isReal?'real':'fake';
+    const badge=o.isReal?'✅ WAHRHEIT':'🤥 LÜGE';
+    const voters=o.voters.length?o.voters.map(v=>'<span class="voter-chip">'+esc(v)+'</span>').join(''):'<span class="no-voters">Niemand</span>';
+    const delay=(i*0.1)+'s';
+    html+='<div class="reveal-option '+cls+'" style="animation-delay:'+delay+';">'
+      +'<div class="reveal-header"><span class="reveal-badge '+cls+'">'+badge+'</span><span class="reveal-text">'+esc(o.text)+'</span>'
+      +(o.pts>0?'<span class="reveal-pts">+'+o.pts+' Pkt</span>':'')+'</div>'
+      +(!o.isReal&&o.authors.length?'<div class="reveal-author">🤥 von: '+o.authors.map(a=>esc(a)).join(', ')+'</div>':'')
+      +'<div class="reveal-voters">Stimmen: '+voters+'</div>'
+      +'</div>';
+  });
+  html+='</div>';
+  main.innerHTML+=html;
+}
+
+function renderEnd(main){
+  const scores=[...(fcState.scores||[])].sort((a,b)=>b.score-a.score);
+  const ranks=['🥇','🥈','🥉'];const rankCls=['gold','silver','bronze'];
+  main.innerHTML='<div class="end-screen"><div class="end-title">ENDERGEBNIS</div>'
+    +'<div class="end-podium">'
+    +scores.map((p,i)=>'<div class="end-entry">'
+    +'<div class="end-rank '+(rankCls[i]||'')+'">'+(ranks[i]||i+1+'.')+'</div>'
+    +'<div class="end-name">'+esc(p.name)+'</div>'
+    +'<div class="end-score">'+p.score+' Pkt</div></div>').join('')
+    +'</div>'
+    +(mpIsHost?'<button class="btn-primary" onclick="adminBackToLobby()" style="min-width:200px;">🏠 Zurück zur Lobby</button>':'')
+    +'</div>';
+}
+
+// ── PLAYER ACTIONS ──
+function fcSubmitAnswer(){
+  const inp=document.getElementById('fc-answer-inp');if(!inp)return;
+  const text=inp.value.trim();if(!text){showToast('⚠️ Antwort eingeben!');return;}
+  mySubmission=text;
+  mpSend('fc_submit',{playerName:fcMyName,answer:text});
+  renderGameView();
+}
+
+function fcVote(optId,btn){
+  if(myVote!==null)return;
+  myVote=optId;
+  document.querySelectorAll('.vote-option').forEach(b=>{b.classList.remove('selected');b.classList.add('disabled');});
+  if(btn)btn.classList.add('selected');
+  mpSend('fc_vote',{playerName:fcMyName,optionId:optId});
+}
+
+// ── CLIENT TIMER ──
+function startClientTimer(){
+  if(fcTimerInterval){clearInterval(fcTimerInterval);fcTimerInterval=null;}
+  const el=document.getElementById('fc-timer');if(!el)return;
+  if(!fcState||!fcState.timerStart){el.textContent='';el.className='timer-display';return;}
+  function update(){
+    const remaining=Math.max(0,Math.ceil(fcState.timerDuration-(Date.now()-fcState.timerStart)/1000));
+    el.textContent=remaining;
+    el.className='timer-display'+(remaining<=5?' urgent':'');
+    if(remaining<=0){clearInterval(fcTimerInterval);fcTimerInterval=null;}
+  }
+  update();fcTimerInterval=setInterval(update,500);
+}
+</script>
+
+<!-- THEME SWITCHER -->
+<button class="theme-btn" onclick="toggleThemePanel()" title="Design wählen">🎨</button>
+<div class="theme-panel" id="theme-panel">
+  <div class="theme-panel-title">Design wählen</div>
+  <button class="theme-option" onclick="setTheme('midnight')"><div class="theme-dot" style="background:linear-gradient(135deg,#06080f,#00e5ff)"></div>Midnight</button>
+  <button class="theme-option" onclick="setTheme('neon')"><div class="theme-dot" style="background:linear-gradient(135deg,#08010f,#ff00ff)"></div>Neon</button>
+  <button class="theme-option" onclick="setTheme('forest')"><div class="theme-dot" style="background:linear-gradient(135deg,#060e07,#4caf50)"></div>Forest</button>
+  <button class="theme-option" onclick="setTheme('sunset')"><div class="theme-dot" style="background:linear-gradient(135deg,#0f0608,#ff6b35)"></div>Sunset</button>
+  <button class="theme-option" onclick="setTheme('arctic')"><div class="theme-dot" style="background:linear-gradient(135deg,#e8edf2,#0077cc)"></div>Arctic</button>
+</div>
+<script>
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('quizTheme',t);document.querySelectorAll('.theme-option').forEach(el=>{el.classList.toggle('active',el.textContent.trim().toLowerCase().startsWith(t));});var panel=document.getElementById('theme-panel');if(panel)panel.classList.remove('open');}
+function toggleThemePanel(){var panel=document.getElementById('theme-panel');if(panel)panel.classList.toggle('open');}
+document.addEventListener('click',function(e){var panel=document.getElementById('theme-panel');if(panel&&!panel.contains(e.target)&&!e.target.classList.contains('theme-btn'))panel.classList.remove('open');});
+(function(){setTheme(localStorage.getItem('quizTheme')||'midnight');})();
+</script>
+
+<!-- RECONNECT OVERLAY -->
+<div id="reconnect-overlay"><div class="rc-box"><div class="rc-spinner"></div><div class="rc-title">Verbindung getrennt</div><div class="rc-sub">Versuche neu zu verbinden…</div></div></div>
+<style>
+#reconnect-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;}
+#reconnect-overlay.visible{display:flex;}
+.rc-box{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px;background:var(--surface);border-radius:20px;border:1px solid var(--border);max-width:320px;width:90%;text-align:center;}
+.rc-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:rcspin 1s linear infinite;}
+.rc-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--text);}
+.rc-sub{font-size:13px;color:var(--muted);}
+@keyframes rcspin{to{transform:rotate(360deg)}}
+</style>
+<script>
+function showReconnectOverlay(){document.getElementById('reconnect-overlay').classList.add('visible');}
+function hideReconnectOverlay(){document.getElementById('reconnect-overlay').classList.remove('visible');}
+</script>
+
+<!-- ADMIN PANEL -->
+<style>
+.admin-btn-float{position:fixed;bottom:80px;right:68px;width:44px;height:44px;border-radius:50%;background:rgba(232,53,74,.9);border:none;color:#fff;font-size:18px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(232,53,74,.4);z-index:998;transition:all .2s;display:none;}
+.admin-btn-float.visible{display:flex;}
+.admin-btn-float:hover{transform:scale(1.12);}
+.admin-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:399;display:none;align-items:flex-end;justify-content:center;}
+.admin-panel-overlay.open{display:flex;}
+.admin-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;}
+.admin-panel-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.06em;color:var(--red);}
+.admin-action-btn{padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;width:100%;}
+.admin-action-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.admin-action-btn.danger:hover{border-color:var(--red);color:var(--red);}
+.admin-close-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:10px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;width:100%;}
+.admin-close-btn:hover{color:var(--text);}
+</style>
+<button class="admin-btn-float" id="admin-btn-float" onclick="toggleAdminPanel()" title="Moderator-Panel">⚙️</button>
+<div class="admin-panel-overlay" id="admin-panel-overlay" onclick="if(event.target===this)closeAdminPanel()">
+  <div class="admin-panel">
+    <div class="admin-panel-title">⚙️ Moderator-Panel</div>
+    <button class="admin-action-btn" onclick="adminSkip()">⏭️ Phase überspringen</button>
+    <button class="admin-action-btn" onclick="adminRestart()">🔄 Spiel neu starten</button>
+    <button class="admin-action-btn danger" onclick="adminBackToLobby()">🏠 Zurück zur Lobby</button>
+    <div id="admin-kick-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+    <button class="admin-close-btn" onclick="closeAdminPanel()">Schließen</button>
+  </div>
+</div>
+<script>
+function buildAdminKickList(){
+  const container=document.getElementById('admin-kick-list');if(!container)return;container.innerHTML='';
+  if(!mpRoom)return;
+  const pl=(mpRoom.players||[]).filter(p=>!p.isHost);if(!pl.length)return;
+  const lbl=document.createElement('div');lbl.style.cssText='font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;';lbl.textContent='Spieler kicken';container.appendChild(lbl);
+  pl.forEach(p=>{
+    const btn=document.createElement('button');btn.className='admin-action-btn danger';btn.textContent='👢 '+p.name+' kicken';
+    btn.onclick=()=>{
+      mpSend('kick_player',{name:p.name});
+      if(mpRoom)mpRoom.players=mpRoom.players.filter(x=>x.name!==p.name);
+      if(fcState){fcState.scores=fcState.scores.filter(s=>s.name!==p.name);fcState.totalPlayers=(fcState.scores||[]).length;}
+      buildAdminKickList();showToast('👢 '+p.name+' entfernt.');closeAdminPanel();
+    };
+    container.appendChild(btn);
+  });
+}
+function toggleAdminPanel(){buildAdminKickList();document.getElementById('admin-panel-overlay').classList.toggle('open');}
+function closeAdminPanel(){document.getElementById('admin-panel-overlay').classList.remove('open');}
+function adminSkip(){
+  closeAdminPanel();if(!fcState)return;
+  if(fcState.phase==='question')fcMoveToVoting();
+  else if(fcState.phase==='voting')fcMoveToReveal();
+  else if(fcState.phase==='reveal')fcNextQuestion();
+}
+function adminRestart(){
+  if(!confirm('Spiel neu starten?'))return;
+  closeAdminPanel();fcStartGame();
+}
+function adminBackToLobby(){
+  if(!confirm('Zurück zur Lobby?'))return;
+  closeAdminPanel();mpSend('fc_back_to_lobby',{});
+  clearFcTimers();
+  document.getElementById('admin-btn-float').classList.remove('visible');
+  showView('view-lobby');renderLobby();
+}
+</script>
+
+<!-- URL PARAM HANDLER -->
+<script>
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  const room=p.get('room');
+  const action=p.get('action');
+  if(room){fcShowOverlay();fcSwitchTab('join');document.getElementById('fc-join-code').value=room.toUpperCase();}
+  else if(action==='editor'){showView('view-editor');renderEditor();}
+  else if(action==='play'||window.location.hash==='#online'){fcShowOverlay();}
+})();
+</script>
+
+</body>
+</html>

@@ -179,6 +179,7 @@
   .card-hotzones  { --accent: #ff4500; }   /* Volcanic Lava */
   .card-horl      { --accent: #a855f7; }   /* Cosmic Purple */
   .card-buzzer    { --accent: #00ff87; }   /* Electric Neon Green */
+  .card-faktencheck { --accent: #00e5ff; } /* Truth Detector Cyan */
 
   .game-card:hover { border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px color-mix(in srgb, var(--accent) 15%, transparent); }
   .game-card:hover::before { opacity: 1; background: radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%); }
@@ -187,6 +188,7 @@
   .card-hotzones:hover  { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(255,69,0,0.2); }
   .card-horl:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(168,85,247,0.2); }
   .card-buzzer:hover    { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0,255,135,0.2); }
+  .card-faktencheck:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0,229,255,0.2); }
 
   .card-badge {
     position: absolute;
@@ -544,12 +546,22 @@
       <div class="card-arrow">Spielen</div>
     </div>
 
+    <!-- Faktencheck -->
+    <div class="game-card card-faktencheck" onclick="openModal('faktencheck')">
+      <div class="card-badge">Neu</div>
+      <div class="card-icon">🔍</div>
+      <div class="card-number">06 /</div>
+      <div class="card-title">Faktencheck</div>
+
+      <div class="card-arrow">Spielen</div>
+    </div>
+
   </div>
 
   <!-- Stats bar -->
   <div class="bottom-bar">
     <div class="stat-item">
-      <div class="stat-value">5</div>
+      <div class="stat-value">6</div>
       <div class="stat-label">Spiele</div>
     </div>
     <div class="stat-divider"></div>
@@ -636,6 +648,16 @@
       actions: [
         { icon: '🌐', title: 'Online spielen', sub: 'Raum erstellen & mit anderen spielen', link: 'buzzer.html?action=play' },
         { icon: '✏️', title: 'Quiz erstellen', sub: 'Fragen & Antworten selbst anlegen', link: 'buzzer.html?action=editor' },
+      ]
+    },
+    faktencheck: {
+      icon: '🔍',
+      title: 'Faktencheck',
+      subtitle: 'Lüg überzeugend! Alle erfinden eine Antwort auf einen absurden Fakt. Wer erkennt die Wahrheit — und wessen Lüge täuscht die meisten?',
+      accent: '#00e5ff',
+      actions: [
+        { icon: '🌐', title: 'Online spielen', sub: 'Raum erstellen & mit Freunden lügen', link: 'faktencheck.html#online' },
+        { icon: '✏️', title: 'Quiz erstellen', sub: 'Eigene Fakten & Antworten anlegen', link: 'faktencheck.html?action=editor' },
       ]
     }
   };

@@ -14,7 +14,12 @@
       "Bash(xargs -I {} basename {})",
       "Bash(node:*)",
       "Bash(node -e \":*)",
-      "Bash(ls \"C:\\\\Users\\\\mertb\\\\GITHUB-QUIZPROJEKT\\\\QUIZ-NIGHT\\\\quizzes\\\\hotzones\"\" 2>/dev/null || find \"C:UsersmertbGITHUB-QUIZPROJEKTQUIZ-NIGHT\" -name \"*.quiz \")"
+      "Bash(ls \"C:\\\\Users\\\\mertb\\\\GITHUB-QUIZPROJEKT\\\\QUIZ-NIGHT\\\\quizzes\\\\hotzones\"\" 2>/dev/null || find \"C:UsersmertbGITHUB-QUIZPROJEKTQUIZ-NIGHT\" -name \"*.quiz \")",
+      "Bash(head -10 grep -n \"function.*[Rr]ender.*[Ll]obby\\\\|function renderLobby\\\\|renderLobby\\(\\)\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/horl.html\")",
+      "Bash(head -5 grep -n \"function esc\\\\b\\\\|escHtml\\\\|function escHtml\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/horl.html\")",
+      "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/buzzer.html\")",
+      "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/hotzones.html\")",
+      "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/horl.html\")"
     ]
   }
 }
