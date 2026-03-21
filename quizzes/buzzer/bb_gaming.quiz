@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Gaming",
+  "questions": [
+    { "question": "Wie heißt der Held in 'The Legend of Zelda'?", "answer": "Link" },
+    { "question": "Welches Unternehmen entwickelt die Mario-Spiele?", "answer": "Nintendo" },
+    { "question": "Was bedeutet 'NPC' in einem Videospiel?", "answer": "Non-Playable Character" },
+    { "question": "In welchem Spiel baut man aus Blöcken eine Welt?", "answer": "Minecraft" },
+    { "question": "Welches Battle-Royale-Spiel hat Epic Games entwickelt?", "answer": "Fortnite" },
+    { "question": "Was ist der Name des Schurken in 'Super Mario'?", "answer": "Bowser" },
+    { "question": "In welchem Jahr erschien der erste Game Boy?", "answer": "1989" },
+    { "question": "Welches Spiel hat den Rekord für die meisten Verkäufe (ca. 300 Millionen)?", "answer": "Minecraft" },
+    { "question": "Was ist 'Speedrunning'?", "answer": "Ein Spiel so schnell wie möglich durchspielen" },
+    { "question": "Welches eSports-Spiel wird beim 'World Championship' von Millionen live verfolgt?", "answer": "League of Legends" },
+    { "question": "Wie heißt der Streaming-Dienst für Gamer, der Amazon gehört?", "answer": "Twitch" },
+    { "question": "Welches Studio entwickelt 'The Witcher' und 'Cyberpunk 2077'?", "answer": "CD Projekt Red" },
+    { "question": "In welchem Spiel kämpft man gegen Bosse wie Aldrich oder Pontiff Sulyvahn?", "answer": "Dark Souls III" },
+    { "question": "Was ist die Spielfigur in 'Pac-Man'?", "answer": "Eine gelbe Figur / Pac-Man" },
+    { "question": "Aus welchem Land kommt Nintendo?", "answer": "Japan" },
+    { "question": "Welches Spiel wurde 1984 in der Sowjetunion entwickelt?", "answer": "Tetris" },
+    { "question": "Wie heißt der Hauptcharakter in 'God of War'?", "answer": "Kratos" },
+    { "question": "Was ist das meistverkaufte Videospiel aller Zeiten?", "answer": "Minecraft (ca. 300 Mio.) / Tetris (alle Versionen ~520 Mio.)" },
+    { "question": "Welches Unternehmen entwickelt die Grand-Theft-Auto-Reihe?", "answer": "Rockstar Games" },
+    { "question": "Wie heißt die Kämpferin in Mortal Kombat, die mit ihren Haaren kämpft?", "answer": "Sindel / Jade — am bekanntesten ist Mileena oder Kitana" },
+    { "question": "In welchem Jahr wurde das erste Pokémon-Spiel veröffentlicht?", "answer": "1996" },
+    { "question": "Welches Studio entwickelt die 'Souls'-Serie (Dark Souls, Elden Ring)?", "answer": "FromSoftware" },
+    { "question": "Wie heißt der Antagonist in 'Half-Life'?", "answer": "G-Man" },
+    { "question": "Was ist ein 'Easter Egg' in einem Videospiel?", "answer": "Versteckter Witz / Geheimnis / Anspielung vom Entwickler" },
+    { "question": "Welches Spiel beginnt mit den Worten 'War never changes'?", "answer": "Fallout" }
+  ]
+}

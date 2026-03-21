@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Allgemeines",
+  "rounds": [
+    {
+      "category": "Höchstgeschwindigkeit von Tieren (km/h)",
+      "labelLow": "langsamer",
+      "labelHigh": "schneller",
+      "items": [
+        { "name": "Schnecke", "value": 0.05, "imageUrl": "" },
+        { "name": "Mensch (Sprint-Weltrekord)", "value": 44, "imageUrl": "" },
+        { "name": "Grizzlybär", "value": 48, "imageUrl": "" },
+        { "name": "Nashorn", "value": 50, "imageUrl": "" },
+        { "name": "Giraffe", "value": 52, "imageUrl": "" },
+        { "name": "Delfin (im Wasser)", "value": 55, "imageUrl": "" },
+        { "name": "Pferd", "value": 70, "imageUrl": "" },
+        { "name": "Gepard", "value": 120, "imageUrl": "" },
+        { "name": "Adler (Jagdflug)", "value": 150, "imageUrl": "" },
+        { "name": "Schwalbe", "value": 170, "imageUrl": "" },
+        { "name": "Wanderfalke (Sturzflug)", "value": 389, "imageUrl": "" },
+        { "name": "Seepferdchen", "value": 1, "imageUrl": "" },
+        { "name": "Hauskatze", "value": 48, "imageUrl": "" },
+        { "name": "Elefant", "value": 40, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Durchschnittliche Lebensdauer von Tieren (Jahre)",
+      "labelLow": "kürzer lebend",
+      "labelHigh": "länger lebend",
+      "items": [
+        { "name": "Hausmaus", "value": 2, "imageUrl": "" },
+        { "name": "Igel", "value": 5, "imageUrl": "" },
+        { "name": "Wolf", "value": 8, "imageUrl": "" },
+        { "name": "Hund", "value": 13, "imageUrl": "" },
+        { "name": "Katze", "value": 15, "imageUrl": "" },
+        { "name": "Pferd", "value": 25, "imageUrl": "" },
+        { "name": "Gorilla", "value": 35, "imageUrl": "" },
+        { "name": "Papagei", "value": 50, "imageUrl": "" },
+        { "name": "Albatros", "value": 50, "imageUrl": "" },
+        { "name": "Elefant", "value": 65, "imageUrl": "" },
+        { "name": "Orca", "value": 70, "imageUrl": "" },
+        { "name": "Schildkröte (Aldabra)", "value": 150, "imageUrl": "" },
+        { "name": "Grönlandhai", "value": 272, "imageUrl": "" },
+        { "name": "Riesenauster", "value": 500, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Kaloriengehalt von Lebensmitteln (kcal pro 100g)",
+      "labelLow": "weniger Kalorien",
+      "labelHigh": "mehr Kalorien",
+      "items": [
+        { "name": "Gurke", "value": 12, "imageUrl": "" },
+        { "name": "Salat (Kopfsalat)", "value": 13, "imageUrl": "" },
+        { "name": "Tomaten", "value": 18, "imageUrl": "" },
+        { "name": "Äpfel", "value": 52, "imageUrl": "" },
+        { "name": "Bananen", "value": 89, "imageUrl": "" },
+        { "name": "Hühnerbrust (gegart)", "value": 165, "imageUrl": "" },
+        { "name": "Brot (Weizenbrot)", "value": 265, "imageUrl": "" },
+        { "name": "Käse (Gouda)", "value": 356, "imageUrl": "" },
+        { "name": "Chips (Kartoffel)", "value": 536, "imageUrl": "" },
+        { "name": "Schokolade (Vollmilch)", "value": 535, "imageUrl": "" },
+        { "name": "Erdnussbutter", "value": 588, "imageUrl": "" },
+        { "name": "Butter", "value": 717, "imageUrl": "" },
+        { "name": "Olivenöl", "value": 884, "imageUrl": "" },
+        { "name": "Weißer Zucker", "value": 400, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Tiefe von Meeren und Ozeanen (tiefster Punkt, Meter)",
+      "labelLow": "flacher",
+      "labelHigh": "tiefer",
+      "items": [
+        { "name": "Ostsee", "value": 459, "imageUrl": "" },
+        { "name": "Nordsee", "value": 700, "imageUrl": "" },
+        { "name": "Schwarzes Meer", "value": 2212, "imageUrl": "" },
+        { "name": "Rotes Meer", "value": 3040, "imageUrl": "" },
+        { "name": "Japanisches Meer", "value": 3742, "imageUrl": "" },
+        { "name": "Arabisches Meer", "value": 5803, "imageUrl": "" },
+        { "name": "Mittelmeer", "value": 5267, "imageUrl": "" },
+        { "name": "Südchinesisches Meer", "value": 5559, "imageUrl": "" },
+        { "name": "Karibisches Meer", "value": 7686, "imageUrl": "" },
+        { "name": "Atlantik (Puerto-Rico-Graben)", "value": 8408, "imageUrl": "" },
+        { "name": "Indischer Ozean (Diamantina-Tief)", "value": 8047, "imageUrl": "" },
+        { "name": "Pazifik (Marianengraben)", "value": 10994, "imageUrl": "" },
+        { "name": "Bering-See", "value": 4151, "imageUrl": "" },
+        { "name": "Mittelmeer (Calypso-Tief)", "value": 5267, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Tägliche Schlafstunden von Tieren (Stunden)",
+      "labelLow": "weniger Schlaf",
+      "labelHigh": "mehr Schlaf",
+      "items": [
+        { "name": "Pferd", "value": 3, "imageUrl": "" },
+        { "name": "Elefant", "value": 4, "imageUrl": "" },
+        { "name": "Giraffe", "value": 5, "imageUrl": "" },
+        { "name": "Kuh", "value": 4, "imageUrl": "" },
+        { "name": "Delfin", "value": 8, "imageUrl": "" },
+        { "name": "Mensch", "value": 8, "imageUrl": "" },
+        { "name": "Hund", "value": 12, "imageUrl": "" },
+        { "name": "Ratte", "value": 13, "imageUrl": "" },
+        { "name": "Katze", "value": 16, "imageUrl": "" },
+        { "name": "Tiger", "value": 16, "imageUrl": "" },
+        { "name": "Löwe", "value": 20, "imageUrl": "" },
+        { "name": "Faultier", "value": 20, "imageUrl": "" },
+        { "name": "Koala", "value": 22, "imageUrl": "" },
+        { "name": "Igel (Winterschlaf)", "value": 20, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Ruhepuls von Tieren (Herzschläge pro Minute)",
+      "labelLow": "langsameres Herz",
+      "labelHigh": "schnelleres Herz",
+      "items": [
+        { "name": "Blauwal", "value": 2, "imageUrl": "" },
+        { "name": "Elefant", "value": 30, "imageUrl": "" },
+        { "name": "Pferd", "value": 40, "imageUrl": "" },
+        { "name": "Hund (mittelgroß)", "value": 80, "imageUrl": "" },
+        { "name": "Mensch", "value": 72, "imageUrl": "" },
+        { "name": "Katze", "value": 140, "imageUrl": "" },
+        { "name": "Kaninchen", "value": 200, "imageUrl": "" },
+        { "name": "Maus", "value": 450, "imageUrl": "" },
+        { "name": "Hamster", "value": 400, "imageUrl": "" },
+        { "name": "Kanarienvogel", "value": 800, "imageUrl": "" },
+        { "name": "Kolibri", "value": 1200, "imageUrl": "" },
+        { "name": "Spitzmaus", "value": 1300, "imageUrl": "" },
+        { "name": "Meerschweinchen", "value": 280, "imageUrl": "" },
+        { "name": "Delfin", "value": 100, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Wassergehalt von Lebensmitteln (Prozent)",
+      "labelLow": "weniger Wasser",
+      "labelHigh": "mehr Wasser",
+      "items": [
+        { "name": "Honig", "value": 17, "imageUrl": "" },
+        { "name": "Schokolade", "value": 1, "imageUrl": "" },
+        { "name": "Chips", "value": 3, "imageUrl": "" },
+        { "name": "Brot", "value": 37, "imageUrl": "" },
+        { "name": "Banane", "value": 75, "imageUrl": "" },
+        { "name": "Apfel", "value": 86, "imageUrl": "" },
+        { "name": "Milch", "value": 88, "imageUrl": "" },
+        { "name": "Erdbeere", "value": 91, "imageUrl": "" },
+        { "name": "Gurke", "value": 96, "imageUrl": "" },
+        { "name": "Salat", "value": 95, "imageUrl": "" },
+        { "name": "Tomate", "value": 94, "imageUrl": "" },
+        { "name": "Wassermelone", "value": 92, "imageUrl": "" },
+        { "name": "Käse (Gouda)", "value": 40, "imageUrl": "" },
+        { "name": "Kaffee (schwarz)", "value": 99, "imageUrl": "" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Gaming",
+  "rounds": [
+    {
+      "category": "Verkaufte Spieleinheiten weltweit (Millionen, Stand 2026)",
+      "labelLow": "weniger verkauft",
+      "labelHigh": "mehr verkauft",
+      "items": [
+        { "name": "Elden Ring (2022)", "value": 25, "imageUrl": "" },
+        { "name": "The Witcher 3 (2015)", "value": 50, "imageUrl": "" },
+        { "name": "GTA V (2013)", "value": 200, "imageUrl": "" },
+        { "name": "Minecraft (alle Plattformen)", "value": 300, "imageUrl": "" },
+        { "name": "Tetris (alle Versionen)", "value": 520, "imageUrl": "" },
+        { "name": "Super Mario Bros. (1985)", "value": 40, "imageUrl": "" },
+        { "name": "Wii Sports (2006)", "value": 83, "imageUrl": "" },
+        { "name": "PUBG: Battlegrounds (2017)", "value": 75, "imageUrl": "" },
+        { "name": "Call of Duty: Modern Warfare (2019)", "value": 30, "imageUrl": "" },
+        { "name": "Pokemon Red/Blue (1996)", "value": 31, "imageUrl": "" },
+        { "name": "Mario Kart 8 Deluxe (2017)", "value": 61, "imageUrl": "" },
+        { "name": "Animal Crossing: New Horizons (2020)", "value": 44, "imageUrl": "" },
+        { "name": "Red Dead Redemption 2 (2018)", "value": 61, "imageUrl": "" },
+        { "name": "Fortnite (F2P, Spielerzahl 350M registriert)", "value": 350, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Metacritic-Wertung von Spielen (Punkte, 0-100)",
+      "labelLow": "schlechter bewertet",
+      "labelHigh": "besser bewertet",
+      "items": [
+        { "name": "Cyberpunk 2077 (PC, Launch 2020)", "value": 86, "imageUrl": "" },
+        { "name": "No Man's Sky (Launch 2016)", "value": 61, "imageUrl": "" },
+        { "name": "GTA V (PC)", "value": 96, "imageUrl": "" },
+        { "name": "The Last of Us Part I (PS5)", "value": 88, "imageUrl": "" },
+        { "name": "Elden Ring (PC)", "value": 95, "imageUrl": "" },
+        { "name": "The Witcher 3 (PC)", "value": 92, "imageUrl": "" },
+        { "name": "Red Dead Redemption 2 (PS4)", "value": 97, "imageUrl": "" },
+        { "name": "Zelda: Ocarina of Time (N64)", "value": 99, "imageUrl": "" },
+        { "name": "Super Mario Odyssey (Switch)", "value": 97, "imageUrl": "" },
+        { "name": "Minecraft (PC)", "value": 93, "imageUrl": "" },
+        { "name": "Baldur's Gate 3 (PC)", "value": 96, "imageUrl": "" },
+        { "name": "Hollow Knight (PC)", "value": 87, "imageUrl": "" },
+        { "name": "Dark Souls III (PC)", "value": 87, "imageUrl": "" },
+        { "name": "Overwatch (PC, Launch 2016)", "value": 91, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Erscheinungsjahr von Spielen",
+      "labelLow": "älter erschienen",
+      "labelHigh": "neuer erschienen",
+      "items": [
+        { "name": "Pong", "value": 1972, "imageUrl": "" },
+        { "name": "Pac-Man", "value": 1980, "imageUrl": "" },
+        { "name": "Tetris", "value": 1984, "imageUrl": "" },
+        { "name": "Super Mario Bros.", "value": 1985, "imageUrl": "" },
+        { "name": "The Legend of Zelda", "value": 1986, "imageUrl": "" },
+        { "name": "Sonic the Hedgehog", "value": 1991, "imageUrl": "" },
+        { "name": "Doom", "value": 1993, "imageUrl": "" },
+        { "name": "Minecraft", "value": 2009, "imageUrl": "" },
+        { "name": "Fortnite (Battle Royale Mode)", "value": 2017, "imageUrl": "" },
+        { "name": "The Witcher 3", "value": 2015, "imageUrl": "" },
+        { "name": "GTA V", "value": 2013, "imageUrl": "" },
+        { "name": "Elden Ring", "value": 2022, "imageUrl": "" },
+        { "name": "Baldur's Gate 3", "value": 2023, "imageUrl": "" },
+        { "name": "Half-Life 2", "value": 2004, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Geschätzte Anzahl aktiver Spieler (Millionen, ca. 2024/2025)",
+      "labelLow": "weniger aktive Spieler",
+      "labelHigh": "mehr aktive Spieler",
+      "items": [
+        { "name": "Elden Ring", "value": 5, "imageUrl": "" },
+        { "name": "Apex Legends", "value": 150, "imageUrl": "" },
+        { "name": "Fortnite", "value": 110, "imageUrl": "" },
+        { "name": "League of Legends", "value": 165, "imageUrl": "" },
+        { "name": "Minecraft", "value": 170, "imageUrl": "" },
+        { "name": "Roblox", "value": 380, "imageUrl": "" },
+        { "name": "Honor of Kings (Mobil)", "value": 100, "imageUrl": "" },
+        { "name": "PUBG Mobile", "value": 100, "imageUrl": "" },
+        { "name": "Free Fire (Mobil)", "value": 100, "imageUrl": "" },
+        { "name": "Candy Crush Saga (Mobil)", "value": 200, "imageUrl": "" },
+        { "name": "Call of Duty Mobile", "value": 65, "imageUrl": "" },
+        { "name": "Genshin Impact", "value": 60, "imageUrl": "" },
+        { "name": "GTA Online", "value": 5, "imageUrl": "" },
+        { "name": "Counter-Strike 2", "value": 30, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Entwicklungszeit von Spielen (ungefähre Monate)",
+      "labelLow": "kürzere Entwicklung",
+      "labelHigh": "längere Entwicklung",
+      "items": [
+        { "name": "Minecraft (erste Alpha)", "value": 6, "imageUrl": "" },
+        { "name": "Flappy Bird", "value": 3, "imageUrl": "" },
+        { "name": "Stardew Valley (1 Person)", "value": 54, "imageUrl": "" },
+        { "name": "GTA V", "value": 60, "imageUrl": "" },
+        { "name": "Red Dead Redemption 2", "value": 96, "imageUrl": "" },
+        { "name": "Cyberpunk 2077", "value": 96, "imageUrl": "" },
+        { "name": "The Last Guardian", "value": 120, "imageUrl": "" },
+        { "name": "Duke Nukem Forever (Rekord Entwicklungshölle)", "value": 180, "imageUrl": "" },
+        { "name": "Diablo IV", "value": 84, "imageUrl": "" },
+        { "name": "Zelda: Breath of the Wild", "value": 48, "imageUrl": "" },
+        { "name": "The Witcher 3", "value": 48, "imageUrl": "" },
+        { "name": "Elden Ring", "value": 48, "imageUrl": "" },
+        { "name": "Star Citizen (noch in Entwicklung 2024)", "value": 144, "imageUrl": "" },
+        { "name": "Baldur's Gate 3 (Early Access inkl.)", "value": 60, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Ungefähre Spielstunden für 100% Completion (Stunden)",
+      "labelLow": "schneller abgeschlossen",
+      "labelHigh": "mehr Stunden benötigt",
+      "items": [
+        { "name": "Flappy Bird (kein Ende)", "value": 1, "imageUrl": "" },
+        { "name": "Portal (2007)", "value": 3, "imageUrl": "" },
+        { "name": "The Last of Us (Story)", "value": 15, "imageUrl": "" },
+        { "name": "Red Dead Redemption 2 (100%)", "value": 175, "imageUrl": "" },
+        { "name": "GTA V (100%)", "value": 80, "imageUrl": "" },
+        { "name": "The Witcher 3 (100%)", "value": 180, "imageUrl": "" },
+        { "name": "Zelda: Breath of the Wild (100%)", "value": 188, "imageUrl": "" },
+        { "name": "Elden Ring (100%)", "value": 96, "imageUrl": "" },
+        { "name": "Dark Souls III (100%)", "value": 90, "imageUrl": "" },
+        { "name": "Minecraft (kein klares Ende)", "value": 500, "imageUrl": "" },
+        { "name": "Stardew Valley (100%)", "value": 200, "imageUrl": "" },
+        { "name": "Persona 5 Royal (100%)", "value": 140, "imageUrl": "" },
+        { "name": "Baldur's Gate 3 (100%)", "value": 200, "imageUrl": "" },
+        { "name": "Super Mario Odyssey (100%)", "value": 65, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Preis des Spiels bei Markteinführung (Euro)",
+      "labelLow": "günstiger",
+      "labelHigh": "teurer",
+      "items": [
+        { "name": "Among Us (Mobile)", "value": 0, "imageUrl": "" },
+        { "name": "Minecraft (Java Edition, aktuell)", "value": 30, "imageUrl": "" },
+        { "name": "Stardew Valley", "value": 15, "imageUrl": "" },
+        { "name": "Hollow Knight", "value": 15, "imageUrl": "" },
+        { "name": "Call of Duty: Modern Warfare III (PS5)", "value": 70, "imageUrl": "" },
+        { "name": "GTA V (PS5 Remaster)", "value": 40, "imageUrl": "" },
+        { "name": "Elden Ring (Standard)", "value": 60, "imageUrl": "" },
+        { "name": "Cyberpunk 2077 (Standard)", "value": 60, "imageUrl": "" },
+        { "name": "Red Dead Redemption 2 (Special Edition)", "value": 100, "imageUrl": "" },
+        { "name": "The Witcher 3 (Complete Edition)", "value": 50, "imageUrl": "" },
+        { "name": "NBA 2K24 (PS5)", "value": 70, "imageUrl": "" },
+        { "name": "EA Sports FC 24", "value": 70, "imageUrl": "" },
+        { "name": "Baldur's Gate 3 (Standard)", "value": 60, "imageUrl": "" },
+        { "name": "Super Mario Bros. Wonder (Switch)", "value": 60, "imageUrl": "" }
+      ]
+    }
+  ]
+}

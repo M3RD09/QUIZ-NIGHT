@@ -279,6 +279,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <!-- CREATE -->
     <div class="bb-panel" id="bb-tab-create">
       <input class="bb-inp" id="bb-create-name" placeholder="Dein Name (Host)..." maxlength="20">
+      <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;width:100%;padding:12px 14px;margin-bottom:8px;" onchange="if(this.value){bbPresetLoad(this.value);this.value=''}">
+        <option value="">📋 Fertige Vorlage laden...</option>
+        <option value="quizzes/buzzer/bb_allgemeines.quiz">Allgemeines</option>
+        <option value="quizzes/buzzer/bb_entertainment.quiz">Popkultur &amp; Entertainment</option>
+        <option value="quizzes/buzzer/bb_deutschland.quiz">Deutschland</option>
+        <option value="quizzes/buzzer/bb_marken_fashion.quiz">Marken &amp; Fashion</option>
+        <option value="quizzes/buzzer/bb_geografie_welt.quiz">Geografie</option>
+        <option value="quizzes/buzzer/bb_filme_serien.quiz">Filme &amp; Serien</option>
+        <option value="quizzes/buzzer/bb_gaming.quiz">Gaming</option>
+      </select>
       <label style="cursor:pointer;display:block;">
         <div class="bb-file-btn">📂 Quiz importieren</div>
         <input type="file" accept=".quiz,.json" style="display:none" onchange="bbOverlayLoadQuiz(event)">
@@ -448,6 +458,14 @@ function showOverlayStatus(type,msg){const s=document.getElementById('bb-overlay
 function bbChangeTimer(d){
   bbLobbyTimer=Math.max(10,Math.min(120,bbLobbyTimer+d));
   document.getElementById('bb-timer-disp').textContent=bbLobbyTimer;
+}
+async function bbPresetLoad(url){
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error();
+    const t=await r.text();
+    const f=new File([t],url.split('/').pop(),{type:'application/json'});
+    bbOverlayLoadQuiz({target:{files:[f]}});
+  }catch(e){showOverlayStatus('err','❌ Vorlage konnte nicht geladen werden');}
 }
 function bbOverlayLoadQuiz(ev){
   const file=ev.target.files[0];if(!file)return;

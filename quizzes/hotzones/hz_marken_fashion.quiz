@@ -1,0 +1,18 @@
+{
+  "name": "Hot Zones — Marken & Fashion",
+  "categories": [
+    { "name": "CROCS", "labelLeft": "peinlichstes Schuhwerk ever", "labelRight": "Komfort über alles, trage ich täglich" },
+    { "name": "GUCCI TASCHEN", "labelLeft": "sinnloseste Geldverschwendung", "labelRight": "absolutes Traumobjekt" },
+    { "name": "FAST FASHION (SHEIN ETC.)", "labelLeft": "verweigere ich komplett", "labelRight": "kaufe ich regelmäßig" },
+    { "name": "VINTAGE KLEIDUNG", "labelLeft": "anderer Leute alte Klamotten, nein danke", "labelRight": "das Nachhaltigste und Coolste" },
+    { "name": "SNEAKER SAMMELN", "labelLeft": "kompletter Wahnsinn", "labelRight": "meine größte Leidenschaft" },
+    { "name": "MARKENKLAMOTTEN GENERELL", "labelLeft": "zahle nie für Logos", "labelRight": "Marken sagen alles über mich aus" },
+    { "name": "PARFÜM ÜBER 200 EURO", "labelLeft": "absoluter Schwachsinn", "labelRight": "einzig wahre Investition in sich selbst" },
+    { "name": "SKINCARE ROUTINE", "labelLeft": "Wasser und fertig", "labelRight": "12-Schritte-Routine, täglich" },
+    { "name": "SUPREME DROPS", "labelLeft": "Hype um nichts", "labelRight": "stehe nachts an um mitzumachen" },
+    { "name": "LOUIS VUITTON MONOGRAM", "labelLeft": "zu auffällig und protzig", "labelRight": "zeitloser Klassiker" },
+    { "name": "PYJAMA IN DER ÖFFENTLICHKEIT", "labelLeft": "geht gar nicht", "labelRight": "warum nicht? Komfort zuerst" },
+    { "name": "DESIGNER-SONNENBRILLEN", "labelLeft": "zahle nie mehr als 20 Euro", "labelRight": "mein wichtigstes Accessoire" },
+    { "name": "STREETWEAR TRENDS", "labelLeft": "für Teenies, nicht für mich", "labelRight": "ich bin voll drin" }
+  ]
+}

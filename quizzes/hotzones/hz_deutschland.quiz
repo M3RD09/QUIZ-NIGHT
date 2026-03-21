@@ -1,0 +1,19 @@
+{
+  "name": "Hot Zones — Deutschland",
+  "categories": [
+    { "name": "OKTOBERFEST", "labelLeft": "überteuert und überfüllt", "labelRight": "auf die Bucket-List!" },
+    { "name": "AUTOBAHN OHNE TEMPOLIMIT", "labelLeft": "gefährlicher Irrsinn", "labelRight": "deutsches Kulturgut, niemals abschaffen" },
+    { "name": "BERLINER CURRYWURST", "labelLeft": "überbewertet", "labelRight": "deutsches Nationalgericht Nr. 1" },
+    { "name": "KARNEVAL / FASCHING", "labelLeft": "ich verlasse Deutschland im Februar", "labelRight": "die beste Zeit des Jahres" },
+    { "name": "DEUTSCHE PÜNKTLICHKEIT", "labelLeft": "macht mich nervös", "labelRight": "wichtigstes Kulturgut" },
+    { "name": "FUSSBALL BUNDESLIGA", "labelLeft": "finde ich langweilig", "labelRight": "jedes Spiel live vor Ort" },
+    { "name": "BRÖTCHEN AM SONNTAGMORGEN", "labelLeft": "kann ich nicht wertschätzen", "labelRight": "heiliges deutsches Ritual" },
+    { "name": "DEUTSCHE BAHN", "labelLeft": "Alptraum, immer Verspätung", "labelRight": "ich reise nur damit" },
+    { "name": "MÜLLTRENNUNG", "labelLeft": "viel zu kompliziert", "labelRight": "mache es mit Leidenschaft" },
+    { "name": "BIERGARTEN", "labelLeft": "sitze lieber drinnen", "labelRight": "Lebensqualität pur" },
+    { "name": "SILVESTER IN BERLIN", "labelLeft": "zu gefährlich, nie wieder", "labelRight": "einmal muss man es erlebt haben" },
+    { "name": "DEUTSCHE SPRACHE LERNEN", "labelLeft": "unmöglich schwer", "labelRight": "wunderschöne Sprache" },
+    { "name": "BAYERISCHE TRACHT", "labelLeft": "kitschig und touristisch", "labelRight": "stolze Tradition, trage ich gerne" },
+    { "name": "SCHREBERGARTEN", "labelLeft": "typisch spießig deutsch", "labelRight": "Traum für Ruhe und Natur" }
+  ]
+}

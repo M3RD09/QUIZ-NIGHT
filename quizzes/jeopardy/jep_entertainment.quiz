@@ -1,0 +1,65 @@
+{
+  "name": "Jeopardy — Popkultur & Entertainment",
+  "categories": [
+    {
+      "name": "Musik (2020er)",
+      "questions": [
+        { "points": 200, "question": "Sängerin von 'Anti-Hero' (2022)", "answer": "Taylor Swift" },
+        { "points": 400, "question": "Rapper, der 'MONTERO (Call Me By Your Name)' veröffentlichte", "answer": "Lil Nas X" },
+        { "points": 600, "question": "K-Pop-Gruppe, die 2020 mit 'Dynamite' ihren ersten englischsprachigen Hit hatte", "answer": "BTS" },
+        { "points": 800, "question": "Sängerin, die 2023 mit 'Flowers' ihren Comeback-Hit landete", "answer": "Miley Cyrus" },
+        { "points": 1000, "question": "Schweizer Künstler, der den Eurovision Song Contest 2024 gewann", "answer": "Nemo" }
+      ]
+    },
+    {
+      "name": "TikTok & Social Media",
+      "questions": [
+        { "points": 200, "question": "In welchem Land wurde TikTok entwickelt?", "answer": "China" },
+        { "points": 400, "question": "Wie nennt man kurze Videos auf Instagram?", "answer": "Reels" },
+        { "points": 600, "question": "Nutzer mit den meisten TikTok-Followern weltweit (Stand 2026)", "answer": "Khaby Lame" },
+        { "points": 800, "question": "Plattform, auf der Twitch-Streaming hauptsächlich stattfindet", "answer": "Amazon / Twitch.tv" },
+        { "points": 1000, "question": "Welches Unternehmen übernahm Twitter 2022 und benannte es in X um?", "answer": "X Corp / Elon Musk" }
+      ]
+    },
+    {
+      "name": "Reality TV",
+      "questions": [
+        { "points": 200, "question": "Deutsches Reality-Format, bei dem Promis in den Dschungel ziehen (RTL)", "answer": "Ich bin ein Star – Holt mich hier raus! / Dschungelcamp" },
+        { "points": 400, "question": "In welcher Sendung sucht ein Junggeselle eine Partnerin mit Rosen?", "answer": "Der Bachelor" },
+        { "points": 600, "question": "Welche Netflix-Datingshow zeigt Singles, die sich ohne Sichtkontakt verlieben?", "answer": "Love Is Blind" },
+        { "points": 800, "question": "Welche britische Musiktalentshow machte Simon Cowell weltberühmt?", "answer": "Pop Idol / X Factor" },
+        { "points": 1000, "question": "In welcher RTL2-Show müssen Kandidaten auf einer Insel überleben?", "answer": "Naked Survival / Nackt & Allein" }
+      ]
+    },
+    {
+      "name": "YouTube & Podcasts",
+      "questions": [
+        { "points": 200, "question": "Meistgestreamtes Video aller Zeiten auf YouTube (Stand 2026)", "answer": "Baby Shark Dance" },
+        { "points": 400, "question": "Deutsches Duo, das den Podcast 'Gemischtes Hack' produziert", "answer": "Felix Lobrecht und Tommi Schmitt" },
+        { "points": 600, "question": "Welcher YouTube-Kanal hat die meisten Abonnenten weltweit (Stand 2026)?", "answer": "MrBeast" },
+        { "points": 800, "question": "Welcher deutsche Streamer ist als 'MontanaBlack' bekannt?", "answer": "Marcel Thomas Andreas Eris" },
+        { "points": 1000, "question": "In welchem Jahr wurde YouTube gegründet?", "answer": "2005" }
+      ]
+    },
+    {
+      "name": "Mode & Beauty",
+      "questions": [
+        { "points": 200, "question": "Welches Modeland ist für Gucci, Prada und Versace bekannt?", "answer": "Italien" },
+        { "points": 400, "question": "Wie nennt man die jährlichen Modeschauen in Paris, Mailand, London und New York?", "answer": "Fashion Week" },
+        { "points": 600, "question": "Designer, der für das Haus Chanel bekannt war und 2019 starb", "answer": "Karl Lagerfeld" },
+        { "points": 800, "question": "Welche Farbe wurde von Pantone zur 'Color of the Year 2023' gewählt?", "answer": "Viva Magenta" },
+        { "points": 1000, "question": "Wie heißt das berühmteste Modemagazin der Welt, gegründet 1892?", "answer": "Vogue" }
+      ]
+    },
+    {
+      "name": "Memes & Internetkultur",
+      "questions": [
+        { "points": 200, "question": "Was bedeutet 'GG' in der Gaming-Sprache?", "answer": "Good Game" },
+        { "points": 400, "question": "Welcher Hund-Meme zeigt einen Shiba Inu mit Comic-Schrift?", "answer": "Doge" },
+        { "points": 600, "question": "Was bedeutet das Akronym 'IYKYK'?", "answer": "If You Know You Know" },
+        { "points": 800, "question": "Aus welchem Zeichentrick stammt der 'This Is Fine'-Hund im brennenden Zimmer?", "answer": "Gunshow (Webcomic von KC Green)" },
+        { "points": 1000, "question": "Welcher Künstler verkaufte 2021 sein NFT-Kunstwerk 'Everydays' für fast 70 Mio. Dollar?", "answer": "Beeple" }
+      ]
+    }
+  ]
+}

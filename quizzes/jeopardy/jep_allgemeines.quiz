@@ -1,0 +1,65 @@
+{
+  "name": "Jeopardy — Allgemeines",
+  "categories": [
+    {
+      "name": "Tiere",
+      "questions": [
+        { "points": 200, "question": "Welches Tier ist das größte Landsäugetier der Erde?", "answer": "Elefant" },
+        { "points": 400, "question": "Wie nennt man den Winterschlaf bei Tieren?", "answer": "Hibernation / Winterschlaf" },
+        { "points": 600, "question": "Welches Tier hat das längste Gedächtnis unter den Landtieren?", "answer": "Elefant" },
+        { "points": 800, "question": "Wie viele Herzkammern hat ein Oktopus?", "answer": "3" },
+        { "points": 1000, "question": "Welches Tier schläft abwechselnd mit nur einer Gehirnhälfte?", "answer": "Delfin / Tümmler" }
+      ]
+    },
+    {
+      "name": "Wissenschaft & Technik",
+      "questions": [
+        { "points": 200, "question": "Aus was besteht Wasser chemisch gesehen?", "answer": "Zwei Wasserstoffatome und ein Sauerstoffatom / H₂O" },
+        { "points": 400, "question": "Wie viele Planeten hat unser Sonnensystem?", "answer": "8" },
+        { "points": 600, "question": "Wie nennt man die Einheit der elektrischen Stromstärke?", "answer": "Ampere" },
+        { "points": 800, "question": "Was ist die Lichtgeschwindigkeit ungefähr in km/s?", "answer": "300.000 km/s" },
+        { "points": 1000, "question": "Welches Element hat die Ordnungszahl 79 im Periodensystem?", "answer": "Gold (Au)" }
+      ]
+    },
+    {
+      "name": "Geschichte",
+      "questions": [
+        { "points": 200, "question": "In welchem Jahr fiel die Berliner Mauer?", "answer": "1989" },
+        { "points": 400, "question": "Wer war der erste US-Präsident?", "answer": "George Washington" },
+        { "points": 600, "question": "In welchem Jahr begann der Erste Weltkrieg?", "answer": "1914" },
+        { "points": 800, "question": "Wie hieß die Geheimpolizei der DDR?", "answer": "Stasi / MfS / Ministerium für Staatssicherheit" },
+        { "points": 1000, "question": "In welchem Jahr wurde die EU mit dem Maastricht-Vertrag gegründet?", "answer": "1992" }
+      ]
+    },
+    {
+      "name": "Essen & Trinken",
+      "questions": [
+        { "points": 200, "question": "Aus welchem Land kommt Pizza ursprünglich?", "answer": "Italien" },
+        { "points": 400, "question": "Wie nennt man den japanischen Reiswein?", "answer": "Sake" },
+        { "points": 600, "question": "Welche Zutat macht Brot beim Backen luftig?", "answer": "Hefe" },
+        { "points": 800, "question": "Aus welcher Frucht wird Guacamole gemacht?", "answer": "Avocado" },
+        { "points": 1000, "question": "Welches Gewürz wird aus den Staubfäden einer Blume gewonnen und ist das teuerste der Welt?", "answer": "Safran" }
+      ]
+    },
+    {
+      "name": "Körper & Gesundheit",
+      "questions": [
+        { "points": 200, "question": "Wie viele Knochen hat ein erwachsener Mensch?", "answer": "206" },
+        { "points": 400, "question": "Welches Organ filtert das Blut und produziert Urin?", "answer": "Niere" },
+        { "points": 600, "question": "Welches Vitamin wird in der Haut durch Sonnenlicht produziert?", "answer": "Vitamin D" },
+        { "points": 800, "question": "Wie viele Liter Blut hat ein erwachsener Mensch durchschnittlich?", "answer": "5 bis 6 Liter" },
+        { "points": 1000, "question": "Wie nennt man die Nervenzellen im menschlichen Gehirn?", "answer": "Neuronen" }
+      ]
+    },
+    {
+      "name": "Zahlen & Fakten",
+      "questions": [
+        { "points": 200, "question": "Wie viele Sekunden hat eine Stunde?", "answer": "3600" },
+        { "points": 400, "question": "Wie viele Länder gibt es auf der Erde (offiziell, UNO-Mitglieder)?", "answer": "193" },
+        { "points": 600, "question": "Wie viele Nullen hat eine Milliarde?", "answer": "9" },
+        { "points": 800, "question": "Wie viele Farben sind im Lichtspektrum des Regenbogens?", "answer": "7" },
+        { "points": 1000, "question": "Wie nennt man die Zahl Pi auf 5 Dezimalstellen?", "answer": "3,14159" }
+      ]
+    }
+  ]
+}

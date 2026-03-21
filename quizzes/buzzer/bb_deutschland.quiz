@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Deutschland",
+  "questions": [
+    { "question": "Wie heißt die Hauptstadt von Deutschland?", "answer": "Berlin" },
+    { "question": "In welchem Jahr wurde Deutschland wiedervereinigt?", "answer": "1990" },
+    { "question": "Wie viele Bundesländer hat Deutschland?", "answer": "16" },
+    { "question": "Welcher Fluss fließt durch Köln?", "answer": "Rhein" },
+    { "question": "Wer war der erste Bundeskanzler der BRD?", "answer": "Konrad Adenauer" },
+    { "question": "In welcher Stadt findet das Oktoberfest statt?", "answer": "München" },
+    { "question": "Welches Bundesland ist das flächengrößte in Deutschland?", "answer": "Bayern" },
+    { "question": "Wie heißt der höchste Berg Deutschlands?", "answer": "Zugspitze" },
+    { "question": "Welches Bundesland hat Hamburg als einzige Stadt und ist ein Stadtstaat?", "answer": "Hamburg" },
+    { "question": "In welcher Stadt befindet sich das Schloss Neuschwanstein?", "answer": "Schwangau / Bayern" },
+    { "question": "Welches Gericht ist typisch für Berlin und besteht aus Wurst mit Curry?", "answer": "Currywurst" },
+    { "question": "Welche Automarke hat ihren Hauptsitz in Wolfsburg?", "answer": "Volkswagen" },
+    { "question": "Wie heißt das deutsche Parlament?", "answer": "Bundestag" },
+    { "question": "In welchem Jahr fiel die Berliner Mauer?", "answer": "1989" },
+    { "question": "Welcher berühmte Reformator stammt aus Deutschland und veröffentlichte 1517 seine 95 Thesen?", "answer": "Martin Luther" },
+    { "question": "Wie heißt die Geheimpolizei der DDR?", "answer": "Stasi" },
+    { "question": "Welcher deutsche Komponist schrieb die Neunte Sinfonie?", "answer": "Ludwig van Beethoven" },
+    { "question": "Wie nennt man das jährliche Schützenfest in Düsseldorf?", "answer": "Schützenfest" },
+    { "question": "Welches ist das einwohnerreichste Bundesland Deutschlands?", "answer": "Nordrhein-Westfalen" },
+    { "question": "Wo befindet sich der Kölner Dom?", "answer": "Köln" },
+    { "question": "Welcher deutsche Nationalmannschaft-Trainer gewann 2014 die Weltmeisterschaft?", "answer": "Joachim Löw" },
+    { "question": "In welcher Stadt steht das Brandenburger Tor?", "answer": "Berlin" },
+    { "question": "Wie heißt die längste Autobahn Deutschlands?", "answer": "A7" },
+    { "question": "Welche Stadt heißt auch 'Medienhauptstadt Deutschlands'?", "answer": "Köln / Hamburg / Berlin" },
+    { "question": "Wer gründete den Buchdruck mit beweglichen Lettern um 1450?", "answer": "Johannes Gutenberg" }
+  ]
+}

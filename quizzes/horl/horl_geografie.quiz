@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Geografie",
+  "rounds": [
+    {
+      "category": "Landfläche von Ländern (Tausend km²)",
+      "labelLow": "kleineres Land",
+      "labelHigh": "größeres Land",
+      "items": [
+        { "name": "Luxemburg", "value": 2.6, "imageUrl": "" },
+        { "name": "Schweiz", "value": 41, "imageUrl": "" },
+        { "name": "Deutschland", "value": 357, "imageUrl": "" },
+        { "name": "Spanien", "value": 506, "imageUrl": "" },
+        { "name": "Frankreich (inkl. Übersee)", "value": 643, "imageUrl": "" },
+        { "name": "Mongolei", "value": 1564, "imageUrl": "" },
+        { "name": "Indien", "value": 3287, "imageUrl": "" },
+        { "name": "USA", "value": 9834, "imageUrl": "" },
+        { "name": "China", "value": 9597, "imageUrl": "" },
+        { "name": "Brasilien", "value": 8516, "imageUrl": "" },
+        { "name": "Kanada", "value": 9985, "imageUrl": "" },
+        { "name": "Russland", "value": 17098, "imageUrl": "" },
+        { "name": "Australien", "value": 7692, "imageUrl": "" },
+        { "name": "Nigeria", "value": 924, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Bevölkerungszahl von Ländern (Millionen, Stand 2026)",
+      "labelLow": "weniger Einwohner",
+      "labelHigh": "mehr Einwohner",
+      "items": [
+        { "name": "Schweiz", "value": 8.8, "imageUrl": "" },
+        { "name": "Österreich", "value": 9.1, "imageUrl": "" },
+        { "name": "Deutschland", "value": 84, "imageUrl": "" },
+        { "name": "Frankreich", "value": 68, "imageUrl": "" },
+        { "name": "Brasilien", "value": 216, "imageUrl": "" },
+        { "name": "USA", "value": 335, "imageUrl": "" },
+        { "name": "Russland", "value": 143, "imageUrl": "" },
+        { "name": "Nigeria", "value": 230, "imageUrl": "" },
+        { "name": "Pakistan", "value": 240, "imageUrl": "" },
+        { "name": "Indonesien", "value": 278, "imageUrl": "" },
+        { "name": "China", "value": 1410, "imageUrl": "" },
+        { "name": "Indien", "value": 1441, "imageUrl": "" },
+        { "name": "Japan", "value": 124, "imageUrl": "" },
+        { "name": "Mexiko", "value": 130, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Höhe von Berggipfeln (Meter über Meeresspiegel)",
+      "labelLow": "niedriger",
+      "labelHigh": "höher",
+      "items": [
+        { "name": "Zugspitze (DE)", "value": 2962, "imageUrl": "" },
+        { "name": "Mont Blanc (FR/IT)", "value": 4808, "imageUrl": "" },
+        { "name": "Matterhorn (CH/IT)", "value": 4478, "imageUrl": "" },
+        { "name": "Kilimandscharo (TZ)", "value": 5895, "imageUrl": "" },
+        { "name": "Elbrus (RU, höchster in Europa)", "value": 5642, "imageUrl": "" },
+        { "name": "Aconcagua (AR, höchster in Amerika)", "value": 6961, "imageUrl": "" },
+        { "name": "Denali (US, höchster in NA)", "value": 6194, "imageUrl": "" },
+        { "name": "Puncak Jaya (ID, höchster in Ozeanien)", "value": 4884, "imageUrl": "" },
+        { "name": "K2 (Pakistan)", "value": 8611, "imageUrl": "" },
+        { "name": "Kangchendzönga", "value": 8586, "imageUrl": "" },
+        { "name": "Lhotse", "value": 8516, "imageUrl": "" },
+        { "name": "Makalu", "value": 8485, "imageUrl": "" },
+        { "name": "Mount Everest", "value": 8849, "imageUrl": "" },
+        { "name": "Cho Oyu", "value": 8188, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Länge von Flüssen (km)",
+      "labelLow": "kürzer",
+      "labelHigh": "länger",
+      "items": [
+        { "name": "Rhein", "value": 1232, "imageUrl": "" },
+        { "name": "Elbe", "value": 1091, "imageUrl": "" },
+        { "name": "Donau", "value": 2860, "imageUrl": "" },
+        { "name": "Wolga (Europa, längstes)", "value": 3692, "imageUrl": "" },
+        { "name": "Niger", "value": 4180, "imageUrl": "" },
+        { "name": "Murray (Australien)", "value": 2508, "imageUrl": "" },
+        { "name": "Mekong", "value": 4909, "imageUrl": "" },
+        { "name": "Jenissei", "value": 5539, "imageUrl": "" },
+        { "name": "Jangtse (Yangtze)", "value": 6300, "imageUrl": "" },
+        { "name": "Huang He (Gelber Fluss)", "value": 5464, "imageUrl": "" },
+        { "name": "Mississippi-Missouri", "value": 6275, "imageUrl": "" },
+        { "name": "Amazonas", "value": 6992, "imageUrl": "" },
+        { "name": "Nil", "value": 6650, "imageUrl": "" },
+        { "name": "Kongo", "value": 4700, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "BIP pro Kopf (USD, Stand 2025)",
+      "labelLow": "niedrigeres BIP pro Kopf",
+      "labelHigh": "höheres BIP pro Kopf",
+      "items": [
+        { "name": "Niger", "value": 600, "imageUrl": "" },
+        { "name": "Äthiopien", "value": 1000, "imageUrl": "" },
+        { "name": "Indien", "value": 2600, "imageUrl": "" },
+        { "name": "China", "value": 12700, "imageUrl": "" },
+        { "name": "Russland", "value": 15000, "imageUrl": "" },
+        { "name": "Brasilien", "value": 10000, "imageUrl": "" },
+        { "name": "Deutschland", "value": 51000, "imageUrl": "" },
+        { "name": "Frankreich", "value": 43000, "imageUrl": "" },
+        { "name": "USA", "value": 80000, "imageUrl": "" },
+        { "name": "Australien", "value": 64000, "imageUrl": "" },
+        { "name": "Schweiz", "value": 93000, "imageUrl": "" },
+        { "name": "Norwegen", "value": 108000, "imageUrl": "" },
+        { "name": "Luxemburg", "value": 129000, "imageUrl": "" },
+        { "name": "Singapur", "value": 88000, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Küstenlänge von Ländern (km)",
+      "labelLow": "kürzere Küste",
+      "labelHigh": "längere Küste",
+      "items": [
+        { "name": "Deutschland", "value": 2389, "imageUrl": "" },
+        { "name": "Spanien", "value": 4964, "imageUrl": "" },
+        { "name": "Australien", "value": 25760, "imageUrl": "" },
+        { "name": "USA", "value": 19924, "imageUrl": "" },
+        { "name": "Russland", "value": 37653, "imageUrl": "" },
+        { "name": "China", "value": 14500, "imageUrl": "" },
+        { "name": "Japan", "value": 29751, "imageUrl": "" },
+        { "name": "Philippinen", "value": 36289, "imageUrl": "" },
+        { "name": "Griechenland", "value": 13676, "imageUrl": "" },
+        { "name": "Indonesien", "value": 54716, "imageUrl": "" },
+        { "name": "Norwegen (mit Fjorden)", "value": 100915, "imageUrl": "" },
+        { "name": "Kanada", "value": 202080, "imageUrl": "" },
+        { "name": "Brasilien", "value": 7491, "imageUrl": "" },
+        { "name": "Indien", "value": 7517, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Luftdistanz zwischen Städten (km, ca.)",
+      "labelLow": "näher",
+      "labelHigh": "weiter entfernt",
+      "items": [
+        { "name": "Berlin → Hamburg", "value": 254, "imageUrl": "" },
+        { "name": "Berlin → München", "value": 504, "imageUrl": "" },
+        { "name": "Berlin → Paris", "value": 878, "imageUrl": "" },
+        { "name": "Berlin → London", "value": 932, "imageUrl": "" },
+        { "name": "Berlin → Moskau", "value": 1609, "imageUrl": "" },
+        { "name": "Berlin → New York", "value": 6390, "imageUrl": "" },
+        { "name": "Berlin → Dubai", "value": 4756, "imageUrl": "" },
+        { "name": "Berlin → Tokio", "value": 8940, "imageUrl": "" },
+        { "name": "Berlin → Sydney", "value": 16111, "imageUrl": "" },
+        { "name": "Berlin → Buenos Aires", "value": 11600, "imageUrl": "" },
+        { "name": "Berlin → Cape Town", "value": 9692, "imageUrl": "" },
+        { "name": "Berlin → Bangkok", "value": 8615, "imageUrl": "" },
+        { "name": "Berlin → Rom", "value": 1184, "imageUrl": "" },
+        { "name": "Berlin → Wien", "value": 523, "imageUrl": "" }
+      ]
+    }
+  ]
+}

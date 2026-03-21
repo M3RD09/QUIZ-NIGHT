@@ -1,0 +1,66 @@
+{
+  "name": "Jeopardy — Filme & Serien",
+  "categories": [
+    {
+      "name": "Marvel & Superhelden",
+      "questions": [
+        { "points": 200, "question": "Superkraft von Spider-Man", "answer": "Spinnennetze schießen / an Wänden klettern" },
+        { "points": 400, "question": "Schauspieler, der Iron Man in den MCU-Filmen spielt", "answer": "Robert Downey Jr." },
+        { "points": 600, "question": "Bürgerlicher Name von Batman", "answer": "Bruce Wayne" },
+        { "points": 800, "question": "In welchem Film stirbt Iron Man beim Fingerschnippen?", "answer": "Avengers: Endgame" },
+        { "points": 1000, "question": "Wie lautet der echte Name von Deadpool im Marvel-Universum?", "answer": "Wade Wilson" }
+      ]
+    },
+    {
+      "name": "Netflix & Streaming-Hits",
+      "questions": [
+        { "points": 200, "question": "In welcher Serie backt Wren mit Breaking-Bad-Hauptcharakter zusammen?", "answer": "Nein — Breaking Bad handelt vom Chemiker Walter White" },
+        { "points": 200, "question": "In welcher Netflix-Serie leben Kinder in einer Kleinstadt mit Übernatürlichem (Upside Down)?", "answer": "Stranger Things" },
+        { "points": 400, "question": "Koreanische Survival-Serie, in der Kinder-Spiele gespielt werden (2021)", "answer": "Squid Game" },
+        { "points": 600, "question": "Welche Serie zeigt das Leben von Adligen in der englischen Gentry um 1900 (Downton ...)?", "answer": "Downton Abbey" },
+        { "points": 800, "question": "Welche deutsche Netflix-Serie aus Winden handelt von Zeitreisen?", "answer": "Dark" },
+        { "points": 1000, "question": "Wie heißt die spanische Gangster-Serie, in der El Profesor eine Bank ausraubt?", "answer": "Haus des Geldes / La Casa de Papel" }
+      ]
+    },
+    {
+      "name": "Klassische Filme",
+      "questions": [
+        { "points": 200, "question": "In welchem Film spielt Leonardo DiCaprio einen Eisberg-Überlebenden auf einem sinkenden Schiff?", "answer": "Titanic" },
+        { "points": 400, "question": "Wie lautet der berühmte Satz aus 'Terminator': 'I'll be ...'?", "answer": "back" },
+        { "points": 600, "question": "Welcher Film mit Humphrey Bogart und Ingrid Bergman spielt in Marokko?", "answer": "Casablanca" },
+        { "points": 800, "question": "Welcher Regisseur drehte Schindler's Liste, Jurassic Park und Indiana Jones?", "answer": "Steven Spielberg" },
+        { "points": 1000, "question": "Welcher Film von Stanley Kubrick zeigt einen Astronauten auf Reise zum Jupiter, begleitet von KI HAL 9000?", "answer": "2001: Odyssee im Weltraum" }
+      ]
+    },
+    {
+      "name": "Animationsfilme",
+      "questions": [
+        { "points": 200, "question": "Studio, das 'Spirited Away' und 'Mein Nachbar Totoro' produzierte", "answer": "Studio Ghibli" },
+        { "points": 400, "question": "Welcher Film zeigt ein Spielzeug-Cowboy namens Woody?", "answer": "Toy Story" },
+        { "points": 600, "question": "In welchem Disney-Film singt Elsa 'Let It Go'?", "answer": "Frozen / Die Eiskönigin" },
+        { "points": 800, "question": "Wie heißt der Fisch, der in 'Finding Nemo' gesucht wird?", "answer": "Nemo" },
+        { "points": 1000, "question": "Welcher Pixar-Film zeigt eine Müllroboter-Romanze auf einer verlassenen Erde?", "answer": "WALL-E" }
+      ]
+    },
+    {
+      "name": "Schauspieler & Regisseure",
+      "questions": [
+        { "points": 200, "question": "Welcher Schauspieler spielte Jack Sparrow in 'Pirates of the Caribbean'?", "answer": "Johnny Depp" },
+        { "points": 400, "question": "Wer spielte in 'Joker' (2019) die Hauptrolle?", "answer": "Joaquin Phoenix" },
+        { "points": 600, "question": "Welche Schauspielerin gewann für 'Monster' den Oscar für die beste Hauptrolle?", "answer": "Charlize Theron" },
+        { "points": 800, "question": "Welcher Regisseur ist bekannt für Pulp Fiction, Kill Bill und Django Unchained?", "answer": "Quentin Tarantino" },
+        { "points": 1000, "question": "Welcher Schauspieler spielte sowohl Forrest Gump, als auch Cast Away und The Terminal?", "answer": "Tom Hanks" }
+      ]
+    },
+    {
+      "name": "Filmzitate & Szenen",
+      "questions": [
+        { "points": 200, "question": "Vervollständige: 'May the Force ...' (Star Wars)", "answer": "... be with you" },
+        { "points": 400, "question": "Wer sagt 'You can't handle the truth!' in welchem Film?", "answer": "Jack Nicholson / A Few Good Men" },
+        { "points": 600, "question": "In welchem Film sagt Forrest Gump: 'Das Leben ist wie eine Schachtel Pralinen'?", "answer": "Forrest Gump" },
+        { "points": 800, "question": "In welchem Film heißt es: 'Hasta la vista, baby'?", "answer": "Terminator 2: Tag der Abrechnung" },
+        { "points": 1000, "question": "Wer sagt 'You talking to me?' in welchem Film?", "answer": "Robert De Niro / Taxi Driver" }
+      ]
+    }
+  ]
+}

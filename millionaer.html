@@ -368,6 +368,16 @@ body::before{
         <input class="mm-inp" id="mm-host-name" placeholder="z.B. Mert" maxlength="20">
         <label class="mm-inp-label">Quiz</label>
         <div id="mm-quiz-status" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">❌ Kein Quiz geladen</div>
+        <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;width:100%;margin-bottom:8px;" onchange="if(this.value){mmPresetLoad(this.value);this.value=''}">
+          <option value="">📋 Fertige Vorlage laden...</option>
+          <option value="quizzes/millionaer/mill_allgemeinwissen.quiz">Allgemeinwissen</option>
+          <option value="quizzes/millionaer/mill_entertainment.quiz">Popkultur &amp; Entertainment</option>
+          <option value="quizzes/millionaer/mill_deutschland.quiz">Deutschland</option>
+          <option value="quizzes/millionaer/mill_marken_fashion.quiz">Marken &amp; Fashion</option>
+          <option value="quizzes/millionaer/mill_geografie.quiz">Geografie</option>
+          <option value="quizzes/millionaer/mill_filme_serien.quiz">Filme &amp; Serien</option>
+          <option value="quizzes/millionaer/mill_gaming.quiz">Gaming</option>
+        </select>
         <div style="display:flex;gap:8px;margin-bottom:14px;">
           <label class="btn-secondary" style="flex:1;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
             📂 Importieren
@@ -1625,6 +1635,14 @@ function mmSwitchTab(tab){
   document.getElementById('mm-tab-join').classList.toggle('active',tab==='join');
   document.getElementById('mm-panel-create').style.display=tab==='create'?'block':'none';
   document.getElementById('mm-panel-join').style.display=tab==='join'?'block':'none';
+}
+async function mmPresetLoad(url){
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error();
+    const t=await r.text();
+    const f=new File([t],url.split('/').pop(),{type:'application/json'});
+    mmOverlayLoadQuiz({target:{files:[f]}});
+  }catch(e){showToast('❌ Vorlage konnte nicht geladen werden');}
 }
 function mmOverlayLoadQuiz(ev){
   const file=ev.target.files[0];if(!file)return;

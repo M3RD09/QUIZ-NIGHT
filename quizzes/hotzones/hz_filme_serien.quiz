@@ -1,0 +1,19 @@
+{
+  "name": "Hot Zones — Filme & Serien",
+  "categories": [
+    { "name": "HORRORFILME", "labelLeft": "schlafe danach nie mehr ein", "labelRight": "mein absolutes Lieblingsgenre" },
+    { "name": "HAPPY ENDINGS", "labelLeft": "unrealistisch und langweilig", "labelRight": "alles andere macht mich traurig" },
+    { "name": "CLIFFHANGER AM STAFFELENDE", "labelLeft": "respektlos gegenüber dem Zuschauer", "labelRight": "hält die Spannung am Leben" },
+    { "name": "ROMCOM (ROMANTISCHE KOMÖDIE)", "labelLeft": "totaler Kitsch", "labelRight": "beste Filmgattung ever" },
+    { "name": "SUPERHELDEN-FILME", "labelLeft": "Übersättigung, nie mehr", "labelRight": "könnte ewig davon schauen" },
+    { "name": "DEUTSCHE SYNCHRONISATION", "labelLeft": "zerstört jedes Original", "labelRight": "besser als die Originalsprache" },
+    { "name": "SPOILER LESEN VORHER", "labelLeft": "absolutes Verbrechen", "labelRight": "genieße Filme viel mehr damit" },
+    { "name": "DOKUMENTARFILME", "labelLeft": "langweilig wie Schule", "labelRight": "lehrreicher als alles andere" },
+    { "name": "SERIEN MIT 10+ STAFFELN", "labelLeft": "verliere den Überblick, höre auf", "labelRight": "je länger, desto treuer" },
+    { "name": "KINO ALLEINE", "labelLeft": "peinlich und einsam", "labelRight": "das reinste Kinoerlebnis" },
+    { "name": "FILM MIT SCHLECHTEM ENDE", "labelLeft": "Geldverschwendung meiner Zeit", "labelRight": "die realistischsten und besten Filme" },
+    { "name": "SEQUELS & PREQUELS", "labelLeft": "ruinieren das Original immer", "labelRight": "mehr von meinen Lieblingscharakteren" },
+    { "name": "ANIME ALS FILMFORMAT", "labelLeft": "kindisch und überzeichnet", "labelRight": "tiefgründigste Filmkunst" },
+    { "name": "FILME NEU STATT LESEN DES BUCHS", "labelLeft": "das Buch ist immer besser", "labelRight": "spart Zeit und ist genauso gut" }
+  ]
+}

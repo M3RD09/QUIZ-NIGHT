@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Geografie",
+  "questions": [
+    { "question": "Was ist die Hauptstadt von Australien?", "answer": "Canberra" },
+    { "question": "Welches ist das größte Land der Welt?", "answer": "Russland" },
+    { "question": "Welcher Fluss ist der längste der Welt?", "answer": "Nil" },
+    { "question": "Auf welchem Kontinent liegt der Kilimandscharo?", "answer": "Afrika" },
+    { "question": "Was ist die Hauptstadt von Kanada?", "answer": "Ottawa" },
+    { "question": "Wie viele Kontinente hat die Erde?", "answer": "7" },
+    { "question": "Welches Meer liegt zwischen Europa und Afrika?", "answer": "Mittelmeer" },
+    { "question": "Was ist das kleinste Land der Welt?", "answer": "Vatikanstadt" },
+    { "question": "In welchem Land liegt der Amazonas-Regenwald hauptsächlich?", "answer": "Brasilien" },
+    { "question": "Welches ist die größte Wüste der Welt?", "answer": "Antarktis (kalt) / Sahara (heiß)" },
+    { "question": "Welche Stadt ist die größte der Welt nach Einwohnerzahl?", "answer": "Tokio" },
+    { "question": "Auf welchem Kontinent liegt Ägypten?", "answer": "Afrika" },
+    { "question": "Welches Land hat die meisten Einwohner (Stand 2026)?", "answer": "Indien" },
+    { "question": "Welches ist die größte Insel der Welt?", "answer": "Grönland" },
+    { "question": "Welcher Berg ist der höchste der Welt?", "answer": "Mount Everest" },
+    { "question": "Welche Stadt ist die Hauptstadt von Brasilien?", "answer": "Brasília" },
+    { "question": "In welchem Land liegt der Großteil der Alpen?", "answer": "Schweiz / Österreich / Frankreich / Italien (mehrere)" },
+    { "question": "Welches ist das bevölkerungsreichste Land in Afrika?", "answer": "Nigeria" },
+    { "question": "Wie heißt der tiefste See der Welt?", "answer": "Baikalsee" },
+    { "question": "Welches Land hat die längste Küstenlinie der Welt?", "answer": "Kanada" },
+    { "question": "In welchem Kontinent liegt Neuseeland?", "answer": "Ozeanien" },
+    { "question": "Welche Hauptstadt liegt auf zwei Kontinenten?", "answer": "Istanbul (Europa und Asien)" },
+    { "question": "Wie heißt der längste Fluss in Europa?", "answer": "Wolga" },
+    { "question": "Welches Gebirge trennt Europa von Asien (in Russland)?", "answer": "Ural" },
+    { "question": "In welchem Land liegt Machu Picchu?", "answer": "Peru" }
+  ]
+}

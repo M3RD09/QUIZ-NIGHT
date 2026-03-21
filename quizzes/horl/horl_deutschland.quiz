@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Deutschland",
+  "rounds": [
+    {
+      "category": "Einwohnerzahl deutscher Städte (Tausend, Stand 2026)",
+      "labelLow": "weniger Einwohner",
+      "labelHigh": "mehr Einwohner",
+      "items": [
+        { "name": "Freiburg im Breisgau", "value": 231, "imageUrl": "" },
+        { "name": "Erfurt", "value": 214, "imageUrl": "" },
+        { "name": "Augsburg", "value": 296, "imageUrl": "" },
+        { "name": "Wiesbaden", "value": 278, "imageUrl": "" },
+        { "name": "Bonn", "value": 334, "imageUrl": "" },
+        { "name": "Mannheim", "value": 314, "imageUrl": "" },
+        { "name": "Leipzig", "value": 615, "imageUrl": "" },
+        { "name": "Dresden", "value": 566, "imageUrl": "" },
+        { "name": "Hannover", "value": 536, "imageUrl": "" },
+        { "name": "Köln", "value": 1084, "imageUrl": "" },
+        { "name": "Frankfurt am Main", "value": 773, "imageUrl": "" },
+        { "name": "München", "value": 1512, "imageUrl": "" },
+        { "name": "Hamburg", "value": 1892, "imageUrl": "" },
+        { "name": "Berlin", "value": 3597, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Länge von Flüssen in Deutschland (km, gesamter Flusslauf)",
+      "labelLow": "kürzer",
+      "labelHigh": "länger",
+      "items": [
+        { "name": "Saar", "value": 246, "imageUrl": "" },
+        { "name": "Neckar", "value": 367, "imageUrl": "" },
+        { "name": "Isar", "value": 295, "imageUrl": "" },
+        { "name": "Mosel", "value": 544, "imageUrl": "" },
+        { "name": "Saale", "value": 427, "imageUrl": "" },
+        { "name": "Main", "value": 527, "imageUrl": "" },
+        { "name": "Weser", "value": 452, "imageUrl": "" },
+        { "name": "Spree", "value": 382, "imageUrl": "" },
+        { "name": "Elbe", "value": 1091, "imageUrl": "" },
+        { "name": "Oder", "value": 866, "imageUrl": "" },
+        { "name": "Rhein", "value": 1232, "imageUrl": "" },
+        { "name": "Donau", "value": 2860, "imageUrl": "" },
+        { "name": "Ems", "value": 371, "imageUrl": "" },
+        { "name": "Lahn", "value": 245, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Fläche von Bundesländern (km²)",
+      "labelLow": "kleinere Fläche",
+      "labelHigh": "größere Fläche",
+      "items": [
+        { "name": "Bremen", "value": 419, "imageUrl": "" },
+        { "name": "Berlin", "value": 892, "imageUrl": "" },
+        { "name": "Hamburg", "value": 755, "imageUrl": "" },
+        { "name": "Saarland", "value": 2571, "imageUrl": "" },
+        { "name": "Mecklenburg-Vorpommern", "value": 23213, "imageUrl": "" },
+        { "name": "Sachsen", "value": 18450, "imageUrl": "" },
+        { "name": "Thüringen", "value": 16202, "imageUrl": "" },
+        { "name": "Sachsen-Anhalt", "value": 20452, "imageUrl": "" },
+        { "name": "Hessen", "value": 21116, "imageUrl": "" },
+        { "name": "Rheinland-Pfalz", "value": 19854, "imageUrl": "" },
+        { "name": "Schleswig-Holstein", "value": 15800, "imageUrl": "" },
+        { "name": "Nordrhein-Westfalen", "value": 34112, "imageUrl": "" },
+        { "name": "Baden-Württemberg", "value": 35748, "imageUrl": "" },
+        { "name": "Bayern", "value": 70542, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Höhe von Bergen in Deutschland (Meter über Normalnull)",
+      "labelLow": "kleiner",
+      "labelHigh": "höher",
+      "items": [
+        { "name": "Feldberg (Taunus)", "value": 879, "imageUrl": "" },
+        { "name": "Brocken (Harz)", "value": 1141, "imageUrl": "" },
+        { "name": "Fichtelberg (Erzgebirge)", "value": 1215, "imageUrl": "" },
+        { "name": "Inselsberg (Thüringen)", "value": 916, "imageUrl": "" },
+        { "name": "Hohe Acht (Eifel)", "value": 747, "imageUrl": "" },
+        { "name": "Großer Arber (Bayerischer Wald)", "value": 1456, "imageUrl": "" },
+        { "name": "Feldberg (Schwarzwald)", "value": 1493, "imageUrl": "" },
+        { "name": "Zugspitze", "value": 2962, "imageUrl": "" },
+        { "name": "Hochvogel (Allgäu)", "value": 2592, "imageUrl": "" },
+        { "name": "Großglockner (Österreich, höchster AT)", "value": 3798, "imageUrl": "" },
+        { "name": "Watzmann (Bayern)", "value": 2713, "imageUrl": "" },
+        { "name": "Nebelhorn", "value": 2224, "imageUrl": "" },
+        { "name": "Wendelstein", "value": 1838, "imageUrl": "" },
+        { "name": "Großer Inselsberg", "value": 916, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Einwohnerzahl der Bundesländer (Millionen, Stand 2026)",
+      "labelLow": "weniger Einwohner",
+      "labelHigh": "mehr Einwohner",
+      "items": [
+        { "name": "Bremen", "value": 0.68, "imageUrl": "" },
+        { "name": "Saarland", "value": 0.99, "imageUrl": "" },
+        { "name": "Mecklenburg-Vorpommern", "value": 1.62, "imageUrl": "" },
+        { "name": "Brandenburg", "value": 2.57, "imageUrl": "" },
+        { "name": "Sachsen-Anhalt", "value": 2.18, "imageUrl": "" },
+        { "name": "Thüringen", "value": 2.11, "imageUrl": "" },
+        { "name": "Sachsen", "value": 4.06, "imageUrl": "" },
+        { "name": "Rheinland-Pfalz", "value": 4.15, "imageUrl": "" },
+        { "name": "Schleswig-Holstein", "value": 2.92, "imageUrl": "" },
+        { "name": "Hessen", "value": 6.37, "imageUrl": "" },
+        { "name": "Baden-Württemberg", "value": 11.28, "imageUrl": "" },
+        { "name": "Bayern", "value": 13.37, "imageUrl": "" },
+        { "name": "Nordrhein-Westfalen", "value": 18.17, "imageUrl": "" },
+        { "name": "Hamburg", "value": 1.89, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "BIP der Bundesländer (Milliarden Euro, ca. 2022)",
+      "labelLow": "geringere Wirtschaftsleistung",
+      "labelHigh": "höhere Wirtschaftsleistung",
+      "items": [
+        { "name": "Bremen", "value": 39, "imageUrl": "" },
+        { "name": "Saarland", "value": 38, "imageUrl": "" },
+        { "name": "Mecklenburg-Vorpommern", "value": 47, "imageUrl": "" },
+        { "name": "Thüringen", "value": 73, "imageUrl": "" },
+        { "name": "Sachsen-Anhalt", "value": 74, "imageUrl": "" },
+        { "name": "Brandenburg", "value": 84, "imageUrl": "" },
+        { "name": "Sachsen", "value": 145, "imageUrl": "" },
+        { "name": "Rheinland-Pfalz", "value": 165, "imageUrl": "" },
+        { "name": "Schleswig-Holstein", "value": 115, "imageUrl": "" },
+        { "name": "Hessen", "value": 340, "imageUrl": "" },
+        { "name": "Baden-Württemberg", "value": 583, "imageUrl": "" },
+        { "name": "Bayern", "value": 740, "imageUrl": "" },
+        { "name": "Nordrhein-Westfalen", "value": 777, "imageUrl": "" },
+        { "name": "Berlin", "value": 168, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Gründungsjahr / Entstehungsjahr bekannter deutscher Sehenswürdigkeiten",
+      "labelLow": "jünger (später gebaut)",
+      "labelHigh": "älter (früher gebaut)",
+      "items": [
+        { "name": "Brandenburger Tor (Berlin)", "value": 1791, "imageUrl": "" },
+        { "name": "Berliner Mauer (Bau)", "value": 1961, "imageUrl": "" },
+        { "name": "Kölner Dom (Fertigstellung)", "value": 1880, "imageUrl": "" },
+        { "name": "Neuschwanstein (Baubeginn)", "value": 1869, "imageUrl": "" },
+        { "name": "Heidelberger Schloss (ältester Teil)", "value": 1214, "imageUrl": "" },
+        { "name": "Wartburg (Thüringen, Gründung)", "value": 1067, "imageUrl": "" },
+        { "name": "Hamburger Michel (heutiges Gebäude)", "value": 1762, "imageUrl": "" },
+        { "name": "Porta Nigra in Trier (Bau)", "value": 170, "imageUrl": "" },
+        { "name": "Völkerschlachtdenkmal Leipzig", "value": 1913, "imageUrl": "" },
+        { "name": "Elbphilharmonie Hamburg", "value": 2017, "imageUrl": "" },
+        { "name": "Fernsehturm Berlin", "value": 1969, "imageUrl": "" },
+        { "name": "Reichstagsgebäude Berlin (Eröffnung)", "value": 1894, "imageUrl": "" },
+        { "name": "Dom zu Speyer (Weihe)", "value": 1061, "imageUrl": "" },
+        { "name": "Sanssouci Potsdam (Bau)", "value": 1747, "imageUrl": "" }
+      ]
+    }
+  ]
+}

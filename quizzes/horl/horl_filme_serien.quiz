@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Filme & Serien",
+  "rounds": [
+    {
+      "category": "Box-Office-Einnahmen weltweit (Millionen USD)",
+      "labelLow": "weniger Einnahmen",
+      "labelHigh": "mehr Einnahmen",
+      "items": [
+        { "name": "Parasite (2019)", "value": 258, "imageUrl": "" },
+        { "name": "The Dark Knight (2008)", "value": 1005, "imageUrl": "" },
+        { "name": "Joker (2019)", "value": 1079, "imageUrl": "" },
+        { "name": "Barbie (2023)", "value": 1441, "imageUrl": "" },
+        { "name": "The Lion King (2019)", "value": 1663, "imageUrl": "" },
+        { "name": "Black Panther (2018)", "value": 1347, "imageUrl": "" },
+        { "name": "Spider-Man: No Way Home (2021)", "value": 1901, "imageUrl": "" },
+        { "name": "Avengers: Infinity War (2018)", "value": 2048, "imageUrl": "" },
+        { "name": "Titanic (1997)", "value": 2264, "imageUrl": "" },
+        { "name": "Avatar: The Way of Water (2022)", "value": 2320, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2019)", "value": 2799, "imageUrl": "" },
+        { "name": "Avatar (2009)", "value": 2923, "imageUrl": "" },
+        { "name": "Top Gun: Maverick (2022)", "value": 1491, "imageUrl": "" },
+        { "name": "Oppenheimer (2023)", "value": 952, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "IMDb-Bewertung von Filmen und Serien (×10, z.B. 9.2 → 92)",
+      "labelLow": "schlechter bewertet",
+      "labelHigh": "besser bewertet",
+      "items": [
+        { "name": "Sharknado (2013)", "value": 32, "imageUrl": "" },
+        { "name": "Twilight (2008)", "value": 51, "imageUrl": "" },
+        { "name": "The Room (2003)", "value": 37, "imageUrl": "" },
+        { "name": "Cats (2019)", "value": 29, "imageUrl": "" },
+        { "name": "Avengers: Endgame", "value": 83, "imageUrl": "" },
+        { "name": "The Dark Knight", "value": 90, "imageUrl": "" },
+        { "name": "Inception", "value": 87, "imageUrl": "" },
+        { "name": "Pulp Fiction", "value": 88, "imageUrl": "" },
+        { "name": "Schindler's Liste", "value": 90, "imageUrl": "" },
+        { "name": "Breaking Bad (Serie, Top-Rating)", "value": 96, "imageUrl": "" },
+        { "name": "Planet Earth II (Doku)", "value": 97, "imageUrl": "" },
+        { "name": "Band of Brothers", "value": 94, "imageUrl": "" },
+        { "name": "The Wire", "value": 94, "imageUrl": "" },
+        { "name": "Shawshank Redemption", "value": 93, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl gewonnener Oscars (Gesamtausbeute eines Films)",
+      "labelLow": "weniger Oscars",
+      "labelHigh": "mehr Oscars",
+      "items": [
+        { "name": "Parasite (2020)", "value": 4, "imageUrl": "" },
+        { "name": "Oppenheimer (2024)", "value": 7, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2020)", "value": 0, "imageUrl": "" },
+        { "name": "Joker (2020)", "value": 2, "imageUrl": "" },
+        { "name": "1917 (2020)", "value": 3, "imageUrl": "" },
+        { "name": "Gladiator (2001)", "value": 5, "imageUrl": "" },
+        { "name": "No Country for Old Men (2008)", "value": 4, "imageUrl": "" },
+        { "name": "The Lord of the Rings: Return of the King (2004)", "value": 11, "imageUrl": "" },
+        { "name": "Titanic (1998)", "value": 11, "imageUrl": "" },
+        { "name": "Ben Hur (1960)", "value": 11, "imageUrl": "" },
+        { "name": "All About Eve (1951)", "value": 6, "imageUrl": "" },
+        { "name": "The English Patient (1997)", "value": 9, "imageUrl": "" },
+        { "name": "Schindler's Liste (1994)", "value": 7, "imageUrl": "" },
+        { "name": "Braveheart (1996)", "value": 5, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Produktionsbudget von Filmen (Millionen USD)",
+      "labelLow": "günstigerer Film",
+      "labelHigh": "teurerer Film",
+      "items": [
+        { "name": "Paranormal Activity (2007)", "value": 0.015, "imageUrl": "" },
+        { "name": "Blair Witch Project (1999)", "value": 0.06, "imageUrl": "" },
+        { "name": "Mad Max: Fury Road (2015)", "value": 185, "imageUrl": "" },
+        { "name": "Joker (2019)", "value": 55, "imageUrl": "" },
+        { "name": "Avatar (2009)", "value": 237, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2019)", "value": 356, "imageUrl": "" },
+        { "name": "Pirates of the Caribbean: At World's End", "value": 300, "imageUrl": "" },
+        { "name": "Titanic (1997)", "value": 200, "imageUrl": "" },
+        { "name": "Batman v Superman (2016)", "value": 250, "imageUrl": "" },
+        { "name": "Aquaman (2018)", "value": 160, "imageUrl": "" },
+        { "name": "Inception (2010)", "value": 160, "imageUrl": "" },
+        { "name": "Oppenheimer (2023)", "value": 100, "imageUrl": "" },
+        { "name": "Barbie (2023)", "value": 145, "imageUrl": "" },
+        { "name": "The Dark Knight (2008)", "value": 185, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Laufzeit von Filmen (Minuten)",
+      "labelLow": "kürzer",
+      "labelHigh": "länger",
+      "items": [
+        { "name": "Toy Story (1995)", "value": 81, "imageUrl": "" },
+        { "name": "Shrek (2001)", "value": 90, "imageUrl": "" },
+        { "name": "Joker (2019)", "value": 122, "imageUrl": "" },
+        { "name": "The Dark Knight (2008)", "value": 152, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2019)", "value": 181, "imageUrl": "" },
+        { "name": "Titanic (1997)", "value": 194, "imageUrl": "" },
+        { "name": "Schindler's Liste (1993)", "value": 195, "imageUrl": "" },
+        { "name": "Inception (2010)", "value": 148, "imageUrl": "" },
+        { "name": "The Wolf of Wall Street (2013)", "value": 180, "imageUrl": "" },
+        { "name": "Interstellar (2014)", "value": 169, "imageUrl": "" },
+        { "name": "Lawrence of Arabia (1962)", "value": 227, "imageUrl": "" },
+        { "name": "Gone with the Wind (1939)", "value": 238, "imageUrl": "" },
+        { "name": "Ben Hur (1959)", "value": 212, "imageUrl": "" },
+        { "name": "2001: Odyssee im Weltraum (1968)", "value": 149, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Staffeln einer Serie",
+      "labelLow": "weniger Staffeln",
+      "labelHigh": "mehr Staffeln",
+      "items": [
+        { "name": "Dark (Netflix)", "value": 3, "imageUrl": "" },
+        { "name": "Squid Game (Netflix)", "value": 2, "imageUrl": "" },
+        { "name": "Breaking Bad (AMC)", "value": 5, "imageUrl": "" },
+        { "name": "Game of Thrones (HBO)", "value": 8, "imageUrl": "" },
+        { "name": "Friends (NBC)", "value": 10, "imageUrl": "" },
+        { "name": "How I Met Your Mother (CBS)", "value": 9, "imageUrl": "" },
+        { "name": "Grey's Anatomy (ABC)", "value": 20, "imageUrl": "" },
+        { "name": "The Simpsons (Fox)", "value": 35, "imageUrl": "" },
+        { "name": "South Park (Comedy Central)", "value": 27, "imageUrl": "" },
+        { "name": "NCIS (CBS)", "value": 21, "imageUrl": "" },
+        { "name": "Supernatural (CW)", "value": 15, "imageUrl": "" },
+        { "name": "Tatort (ARD)", "value": 57, "imageUrl": "" },
+        { "name": "Lindenstraße (ARD)", "value": 34, "imageUrl": "" },
+        { "name": "Stranger Things (Netflix)", "value": 4, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Rotten-Tomatoes-Wertung (Prozent, Kritikerrating)",
+      "labelLow": "schlechter bewertet",
+      "labelHigh": "besser bewertet",
+      "items": [
+        { "name": "Cats (2019)", "value": 19, "imageUrl": "" },
+        { "name": "Batman & Robin (1997)", "value": 12, "imageUrl": "" },
+        { "name": "Transformers (2007)", "value": 57, "imageUrl": "" },
+        { "name": "Jurassic World (2015)", "value": 71, "imageUrl": "" },
+        { "name": "The Dark Knight (2008)", "value": 94, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2019)", "value": 94, "imageUrl": "" },
+        { "name": "Parasite (2019)", "value": 99, "imageUrl": "" },
+        { "name": "Toy Story 2 (1999)", "value": 100, "imageUrl": "" },
+        { "name": "Mad Max: Fury Road (2015)", "value": 97, "imageUrl": "" },
+        { "name": "Schindler's Liste (1993)", "value": 98, "imageUrl": "" },
+        { "name": "Barbie (2023)", "value": 88, "imageUrl": "" },
+        { "name": "Oppenheimer (2023)", "value": 93, "imageUrl": "" },
+        { "name": "Joker (2019)", "value": 68, "imageUrl": "" },
+        { "name": "Inception (2010)", "value": 87, "imageUrl": "" }
+      ]
+    }
+  ]
+}

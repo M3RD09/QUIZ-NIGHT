@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Popkultur & Entertainment",
+  "rounds": [
+    {
+      "category": "Spotify-Streams von Songs (Milliarden, Stand 2026)",
+      "labelLow": "weniger gestreamt",
+      "labelHigh": "mehr gestreamt",
+      "items": [
+        { "name": "Shape of You — Ed Sheeran", "value": 4.2, "imageUrl": "" },
+        { "name": "Blinding Lights — The Weeknd", "value": 4.5, "imageUrl": "" },
+        { "name": "Dance Monkey — Tones and I", "value": 3.6, "imageUrl": "" },
+        { "name": "Someone You Loved — Lewis Capaldi", "value": 3.2, "imageUrl": "" },
+        { "name": "Rockstar — Post Malone", "value": 3.5, "imageUrl": "" },
+        { "name": "One Dance — Drake", "value": 3.2, "imageUrl": "" },
+        { "name": "Closer — The Chainsmokers", "value": 3.1, "imageUrl": "" },
+        { "name": "Sunflower — Post Malone & Swae Lee", "value": 4.3, "imageUrl": "" },
+        { "name": "Bad Guy — Billie Eilish", "value": 2.8, "imageUrl": "" },
+        { "name": "Dynamite — BTS", "value": 2.0, "imageUrl": "" },
+        { "name": "Watermelon Sugar — Harry Styles", "value": 2.8, "imageUrl": "" },
+        { "name": "Stay With Me — Sam Smith", "value": 2.4, "imageUrl": "" },
+        { "name": "Anti-Hero — Taylor Swift", "value": 2.7, "imageUrl": "" },
+        { "name": "Flowers — Miley Cyrus", "value": 2.2, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Instagram-Follower von Celebrities (Millionen, Stand 2026)",
+      "labelLow": "weniger Follower",
+      "labelHigh": "mehr Follower",
+      "items": [
+        { "name": "Dua Lipa", "value": 93, "imageUrl": "" },
+        { "name": "Justin Bieber", "value": 295, "imageUrl": "" },
+        { "name": "Kylie Jenner", "value": 402, "imageUrl": "" },
+        { "name": "Kim Kardashian", "value": 365, "imageUrl": "" },
+        { "name": "Ariana Grande", "value": 387, "imageUrl": "" },
+        { "name": "Beyoncé", "value": 322, "imageUrl": "" },
+        { "name": "Selena Gomez", "value": 432, "imageUrl": "" },
+        { "name": "Cristiano Ronaldo", "value": 658, "imageUrl": "" },
+        { "name": "Lionel Messi", "value": 512, "imageUrl": "" },
+        { "name": "Taylor Swift", "value": 291, "imageUrl": "" },
+        { "name": "Neymar Jr.", "value": 222, "imageUrl": "" },
+        { "name": "Katy Perry", "value": 189, "imageUrl": "" },
+        { "name": "Rihanna", "value": 153, "imageUrl": "" },
+        { "name": "Billie Eilish", "value": 113, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl gewonnener Grammy Awards (gesamt, Stand 2026)",
+      "labelLow": "weniger Grammys",
+      "labelHigh": "mehr Grammys",
+      "items": [
+        { "name": "Adele", "value": 16, "imageUrl": "" },
+        { "name": "Ed Sheeran", "value": 6, "imageUrl": "" },
+        { "name": "Taylor Swift", "value": 14, "imageUrl": "" },
+        { "name": "Beyoncé", "value": 32, "imageUrl": "" },
+        { "name": "Jay-Z", "value": 24, "imageUrl": "" },
+        { "name": "Eminem", "value": 15, "imageUrl": "" },
+        { "name": "Billie Eilish", "value": 9, "imageUrl": "" },
+        { "name": "Bruno Mars", "value": 15, "imageUrl": "" },
+        { "name": "Kendrick Lamar", "value": 17, "imageUrl": "" },
+        { "name": "Alicia Keys", "value": 15, "imageUrl": "" },
+        { "name": "Michael Jackson", "value": 13, "imageUrl": "" },
+        { "name": "U2", "value": 22, "imageUrl": "" },
+        { "name": "Georg Solti (Klassik-Rekord)", "value": 31, "imageUrl": "" },
+        { "name": "Dua Lipa", "value": 3, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "YouTube-Abonnenten von Kanälen (Millionen, Stand 2026)",
+      "labelLow": "weniger Abos",
+      "labelHigh": "mehr Abos",
+      "items": [
+        { "name": "PewDiePie", "value": 111, "imageUrl": "" },
+        { "name": "MrBeast", "value": 350, "imageUrl": "" },
+        { "name": "T-Series (Indien)", "value": 280, "imageUrl": "" },
+        { "name": "Cocomelon (Kinderkanal)", "value": 180, "imageUrl": "" },
+        { "name": "SET India", "value": 175, "imageUrl": "" },
+        { "name": "YouTube Movies", "value": 100, "imageUrl": "" },
+        { "name": "Like Nastya (Kinderchannel)", "value": 120, "imageUrl": "" },
+        { "name": "Vlad und Niki", "value": 118, "imageUrl": "" },
+        { "name": "WWE", "value": 103, "imageUrl": "" },
+        { "name": "JustDance (offiziell)", "value": 25, "imageUrl": "" },
+        { "name": "MontanaBlack (DE)", "value": 4, "imageUrl": "" },
+        { "name": "TED-Talks", "value": 20, "imageUrl": "" },
+        { "name": "NASA", "value": 13, "imageUrl": "" },
+        { "name": "National Geographic", "value": 23, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Alter von Weltstars (Stand Anfang 2026)",
+      "labelLow": "jünger",
+      "labelHigh": "älter",
+      "items": [
+        { "name": "Billie Eilish (geb. 2001)", "value": 24, "imageUrl": "" },
+        { "name": "Olivia Rodrigo (geb. 2003)", "value": 22, "imageUrl": "" },
+        { "name": "Dua Lipa (geb. 1995)", "value": 30, "imageUrl": "" },
+        { "name": "Harry Styles (geb. 1994)", "value": 31, "imageUrl": "" },
+        { "name": "Taylor Swift (geb. 1989)", "value": 36, "imageUrl": "" },
+        { "name": "Ariana Grande (geb. 1993)", "value": 32, "imageUrl": "" },
+        { "name": "Beyoncé (geb. 1981)", "value": 44, "imageUrl": "" },
+        { "name": "Drake (geb. 1986)", "value": 39, "imageUrl": "" },
+        { "name": "Rihanna (geb. 1988)", "value": 37, "imageUrl": "" },
+        { "name": "Justin Bieber (geb. 1994)", "value": 31, "imageUrl": "" },
+        { "name": "Eminem (geb. 1972)", "value": 53, "imageUrl": "" },
+        { "name": "Jay-Z (geb. 1969)", "value": 56, "imageUrl": "" },
+        { "name": "Kylie Jenner (geb. 1997)", "value": 28, "imageUrl": "" },
+        { "name": "Ed Sheeran (geb. 1991)", "value": 34, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Box-Office-Einnahmen von Filmen (Millionen USD, weltweit)",
+      "labelLow": "weniger Einnahmen",
+      "labelHigh": "mehr Einnahmen",
+      "items": [
+        { "name": "Parasite (2019)", "value": 258, "imageUrl": "" },
+        { "name": "Joker (2019)", "value": 1079, "imageUrl": "" },
+        { "name": "The Lion King (2019)", "value": 1663, "imageUrl": "" },
+        { "name": "Frozen II (2019)", "value": 1450, "imageUrl": "" },
+        { "name": "Spider-Man: No Way Home (2021)", "value": 1901, "imageUrl": "" },
+        { "name": "Top Gun: Maverick (2022)", "value": 1491, "imageUrl": "" },
+        { "name": "Avatar (2009)", "value": 2923, "imageUrl": "" },
+        { "name": "Avengers: Endgame (2019)", "value": 2799, "imageUrl": "" },
+        { "name": "Titanic (1997)", "value": 2264, "imageUrl": "" },
+        { "name": "Star Wars: Das Erwachen der Macht (2015)", "value": 2068, "imageUrl": "" },
+        { "name": "Barbie (2023)", "value": 1441, "imageUrl": "" },
+        { "name": "Oppenheimer (2023)", "value": 952, "imageUrl": "" },
+        { "name": "Avatar: The Way of Water (2022)", "value": 2320, "imageUrl": "" },
+        { "name": "Black Panther (2018)", "value": 1347, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Wochen auf Platz 1 der deutschen Hitparade (historisch)",
+      "labelLow": "weniger Wochen Nr. 1",
+      "labelHigh": "mehr Wochen Nr. 1",
+      "items": [
+        { "name": "Abba — Dancing Queen (1976)", "value": 4, "imageUrl": "" },
+        { "name": "Pharrell Williams — Happy (2014)", "value": 5, "imageUrl": "" },
+        { "name": "Despacito — Luis Fonsi (2017)", "value": 8, "imageUrl": "" },
+        { "name": "Shape of You — Ed Sheeran (2017)", "value": 6, "imageUrl": "" },
+        { "name": "Atemlos durch die Nacht — Helene Fischer (2013)", "value": 10, "imageUrl": "" },
+        { "name": "Baby Shark — Pinkfong (2018)", "value": 5, "imageUrl": "" },
+        { "name": "Shallow — Lady Gaga & Bradley Cooper (2018)", "value": 4, "imageUrl": "" },
+        { "name": "Old Town Road — Lil Nas X (2019)", "value": 7, "imageUrl": "" },
+        { "name": "Blinding Lights — The Weeknd (2020)", "value": 9, "imageUrl": "" },
+        { "name": "Dynamite — BTS (2020)", "value": 3, "imageUrl": "" },
+        { "name": "Stay — Justin Bieber (2021)", "value": 4, "imageUrl": "" },
+        { "name": "Anti-Hero — Taylor Swift (2022)", "value": 8, "imageUrl": "" },
+        { "name": "Flowers — Miley Cyrus (2023)", "value": 5, "imageUrl": "" },
+        { "name": "Gangnam Style — Psy (2012)", "value": 3, "imageUrl": "" }
+      ]
+    }
+  ]
+}

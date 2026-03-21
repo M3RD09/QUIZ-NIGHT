@@ -1,0 +1,20 @@
+{
+  "name": "Wer wird Millionär — Geografie",
+  "questions": [
+    { "question": "Was ist die Hauptstadt von Frankreich?", "answers": ["Lyon", "Marseille", "Bordeaux", "Paris"], "correct": 3, "points": 100 },
+    { "question": "Welches ist das flächenmäßig größte Land der Welt?", "answers": ["Kanada", "USA", "China", "Russland"], "correct": 3, "points": 200 },
+    { "question": "Auf welchem Kontinent liegt Ägypten?", "answers": ["Asien", "Naher Osten", "Afrika", "Europa"], "correct": 2, "points": 300 },
+    { "question": "Was ist die Hauptstadt von Australien?", "answers": ["Sydney", "Melbourne", "Brisbane", "Canberra"], "correct": 3, "points": 500 },
+    { "question": "Welcher Fluss ist der längste der Welt?", "answers": ["Amazonas", "Nil", "Yangtze", "Mississippi"], "correct": 1, "points": 750 },
+    { "question": "Welches Land hat die meisten Einwohner (Stand 2026)?", "answers": ["China", "Indien", "USA", "Indonesien"], "correct": 1, "points": 1000 },
+    { "question": "In welchem Land liegt der Kilimandscharo?", "answers": ["Kenia", "Äthiopien", "Tansania", "Uganda"], "correct": 2, "points": 1500 },
+    { "question": "Welches Meer liegt zwischen Europa, Afrika und dem Nahen Osten?", "answers": ["Rotes Meer", "Schwarzes Meer", "Kaspisches Meer", "Mittelmeer"], "correct": 3, "points": 2000 },
+    { "question": "Welches ist das bevölkerungsreichste Land Europas?", "answers": ["Frankreich", "Deutschland", "Russland", "Türkei"], "correct": 2, "points": 3000 },
+    { "question": "Welches ist das kleinste Land der Welt nach Fläche?", "answers": ["Monaco", "Liechtenstein", "San Marino", "Vatikanstadt"], "correct": 3, "points": 5000 },
+    { "question": "Welcher Ozean ist der tiefste und größte der Erde?", "answers": ["Atlantik", "Indischer Ozean", "Arktischer Ozean", "Pazifik"], "correct": 3, "points": 7500 },
+    { "question": "Welches Land teilt die längste Landgrenze mit Russland?", "answers": ["Ukraine", "China", "Kasachstan", "Mongolei"], "correct": 2, "points": 10000 },
+    { "question": "In welchem Land liegen die meisten UNESCO-Weltkulturerbestätten (Stand 2026)?", "answers": ["China", "Spanien", "Frankreich", "Italien"], "correct": 3, "points": 15000 },
+    { "question": "Welcher Kontinent hat keine permanente Bevölkerung?", "answers": ["Arktis", "Antarktika", "Ozeanien", "Arktika"], "correct": 1, "points": 25000 },
+    { "question": "Welches Land grenzt sowohl an Europa als auch an Asien?", "answers": ["Georgien", "Armenien", "Azerbaidschan", "Türkei"], "correct": 3, "points": 50000 }
+  ]
+}

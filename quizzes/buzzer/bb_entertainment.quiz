@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Popkultur & Entertainment",
+  "questions": [
+    { "question": "Von welchem Land stammt TikTok?", "answer": "China" },
+    { "question": "Wie heißt das K-Pop-Mädchen-Duo, bekannt für 'Ice Cream' und 'How You Like That'?", "answer": "BLACKPINK" },
+    { "question": "Welcher Rapper veröffentlichte das Album 'God's Plan'?", "answer": "Drake" },
+    { "question": "In welchem Jahr erschien Spotify?", "answer": "2008" },
+    { "question": "Wie heißt der Protagonist der Netflix-Serie 'Stranger Things'?", "answer": "Eleven / Mike Wheeler / Will Byers" },
+    { "question": "Welche Sängerin ist bekannt für 'Bad Guy' und 'Happier Than Ever'?", "answer": "Billie Eilish" },
+    { "question": "Welches soziale Netzwerk wurde 2004 von Mark Zuckerberg gegründet?", "answer": "Facebook" },
+    { "question": "Wie heißt der Moderator von 'Germany's Next Topmodel'?", "answer": "Heidi Klum" },
+    { "question": "Von welcher Band stammt der Hit 'Bohemian Rhapsody'?", "answer": "Queen" },
+    { "question": "Welcher YouTuber schoss in einem Video 6 Millionen Dollar in den Weltraum?", "answer": "MrBeast" },
+    { "question": "Wie heißt die Figur, die in der Serie 'Breaking Bad' Drogen kocht?", "answer": "Walter White" },
+    { "question": "Welche App ist bekannt für verschwindende Fotos und Stories?", "answer": "Snapchat" },
+    { "question": "Von wem ist der Hit 'Shape of You'?", "answer": "Ed Sheeran" },
+    { "question": "In welcher Stadt spielt die Serie 'Emily in Paris'?", "answer": "Paris" },
+    { "question": "Wie heißt der Streamingdienst von Disney?", "answer": "Disney+" },
+    { "question": "Welcher Schauspieler spielt Thor im MCU?", "answer": "Chris Hemsworth" },
+    { "question": "Wie heißt die Figur Joker aus Batman mit bürgerlichem Namen?", "answer": "Arthur Fleck (im Film 2019) / Jack Napier (in anderen Versionen)" },
+    { "question": "Von welchem Land gewann Nemo den Eurovision Song Contest 2024?", "answer": "Schweiz" },
+    { "question": "Welcher Rapper ist bekannt für 'HUMBLE.' und 'DNA.'?", "answer": "Kendrick Lamar" },
+    { "question": "Wie heißt die berühmteste Rolle von Leonardo DiCaprio auf einem sinkenden Schiff?", "answer": "Jack Dawson" },
+    { "question": "Welche Plattform ist Mutterkonzern von WhatsApp?", "answer": "Meta / Facebook" },
+    { "question": "Wie heißt der Hauptcharakter in der Anime-Serie 'Naruto'?", "answer": "Naruto Uzumaki" },
+    { "question": "Wer sang 'Flowers' (2023)?", "answer": "Miley Cyrus" },
+    { "question": "Welcher Podcast läuft im Auto besonders gut und heißt 'True Crime ...'?", "answer": "True Crime Germany / verschiedene Podcasts möglich" },
+    { "question": "Wie heißt die koreanische Netflix-Show mit Kinderspielen um Leben und Tod?", "answer": "Squid Game" }
+  ]
+}

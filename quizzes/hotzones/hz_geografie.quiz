@@ -1,0 +1,19 @@
+{
+  "name": "Hot Zones — Geografie & Reisen",
+  "categories": [
+    { "name": "STRANDURLAUB", "labelLeft": "Sand überall, Sonnenbrand, nein danke", "labelRight": "Traumurlaub schlechthin" },
+    { "name": "CAMPING", "labelLeft": "ohne Komfort schlafe ich nicht", "labelRight": "das pure Naturerlebnis" },
+    { "name": "FLUGREISEN", "labelLeft": "Umweltsünde, vermeide ich", "labelRight": "beste Art zu reisen" },
+    { "name": "GROSSSTADTLEBEN", "labelLeft": "zu laut, zu teuer, zu voll", "labelRight": "das Leben pulsiert, liebe es" },
+    { "name": "LANDLEBEN / DORF", "labelLeft": "zu langweilig und abgelegen", "labelRight": "Ruhe, Natur, perfekt" },
+    { "name": "JAPAN ALS REISEZIEL", "labelLeft": "zu weit weg und zu teuer", "labelRight": "absolutes Bucket-List-Ziel" },
+    { "name": "ALLEINREISEN", "labelLeft": "viel zu einsam", "labelRight": "macht mich wachsen" },
+    { "name": "HOSTEL STATT HOTEL", "labelLeft": "mit Fremden in einem Zimmer? Nein!", "labelRight": "die besten Bekanntschaften macht man dort" },
+    { "name": "ROADTRIP", "labelLeft": "zu anstrengend", "labelRight": "das ultimative Abenteuer" },
+    { "name": "KREUZFAHRT", "labelLeft": "überteuert und umweltschädlich", "labelRight": "Luxusurlaub in Perfektion" },
+    { "name": "WÜSTE ALS REISEZIEL", "labelLeft": "Hitze und Sand, nie wieder", "labelRight": "beeindruckendstes Naturerlebnis" },
+    { "name": "WINTERURLAUB IM GEBIRGE", "labelLeft": "kalt, teuer, nicht meins", "labelRight": "Skifahren und Glühwein, perfekt" },
+    { "name": "OHNE SMARTPHONE REISEN", "labelLeft": "unmöglich, geht nicht", "labelRight": "der einzig wahre Detox" },
+    { "name": "AUSTAUSCHSEMESTER INS AUSLAND", "labelLeft": "zu großes Risiko und Aufwand", "labelRight": "lebensverändernde Erfahrung" }
+  ]
+}

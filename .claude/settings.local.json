@@ -9,7 +9,9 @@
       "WebFetch(domain:commons.wikimedia.org)",
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:upload.wikimedia.org)",
-      "WebFetch(domain:www.mediawiki.org)"
+      "WebFetch(domain:www.mediawiki.org)",
+      "Bash(grep -n \"importAndPlay\\\\|horlOverlayLoadQuiz\\\\|bbOverlayLoadQuiz\\\\|mmOverlayLoadQuiz\\\\|lobbyImportQuiz\" /c/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/*.html)",
+      "Bash(xargs -I {} basename {})"
     ]
   }
 }

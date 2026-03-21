@@ -260,6 +260,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <!-- CREATE TAB -->
     <div id="horl-tab-create" style="display:flex;flex-direction:column;gap:10px;padding:16px 20px;">
       <input class="horl-inp" id="horl-create-name" placeholder="Dein Name..." maxlength="20">
+      <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;width:100%;padding:12px 14px;" onchange="if(this.value){horlPresetLoad(this.value);this.value=''}">
+        <option value="">📋 Fertige Vorlage laden...</option>
+        <option value="quizzes/horl/horl_allgemeines.quiz">Allgemeines</option>
+        <option value="quizzes/horl/horl_entertainment.quiz">Popkultur &amp; Entertainment</option>
+        <option value="quizzes/horl/horl_deutschland.quiz">Deutschland</option>
+        <option value="quizzes/horl/horl_marken_fashion.quiz">Marken &amp; Fashion</option>
+        <option value="quizzes/horl/horl_geografie.quiz">Geografie</option>
+        <option value="quizzes/horl/horl_filme_serien.quiz">Filme &amp; Serien</option>
+        <option value="quizzes/horl/horl_gaming.quiz">Gaming</option>
+      </select>
       <label style="cursor:pointer;display:block;">
         <div class="horl-file-btn">📂 Quiz importieren</div>
         <input type="file" accept=".quiz,.json" style="display:none" onchange="horlOverlayLoadQuiz(event)">
@@ -446,6 +456,14 @@ function horlChangeHearts(d){
   inp.value = Math.max(1, Math.min(10, parseInt(inp.value) + d));
 }
 
+async function horlPresetLoad(url){
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error();
+    const t=await r.text();
+    const f=new File([t],url.split('/').pop(),{type:'application/json'});
+    horlOverlayLoadQuiz({target:{files:[f]}});
+  }catch(e){showHorlStatus('err','❌ Vorlage konnte nicht geladen werden');}
+}
 function horlOverlayLoadQuiz(ev){
   const file = ev.target.files[0]; if(!file)return;
   const r = new FileReader();

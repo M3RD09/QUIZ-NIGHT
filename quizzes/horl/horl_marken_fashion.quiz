@@ -1,0 +1,152 @@
+{
+  "name": "Higher or Lower — Marken & Fashion",
+  "rounds": [
+    {
+      "category": "Markenwert laut Brand Finance (Milliarden USD, ca. 2026)",
+      "labelLow": "geringerer Markenwert",
+      "labelHigh": "höherer Markenwert",
+      "items": [
+        { "name": "Adidas", "value": 14, "imageUrl": "" },
+        { "name": "Nike", "value": 53, "imageUrl": "" },
+        { "name": "Louis Vuitton", "value": 124, "imageUrl": "" },
+        { "name": "Gucci", "value": 18, "imageUrl": "" },
+        { "name": "Chanel", "value": 47, "imageUrl": "" },
+        { "name": "Hermès", "value": 22, "imageUrl": "" },
+        { "name": "Apple (Markenwert)", "value": 516, "imageUrl": "" },
+        { "name": "Amazon", "value": 439, "imageUrl": "" },
+        { "name": "Google", "value": 333, "imageUrl": "" },
+        { "name": "Samsung", "value": 107, "imageUrl": "" },
+        { "name": "Toyota", "value": 64, "imageUrl": "" },
+        { "name": "Mercedes-Benz", "value": 53, "imageUrl": "" },
+        { "name": "Puma", "value": 5, "imageUrl": "" },
+        { "name": "H&M", "value": 12, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Gründungsjahr von Modemarken",
+      "labelLow": "jünger (später gegründet)",
+      "labelHigh": "älter (früher gegründet)",
+      "items": [
+        { "name": "Supreme", "value": 1994, "imageUrl": "" },
+        { "name": "Off-White", "value": 2013, "imageUrl": "" },
+        { "name": "H&M", "value": 1947, "imageUrl": "" },
+        { "name": "Zara", "value": 1975, "imageUrl": "" },
+        { "name": "Nike", "value": 1964, "imageUrl": "" },
+        { "name": "Adidas", "value": 1949, "imageUrl": "" },
+        { "name": "Puma", "value": 1948, "imageUrl": "" },
+        { "name": "Louis Vuitton", "value": 1854, "imageUrl": "" },
+        { "name": "Gucci", "value": 1921, "imageUrl": "" },
+        { "name": "Chanel", "value": 1910, "imageUrl": "" },
+        { "name": "Hermès", "value": 1837, "imageUrl": "" },
+        { "name": "Burberry", "value": 1856, "imageUrl": "" },
+        { "name": "Lacoste", "value": 1933, "imageUrl": "" },
+        { "name": "Ralph Lauren", "value": 1967, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Jahresumsatz von Unternehmen (Milliarden Euro, ca. 2024/2025)",
+      "labelLow": "geringerer Umsatz",
+      "labelHigh": "höherer Umsatz",
+      "items": [
+        { "name": "Puma", "value": 8.5, "imageUrl": "" },
+        { "name": "Hugo Boss", "value": 4.2, "imageUrl": "" },
+        { "name": "Adidas", "value": 21.4, "imageUrl": "" },
+        { "name": "H&M Group", "value": 22.5, "imageUrl": "" },
+        { "name": "Inditex (Zara)", "value": 35.9, "imageUrl": "" },
+        { "name": "Nike", "value": 49.6, "imageUrl": "" },
+        { "name": "LVMH", "value": 86.2, "imageUrl": "" },
+        { "name": "L'Oréal", "value": 41.2, "imageUrl": "" },
+        { "name": "Nestlé", "value": 93.0, "imageUrl": "" },
+        { "name": "Volkswagen Konzern", "value": 322, "imageUrl": "" },
+        { "name": "Amazon", "value": 574, "imageUrl": "" },
+        { "name": "Apple", "value": 383, "imageUrl": "" },
+        { "name": "Walmart", "value": 648, "imageUrl": "" },
+        { "name": "Hermès", "value": 13.4, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Ladengeschäfte weltweit (ca. 2025/2026)",
+      "labelLow": "weniger Stores",
+      "labelHigh": "mehr Stores",
+      "items": [
+        { "name": "Hermès", "value": 311, "imageUrl": "" },
+        { "name": "Louis Vuitton", "value": 460, "imageUrl": "" },
+        { "name": "Gucci", "value": 550, "imageUrl": "" },
+        { "name": "H&M", "value": 4300, "imageUrl": "" },
+        { "name": "Zara (Inditex)", "value": 2000, "imageUrl": "" },
+        { "name": "Nike (eigene Stores)", "value": 1100, "imageUrl": "" },
+        { "name": "Adidas", "value": 2400, "imageUrl": "" },
+        { "name": "Starbucks", "value": 36000, "imageUrl": "" },
+        { "name": "McDonald's", "value": 40000, "imageUrl": "" },
+        { "name": "7-Eleven", "value": 83000, "imageUrl": "" },
+        { "name": "Apple Stores", "value": 520, "imageUrl": "" },
+        { "name": "IKEA", "value": 460, "imageUrl": "" },
+        { "name": "Primark", "value": 440, "imageUrl": "" },
+        { "name": "Swarovski", "value": 3000, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Preis von Luxusprodukten (Euro, ca. aktuelle Preise)",
+      "labelLow": "günstiger",
+      "labelHigh": "teurer",
+      "items": [
+        { "name": "Air Jordan 1 Retro High OG (Nike)", "value": 180, "imageUrl": "" },
+        { "name": "Yeezy 350 V2 (Adidas)", "value": 220, "imageUrl": "" },
+        { "name": "Lacoste Poloshirt (Klassiker)", "value": 120, "imageUrl": "" },
+        { "name": "Gucci Sneaker (Ace)", "value": 620, "imageUrl": "" },
+        { "name": "Louis Vuitton Keepall 45", "value": 1700, "imageUrl": "" },
+        { "name": "Chanel Classic Flap Bag (Small)", "value": 9200, "imageUrl": "" },
+        { "name": "Hermès Birkin 30", "value": 10200, "imageUrl": "" },
+        { "name": "Rolex Submariner (ohne Datum)", "value": 9200, "imageUrl": "" },
+        { "name": "Patek Philippe Nautilus 5711", "value": 35000, "imageUrl": "" },
+        { "name": "Lamborghini Urus", "value": 250000, "imageUrl": "" },
+        { "name": "Rolls-Royce Ghost", "value": 370000, "imageUrl": "" },
+        { "name": "Bugatti Chiron", "value": 3000000, "imageUrl": "" },
+        { "name": "Ralph Lauren Poloshirt (Classic)", "value": 100, "imageUrl": "" },
+        { "name": "Supreme Box Logo Hoodie", "value": 168, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Instagram-Follower von Modemarken (Millionen, Stand 2026)",
+      "labelLow": "weniger Follower",
+      "labelHigh": "mehr Follower",
+      "items": [
+        { "name": "Hermès", "value": 17, "imageUrl": "" },
+        { "name": "Hugo Boss", "value": 11, "imageUrl": "" },
+        { "name": "Puma", "value": 14, "imageUrl": "" },
+        { "name": "Lacoste", "value": 8, "imageUrl": "" },
+        { "name": "Gucci", "value": 48, "imageUrl": "" },
+        { "name": "Louis Vuitton", "value": 52, "imageUrl": "" },
+        { "name": "Chanel", "value": 55, "imageUrl": "" },
+        { "name": "Adidas", "value": 30, "imageUrl": "" },
+        { "name": "Nike", "value": 305, "imageUrl": "" },
+        { "name": "H&M", "value": 38, "imageUrl": "" },
+        { "name": "Zara", "value": 57, "imageUrl": "" },
+        { "name": "Supreme", "value": 16, "imageUrl": "" },
+        { "name": "Off-White", "value": 10, "imageUrl": "" },
+        { "name": "Balenciaga", "value": 14, "imageUrl": "" }
+      ]
+    },
+    {
+      "category": "Anzahl Mitarbeiter weltweit (Tausend, ca. 2024/2025)",
+      "labelLow": "weniger Mitarbeiter",
+      "labelHigh": "mehr Mitarbeiter",
+      "items": [
+        { "name": "Hermès", "value": 23, "imageUrl": "" },
+        { "name": "Hugo Boss", "value": 14, "imageUrl": "" },
+        { "name": "Puma", "value": 14, "imageUrl": "" },
+        { "name": "Adidas", "value": 59, "imageUrl": "" },
+        { "name": "Nike", "value": 79, "imageUrl": "" },
+        { "name": "H&M Group", "value": 130, "imageUrl": "" },
+        { "name": "Inditex (Zara)", "value": 165, "imageUrl": "" },
+        { "name": "LVMH", "value": 196, "imageUrl": "" },
+        { "name": "Volkswagen Konzern", "value": 684, "imageUrl": "" },
+        { "name": "Amazon", "value": 1540, "imageUrl": "" },
+        { "name": "Walmart", "value": 2100, "imageUrl": "" },
+        { "name": "McDonald's (inkl. Franchises)", "value": 2000, "imageUrl": "" },
+        { "name": "Apple", "value": 161, "imageUrl": "" },
+        { "name": "L'Oréal", "value": 88, "imageUrl": "" }
+      ]
+    }
+  ]
+}

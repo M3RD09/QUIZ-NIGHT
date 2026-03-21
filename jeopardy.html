@@ -409,6 +409,16 @@ to{opacity:1;}}
       ▶ Spiel starten — Quiz importieren
       <input type="file" id="file-input" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
+    <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;" onchange="if(this.value){jepPresetLoad(this.value);this.value=''}">
+      <option value="">📋 Fertige Vorlage laden...</option>
+      <option value="quizzes/jeopardy/jep_allgemeines.quiz">Allgemeines</option>
+      <option value="quizzes/jeopardy/jep_entertainment.quiz">Popkultur &amp; Entertainment</option>
+      <option value="quizzes/jeopardy/jep_deutschland.quiz">Deutschland</option>
+      <option value="quizzes/jeopardy/jep_marken_fashion.quiz">Marken &amp; Fashion</option>
+      <option value="quizzes/jeopardy/jep_geografie.quiz">Geografie</option>
+      <option value="quizzes/jeopardy/jep_filme_serien.quiz">Filme &amp; Serien</option>
+      <option value="quizzes/jeopardy/jep_gaming.quiz">Gaming</option>
+    </select>
         <button class="btn-secondary" onclick="showView('view-editor')">✏️ Quiz erstellen</button>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;margin-top:4px;">🏠 Hauptmenü</button>
   </div>
@@ -426,6 +436,16 @@ to{opacity:1;}}
       📂 Quiz-Datei auswählen
       <input type="file" id="file-input-2" accept=".quiz,.json" onchange="importAndPlay(event)" style="display:none">
     </label>
+    <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;" onchange="if(this.value){jepPresetLoad(this.value);this.value=''}">
+      <option value="">📋 Fertige Vorlage laden...</option>
+      <option value="quizzes/jeopardy/jep_allgemeines.quiz">Allgemeines</option>
+      <option value="quizzes/jeopardy/jep_entertainment.quiz">Popkultur &amp; Entertainment</option>
+      <option value="quizzes/jeopardy/jep_deutschland.quiz">Deutschland</option>
+      <option value="quizzes/jeopardy/jep_marken_fashion.quiz">Marken &amp; Fashion</option>
+      <option value="quizzes/jeopardy/jep_geografie.quiz">Geografie</option>
+      <option value="quizzes/jeopardy/jep_filme_serien.quiz">Filme &amp; Serien</option>
+      <option value="quizzes/jeopardy/jep_gaming.quiz">Gaming</option>
+    </select>
     <button class="btn-secondary" onclick="goHome()" style="opacity:.55;">🏠 Hauptmenü</button>
   </div>
 </div>
@@ -630,6 +650,15 @@ let soloMode=false;
 let soloScores=[];
 const CIRC=2*Math.PI*35;
 
+// ── PRESET LOADER ──
+async function jepPresetLoad(url){
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error();
+    const t=await r.text();
+    const f=new File([t],url.split('/').pop(),{type:'application/json'});
+    importAndPlay({target:{files:[f]}});
+  }catch(e){showToast('❌ Vorlage konnte nicht geladen werden');}
+}
 // ── IMPORT ──
 function importAndPlay(ev){
   const file=ev.target.files[0];

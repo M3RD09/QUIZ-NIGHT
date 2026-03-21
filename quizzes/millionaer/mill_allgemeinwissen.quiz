@@ -1,0 +1,20 @@
+{
+  "name": "Wer wird Millionär — Allgemeinwissen",
+  "questions": [
+    { "question": "Wie viele Tage hat ein normales Jahr?", "answers": ["364", "365", "366", "367"], "correct": 1, "points": 100 },
+    { "question": "Welche Farbe ergibt sich, wenn man Blau und Gelb mischt?", "answers": ["Orange", "Lila", "Grün", "Braun"], "correct": 2, "points": 200 },
+    { "question": "Wie viele Beine hat eine Spinne?", "answers": ["6", "8", "10", "12"], "correct": 1, "points": 300 },
+    { "question": "Was ist die Hauptstadt von Japan?", "answers": ["Peking", "Seoul", "Bangkok", "Tokio"], "correct": 3, "points": 500 },
+    { "question": "Welches chemische Symbol steht für Gold?", "answers": ["Go", "Ag", "Au", "Gd"], "correct": 2, "points": 750 },
+    { "question": "Wie viele Planeten hat unser Sonnensystem?", "answers": ["7", "8", "9", "10"], "correct": 1, "points": 1000 },
+    { "question": "Welches Tier ist das schnellste Landtier der Welt?", "answers": ["Löwe", "Gepard", "Pferd", "Straußvogel"], "correct": 1, "points": 1500 },
+    { "question": "In welchem Jahr fiel die Berliner Mauer?", "answers": ["1985", "1987", "1989", "1991"], "correct": 2, "points": 2000 },
+    { "question": "Was ist die Hauptaufgabe der Leber im menschlichen Körper?", "answers": ["Blut pumpen", "Hormone produzieren", "Entgiftung und Stoffwechsel", "Sauerstoff transportieren"], "correct": 2, "points": 3000 },
+    { "question": "Welcher Wissenschaftler formulierte die Relativitätstheorie?", "answers": ["Isaac Newton", "Nikola Tesla", "Stephen Hawking", "Albert Einstein"], "correct": 3, "points": 5000 },
+    { "question": "Was ist die tiefste Stelle im Weltmeer?", "answers": ["Tonga-Graben", "Atacama-Graben", "Puerto-Rico-Graben", "Marianengraben"], "correct": 3, "points": 7500 },
+    { "question": "Welches Element hat die höchste Ordnungszahl im natürlich vorkommenden Periodensystem?", "answers": ["Plutonium", "Uran", "Thorium", "Radium"], "correct": 1, "points": 10000 },
+    { "question": "In welchem Jahr wurde die Europäische Union mit dem Maastricht-Vertrag gegründet?", "answers": ["1989", "1990", "1992", "1995"], "correct": 2, "points": 15000 },
+    { "question": "Welches Land hat die größte Artenvielfalt (Biodiversität) weltweit?", "answers": ["Brasilien", "Australien", "Indonesien", "Kolumbien"], "correct": 0, "points": 25000 },
+    { "question": "Welche Frequenz des Lichts entspricht der Farbe Rot (ungefähr)?", "answers": ["380–450 THz", "450–495 THz", "495–570 THz", "620–750 nm Wellenlänge"], "correct": 3, "points": 50000 }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Wer wird Millionär — Deutschland",
+  "questions": [
+    { "question": "Wie viele Bundesländer hat Deutschland?", "answers": ["14", "15", "16", "17"], "correct": 2, "points": 100 },
+    { "question": "In welcher Stadt steht das Brandenburger Tor?", "answers": ["Hamburg", "München", "Berlin", "Frankfurt"], "correct": 2, "points": 200 },
+    { "question": "Welches Bundesland hat Bayern als Nachbar im Norden?", "answers": ["Baden-Württemberg", "Sachsen", "Thüringen", "Hessen"], "correct": 2, "points": 300 },
+    { "question": "Wie heißt das deutsche Parlament?", "answers": ["Bundesrat", "Senat", "Bundestag", "Reichstag"], "correct": 2, "points": 500 },
+    { "question": "Welche Stadt ist die bevölkerungsreichste in Deutschland?", "answers": ["Hamburg", "München", "Köln", "Berlin"], "correct": 3, "points": 750 },
+    { "question": "Wer war der erste Bundeskanzler der BRD?", "answers": ["Willy Brandt", "Helmut Kohl", "Konrad Adenauer", "Ludwig Erhard"], "correct": 2, "points": 1000 },
+    { "question": "In welchem Jahr wurde Deutschland wiedervereinigt?", "answers": ["1988", "1989", "1990", "1991"], "correct": 2, "points": 1500 },
+    { "question": "Welches Festival findet jährlich in München statt und ist weltberühmt?", "answers": ["Karneval", "Schützenfest", "Oktoberfest", "Volksfest"], "correct": 2, "points": 2000 },
+    { "question": "Welcher Fluss fließt durch Köln?", "answers": ["Elbe", "Weser", "Donau", "Rhein"], "correct": 3, "points": 3000 },
+    { "question": "Wie hieß der ostdeutsche Geheimdienst?", "answers": ["BND", "Gestapo", "Stasi", "MAD"], "correct": 2, "points": 5000 },
+    { "question": "Welche Partei regierte Deutschland am längsten in der Geschichte der Bundesrepublik?", "answers": ["SPD", "FDP", "CDU/CSU", "CSU"], "correct": 2, "points": 7500 },
+    { "question": "Welcher deutsche Komponist schrieb die Neunte Sinfonie, obwohl er taub war?", "answers": ["Johann Sebastian Bach", "Georg Friedrich Händel", "Ludwig van Beethoven", "Franz Schubert"], "correct": 2, "points": 10000 },
+    { "question": "In welchem Jahr wurde das Grundgesetz der Bundesrepublik Deutschland verabschiedet?", "answers": ["1945", "1947", "1949", "1951"], "correct": 2, "points": 15000 },
+    { "question": "Welches deutsche Unternehmen ist der weltweit größte Automobilzulieferer?", "answers": ["Continental", "Bosch", "ZF Friedrichshafen", "Mahle"], "correct": 1, "points": 25000 },
+    { "question": "Wie hieß der erste Reichskanzler des Deutschen Reiches (ab 1871)?", "answers": ["Kaiser Wilhelm I.", "Paul von Hindenburg", "Otto von Bismarck", "Theobald von Bethmann Hollweg"], "correct": 2, "points": 50000 }
+  ]
+}

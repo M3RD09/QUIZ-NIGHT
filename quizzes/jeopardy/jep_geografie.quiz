@@ -1,0 +1,65 @@
+{
+  "name": "Jeopardy — Geografie",
+  "categories": [
+    {
+      "name": "Hauptstädte",
+      "questions": [
+        { "points": 200, "question": "Hauptstadt von Frankreich", "answer": "Paris" },
+        { "points": 400, "question": "Hauptstadt von Australien", "answer": "Canberra" },
+        { "points": 600, "question": "Hauptstadt von Kanada", "answer": "Ottawa" },
+        { "points": 800, "question": "Hauptstadt von Kasachstan", "answer": "Astana" },
+        { "points": 1000, "question": "Hauptstadt von Myanmar (früher Burma)", "answer": "Naypyidaw" }
+      ]
+    },
+    {
+      "name": "Flüsse & Seen",
+      "questions": [
+        { "points": 200, "question": "Welcher Fluss fließt durch Paris?", "answer": "Seine" },
+        { "points": 400, "question": "Welcher See liegt an der Grenze von Deutschland, Österreich und der Schweiz?", "answer": "Bodensee" },
+        { "points": 600, "question": "Welcher Fluss ist der längste in Afrika?", "answer": "Nil" },
+        { "points": 800, "question": "Welcher See in Ostafrika ist der größte tropische See der Welt?", "answer": "Victoriasee" },
+        { "points": 1000, "question": "Welcher Fluss durchfließt die meisten Länder Europas?", "answer": "Donau (10 Länder)" }
+      ]
+    },
+    {
+      "name": "Berge & Gebirge",
+      "questions": [
+        { "points": 200, "question": "Höchster Berg der Welt", "answer": "Mount Everest" },
+        { "points": 400, "question": "Höchster Berg Deutschlands", "answer": "Zugspitze" },
+        { "points": 600, "question": "In welchem Gebirge liegt der Mont Blanc?", "answer": "Alpen" },
+        { "points": 800, "question": "In welchem Land liegt der Kilimandscharo?", "answer": "Tansania" },
+        { "points": 1000, "question": "Wie hoch ist der Mount Everest auf den Meter genau (aktuell)?", "answer": "8849 m" }
+      ]
+    },
+    {
+      "name": "Länder & Kontinente",
+      "questions": [
+        { "points": 200, "question": "Welches ist das flächenmäßig größte Land der Welt?", "answer": "Russland" },
+        { "points": 400, "question": "Wie viele Kontinente gibt es auf der Erde?", "answer": "7" },
+        { "points": 600, "question": "Welches Land hat die meisten Einwohner weltweit (Stand 2026)?", "answer": "Indien" },
+        { "points": 800, "question": "Welches Land ist das kleinste der Welt (Fläche)?", "answer": "Vatikanstadt" },
+        { "points": 1000, "question": "Welches Land teilt die längste Landgrenze mit Deutschland?", "answer": "Österreich" }
+      ]
+    },
+    {
+      "name": "Inseln & Meere",
+      "questions": [
+        { "points": 200, "question": "Welches ist das größte Meer der Erde?", "answer": "Pazifischer Ozean" },
+        { "points": 400, "question": "Welches ist die größte Insel der Welt?", "answer": "Grönland" },
+        { "points": 600, "question": "Zu welchem Land gehört Mallorca?", "answer": "Spanien" },
+        { "points": 800, "question": "Welches Meer liegt zwischen Europa, Afrika und Asien?", "answer": "Mittelmeer" },
+        { "points": 1000, "question": "Welches Meer hat den höchsten Salzgehalt der Welt?", "answer": "Totes Meer" }
+      ]
+    },
+    {
+      "name": "Geografie-Rekorde",
+      "questions": [
+        { "points": 200, "question": "Welche Wüste ist die größte der Welt?", "answer": "Sahara" },
+        { "points": 400, "question": "Welches ist das tiefste Gebiet auf der Erdoberfläche?", "answer": "Totes Meer / Marianengraben (tiefer Meeresboden)" },
+        { "points": 600, "question": "Welches Land hat die meisten UNESCO-Weltkulturerbestätten?", "answer": "Italien" },
+        { "points": 800, "question": "Welcher Wasserfall gilt als der wasserreichste der Erde?", "answer": "Iguazú-Fälle / Kongostromfälle" },
+        { "points": 1000, "question": "In welchem Land liegt das gesamte Stromnetz vollständig unterhalb des Meeresspiegels?", "answer": "Niederlande (teilweise) / Kein Land komplett — tiefster Punkt: Niederlande" }
+      ]
+    }
+  ]
+}

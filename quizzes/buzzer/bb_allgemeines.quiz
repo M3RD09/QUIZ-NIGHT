@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Allgemeines",
+  "questions": [
+    { "question": "Wie viele Knochen hat ein erwachsener Mensch?", "answer": "206" },
+    { "question": "Welches Tier hat das größte Gehirn auf der Erde?", "answer": "Blauwal / Pottwal" },
+    { "question": "Wie viele Farben hat ein Regenbogen?", "answer": "7" },
+    { "question": "Welches ist das härteste natürliche Material?", "answer": "Diamant" },
+    { "question": "Wie viele Beine hat eine Spinne?", "answer": "8" },
+    { "question": "Was ist H₂O?", "answer": "Wasser" },
+    { "question": "Wie viele Planeten hat unser Sonnensystem?", "answer": "8" },
+    { "question": "Welcher Planet ist der größte im Sonnensystem?", "answer": "Jupiter" },
+    { "question": "Was ist die kleinste Ländereinheit, die eigene Gesetze hat?", "answer": "Gemeinde / Kommune" },
+    { "question": "Wie heißt der Kreislauf des Wassers in der Natur?", "answer": "Wasserkreislauf" },
+    { "question": "Was ist das Gegenteil von Säure?", "answer": "Base / Lauge" },
+    { "question": "Wie viele Herzkammern hat das menschliche Herz?", "answer": "4" },
+    { "question": "Welches Tier kann seinen Arm nachwachsen lassen?", "answer": "Seestern / Salamander / Axolotl" },
+    { "question": "Wie nennt man Tiere, die sowohl an Land als auch im Wasser leben?", "answer": "Amphibien" },
+    { "question": "Was ist schneller: Licht oder Schall?", "answer": "Licht" },
+    { "question": "Wie viele Sekunden hat eine Stunde?", "answer": "3600" },
+    { "question": "Welche Blutgruppe ist der 'Universalspender'?", "answer": "0 negativ / 0-" },
+    { "question": "Wie nennt man einen Winkel, der genau 90 Grad beträgt?", "answer": "Rechter Winkel" },
+    { "question": "Was ist die chemische Formel für Salz?", "answer": "NaCl" },
+    { "question": "Wie heißt der Vorgang, bei dem Pflanzen Sonnenlicht in Energie umwandeln?", "answer": "Photosynthese" },
+    { "question": "Welches ist das einzige Säugetier, das fliegen kann?", "answer": "Fledermaus" },
+    { "question": "Wie viele Zähne hat ein erwachsener Mensch (ohne Weisheitszähne)?", "answer": "28" },
+    { "question": "Was ist die Hauptkomponente von Luft?", "answer": "Stickstoff" },
+    { "question": "Wie nennt man die Angst vor Spinnen?", "answer": "Arachnophobie" },
+    { "question": "Welches Organ des Menschen ist für die Produktion von Insulin zuständig?", "answer": "Bauchspeicheldrüse / Pankreas" }
+  ]
+}

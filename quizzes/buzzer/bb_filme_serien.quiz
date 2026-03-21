@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Filme & Serien",
+  "questions": [
+    { "question": "Welcher Schauspieler spielt Iron Man im MCU?", "answer": "Robert Downey Jr." },
+    { "question": "In welchem Film sagt man 'Ich bin dein Vater'?", "answer": "Star Wars: Das Imperium schlägt zurück" },
+    { "question": "Wer spielt Jack Sparrow in 'Pirates of the Caribbean'?", "answer": "Johnny Depp" },
+    { "question": "Welcher Disney-Film handelt von einer Eiskönigin namens Elsa?", "answer": "Frozen / Die Eiskönigin" },
+    { "question": "In welchem Film sucht ein Clownfisch seinen Sohn?", "answer": "Findet Nemo" },
+    { "question": "Wer regissierte 'Pulp Fiction'?", "answer": "Quentin Tarantino" },
+    { "question": "Welche Serie spielt in der fiktiven Stadt Hawkins in Indiana?", "answer": "Stranger Things" },
+    { "question": "Welcher Film gewann 2020 als erster nicht-englischer Film den Oscar für den besten Film?", "answer": "Parasite" },
+    { "question": "In welchem Film kämpfen Gladiatoren im Kolosseum?", "answer": "Gladiator" },
+    { "question": "Wer spielt den Joker im Film von 2019?", "answer": "Joaquin Phoenix" },
+    { "question": "In welcher Serie kocht ein Chemielehrer namens Walter White Drogen?", "answer": "Breaking Bad" },
+    { "question": "Welches Studio produziert die Toy Story-Filme?", "answer": "Pixar" },
+    { "question": "Wie heißt die Hauptfigur in 'The Witcher'?", "answer": "Geralt von Riva" },
+    { "question": "In welchem Film wird ein Pirat in Karibischen Gewässern zum Helden?", "answer": "Pirates of the Caribbean" },
+    { "question": "Wer spielt Hermione Granger in den Harry-Potter-Filmen?", "answer": "Emma Watson" },
+    { "question": "Welcher Film hat den meisten Oscar-Gewinnen mit 11 Oscars (gleichauf)?", "answer": "Ben Hur / Titanic / Lord of the Rings: Return of the King" },
+    { "question": "Wie heißt die deutsche Netflix-Zeitserie mit Zeitreisen?", "answer": "Dark" },
+    { "question": "Wer schrieb die Bücher zu 'Game of Thrones'?", "answer": "George R.R. Martin" },
+    { "question": "In welchem Film fliegt ein Junge auf einem Drachen namens Toothless?", "answer": "Drachenzähmen leicht gemacht" },
+    { "question": "Welche Serie zeigt das Leben am Hof der britischen Königsfamilie?", "answer": "The Crown" },
+    { "question": "Welcher Schauspieler spielt in den meisten Superhelden-Filmen mit?", "answer": "Robert Downey Jr. / Chris Evans" },
+    { "question": "Wie heißt der Held der Marvel-Comics, der einen Hammer als Waffe trägt?", "answer": "Thor" },
+    { "question": "In welchem Film verschwindet ein Kind im Schnee und die Mutter verzweifelt?", "answer": "Viele mögliche Antworten — Frozen ist ein eher passender Hinweis" },
+    { "question": "Wer spielt den Hauptcharakter in 'The Mandalorian'?", "answer": "Pedro Pascal" },
+    { "question": "In welchem Film lernt ein Mädchen die Unterwasserwelt kennen und wird von einer Hexe betrogen (Disney)?", "answer": "Arielle die Meerjungfrau" }
+  ]
+}

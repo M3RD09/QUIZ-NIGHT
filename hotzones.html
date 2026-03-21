@@ -300,6 +300,16 @@ body::before{content:'';position:fixed;inset:0;
       <div id="lobby-quiz-status" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">
         ❌ Kein Quiz geladen
       </div>
+      <select class="btn-secondary" style="cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;width:100%;margin-bottom:8px;" onchange="if(this.value){hzPresetLoad(this.value);this.value=''}">
+        <option value="">📋 Fertige Vorlage laden...</option>
+        <option value="quizzes/hotzones/hz_allgemeines.quiz">Allgemeines</option>
+        <option value="quizzes/hotzones/hz_entertainment.quiz">Popkultur &amp; Entertainment</option>
+        <option value="quizzes/hotzones/hz_deutschland.quiz">Deutschland</option>
+        <option value="quizzes/hotzones/hz_marken_fashion.quiz">Marken &amp; Fashion</option>
+        <option value="quizzes/hotzones/hz_geografie.quiz">Geografie &amp; Reisen</option>
+        <option value="quizzes/hotzones/hz_filme_serien.quiz">Filme &amp; Serien</option>
+        <option value="quizzes/hotzones/hz_gaming.quiz">Gaming</option>
+      </select>
       <div style="display:flex;gap:8px;">
         <label class="btn-secondary" style="flex:1;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;">
           📂 Importieren
@@ -562,6 +572,14 @@ function lobbyLinkCopy(){
   navigator.clipboard.writeText(link).then(()=>showToast('✅ Link kopiert!'));
 }
 
+async function hzPresetLoad(url){
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error();
+    const t=await r.text();
+    const f=new File([t],url.split('/').pop(),{type:'application/json'});
+    lobbyImportQuiz({target:{files:[f]}});
+  }catch(e){showToast('❌ Vorlage konnte nicht geladen werden');}
+}
 function lobbyImportQuiz(ev){
   const file=ev.target.files[0];
   if(!file)return;

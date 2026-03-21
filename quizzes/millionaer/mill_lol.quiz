@@ -50,7 +50,7 @@
       "points": 2000
     },
     {
-      "question": "Wie oft hat Faker die World Championship bisher gewonnen (Stand 2024)?",
+      "question": "Wie oft hat Faker die World Championship bisher gewonnen (Stand 2026)?",
       "answers": ["2 Mal", "3 Mal", "4 Mal", "5 Mal"],
       "correct": 2,
       "points": 3000

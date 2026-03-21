@@ -1,0 +1,65 @@
+{
+  "name": "Jeopardy — Gaming",
+  "categories": [
+    {
+      "name": "Videospiel-Charaktere",
+      "questions": [
+        { "points": 200, "question": "Hauptcharakter der 'Super Mario'-Reihe", "answer": "Mario" },
+        { "points": 400, "question": "Wie heißt der Held in 'The Legend of Zelda'?", "answer": "Link" },
+        { "points": 600, "question": "Aus welchem Spiel stammt Kratos, der Gott des Krieges?", "answer": "God of War" },
+        { "points": 800, "question": "Wie heißt der Hauptcharakter aus 'Cyberpunk 2077'?", "answer": "V" },
+        { "points": 1000, "question": "Welcher Charakter aus 'Mortal Kombat' sagt 'Get over here!'?", "answer": "Scorpion" }
+      ]
+    },
+    {
+      "name": "Game-Studios & Publisher",
+      "questions": [
+        { "points": 200, "question": "Welches Studio entwickelt die Mario- und Zelda-Spiele?", "answer": "Nintendo" },
+        { "points": 400, "question": "Welches Studio steckt hinter 'Grand Theft Auto'?", "answer": "Rockstar Games" },
+        { "points": 600, "question": "Aus welchem Land kommt CD Projekt Red (The Witcher, Cyberpunk 2077)?", "answer": "Polen" },
+        { "points": 800, "question": "Welches Studio entwickelt die 'Souls'-Serie (Dark Souls, Elden Ring)?", "answer": "FromSoftware" },
+        { "points": 1000, "question": "Welche Firma war an Activision beteiligt und übernahm diese 2023 für 68 Mrd. Dollar?", "answer": "Microsoft" }
+      ]
+    },
+    {
+      "name": "Gaming-Geschichte",
+      "questions": [
+        { "points": 200, "question": "Welches war das erste kommerziell erfolgreiche Videospiel (1972)?", "answer": "Pong" },
+        { "points": 400, "question": "In welchem Jahr erschien der erste Game Boy?", "answer": "1989" },
+        { "points": 600, "question": "Welche Konsole schlug die PlayStation 2 in der Verkaufsstatistik (meistverkaufte Konsole aller Zeiten)?", "answer": "Nintendo DS" },
+        { "points": 800, "question": "Welches Spiel löste 1993 mit seiner Gewalt eine Debatte aus, die zu Altersfreigaben führte?", "answer": "Mortal Kombat / Night Trap" },
+        { "points": 1000, "question": "Wie hieß Sonys erste Spielkonsole, die 1994 in Japan erschien?", "answer": "PlayStation 1 / PlayStation" }
+      ]
+    },
+    {
+      "name": "eSports & Streaming",
+      "questions": [
+        { "points": 200, "question": "Welches Battle-Royale-Spiel wurde von Epic Games entwickelt?", "answer": "Fortnite" },
+        { "points": 400, "question": "Welches Spiel wird jährlich beim League of Legends World Championship gespielt?", "answer": "League of Legends" },
+        { "points": 600, "question": "Wie heißt die Streaming-Plattform für Gamer, die Amazon gehört?", "answer": "Twitch" },
+        { "points": 800, "question": "Welches Team gewann 2023 die League of Legends World Championship?", "answer": "T1 / Lee 'Faker' Sang-hyeok" },
+        { "points": 1000, "question": "Welcher Spieler ist bekannt als 'Faker' und gilt als bester LoL-Spieler aller Zeiten?", "answer": "Lee Sang-hyeok" }
+      ]
+    },
+    {
+      "name": "Minecraft & Sandbox",
+      "questions": [
+        { "points": 200, "question": "Wer erschuf Minecraft?", "answer": "Markus 'Notch' Persson" },
+        { "points": 400, "question": "Welches Unternehmen kaufte Minecraft 2014 für 2,5 Milliarden Dollar?", "answer": "Microsoft" },
+        { "points": 600, "question": "Wie heißt der berühmteste Minecraft-Streamer/YouTuber, bekannt für Speedruns?", "answer": "Dream" },
+        { "points": 800, "question": "Welches Sandbox-Spiel von Terraria-Schöpfer Andrew Spinks hat bisher nie eine Vollversion veröffentlicht?", "answer": "Terraria ist vollständig erschienen — eher Dwarf Fortress oder Star Citizen" },
+        { "points": 1000, "question": "In Minecraft: Wie heißt die Dimension, in die man durch ein Netherportal gelangt?", "answer": "Nether" }
+      ]
+    },
+    {
+      "name": "Genres & Mechaniken",
+      "questions": [
+        { "points": 200, "question": "Was bedeutet 'RPG' als Gaming-Genre?", "answer": "Role-Playing Game / Rollenspiel" },
+        { "points": 400, "question": "Wie nennt man Spiele, bei denen man eine Karte erforscht und gegen andere Spieler kämpft (z.B. Fortnite)?", "answer": "Battle Royale" },
+        { "points": 600, "question": "Was ist ein 'NPC' in einem Videospiel?", "answer": "Non-Playable Character / Nicht-spielbare Figur" },
+        { "points": 800, "question": "Wie nennt man das Phänomen, wenn Spieler Schwierigkeiten absichtlich überwinden wollen? (From Software-Spiele)", "answer": "Soulslike / Git Gud" },
+        { "points": 1000, "question": "Was ist 'Speedrunning'?", "answer": "Ein Spiel so schnell wie möglich durchspielen / Rekordzeit-Versuch" }
+      ]
+    }
+  ]
+}

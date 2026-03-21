@@ -1,0 +1,20 @@
+{
+  "name": "Wer wird Millionär — Marken & Fashion",
+  "questions": [
+    { "question": "Welche Sportmarke hat den Slogan 'Just Do It'?", "answers": ["Puma", "Reebok", "Nike", "Adidas"], "correct": 2, "points": 100 },
+    { "question": "Aus welcher Stadt stammt Adidas?", "answers": ["München", "Berlin", "Hamburg", "Herzogenaurach"], "correct": 3, "points": 200 },
+    { "question": "Welches Unternehmen stellt die Nivea-Creme her?", "answers": ["Henkel", "Procter & Gamble", "Beiersdorf", "Unilever"], "correct": 2, "points": 300 },
+    { "question": "Für welche Marke ist das Krokodil-Logo charakteristisch?", "answers": ["Ralph Lauren", "Lacoste", "Polo", "Tommy Hilfiger"], "correct": 1, "points": 500 },
+    { "question": "Welche Luxusmarke stellt den berühmten Birkin Bag her?", "answers": ["Chanel", "Louis Vuitton", "Gucci", "Hermès"], "correct": 3, "points": 750 },
+    { "question": "Welches Luxuskonglomerat besitzt Louis Vuitton, Dior und Moët & Chandon?", "answers": ["Kering", "Richemont", "LVMH", "Tapestry"], "correct": 2, "points": 1000 },
+    { "question": "Was bedeutet das Kürzel 'H&M'?", "answers": ["Hennes & Mauritz", "Hugo & Moritz", "Hamburg & München", "Herren & Mode"], "correct": 0, "points": 1500 },
+    { "question": "Welche deutsche Discounterkette wurde von Karl und Theo Albrecht gegründet?", "answers": ["Lidl", "Penny", "Aldi", "Netto"], "correct": 2, "points": 2000 },
+    { "question": "Welche Uhrmarke ist bekannt für ihr Submariner-Modell und den Oyster-Verschluss?", "answers": ["Omega", "Patek Philippe", "Rolex", "IWC"], "correct": 2, "points": 3000 },
+    { "question": "Wer gründete Zara und wurde damit einer der reichsten Menschen Europas?", "answers": ["Rafael del Pino", "Juan Roig", "Amancio Ortega", "Isak Andic"], "correct": 2, "points": 5000 },
+    { "question": "In welchem Jahr wurde Nike gegründet?", "answers": ["1960", "1962", "1964", "1968"], "correct": 2, "points": 7500 },
+    { "question": "Welche Streetwear-Marke wurde von Virgil Abloh gegründet?", "answers": ["Palace", "Supreme", "Off-White", "KITH"], "correct": 2, "points": 10000 },
+    { "question": "Welche Marke trägt den Slogan 'Impossible is Nothing'?", "answers": ["Nike", "Under Armour", "Puma", "Adidas"], "correct": 3, "points": 15000 },
+    { "question": "In welchem Jahr wurde das Modehaus Chanel gegründet?", "answers": ["1905", "1909", "1910", "1913"], "correct": 2, "points": 25000 },
+    { "question": "Welches Unternehmen kaufte 2022 Reebok von Adidas zurück, nachdem es die Marke 2005 erworben hatte?", "answers": ["Authentic Brands Group", "VF Corporation", "PVH Corp", "Hanesbrands"], "correct": 0, "points": 50000 }
+  ]
+}

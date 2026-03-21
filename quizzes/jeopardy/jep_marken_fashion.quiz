@@ -1,0 +1,65 @@
+{
+  "name": "Jeopardy — Marken & Fashion",
+  "categories": [
+    {
+      "name": "Luxusmarken",
+      "questions": [
+        { "points": 200, "question": "Welche Luxusmarke ist bekannt für ihr charakteristisches LV-Monogramm?", "answer": "Louis Vuitton" },
+        { "points": 400, "question": "Aus welchem Land kommt Chanel?", "answer": "Frankreich" },
+        { "points": 600, "question": "Welche Luxusuhrmarke aus der Schweiz ist für das Oyster-Modell bekannt?", "answer": "Rolex" },
+        { "points": 800, "question": "Welche Marke stellt den Birkin-Bag her?", "answer": "Hermès" },
+        { "points": 1000, "question": "Welches Luxuskonglomerat besitzt u.a. Louis Vuitton, Dior und Givenchy?", "answer": "LVMH" }
+      ]
+    },
+    {
+      "name": "Sportmarken",
+      "questions": [
+        { "points": 200, "question": "Welche Sportmarke hat drei Streifen als Logo?", "answer": "Adidas" },
+        { "points": 400, "question": "Aus welcher Stadt stammt Adidas?", "answer": "Herzogenaurach" },
+        { "points": 600, "question": "Welche Sportmarke hat den Swoosh als Logo und den Slogan 'Just Do It'?", "answer": "Nike" },
+        { "points": 800, "question": "Wer gründete Puma und steht damit in Konkurrenz zu seinem Bruder?", "answer": "Rudolf Dassler" },
+        { "points": 1000, "question": "Welche deutsche Sportmarke ist bekannt für Tennisschläger und den Slogan 'Ich bin wieder hier'?", "answer": "Head / Boris Becker" }
+      ]
+    },
+    {
+      "name": "Deutsche Marken",
+      "questions": [
+        { "points": 200, "question": "Aus welchem Land stammt die Automarke BMW?", "answer": "Deutschland" },
+        { "points": 400, "question": "Welcher Chemiekonzern aus Leverkusen stellt Aspirin her?", "answer": "Bayer" },
+        { "points": 600, "question": "Welches Unternehmen produziert Nivea-Creme?", "answer": "Beiersdorf" },
+        { "points": 800, "question": "Welche deutsche Discounterkette ist in über 20 Ländern vertreten und heißt anderswo 'Trader Joe's'?", "answer": "Aldi" },
+        { "points": 1000, "question": "Welcher Elektrokonzern aus München erfand u.a. die Waschmaschine und den Staubsauger für Haushalte?", "answer": "Siemens / Miele" }
+      ]
+    },
+    {
+      "name": "Streetwear & Trends",
+      "questions": [
+        { "points": 200, "question": "Welche Marke ist für ihre Birkenstocks bekannt?", "answer": "Birkenstock" },
+        { "points": 400, "question": "Welcher Streetwear-Hype-Brand wird mit einem Supreme-Box-Logo verbunden?", "answer": "Supreme" },
+        { "points": 600, "question": "Aus welchem Land stammt Off-White, gegründet von Virgil Abloh?", "answer": "USA (Virgil Abloh war Amerikaner)" },
+        { "points": 800, "question": "Welche Marke verbindet man mit den Yeezy-Sneakern, benannt nach dem gleichnamigen Rapper?", "answer": "Adidas / Yeezy" },
+        { "points": 1000, "question": "Wie heißt das japanische Streetwear-Label, bekannt für A BATHING APE und BAPE Stas?", "answer": "A Bathing Ape / BAPE" }
+      ]
+    },
+    {
+      "name": "Logos & Slogans",
+      "questions": [
+        { "points": 200, "question": "Was ist der Slogan von McDonald's?", "answer": "Ich liebe es / I'm Lovin' It" },
+        { "points": 400, "question": "Welche Automarke hat einen Ring aus vier verbundenen Kreisen im Logo?", "answer": "Audi" },
+        { "points": 600, "question": "Welche Marke verwendet das bekannte Krokodil-Logo?", "answer": "Lacoste" },
+        { "points": 800, "question": "Was bedeutet der Name 'Ikea'?", "answer": "Ingvar Kamprad Elmtaryd Agunnaryd (Initialen des Gründers und seines Bauernhofs)" },
+        { "points": 1000, "question": "Welche Farbe hat die Tiffany-Verpackung und wie heißt sie offiziell?", "answer": "Blaugrün / Tiffany Blue / Pantone 1837" }
+      ]
+    },
+    {
+      "name": "Tech-Firmen & Gründer",
+      "questions": [
+        { "points": 200, "question": "Wer gründete Apple zusammen mit Steve Jobs?", "answer": "Steve Wozniak / Ronald Wayne" },
+        { "points": 400, "question": "Welche Firma stellt das iPhone her?", "answer": "Apple" },
+        { "points": 600, "question": "In welchem Jahr wurde Amazon gegründet?", "answer": "1994" },
+        { "points": 800, "question": "Wer gründete Tesla als CEO (nicht als ursprünglicher Gründer)?", "answer": "Elon Musk" },
+        { "points": 1000, "question": "Wie hieß Google ursprünglich, als es 1996 an der Stanford University entwickelt wurde?", "answer": "BackRub" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "name": "Jeopardy — Deutschland",
+  "categories": [
+    {
+      "name": "Bundesländer & Städte",
+      "questions": [
+        { "points": 200, "question": "Hauptstadt von Deutschland", "answer": "Berlin" },
+        { "points": 400, "question": "Welches Bundesland hat München als Hauptstadt?", "answer": "Bayern" },
+        { "points": 600, "question": "Welches ist das einwohnerreichste Bundesland Deutschlands?", "answer": "Nordrhein-Westfalen" },
+        { "points": 800, "question": "Welche Stadt wird auch 'Freie Hansestadt' genannt und hat den größten Hafen Deutschlands?", "answer": "Hamburg" },
+        { "points": 1000, "question": "Welches Bundesland entstand 1952 aus den Ländern Württemberg-Baden, Württemberg-Hohenzollern und Baden?", "answer": "Baden-Württemberg" }
+      ]
+    },
+    {
+      "name": "Deutsche Geschichte",
+      "questions": [
+        { "points": 200, "question": "In welchem Jahr wurde Deutschland wiedervereinigt?", "answer": "1990" },
+        { "points": 400, "question": "Wer war der erste Bundeskanzler der BRD?", "answer": "Konrad Adenauer" },
+        { "points": 600, "question": "Wie hieß die erste deutsche Demokratie nach dem Ersten Weltkrieg?", "answer": "Weimarer Republik" },
+        { "points": 800, "question": "In welchem Jahr wurde das Grundgesetz der Bundesrepublik Deutschland verabschiedet?", "answer": "1949" },
+        { "points": 1000, "question": "Wie hieß der Aufstand ostdeutscher Arbeiter, der am 17. Juni 1953 stattfand?", "answer": "Volksaufstand / Arbeiteraufstand des 17. Juni" }
+      ]
+    },
+    {
+      "name": "Deutsche Küche",
+      "questions": [
+        { "points": 200, "question": "Welches Gericht ist aus Sauerkraut, Kartoffeln und Fleisch typisch für Deutschland?", "answer": "Eisbein / Kassler mit Sauerkraut" },
+        { "points": 400, "question": "Aus welcher Stadt stammt die Currywurst ursprünglich?", "answer": "Berlin" },
+        { "points": 600, "question": "Wie heißt das berühmte Brot aus Bayern, das zu Weißwurst gegessen wird?", "answer": "Brezel" },
+        { "points": 800, "question": "Welches Bier kommt traditionell aus dem Rheinland und wird im kleinen Glas serviert?", "answer": "Kölsch" },
+        { "points": 1000, "question": "Was sind 'Maultaschen' und aus welchem Bundesland kommen sie?", "answer": "Nudelteig mit Füllung / Schwaben / Baden-Württemberg" }
+      ]
+    },
+    {
+      "name": "Berühmte Deutsche",
+      "questions": [
+        { "points": 200, "question": "Welcher Deutsche entwickelte die Relativitätstheorie?", "answer": "Albert Einstein" },
+        { "points": 400, "question": "Wer erfand den Buchdruck mit beweglichen Lettern um 1450?", "answer": "Johannes Gutenberg" },
+        { "points": 600, "question": "Welche deutsche Kanzlerin war 16 Jahre lang im Amt?", "answer": "Angela Merkel" },
+        { "points": 800, "question": "Welcher Komponist aus Bonn war taubstumm, schrieb aber die 9. Sinfonie?", "answer": "Ludwig van Beethoven" },
+        { "points": 1000, "question": "Welcher deutsche Reformator veröffentlichte 1517 seine 95 Thesen gegen den Ablasshandel?", "answer": "Martin Luther" }
+      ]
+    },
+    {
+      "name": "Politik & Gesellschaft",
+      "questions": [
+        { "points": 200, "question": "Wie heißt das Parlament der Bundesrepublik Deutschland?", "answer": "Bundestag" },
+        { "points": 400, "question": "Welche Partei führt das CDU-Kürzel?", "answer": "Christlich Demokratische Union" },
+        { "points": 600, "question": "In welcher Stadt tagt der Bundesrat?", "answer": "Berlin" },
+        { "points": 800, "question": "Wer ist laut Grundgesetz das Staatsoberhaupt Deutschlands?", "answer": "Bundespräsident" },
+        { "points": 1000, "question": "Wie nennt man das Phänomen, wenn eine Partei bei der Bundestagswahl die 5%-Hürde nicht überspringt?", "answer": "Sie zieht nicht in den Bundestag ein / Sperrklausel" }
+      ]
+    },
+    {
+      "name": "Sprache & Kultur",
+      "questions": [
+        { "points": 200, "question": "Wie viele Artikel gibt es in der deutschen Sprache?", "answer": "3 (der, die, das)" },
+        { "points": 400, "question": "Welches deutsche Wort bedeutet 'Schadenfreude' auf Englisch?", "answer": "Schadenfreude (kein englisches Äquivalent) / Pleasure from others' misfortune" },
+        { "points": 600, "question": "In welcher Stadt findet jährlich die weltberühmte Buchmesse statt?", "answer": "Frankfurt am Main" },
+        { "points": 800, "question": "Wie heißt der berühmteste deutsche Märchenwald-Autor (Brüder ...)?", "answer": "Brüder Grimm" },
+        { "points": 1000, "question": "Welcher Philosoph schrieb 'Also sprach Zarathustra' und prägte den Begriff 'Übermensch'?", "answer": "Friedrich Nietzsche" }
+      ]
+    }
+  ]
+}

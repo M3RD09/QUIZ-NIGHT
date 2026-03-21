@@ -1,0 +1,20 @@
+{
+  "name": "Wer wird Millionär — Popkultur & Entertainment",
+  "questions": [
+    { "question": "Welcher Streamingdienst produzierte 'Stranger Things'?", "answers": ["Amazon Prime", "Disney+", "Netflix", "HBO"], "correct": 2, "points": 100 },
+    { "question": "Von wem stammt der Hit 'Anti-Hero' (2022)?", "answers": ["Billie Eilish", "Olivia Rodrigo", "Taylor Swift", "Dua Lipa"], "correct": 2, "points": 200 },
+    { "question": "In welchem Jahr wurde TikTok weltweit gestartet?", "answers": ["2014", "2016", "2018", "2020"], "correct": 2, "points": 300 },
+    { "question": "Wie heißt der koreanische Survival-Show auf Netflix mit Kinderspielen?", "answers": ["Alice in Borderland", "Sweet Home", "Squid Game", "All of Us Are Dead"], "correct": 2, "points": 500 },
+    { "question": "Welche Gruppe ist bekannt für den Song 'Dynamite' (2020)?", "answers": ["BLACKPINK", "Twice", "BTS", "EXO"], "correct": 2, "points": 750 },
+    { "question": "Wer gewann den Eurovision Song Contest 2024?", "answers": ["Israel (Eden Golan)", "Schweiz (Nemo)", "Kroatien (Baby Lasagna)", "Österreich (Kaleen)"], "correct": 1, "points": 1000 },
+    { "question": "Welche deutsche Reality-Show findet im australischen Dschungel statt?", "answers": ["Germany's Next Topmodel", "The Masked Singer", "Ich bin ein Star", "Let's Dance"], "correct": 2, "points": 1500 },
+    { "question": "Wer hat den meisten YouTube-Kanal-Abonnenten weltweit (Stand 2026)?", "answers": ["PewDiePie", "MrBeast", "T-Series", "Cocomelon"], "correct": 1, "points": 2000 },
+    { "question": "Welche Schauspielerin spielt Katniss in 'Die Tribute von Panem'?", "answers": ["Emma Watson", "Jennifer Lawrence", "Scarlett Johansson", "Kristen Stewart"], "correct": 1, "points": 3000 },
+    { "question": "Wer schrieb den Roman 'Harry Potter und der Stein der Weisen'?", "answers": ["Stephenie Meyer", "Suzanne Collins", "J.R.R. Tolkien", "J.K. Rowling"], "correct": 3, "points": 5000 },
+    { "question": "In welchem Jahr erschien der erste 'Avengers'-Film (The Avengers)?", "answers": ["2010", "2011", "2012", "2013"], "correct": 2, "points": 7500 },
+    { "question": "Welcher Sender startete 1981 als erster reiner Musiksender in den USA?", "answers": ["VH1", "BET", "MTV", "CMT"], "correct": 2, "points": 10000 },
+    { "question": "Welcher Regisseur ist bekannt für 'Pulp Fiction', 'Kill Bill' und 'Django Unchained'?", "answers": ["Christopher Nolan", "Martin Scorsese", "David Lynch", "Quentin Tarantino"], "correct": 3, "points": 15000 },
+    { "question": "Welches Buch von Haruki Murakami wurde am häufigsten weltweit übersetzt?", "answers": ["Naokos Lächeln / Norwegian Wood", "Kafka am Strand", "1Q84", "Die Pilgerjahre des farblosen Herrn Tazaki"], "correct": 0, "points": 25000 },
+    { "question": "Bei welcher Oscar-Verleihung wurde 'Parasite' als erster nicht-englischsprachiger Film als bester Film ausgezeichnet?", "answers": ["91. Oscar-Verleihung (2019)", "92. Oscar-Verleihung (2020)", "93. Oscar-Verleihung (2021)", "94. Oscar-Verleihung (2022)"], "correct": 1, "points": 50000 }
+  ]
+}

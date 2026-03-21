@@ -1,0 +1,19 @@
+{
+  "name": "Hot Zones — Allgemeines",
+  "categories": [
+    { "name": "MONTAGMORGEN", "labelLeft": "absolute Qual", "labelRight": "entspannt und motiviert" },
+    { "name": "ANANAS AUF PIZZA", "labelLeft": "Verbrechen gegen die Menschheit", "labelRight": "absolut köstlich" },
+    { "name": "REGENWETTER", "labelLeft": "macht mich deprimiert", "labelRight": "liebe ich, perfekt zum Kuscheln" },
+    { "name": "KATZEN", "labelLeft": "unausstehliche Tiere", "labelRight": "beste Haustiere überhaupt" },
+    { "name": "FRÜH AUFSTEHEN", "labelLeft": "unmöglich, nie wieder", "labelRight": "ich bin ein Morgenmensch" },
+    { "name": "KALTE DUSCHE", "labelLeft": "niemals freiwillig", "labelRight": "täglich, belebt total" },
+    { "name": "WARTEZEIT BEI ARZT", "labelLeft": "macht mich wahnsinnig", "labelRight": "kein Problem, ich bin geduldig" },
+    { "name": "SPINNEN IN DER WOHNUNG", "labelLeft": "sofort raus!", "labelRight": "meine Mitbewohner, will ich behalten" },
+    { "name": "SCHLAFEN BIS MITTAG", "labelLeft": "schlechte Gewohnheit, mag ich nicht", "labelRight": "das pure Glück" },
+    { "name": "KOCHEN SELBST", "labelLeft": "ich hasse kochen", "labelRight": "mein größtes Hobby" },
+    { "name": "ÖFFENTLICHE VERKEHRSMITTEL", "labelLeft": "grauenhaft, niemals", "labelRight": "entspannt, umweltfreundlich super" },
+    { "name": "HAUSTIERE GENERELL", "labelLeft": "zu viel Aufwand, nein danke", "labelRight": "das Schönste auf der Welt" },
+    { "name": "STAU AUF DER AUTOBAHN", "labelLeft": "bringt mich zur Weißglut", "labelRight": "ich nutze die Zeit produktiv" },
+    { "name": "JOGGEN AM MORGEN", "labelLeft": "nie, danke", "labelRight": "beste Aktivität des Tages" }
+  ]
+}

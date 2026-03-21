@@ -1,0 +1,30 @@
+{
+  "name": "Buzzer Beater — Marken & Fashion",
+  "questions": [
+    { "question": "Was ist der Slogan von Nike?", "answer": "Just Do It" },
+    { "question": "Aus welcher Stadt stammt Adidas?", "answer": "Herzogenaurach" },
+    { "question": "Welche Marke trägt das Krokodil-Logo?", "answer": "Lacoste" },
+    { "question": "Welche Automarke hat vier Ringe im Logo?", "answer": "Audi" },
+    { "question": "Welches Unternehmen stellt Nutella her?", "answer": "Ferrero" },
+    { "question": "Wie heißt der Gründer von Tesla?", "answer": "Elon Musk (CEO, nicht Gründer) / Martin Eberhard und Marc Tarpenning (Gründer)" },
+    { "question": "Welche Marke stellt den Birkin-Bag her?", "answer": "Hermès" },
+    { "question": "Was bedeutet BMW?", "answer": "Bayerische Motorenwerke" },
+    { "question": "Welches Unternehmen produziert die PlayStation?", "answer": "Sony" },
+    { "question": "Welcher Discounter gehört zum Aldi-Konzern im Süden Deutschlands?", "answer": "Aldi Süd" },
+    { "question": "Was ist der Slogan von McDonald's?", "answer": "Ich liebe es / I'm Lovin' It" },
+    { "question": "Welche Modemarke ist bekannt für ihr LV-Monogramm?", "answer": "Louis Vuitton" },
+    { "question": "Wer ist der Gründer von Amazon?", "answer": "Jeff Bezos" },
+    { "question": "Welche schwedische Möbelhauskette ist weltweit bekannt?", "answer": "IKEA" },
+    { "question": "Welche Marke produziert das iPhone?", "answer": "Apple" },
+    { "question": "Wie heißt das Sportwagen-Logo mit dem springenden Pferd?", "answer": "Ferrari" },
+    { "question": "Welche Marke ist bekannt für ihre roten Schuhsohlen?", "answer": "Christian Louboutin" },
+    { "question": "Was bedeutet der Markenname 'Ikea' (Abkürzung)?", "answer": "Ingvar Kamprad Elmtaryd Agunnaryd" },
+    { "question": "Welche Sportmarke hat das Swoosh-Logo?", "answer": "Nike" },
+    { "question": "Welches Unternehmen kaufte 2022 Activision Blizzard?", "answer": "Microsoft" },
+    { "question": "Wie heißt die Luxusuhrmarke, die als teuerste der Welt gilt (Patek ...)?", "answer": "Patek Philippe" },
+    { "question": "Welches Land ist die Heimat des Luxuskonzerns LVMH?", "answer": "Frankreich" },
+    { "question": "Welche Modemarke gründete Coco Chanel?", "answer": "Chanel" },
+    { "question": "Was ist das bekannteste Produkt von Red Bull (neben dem Getränk)?", "answer": "Formel-1-Team / Sponsoring im Extremsport" },
+    { "question": "Welche Marke verkauft Produkte unter dem Namen 'Galaxy'?", "answer": "Samsung" }
+  ]
+}
