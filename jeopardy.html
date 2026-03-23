@@ -141,14 +141,14 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
 .turn-banner.t1{background:linear-gradient(90deg,rgba(58,142,246,.0),rgba(58,142,246,.18),rgba(58,142,246,.0));color:var(--team1);border-bottom:2px solid var(--team1);}
 .turn-banner.t2{background:linear-gradient(90deg,rgba(232,53,74,.0),rgba(232,53,74,.18),rgba(232,53,74,.0));color:var(--team2);border-bottom:2px solid var(--team2);}
 
-.board-scroll{flex:1;display:flex;padding:12px;background:radial-gradient(ellipse at center,rgba(0,50,150,0.12) 0%,transparent 70%);}
-.board{display:grid;gap:8px;width:100%;height:100%;}
+.board-scroll{flex:1;min-height:0;display:flex;align-items:stretch;padding:12px;background:radial-gradient(ellipse at center,rgba(0,50,150,0.12) 0%,transparent 70%);}
+.board{display:grid;gap:8px;width:100%;min-height:0;align-self:stretch;}
 
 .board-cell{
   width:100%;border-radius:12px;
   display:flex;align-items:center;justify-content:center;
   font-family:'Bebas Neue',sans-serif;text-align:center;padding:8px;
-  min-height:0;
+  min-height:0;overflow:hidden;
 }
 
 /* Category header cells — herausstechen! */
@@ -943,6 +943,7 @@ function showBoardOverview(){
   const dst=document.getElementById('overview-board');
   dst.innerHTML=src.innerHTML;
   dst.style.gridTemplateColumns=src.style.gridTemplateColumns;
+  dst.style.gridTemplateRows=src.style.gridTemplateRows;
   dst.querySelectorAll('.board-point').forEach(c=>{c.onclick=null;c.style.cursor='default';});
   showView('view-board-overview');
 }
@@ -952,8 +953,8 @@ function buildBoard(){
   const board=document.getElementById('game-board');
   const cats=quizData.categories;
   const maxQCount=Math.max(...cats.map(c=>c.questions.length));
-  board.style.gridTemplateColumns='repeat('+cats.length+', 1fr)';
-  board.style.gridTemplateRows='repeat('+(maxQCount+1)+', 1fr)';
+  board.style.gridTemplateColumns='repeat('+cats.length+', minmax(0, 1fr))';
+  board.style.gridTemplateRows='repeat('+(maxQCount+1)+', minmax(0, 1fr))';
   board.innerHTML='';
   cats.forEach(cat=>{
     const c=document.createElement('div');
