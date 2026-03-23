@@ -483,6 +483,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="topbar">
     <button class="btn-icon" onclick="confirmQuit()">←</button>
     <div class="topbar-title" id="game-title">💰 Millionär</div>
+    <span id="game-room-code-badge" style="display:none;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.12em;color:rgba(245,166,35,0.7);background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:7px;padding:2px 8px;white-space:nowrap;flex-shrink:0;"></span>
     <div id="q-counter" style="font-size:12px;color:var(--muted);">Frage 1/15</div>
     <div id="mill-timer-display"></div>
   </div>
@@ -920,8 +921,8 @@ const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
 let mpSocket=null, mpRoom=null, mpMyName='', mpIsHost=false;
 
 // ── SESSION PERSISTENCE ──
-function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
-function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}const b=document.getElementById('game-room-code-badge');if(b){b.textContent=code;b.style.display='block';}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}const b=document.getElementById('game-room-code-badge');if(b)b.style.display='none';}
 function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 
 function lobbyCreate(){

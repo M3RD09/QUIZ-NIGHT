@@ -604,6 +604,7 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
   <div class="topbar">
     <button class="btn-icon" onclick="confirmQuit()">←</button>
     <div class="topbar-title" id="game-title">🎯 Jeopardy!</div>
+    <span id="game-room-code-badge" style="display:none;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.12em;color:rgba(0,191,255,0.7);background:rgba(0,191,255,0.08);border:1px solid rgba(0,191,255,0.2);border-radius:7px;padding:2px 8px;white-space:nowrap;flex-shrink:0;"></span>
     <button class="btn-icon" onclick="resetBoard()">🔄</button>
   </div>
 
@@ -1545,8 +1546,8 @@ const JEP_SERVER='https://quiz-server-production-9398.up.railway.app';
 let isOnline=false,isHost=false,myName='',mpSocket=null,mpRoom=null;
 
 // ── SESSION PERSISTENCE ──
-function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
-function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}const b=document.getElementById('game-room-code-badge');if(b){b.textContent=code;b.style.display='block';}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}const b=document.getElementById('game-room-code-badge');if(b)b.style.display='none';}
 function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let onlineCurrentAnswer=null; // {playerName,text}
 let lastVerdict=null; // {playerName,playerAnswer,correctAnswer,result}

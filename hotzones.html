@@ -374,6 +374,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <button class="btn-icon" onclick="confirmQuitOnline()">←</button>
     <div class="topbar-title" id="game-topbar-title">🔥 Hot Zones</div>
     <div id="game-round-label" style="font-size:12px;color:var(--muted);font-weight:600;"></div>
+    <span id="game-room-code-badge" style="display:none;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.12em;color:rgba(255,100,0,0.7);background:rgba(255,100,0,0.08);border:1px solid rgba(255,100,0,0.2);border-radius:7px;padding:2px 8px;white-space:nowrap;flex-shrink:0;"></span>
   </div>
   <div id="game-content" style="flex:1;overflow-y:auto;"></div>
 </div>
@@ -441,8 +442,8 @@ let mpSocket=null, mpRoom=null, mpMyName='', mpIsHost=false;
 let hzState=null;
 
 // ── SESSION PERSISTENCE ──
-function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
-function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}const b=document.getElementById('game-room-code-badge');if(b){b.textContent=code;b.style.display='block';}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}const b=document.getElementById('game-room-code-badge');if(b)b.style.display='none';}
 function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let quizData=null;
 let myGuessSubmitted=false;

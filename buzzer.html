@@ -406,6 +406,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="game-topbar">
     <div class="round-badge" id="bb-round-badge">FRAGE 1</div>
     <div class="game-title">BUZZER BEATER</div>
+    <span id="game-room-code-badge" style="display:none;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.12em;color:rgba(245,200,66,0.7);background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.2);border-radius:7px;padding:2px 8px;white-space:nowrap;flex-shrink:0;"></span>
     <button class="btn-icon" onclick="bbConfirmQuit()">✕</button>
   </div>
   <div id="bb-game-main" style="display:flex;flex-direction:column;flex:1;min-height:0;"></div>
@@ -462,8 +463,8 @@ let isHost = false;
 let quizData = null;
 
 // ── SESSION PERSISTENCE ──
-function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
-function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}const b=document.getElementById('game-room-code-badge');if(b){b.textContent=code;b.style.display='block';}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}const b=document.getElementById('game-room-code-badge');if(b)b.style.display='none';}
 function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let bbEditorFromLobby = false;
 let bbEditorFromOverlay = false;

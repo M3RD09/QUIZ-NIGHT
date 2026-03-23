@@ -219,6 +219,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     <button class="btn-icon" onclick="fcConfirmQuit()">←</button>
     <div class="round-badge" id="fc-round-badge">RUNDE 1/1</div>
     <div class="game-title-bar">FAKTENCHECK</div>
+    <span id="game-room-code-badge" style="display:none;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.12em;color:rgba(0,191,255,0.7);background:rgba(0,191,255,0.08);border:1px solid rgba(0,191,255,0.2);border-radius:7px;padding:2px 8px;white-space:nowrap;flex-shrink:0;"></span>
     <div class="timer-display" id="fc-timer"></div>
   </div>
   <div class="game-layout">
@@ -343,8 +344,8 @@ let mpSocket=null,mpRoom=null,mpIsHost=false;
 let fcMyName='';
 
 // ── SESSION PERSISTENCE ──
-function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
-function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}const b=document.getElementById('game-room-code-badge');if(b){b.textContent=code;b.style.display='block';}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}const b=document.getElementById('game-room-code-badge');if(b)b.style.display='none';}
 function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let fcState=null;
 let mySubmission=null; // text I submitted as fake answer
