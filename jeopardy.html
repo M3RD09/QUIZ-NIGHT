@@ -1133,7 +1133,8 @@ function timeUp(){
   document.getElementById('time-up-box').style.display='block';
   document.getElementById('btn-reveal').style.display='none';
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
-  if(q.answer){document.getElementById('ans-box').style.display='block';}
+  document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
+  document.getElementById('ans-box').style.display='block';
   document.getElementById('verdict-wrap').style.display=true?'flex':'none';
   showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
 
@@ -1541,6 +1542,11 @@ document.addEventListener('click',function(e){
 // ══════════════════════════════════════════════════════
 const JEP_SERVER='https://quiz-server-production-9398.up.railway.app';
 let isOnline=false,isHost=false,myName='',mpSocket=null,mpRoom=null;
+
+// ── SESSION PERSISTENCE ──
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let onlineCurrentAnswer=null; // {playerName,text}
 let lastVerdict=null; // {playerName,playerAnswer,correctAnswer,result}
 let confirmCallback=null;
@@ -1561,7 +1567,15 @@ function setupSocketJep(){
   mpSocket.on('connect',()=>{
     if(mpRoom&&mpRoom.code){
       mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
-      mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();if(isHost)broadcastJepState();});
+      mpSocket.once('room_joined',({room,gameState})=>{
+        mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();
+        if(isHost){
+          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+          if(hs){applyJepState(hs);setTimeout(broadcastJepState,300);}
+          else broadcastJepState();
+        }
+      });
+      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
     }
   });
   mpSocket.on('disconnect',()=>{if(isOnline)showReconnectOverlay();});
@@ -1607,6 +1621,7 @@ function mpCreate(){
     mpSocket.emit('create_room',{game:'jeopardy',playerName:name,quizData:{}});
     mpSocket.once('room_created',({code,room})=>{
       mpRoom=room;mpRoom.code=code;
+      saveSession(code,name,true);
       mpClose();
       lobbyTeams=[{name:'Team Blau',color:'#3a8ef6',players:[]},{name:'Team Rot',color:'#e8354a',players:[]}];
       lobbySoloMode=false;lobbyQuizData=null;
@@ -1624,6 +1639,7 @@ function mpJoin(){
     mpSocket.emit('join_room',{code,playerName:name});
     mpSocket.once('room_joined',({room,yourName,code:c})=>{
       mpRoom=room;mpRoom.code=c||code;myName=yourName||name;
+      saveSession(mpRoom.code,myName,false);
       mpClose();showView('view-lobby');renderLobby();
     });
   });
@@ -1746,6 +1762,7 @@ function mpKickFromLobby(name){
 }
 function lobbyLeave(){
   if(!confirm('Raum verlassen?'))return;
+  clearSession();
   isOnline=false;isHost=false;
   if(mpSocket){mpSocket.disconnect();mpSocket=null;}
   mpRoom=null;lobbyQuizData=null;showView('view-menu');
@@ -1799,7 +1816,9 @@ function buildJepState(){
 }
 function broadcastJepState(){
   if(!isHost||!mpSocket||!mpRoom)return;
-  mpSend('jep_state',buildJepState());
+  const state=buildJepState();
+  mpSend('jep_state',state);
+  try{sessionStorage.setItem('qn_host_state',JSON.stringify(state));}catch(e){}
 }
 function mpSend(action,payload){
   if(!mpSocket||!mpRoom)return;
@@ -1813,7 +1832,7 @@ function handleJepAction(action,payload){
     case 'jep_select_cell': if(isHost)hostOpenCell(payload.ci,payload.qi);break;
     case 'jep_submit_answer': if(isHost)hostReceiveAnswer(payload);break;
     case 'jep_kick_notify':
-      if(payload.name===myName){showToast('⛔ Du wurdest vom Moderator entfernt.');setTimeout(()=>{isOnline=false;isHost=false;showView('view-menu');},2000);}
+      if(payload.name===myName){clearSession();showToast('⛔ Du wurdest vom Moderator entfernt.');setTimeout(()=>{isOnline=false;isHost=false;showView('view-menu');},2000);}
       break;
     case 'jep_back_to_lobby':
       if(!isHost){
@@ -2123,6 +2142,17 @@ function checkGameOver(){
   if(window.location.hash==='#online'){
     mpShowOverlay();
   }
+})();
+
+// ── AUTO-RECONNECT ON PAGE LOAD ──
+(function(){
+  if(new URLSearchParams(window.location.search).get('room'))return; // URL join takes priority
+  const sess=loadSession();
+  if(!sess)return;
+  myName=sess.name;isHost=sess.isHost;isOnline=true;
+  mpRoom={code:sess.code};
+  showReconnectOverlay();
+  loadSocketJep(()=>{});
 })();
 </script>
 

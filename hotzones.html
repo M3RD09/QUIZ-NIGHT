@@ -439,6 +439,11 @@ function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
 let mpSocket=null, mpRoom=null, mpMyName='', mpIsHost=false;
 let hzState=null;
+
+// ── SESSION PERSISTENCE ──
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let quizData=null;
 let myGuessSubmitted=false;
 let myHintSubmitted=false;
@@ -457,7 +462,15 @@ function mpConnect(cb){
       if(!mpRoom||!mpRoom.code)return;
       showReconnectOverlay();
       mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
-      mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);if(mpIsHost&&hzState)setTimeout(()=>mpSend('hz_state',hzState),300);});
+      mpSocket.once('room_joined',({room,gameState})=>{
+        mpRoom=room;saveSession(mpRoom.code,mpMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+        if(mpIsHost){
+          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+          if(hs){hzState=hs;setTimeout(()=>mpSend('hz_state',hzState),300);}
+          else if(hzState)setTimeout(()=>mpSend('hz_state',hzState),300);
+        }
+      });
+      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
     });
     mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))lobbyRender();else if(mpIsHost&&hzState)setTimeout(()=>mpSend('hz_state',hzState),300);});
     mpSocket.on('player_left',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))lobbyRender();});
@@ -469,6 +482,7 @@ function mpConnect(cb){
     mpSocket.on('game_action',({action,payload})=>{
       if(action==='kick_player'){
         if(payload.name===mpMyName){
+          clearSession();
           showToast('❌ Du wurdest aus dem Raum entfernt.');
           if(mpSocket){mpSocket.disconnect();mpSocket=null;}
           hzState=null;mpRoom=null;mpIsHost=false;
@@ -492,6 +506,7 @@ function mpConnect(cb){
 function mpSend(action,payload){
   if(!mpSocket||!mpRoom)return;
   mpSocket.emit('game_action',{code:mpRoom.code,action,payload});
+  if(action==='hz_state'&&mpIsHost)try{sessionStorage.setItem('qn_host_state',JSON.stringify(payload));}catch(e){}
 }
 
 // ════════════════════════════════════════
@@ -524,6 +539,7 @@ function hostCreate(){
     mpSocket.emit('create_room',{game:'hotzones',playerName:mpMyName,quizData:{}});
     mpSocket.once('room_created',({code,room})=>{
       mpRoom=room;mpRoom.code=code;
+      saveSession(code,mpMyName,true);
       showView('view-lobby');
       lobbyRender();
     });
@@ -542,6 +558,7 @@ function playerJoin(){
     mpSocket.emit('join_room',{code,playerName:mpMyName});
     mpSocket.once('room_joined',({room,yourName,code:c})=>{
       mpRoom=room;mpRoom.code=c||code;mpMyName=yourName;
+      saveSession(mpRoom.code,mpMyName,false);
       showView('view-lobby');
       lobbyRender();
     });
@@ -656,6 +673,7 @@ function hzKickFromLobby(playerName){
 }
 
 function lobbyLeave(){
+  clearSession();
   if(mpSocket)mpSocket.disconnect();
   mpSocket=null;mpRoom=null;mpIsHost=false;hzState=null;quizData=null;
   myGuessSubmitted=false;myHintSubmitted=false;selectedGuessNum=null;lastRenderedPhase=null;
@@ -1343,10 +1361,18 @@ addEditorCat({name:'FILMGENRE',labelLeft:'Hasse ich',labelRight:'Liebe ich'});
   const p=new URLSearchParams(window.location.search);
   const r=p.get('room');
   if(r){
-    // Auto-open the join tab
     document.getElementById('hz-overlay').classList.remove('hidden');
     switchTab('join');
     document.getElementById('room-code-inp').value=r.toUpperCase();
+    return;
+  }
+  // ── AUTO-RECONNECT ON PAGE LOAD ──
+  const sess=loadSession();
+  if(sess){
+    mpMyName=sess.name;mpIsHost=sess.isHost;
+    mpRoom={code:sess.code};
+    showReconnectOverlay();
+    mpConnect(()=>{});
   }
 })();
 </script>

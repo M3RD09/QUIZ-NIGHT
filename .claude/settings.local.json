@@ -19,7 +19,11 @@
       "Bash(head -5 grep -n \"function esc\\\\b\\\\|escHtml\\\\|function escHtml\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/horl.html\")",
       "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/buzzer.html\")",
       "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/hotzones.html\")",
-      "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/horl.html\")"
+      "Bash(head -10 echo \"---\" grep -n \"admin-btn-float\\\\|admin-panel-overlay\\\\|toggleAdminPanel\\\\|adminBackToLobby\" \"C:/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT/horl.html\")",
+      "Bash(find /c/Users/mertb/GITHUB-QUIZPROJEKT/QUIZ-NIGHT -maxdepth 2 -name *.js -o -name *.json)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Read(//c/Users/mertb/GITHUB-QUIZPROJEKT//**)",
+      "Read(//c/Users/mertb//**)"
     ]
   }
 }

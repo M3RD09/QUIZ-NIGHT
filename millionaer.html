@@ -919,6 +919,11 @@ function editorPlay(){
 const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
 let mpSocket=null, mpRoom=null, mpMyName='', mpIsHost=false;
 
+// ── SESSION PERSISTENCE ──
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
+
 function lobbyCreate(){
   nameOverlayShow('Dein Name als Host', (name)=>{
     mpMyName=name;
@@ -964,12 +969,21 @@ function mpConnect(cb){
       if(!mpRoom||!mpRoom.code)return;
       showReconnectOverlay();
       mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
-      mpSocket.once('room_joined',({room})=>{
-        mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
-        if(mpIsHost&&players&&players.length&&document.getElementById('view-game').classList.contains('active')){
-          setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+      mpSocket.once('room_joined',({room,gameState})=>{
+        mpRoom=room;saveSession(mpRoom.code,mpMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+        if(mpIsHost){
+          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+          if(hs&&hs.players){
+            players=hs.players;currentQIdx=hs.currentQIdx;quizData=hs.quizData||quizData;
+            if(document.getElementById('view-game').classList.contains('active')){
+              setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+            }
+          } else if(players&&players.length&&document.getElementById('view-game').classList.contains('active')){
+            setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+          }
         }
       });
+      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
     });
     mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
     mpSocket.on('player_joined',({room})=>{
@@ -1052,6 +1066,7 @@ function mpKickFromGame(playerName){
 }
 
 function lobbyLeave(){
+  clearSession();
   if(mpSocket) mpSocket.disconnect();
   mpSocket=null; mpRoom=null; mpIsHost=false;
   document.getElementById('admin-btn-float').classList.remove('visible');
@@ -1061,6 +1076,7 @@ function lobbyLeave(){
 function mpSend(action,payload){
   if(!mpSocket||!mpRoom)return;
   mpSocket.emit('game_action',{code:mpRoom.code,action,payload});
+  if(action==='init'&&mpIsHost)try{sessionStorage.setItem('qn_host_state',JSON.stringify({players,currentQIdx,quizData}));}catch(e){}
 }
 
 // ══════════════════════════════════════════════
@@ -1300,6 +1316,7 @@ function mpHostNext(){
 function mpOnAction(action,payload){
   if(action==='kick_player'){
     if(payload.name===mpMyName){
+      clearSession();
       showToast('❌ Du wurdest aus dem Raum entfernt.');
       if(mpSocket){mpSocket.disconnect();mpSocket=null;}
       mpRoom=null;mpIsHost=false;
@@ -1740,7 +1757,7 @@ function mmHostCreate(){
   document.getElementById('lobby-status').textContent='⏳ Warte auf Spieler...';
   mpConnect(()=>{
     mpSocket.emit('create_room',{game:'millionaer',playerName:mpMyName,quizData});
-    mpSocket.once('room_created',({code,room})=>{mpRoom=room;mpRoom.code=code;lobbyRender();});
+    mpSocket.once('room_created',({code,room})=>{mpRoom=room;mpRoom.code=code;saveSession(code,mpMyName,true);lobbyRender();});
     mpSocket.once('error',({msg})=>showToast('❌ '+msg));
   });
 }
@@ -1756,7 +1773,7 @@ function mmPlayerJoin(){
   document.getElementById('lobby-join-wrap').style.display='block';
   mpConnect(()=>{
     mpSocket.emit('join_room',{code,playerName:name});
-    mpSocket.once('room_joined',({room,yourName,code:c})=>{mpRoom=room;mpRoom.code=c||code;mpMyName=yourName;lobbyRender();});
+    mpSocket.once('room_joined',({room,yourName,code:c})=>{mpRoom=room;mpRoom.code=c||code;mpMyName=yourName;saveSession(mpRoom.code,mpMyName,false);lobbyRender();});
     mpSocket.once('error',({msg})=>{
       showView('view-menu');showToast('❌ '+msg);
       mmShowOnlineOverlay();mmSwitchTab('join');
@@ -1804,6 +1821,7 @@ function joinByCode(){
     mpSocket.emit('join_room',{code,playerName:name});
     mpSocket.once('room_joined',({room,yourName,code:c})=>{
       mpRoom=room; mpRoom.code=c||code; mpMyName=yourName;
+      saveSession(mpRoom.code,mpMyName,false);
       lobbyRender();
     });
     mpSocket.once('error',({msg})=>{
@@ -1821,7 +1839,16 @@ function joinByCode(){
 // Auto-join if ?room= in URL
 window.addEventListener('DOMContentLoaded',()=>{
   const code=new URLSearchParams(window.location.search).get('room');
-  if(code){mmShowOnlineOverlay();}
+  if(code){mmShowOnlineOverlay();return;}
+
+  // ── AUTO-RECONNECT ON PAGE LOAD ──
+  const sess=loadSession();
+  if(sess){
+    mpMyName=sess.name;mpIsHost=sess.isHost;
+    mpRoom={code:sess.code};
+    showReconnectOverlay();
+    mpConnect(()=>{});
+  }
 });
 
 

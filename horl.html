@@ -469,6 +469,11 @@ let mpRoom = null;
 let myName = '';
 let isHost = false;
 let quizData = null;
+
+// ── SESSION PERSISTENCE ──
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let horlEditorFromLobby = false;
 let horlEditorFromOverlay = false;
 let horlLobbyHearts = 3;
@@ -555,7 +560,15 @@ function mpConnect(cb){
       if(!mpRoom||!mpRoom.code)return;
       showReconnectOverlay();
       mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
-      mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);if(isHost&&horlState)setTimeout(broadcastState,300);});
+      mpSocket.once('room_joined',({room,gameState})=>{
+        mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+        if(isHost){
+          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+          if(hs){horlState=hs;setTimeout(broadcastState,300);}
+          else if(horlState)setTimeout(broadcastState,300);
+        }
+      });
+      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
     });
     mpSocket.on('player_joined', ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); else if(isHost&&horlState)setTimeout(broadcastState,300); });
     mpSocket.on('player_left',   ({room})=>{ mpRoom=room; if(document.getElementById('view-lobby').classList.contains('active')) renderLobby(); });
@@ -564,6 +577,7 @@ function mpConnect(cb){
     mpSocket.on('game_action', ({action, payload})=>{
       if(action === 'kick_player'){
         if(payload.name === myName){
+          clearSession();
           showToast('❌ Du wurdest aus dem Raum entfernt.');
           if(mpSocket){ mpSocket.disconnect(); mpSocket = null; }
           horlState = null; mpRoom = null; isHost = false;
@@ -600,6 +614,7 @@ function mpSend(action, payload){
 
 function broadcastState(){
   mpSend('horl_state', horlState);
+  try{sessionStorage.setItem('qn_host_state',JSON.stringify(horlState));}catch(e){}
 }
 
 // ── HOST CREATE ──
@@ -616,6 +631,7 @@ function horlHostCreate(){
       mpRoom = room;
       mpRoom.code = code;
       isHost = true;
+      saveSession(code, name, true);
       horlCloseOverlay();
       showView('view-lobby');
       renderLobby();
@@ -639,6 +655,7 @@ function horlPlayerJoin(){
       mpRoom.code = c || code;
       myName = yourName || name;
       isHost = false;
+      saveSession(mpRoom.code, myName, false);
       horlCloseOverlay();
       showView('view-lobby');
       renderLobby();
@@ -696,6 +713,7 @@ function horlChangeLobbyHearts(d){
 }
 
 function horlLobbyLeave(){
+  clearSession();
   if(mpSocket){ mpSocket.disconnect(); mpSocket = null; }
   mpRoom = null; isHost = false;
   document.getElementById('admin-btn-float').classList.remove('visible');
@@ -1360,6 +1378,17 @@ window.addEventListener('DOMContentLoaded', ()=>{
     showView('view-editor');
   } else if(action==='play'){
     horlShowOverlay();
+  }
+
+  // ── AUTO-RECONNECT ON PAGE LOAD ──
+  if(!room){
+    const sess=loadSession();
+    if(sess){
+      myName=sess.name;isHost=sess.isHost;
+      mpRoom={code:sess.code};
+      showReconnectOverlay();
+      mpConnect(()=>{});
+    }
   }
 });
 </script>

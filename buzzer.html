@@ -460,6 +460,11 @@ let mpRoom = null;
 let myName = '';
 let isHost = false;
 let quizData = null;
+
+// ── SESSION PERSISTENCE ──
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let bbEditorFromLobby = false;
 let bbEditorFromOverlay = false;
 let bbState = null;
@@ -533,7 +538,15 @@ function mpConnect(cb){
       if(!mpRoom||!mpRoom.code)return;
       showReconnectOverlay();
       mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
-      mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);if(isHost&&bbState)setTimeout(broadcastBBState,300);});
+      mpSocket.once('room_joined',({room,gameState})=>{
+        mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+        if(isHost){
+          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+          if(hs){bbState=hs;setTimeout(broadcastBBState,300);}
+          else if(bbState)setTimeout(broadcastBBState,300);
+        }
+      });
+      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
     });
     mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();else if(isHost&&bbState)setTimeout(broadcastBBState,300);});
     mpSocket.on('player_left',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
@@ -542,6 +555,7 @@ function mpConnect(cb){
     mpSocket.on('game_action',({action,payload})=>{
       if(action==='kick_player'){
         if(payload.name===myName){
+          clearSession();
           showToast('❌ Du wurdest aus dem Raum entfernt.');
           if(mpSocket){mpSocket.disconnect();mpSocket=null;}
           bbState=null;mpRoom=null;isHost=false;
@@ -569,7 +583,7 @@ function mpConnect(cb){
   document.head.appendChild(s);
 }
 function mpSend(action,payload){if(!mpSocket||!mpRoom)return;mpSocket.emit('game_action',{code:mpRoom.code,action,payload});}
-function broadcastBBState(){mpSend('bb_state',bbState);}
+function broadcastBBState(){mpSend('bb_state',bbState);try{sessionStorage.setItem('qn_host_state',JSON.stringify(bbState));}catch(e){}}
 
 // ── HOST CREATE ──
 function bbHostCreate(){
@@ -582,6 +596,7 @@ function bbHostCreate(){
     mpSocket.emit('create_room',{game:'buzzer',playerName:name,quizData:{}});
     mpSocket.once('room_created',({code,room})=>{
       mpRoom=room;mpRoom.code=code;isHost=true;
+      saveSession(code,name,true);
       bbCloseOverlay();showView('view-lobby');renderLobby();
     });
     mpSocket.once('error',({msg})=>{showOverlayStatus('err','❌ '+(msg||'Fehler'));bbShowOverlay();});
@@ -600,6 +615,7 @@ function bbPlayerJoin(){
     mpSocket.emit('join_room',{code,playerName:name});
     mpSocket.once('room_joined',({room,yourName,code:c})=>{
       mpRoom=room;mpRoom.code=c||code;myName=yourName||name;isHost=false;
+      saveSession(mpRoom.code,myName,false);
       bbCloseOverlay();showView('view-lobby');renderLobby();
     });
     mpSocket.once('error',({msg})=>{showOverlayStatus('err','❌ '+(msg||'Raum nicht gefunden'));bbShowOverlay();});
@@ -726,6 +742,7 @@ function bbKickFromGame(playerName){
 }
 
 function bbLobbyLeave(){
+  clearSession();
   if(mpSocket){mpSocket.disconnect();mpSocket=null;}
   mpRoom=null;isHost=false;bbLobbyTeams=[];bbPlayerTeams={};
   document.getElementById('admin-btn-float').classList.remove('visible');
@@ -1391,6 +1408,17 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(room){bbShowOverlay();bbSwitchTab('join');document.getElementById('bb-join-code').value=room.toUpperCase();}
   else if(action==='editor')showView('view-editor');
   else if(action==='play')bbShowOverlay();
+
+  // ── AUTO-RECONNECT ON PAGE LOAD ──
+  if(!room){
+    const sess=loadSession();
+    if(sess){
+      myName=sess.name;isHost=sess.isHost;
+      mpRoom={code:sess.code};
+      showReconnectOverlay();
+      mpConnect(()=>{});
+    }
+  }
 });
 </script>
 

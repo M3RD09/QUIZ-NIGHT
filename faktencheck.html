@@ -341,6 +341,11 @@ async function fcLoadPresets(){
 const SERVER_URL='https://quiz-server-production-9398.up.railway.app';
 let mpSocket=null,mpRoom=null,mpIsHost=false;
 let fcMyName='';
+
+// ── SESSION PERSISTENCE ──
+function saveSession(code,name,host){try{sessionStorage.setItem('qn_session',JSON.stringify({code,name,isHost:host,savedAt:Date.now()}));}catch(e){}}
+function clearSession(){try{sessionStorage.removeItem('qn_session');sessionStorage.removeItem('qn_host_state');}catch(e){}}
+function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('qn_session')||'null');return s&&Date.now()-s.savedAt<6*3600*1000?s:null;}catch(e){return null;}}
 let fcState=null;
 let mySubmission=null; // text I submitted as fake answer
 let myVote=null;       // optionId I voted for
@@ -365,7 +370,7 @@ function buildSafeFcState(){
   }
   return s;
 }
-function broadcastFcState(){mpSend('fc_state',buildSafeFcState());}
+function broadcastFcState(){mpSend('fc_state',buildSafeFcState());try{sessionStorage.setItem('qn_host_state',JSON.stringify({fcState,fcInternal}));}catch(e){}}
 
 function fcConnect(cb){
   if(mpSocket&&mpSocket.connected){cb();return;}
@@ -374,9 +379,17 @@ function fcConnect(cb){
     mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
     mpSocket.once('connect',cb);
     mpSocket.on('connect',()=>{
-      if(mpRoom){
+      if(mpRoom&&mpRoom.code){
         mpSocket.emit('join_room',{code:mpRoom.code,playerName:fcMyName});
-        mpSocket.once('room_joined',({room})=>{mpRoom=room;hideReconnectOverlay();showToast('✅ Wieder verbunden!');if(mpIsHost&&fcState)setTimeout(broadcastFcState,300);});
+        mpSocket.once('room_joined',({room,gameState})=>{
+          mpRoom=room;saveSession(mpRoom.code,fcMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!');
+          if(mpIsHost){
+            const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+            if(hs){fcState=hs.fcState;fcInternal=hs.fcInternal||fcInternal;setTimeout(broadcastFcState,300);}
+            else if(fcState)setTimeout(broadcastFcState,300);
+          }
+        });
+        mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
       }
     });
     mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();else if(mpIsHost&&fcState)setTimeout(broadcastFcState,300);});
@@ -386,6 +399,7 @@ function fcConnect(cb){
     mpSocket.on('game_action',({action,payload})=>{
       if(action==='kick_player'){
         if(payload.name===fcMyName){
+          clearSession();
           showToast('❌ Du wurdest entfernt.');
           if(mpSocket){mpSocket.disconnect();mpSocket=null;}
           fcState=null;mpRoom=null;mpIsHost=false;
@@ -421,6 +435,7 @@ function fcHostCreate(){
     mpSocket.emit('create_room',{game:'faktencheck',playerName:name,quizData:{}});
     mpSocket.once('room_created',({code,room})=>{
       mpRoom=room;mpRoom.code=code;mpIsHost=true;
+      saveSession(code,name,true);
       fcCloseOverlay();showView('view-lobby');renderLobby();
       document.getElementById('fc-quiz-section').style.display='';
       document.getElementById('fc-start-btn').style.display='';
@@ -440,6 +455,7 @@ function fcPlayerJoin(){
     mpSocket.emit('join_room',{code,playerName:name});
     mpSocket.once('room_joined',({room,yourName,code:c})=>{
       mpRoom=room;mpRoom.code=c||code;fcMyName=yourName;mpIsHost=false;
+      saveSession(mpRoom.code,fcMyName,false);
       fcCloseOverlay();showView('view-lobby');renderLobby();
       document.getElementById('fc-quiz-section').style.display='none';
       document.getElementById('fc-start-btn').style.display='none';
@@ -450,6 +466,7 @@ function fcPlayerJoin(){
 }
 
 function fcLobbyLeave(){
+  clearSession();
   if(mpSocket){mpSocket.disconnect();mpSocket=null;}
   mpRoom=null;mpIsHost=false;fcState=null;mySubmission=null;myVote=null;
   clearFcTimers();
@@ -882,6 +899,17 @@ function adminBackToLobby(){
   if(room){fcShowOverlay();fcSwitchTab('join');document.getElementById('fc-join-code').value=room.toUpperCase();}
   else if(action==='editor'){showView('view-editor');renderEditor();}
   else if(action==='play'||window.location.hash==='#online'){fcShowOverlay();}
+
+  // ── AUTO-RECONNECT ON PAGE LOAD ──
+  if(!room){
+    const sess=loadSession();
+    if(sess){
+      fcMyName=sess.name;mpIsHost=sess.isHost;
+      mpRoom={code:sess.code};
+      showReconnectOverlay();
+      fcConnect(()=>{});
+    }
+  }
 })();
 </script>
 
