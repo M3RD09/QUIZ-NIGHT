@@ -1435,6 +1435,7 @@ function hideReconnectOverlay(){document.getElementById('reconnect-overlay').cla
 <div class="admin-panel-overlay" id="admin-panel-overlay" onclick="if(event.target===this)closeAdminPanel()">
   <div class="admin-panel">
     <div class="admin-panel-title">⚙️ Moderator-Panel</div>
+    <button class="admin-action-btn" onclick="adminSkipTurn()">⏭️ Spielerzug überspringen</button>
     <button class="admin-action-btn" onclick="adminEditScores()">✏️ Punkte bearbeiten</button>
     <button class="admin-action-btn" onclick="adminRestart()">🔄 Spiel neu starten</button>
     <button class="admin-action-btn danger" onclick="adminBackToLobby()">🏠 Zurück zur Lobby</button>
@@ -1470,6 +1471,7 @@ function buildAdminKickList(){
 }
 function toggleAdminPanel(){buildAdminKickList();document.getElementById('admin-panel-overlay').classList.toggle('open');}
 function closeAdminPanel(){document.getElementById('admin-panel-overlay').classList.remove('open');}
+function adminSkipTurn(){closeAdminPanel();hzNextRound();}
 function adminEditScores(){
   const c=document.getElementById('score-edit-fields');c.innerHTML='';
   if(!hzState||!hzState.teams)return;

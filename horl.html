@@ -1460,6 +1460,7 @@ function hideReconnectOverlay(){document.getElementById('reconnect-overlay').cla
 <div class="admin-panel-overlay" id="admin-panel-overlay" onclick="if(event.target===this)closeAdminPanel()">
   <div class="admin-panel">
     <div class="admin-panel-title">⚙️ Moderator-Panel</div>
+    <button class="admin-action-btn" onclick="adminSkipPlayerTurn()">⏭️ Spieler überspringen</button>
     <button class="admin-action-btn" onclick="adminRestart()">🔄 Spiel neu starten</button>
     <button class="admin-action-btn danger" onclick="adminBackToLobby()">🏠 Zurück zur Lobby</button>
     <div id="admin-kick-list" style="display:flex;flex-direction:column;gap:6px;"></div>
@@ -1484,6 +1485,13 @@ function buildAdminKickList(){
 }
 function toggleAdminPanel(){buildAdminKickList();document.getElementById('admin-panel-overlay').classList.toggle('open');}
 function closeAdminPanel(){document.getElementById('admin-panel-overlay').classList.remove('open');}
+function adminSkipPlayerTurn(){
+  closeAdminPanel();
+  if(!isHost||!horlState||horlState.phase!=='playing')return;
+  horlNextPlayer();
+  broadcastState();
+  renderGameView();
+}
 function adminRestart(){
   if(!confirm('Spiel neu starten?'))return;
   closeAdminPanel();horlStartGame();

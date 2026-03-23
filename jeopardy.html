@@ -1509,6 +1509,7 @@ document.addEventListener('click',function(e){
 <div class="admin-panel-overlay" id="admin-panel-overlay" onclick="if(event.target===this)closeAdminPanel()">
   <div class="admin-panel">
     <div class="admin-panel-title">⚙️ Moderator-Panel</div>
+    <button class="admin-action-btn" onclick="adminSkipTurn()">⏭️ Zug überspringen</button>
     <button class="admin-action-btn" onclick="adminEditScores()">✏️ Punkte bearbeiten</button>
     <button class="admin-action-btn" onclick="adminRestart()">🔄 Spiel neu starten</button>
     <button class="admin-action-btn danger" onclick="adminBackToLobby()">🏠 Zurück zur Lobby</button>
@@ -2062,6 +2063,15 @@ function toggleAdminPanel(){
   document.getElementById('admin-panel-overlay').classList.toggle('open');
 }
 function closeAdminPanel(){document.getElementById('admin-panel-overlay').classList.remove('open');}
+function adminSkipTurn(){
+  closeAdminPanel();
+  if(!isOnline||!isHost)return;
+  turnIdx++;
+  updateTurnBanner();
+  updateTeamsSidebar();
+  broadcastJepState();
+  setTimeout(()=>showTurnPopup(),200);
+}
 function mpKick(name){
   if(!confirm('Spieler "'+name+'" kicken?'))return;
   mpSend('jep_kick_notify',{name});
