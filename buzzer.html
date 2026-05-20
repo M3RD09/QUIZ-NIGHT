@@ -530,58 +530,71 @@ function bbOpenEditorFromOverlay(){
 // ── SOCKET ──
 function mpConnect(cb){
   if(mpSocket&&mpSocket.connected){cb();return;}
+  if(mpSocket){mpSocket.once('connect',cb);mpSocket.connect();return;}
+  if(window.io){_initSocket(cb);return;}
   const s=document.createElement('script');
   s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
-  s.onload=()=>{
-    mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
-    mpSocket.once('connect',cb);
-    mpSocket.on('connect',()=>{
-      if(!mpRoom||!mpRoom.code)return;
-      showReconnectOverlay();
-      mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
-      mpSocket.once('room_joined',({room,gameState})=>{
-        mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
-        if(isHost){
-          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
-          if(hs){bbState=hs;setTimeout(broadcastBBState,300);}
-          else if(bbState)setTimeout(broadcastBBState,300);
-        }
-      });
-      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
-    });
-    mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();else if(isHost&&bbState)setTimeout(broadcastBBState,300);});
-    mpSocket.on('player_left',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
-    mpSocket.on('room_update',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
-    mpSocket.on('game_started', ({room})=>{if(room)mpRoom=room;});
-    mpSocket.on('game_action',({action,payload})=>{
-      if(action==='kick_player'){
-        if(payload.name===myName){
-          clearSession();
-          showToast('❌ Du wurdest aus dem Raum entfernt.');
-          if(mpSocket){mpSocket.disconnect();mpSocket=null;}
-          bbState=null;mpRoom=null;isHost=false;
-          showView('view-menu');
-          bbShowOverlay();
-        } else if(mpRoom){
-          mpRoom.players=mpRoom.players.filter(p=>p.name!==payload.name);
-          if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
-        }
-        return;
-      }
-      if(action==='bb_state'){
-        bbState=payload;
-        hideReconnectOverlay();
-        if(!document.getElementById('view-game').classList.contains('active'))showView('view-game');
-        renderGameView();
-        return;
-      }
-      if(action==='bb_back_to_lobby'){if(!isHost){showView('view-lobby');renderLobby();}return;}
-      if(isHost)bbProcessAction(action,payload);
-    });
-    mpSocket.on('error',({msg})=>showOverlayStatus('err','❌ '+(msg||'Fehler')));
-    mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
-  };
+  s.onload=()=>_initSocket(cb);
   document.head.appendChild(s);
+}
+function _initSocket(cb){
+  mpSocket=io(SERVER_URL,{
+    transports:['websocket','polling'],
+    reconnection:true,reconnectionAttempts:Infinity,
+    reconnectionDelay:1000,reconnectionDelayMax:8000,timeout:30000
+  });
+  mpSocket.once('connect',cb);
+  mpSocket.on('connect',()=>{
+    if(!mpRoom||!mpRoom.code)return;
+    showReconnectOverlay();
+    mpSocket.off('room_joined').off('error');
+    mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
+    mpSocket.once('room_joined',({room,gameState})=>{
+      mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+      if(isHost){
+        const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+        if(hs){bbState=hs;setTimeout(broadcastBBState,300);}
+        else if(bbState)setTimeout(broadcastBBState,300);
+      }
+    });
+    mpSocket.once('error',()=>{
+      clearSession();hideReconnectOverlay();
+      showToast('⚠️ Raum nicht mehr vorhanden — bitte neu starten.',4500);
+      setTimeout(()=>showView('view-menu'),1500);
+    });
+  });
+  mpSocket.on('player_joined',({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();else if(isHost&&bbState)setTimeout(broadcastBBState,300);});
+  mpSocket.on('player_left',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+  mpSocket.on('room_update',  ({room})=>{mpRoom=room;if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();});
+  mpSocket.on('game_started', ({room})=>{if(room)mpRoom=room;});
+  mpSocket.on('game_action',({action,payload})=>{
+    if(action==='kick_player'){
+      if(payload.name===myName){
+        clearSession();
+        showToast('❌ Du wurdest aus dem Raum entfernt.');
+        if(mpSocket){mpSocket.disconnect();mpSocket=null;}
+        bbState=null;mpRoom=null;isHost=false;
+        showView('view-menu');
+        bbShowOverlay();
+      } else if(mpRoom){
+        mpRoom.players=mpRoom.players.filter(p=>p.name!==payload.name);
+        if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
+      }
+      return;
+    }
+    if(action==='bb_state'){
+      bbState=payload;
+      hideReconnectOverlay();
+      if(!document.getElementById('view-game').classList.contains('active'))showView('view-game');
+      renderGameView();
+      return;
+    }
+    if(action==='bb_back_to_lobby'){if(!isHost){showView('view-lobby');renderLobby();}return;}
+    if(isHost)bbProcessAction(action,payload);
+  });
+  mpSocket.on('error',({msg})=>showOverlayStatus('err','❌ '+(msg||'Fehler')));
+  mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
+  setInterval(()=>{if(mpRoom)fetch(SERVER_URL).catch(()=>{});},4*60*1000);
 }
 function mpSend(action,payload){if(!mpSocket||!mpRoom)return;mpSocket.emit('game_action',{code:mpRoom.code,action,payload});}
 function broadcastBBState(){mpSend('bb_state',bbState);try{sessionStorage.setItem('qn_host_state',JSON.stringify(bbState));}catch(e){}}
