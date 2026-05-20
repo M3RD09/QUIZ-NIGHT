@@ -12,13 +12,43 @@ const io = new Server(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] }
 });
 
-const rooms = {}; // code -> { code, game, players, quizData, started }
+const rooms = {};
+// key: `${code}:${playerName}` -> setTimeout handle
+const cleanupTimers = {};
 
 function generateCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = '';
   for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
   return rooms[code] ? generateCode() : code;
+}
+
+// Schedule permanent removal 60 s after disconnect.
+// Fires player_left only after the grace period expires.
+function scheduleCleanup(code, playerName) {
+  const key = `${code}:${playerName}`;
+  if (cleanupTimers[key]) clearTimeout(cleanupTimers[key]);
+  cleanupTimers[key] = setTimeout(() => {
+    delete cleanupTimers[key];
+    const room = rooms[code];
+    if (!room) return;
+    room.players = room.players.filter(p => p.name !== playerName);
+    console.log(`Spieler ${playerName} aus Raum ${code} entfernt (Timeout)`);
+    if (room.players.length === 0) {
+      delete rooms[code];
+      console.log(`Raum ${code} gelöscht (leer)`);
+    } else {
+      io.to(code).emit('player_left', { room: sanitizeRoom(room) });
+    }
+  }, 60 * 1000);
+}
+
+function cancelCleanup(code, playerName) {
+  const key = `${code}:${playerName}`;
+  if (cleanupTimers[key]) {
+    clearTimeout(cleanupTimers[key]);
+    delete cleanupTimers[key];
+  }
 }
 
 io.on('connection', (socket) => {
@@ -47,24 +77,27 @@ io.on('connection', (socket) => {
       socket.emit('error', { msg: 'Raum nicht gefunden!' });
       return;
     }
+
+    // Reconnect: player with this name already exists — restore their slot
+    const existing = room.players.find(p => p.name === playerName);
+    if (existing) {
+      cancelCleanup(code, playerName);
+      existing.socketId = socket.id;
+      socket.join(code);
+      socket.data.code = code;
+      socket.data.name = playerName;
+      console.log(`${playerName} hat sich in Raum ${code} wiederverbunden`);
+      socket.emit('room_joined', { room: sanitizeRoom(room), yourName: playerName, code, gameState: null });
+      socket.to(code).emit('player_joined', { room: sanitizeRoom(room) });
+      return;
+    }
+
+    // Brand-new join — blocked once game has started
     if (room.started) {
-      // Reconnect-Versuch
-      const existing = room.players.find(p => p.name === playerName);
-      if (existing) {
-        existing.socketId = socket.id;
-        socket.join(code);
-        socket.data.code = code;
-        socket.data.name = playerName;
-        socket.emit('room_joined', { room: sanitizeRoom(room), yourName: playerName, code, gameState: null });
-        return;
-      }
       socket.emit('error', { msg: 'Spiel bereits gestartet!' });
       return;
     }
-    if (room.players.find(p => p.name === playerName)) {
-      socket.emit('error', { msg: 'Name bereits vergeben!' });
-      return;
-    }
+
     room.players.push({ name: playerName, isHost: false, socketId: socket.id, score: 0 });
     socket.join(code);
     socket.data.code = code;
@@ -85,13 +118,12 @@ io.on('connection', (socket) => {
   socket.on('game_action', ({ code, action, payload }) => {
     const room = rooms[code];
     if (!room) return;
-    // Alle anderen im Raum erhalten die Aktion
     socket.to(code).emit('game_action', { action, payload });
 
-    // Bei kick_player aus dem Raum entfernen
     if (action === 'kick_player' && payload?.name) {
       const kicked = room.players.find(p => p.name === payload.name);
       if (kicked) {
+        cancelCleanup(code, payload.name);
         room.players = room.players.filter(p => p.name !== payload.name);
         const kickedSocket = io.sockets.sockets.get(kicked.socketId);
         if (kickedSocket) {
@@ -108,14 +140,13 @@ io.on('connection', (socket) => {
     const name = socket.data.name;
     if (!code || !rooms[code]) return;
     const room = rooms[code];
-    room.players = room.players.filter(p => p.socketId !== socket.id);
-    console.log(`${name} hat Raum ${code} verlassen`);
-    if (room.players.length === 0) {
-      delete rooms[code];
-      console.log(`Raum ${code} gelöscht`);
-    } else {
-      io.to(code).emit('player_left', { room: sanitizeRoom(room) });
-    }
+    const player = room.players.find(p => p.socketId === socket.id);
+    if (!player) return;
+
+    console.log(`${name} hat Verbindung zu Raum ${code} verloren — 60 s Wiederverbindungsfenster`);
+    // Player stays in room.players — reconnect within 60 s restores their slot silently.
+    // If they don't come back, scheduleCleanup emits player_left with the updated room.
+    scheduleCleanup(code, name);
   });
 });
 
