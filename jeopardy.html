@@ -141,8 +141,8 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
 .turn-banner.t1{background:linear-gradient(90deg,rgba(58,142,246,.0),rgba(58,142,246,.18),rgba(58,142,246,.0));color:var(--team1);border-bottom:2px solid var(--team1);}
 .turn-banner.t2{background:linear-gradient(90deg,rgba(232,53,74,.0),rgba(232,53,74,.18),rgba(232,53,74,.0));color:var(--team2);border-bottom:2px solid var(--team2);}
 
-.board-scroll{flex:1;min-height:0;display:flex;align-items:stretch;padding:12px;background:radial-gradient(ellipse at center,rgba(0,50,150,0.12) 0%,transparent 70%);}
-.board{display:grid;gap:8px;width:100%;min-height:0;align-self:stretch;}
+.board-scroll{flex:1;min-height:0;overflow:hidden;display:flex;align-items:stretch;padding:12px;background:radial-gradient(ellipse at center,rgba(0,50,150,0.12) 0%,transparent 70%);}
+.board{display:grid;gap:8px;width:100%;height:100%;min-height:0;align-self:stretch;}
 
 .board-cell{
   width:100%;border-radius:12px;
