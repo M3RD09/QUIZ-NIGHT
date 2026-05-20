@@ -744,6 +744,7 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
       <button class="btn-wrong"   onclick="verdict(false)">✗ Falsch</button>
       <button class="btn-skip"    onclick="verdict(null)">— Weiter ohne Wertung</button>
     </div>
+    <button class="btn-skip" id="btn-timeup-next" style="display:none" onclick="timeUpNext()">→ Weiter</button>
   </div>
 </div>
 
@@ -1080,6 +1081,7 @@ function renderOverlay(ci,qi,ti,pi){
   document.getElementById('ans-box').style.display='none';
   document.getElementById('ans-box').textContent='';
   document.getElementById('verdict-wrap').style.display='none';
+  document.getElementById('btn-timeup-next').style.display='none';
   document.getElementById('q-overlay').classList.add('open');
 }
 
@@ -1137,9 +1139,18 @@ function timeUp(){
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
   document.getElementById('ans-box').textContent=q.answer?'✅ '+q.answer:'';
   document.getElementById('ans-box').style.display='block';
-  document.getElementById('verdict-wrap').style.display=true?'flex':'none';
+  document.getElementById('verdict-wrap').style.display='none';
+  document.getElementById('btn-timeup-next').style.display='';
   showToast('⏰ Zeit! -'+currentQ.points+' für '+teams[t.ti].name,3000);
+}
 
+function timeUpNext(){
+  turnIdx++;
+  updateTurnBanner();updateTeamsSidebar();
+  document.getElementById('q-overlay').classList.remove('open');
+  currentQ=null;
+  if(isOnline&&isHost){broadcastJepState();if(!checkGameOver())setTimeout(()=>showTurnPopup(),400);}
+  else if(!isOnline){if(!checkGameOver())setTimeout(()=>showTurnPopup(),400);}
 }
 
 // ── REVEAL & VERDICT ──
