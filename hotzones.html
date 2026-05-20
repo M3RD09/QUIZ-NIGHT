@@ -475,10 +475,13 @@ function _initSocket(cb){
     mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
     mpSocket.once('room_joined',({room,gameState})=>{
       mpRoom=room;saveSession(mpRoom.code,mpMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+      const onMenu=document.getElementById('view-menu').classList.contains('active');
+      if(!room.started){if(onMenu)showView('view-lobby');lobbyRender();}
+      else if(onMenu)showView('view-game');
       if(mpIsHost){
         const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
-        if(hs){hzState=hs;setTimeout(()=>mpSend('hz_state',hzState),300);}
-        else if(hzState)setTimeout(()=>mpSend('hz_state',hzState),300);
+        if(hs){hzState=hs;setTimeout(()=>mpSend('hz_state',hzState),500);}
+        else if(hzState)setTimeout(()=>mpSend('hz_state',hzState),500);
       }
     });
     mpSocket.once('error',()=>{

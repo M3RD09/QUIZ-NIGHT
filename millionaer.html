@@ -986,15 +986,16 @@ function _initSocket(cb){
     mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
     mpSocket.once('room_joined',({room,gameState})=>{
       mpRoom=room;saveSession(mpRoom.code,mpMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+      const onMenu=document.getElementById('view-menu').classList.contains('active');
+      if(!room.started){if(onMenu)showView('view-setup');lobbyRender();}
+      else if(onMenu)showView('view-game');
       if(mpIsHost){
         const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
         if(hs&&hs.players){
           players=hs.players;currentQIdx=hs.currentQIdx;quizData=hs.quizData||quizData;
-          if(document.getElementById('view-game').classList.contains('active')){
-            setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
-          }
-        } else if(players&&players.length&&document.getElementById('view-game').classList.contains('active')){
-          setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+          setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),500);
+        } else if(players&&players.length){
+          setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),500);
         }
       }
     });
@@ -1084,8 +1085,8 @@ function mpKickFromGame(playerName){
 
 function lobbyLeave(){
   clearSession();
-  if(mpSocket) mpSocket.disconnect();
-  mpSocket=null; mpRoom=null; mpIsHost=false;
+  mpRoom=null; mpIsHost=false; // clear before disconnect so on('disconnect') doesn't show overlay
+  if(mpSocket){mpSocket.disconnect();mpSocket=null;}
   document.getElementById('admin-btn-float').classList.remove('visible');
   showView('view-menu');
 }
