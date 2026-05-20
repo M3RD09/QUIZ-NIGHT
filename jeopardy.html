@@ -1588,26 +1588,41 @@ let lobbySoloMode=false;
 
 // ── SOCKET LOADER ──
 function loadSocketJep(cb){
-  if(window.io){cb();return;}
+  if(mpSocket&&mpSocket.connected){cb();return;}
+  if(mpSocket){mpSocket.once('connect',cb);mpSocket.connect();return;}
+  if(window.io){setupSocketJep();cb();return;}
   const s=document.createElement('script');
   s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
   s.onload=()=>{setupSocketJep();cb();};
   document.head.appendChild(s);
 }
 function setupSocketJep(){
-  mpSocket=io(JEP_SERVER,{transports:['websocket','polling']});
+  mpSocket=io(JEP_SERVER,{
+    transports:['websocket','polling'],
+    reconnection:true,
+    reconnectionAttempts:Infinity,
+    reconnectionDelay:1000,
+    reconnectionDelayMax:8000,
+    timeout:30000
+  });
   mpSocket.on('connect',()=>{
     if(mpRoom&&mpRoom.code){
+      showReconnectOverlay();
+      mpSocket.off('room_joined').off('error');
       mpSocket.emit('join_room',{code:mpRoom.code,playerName:myName});
       mpSocket.once('room_joined',({room,gameState})=>{
-        mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();
+        mpRoom=room;saveSession(mpRoom.code,myName,isHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
         if(isHost){
           const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
           if(hs){applyJepState(hs);setTimeout(broadcastJepState,300);}
           else broadcastJepState();
         }
       });
-      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
+      mpSocket.once('error',()=>{
+        clearSession();hideReconnectOverlay();
+        showToast('⚠️ Raum nicht mehr vorhanden — bitte neu starten.',4500);
+        setTimeout(()=>showView('view-menu'),1500);
+      });
     }
   });
   mpSocket.on('disconnect',()=>{if(isOnline)showReconnectOverlay();});
@@ -1625,6 +1640,8 @@ function setupSocketJep(){
     if(document.getElementById('view-lobby').classList.contains('active'))renderLobby();
   });
   mpSocket.on('game_action',({action,payload})=>handleJepAction(action,payload));
+  // Keep Railway server awake every 4 minutes
+  setInterval(()=>{if(mpRoom)fetch(JEP_SERVER).catch(()=>{});},4*60*1000);
 }
 
 // ── OVERLAY ──

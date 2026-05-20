@@ -961,50 +961,66 @@ function lobbyJoin(code,name){
 
 function mpConnect(cb){
   if(mpSocket&&mpSocket.connected){cb();return;}
+  if(mpSocket){mpSocket.once('connect',cb);mpSocket.connect();return;}
+  if(window.io){_initSocket(cb);return;}
   const s=document.createElement('script');
   s.src='https://cdn.socket.io/4.7.2/socket.io.min.js';
-  s.onload=()=>{
-    mpSocket=io(SERVER_URL,{transports:['websocket','polling']});
-    mpSocket.once('connect',cb);
-    mpSocket.on('connect',()=>{
-      if(!mpRoom||!mpRoom.code)return;
-      showReconnectOverlay();
-      mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
-      mpSocket.once('room_joined',({room,gameState})=>{
-        mpRoom=room;saveSession(mpRoom.code,mpMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
-        if(mpIsHost){
-          const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
-          if(hs&&hs.players){
-            players=hs.players;currentQIdx=hs.currentQIdx;quizData=hs.quizData||quizData;
-            if(document.getElementById('view-game').classList.contains('active')){
-              setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
-            }
-          } else if(players&&players.length&&document.getElementById('view-game').classList.contains('active')){
+  s.onload=()=>_initSocket(cb);
+  document.head.appendChild(s);
+}
+
+function _initSocket(cb){
+  mpSocket=io(SERVER_URL,{
+    transports:['websocket','polling'],
+    reconnection:true,
+    reconnectionAttempts:Infinity,
+    reconnectionDelay:1000,
+    reconnectionDelayMax:8000,
+    timeout:30000
+  });
+  mpSocket.once('connect',cb);
+  mpSocket.on('connect',()=>{
+    if(!mpRoom||!mpRoom.code)return;
+    showReconnectOverlay();
+    mpSocket.off('room_joined').off('error');
+    mpSocket.emit('join_room',{code:mpRoom.code,playerName:mpMyName});
+    mpSocket.once('room_joined',({room,gameState})=>{
+      mpRoom=room;saveSession(mpRoom.code,mpMyName,mpIsHost);hideReconnectOverlay();showToast('✅ Wieder verbunden!',2000);
+      if(mpIsHost){
+        const hs=gameState||JSON.parse(sessionStorage.getItem('qn_host_state')||'null');
+        if(hs&&hs.players){
+          players=hs.players;currentQIdx=hs.currentQIdx;quizData=hs.quizData||quizData;
+          if(document.getElementById('view-game').classList.contains('active')){
             setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
           }
+        } else if(players&&players.length&&document.getElementById('view-game').classList.contains('active')){
+          setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
         }
-      });
-      mpSocket.once('error',()=>{clearSession();hideReconnectOverlay();});
-    });
-    mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
-    mpSocket.on('player_joined',({room})=>{
-      mpRoom=room;lobbyRender();
-      if(mpIsHost&&players&&players.length&&document.getElementById('view-game').classList.contains('active')){
-        setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
       }
     });
-    mpSocket.on('player_left',({room})=>{mpRoom=room;lobbyRender();});
-    mpSocket.on('room_update',({room})=>{mpRoom=room;lobbyRender();});
-    mpSocket.on('game_started',({room,quizData:qd})=>{
-      if(room) mpRoom=room;
-      // Clients get quiz from host; host already has it loaded
-      if(qd && !mpIsHost) quizData=qd;
-      // Everyone starts the game
-      mpBeginGame();
+    mpSocket.once('error',()=>{
+      clearSession();hideReconnectOverlay();
+      showToast('⚠️ Raum nicht mehr vorhanden — bitte neu starten.',4500);
+      setTimeout(()=>showView('view-menu'),1500);
     });
-    mpSocket.on('game_action',({action,payload})=>mpOnAction(action,payload));
-  };
-  document.head.appendChild(s);
+  });
+  mpSocket.on('disconnect',()=>{if(mpRoom)showReconnectOverlay();});
+  mpSocket.on('player_joined',({room})=>{
+    mpRoom=room;lobbyRender();
+    if(mpIsHost&&players&&players.length&&document.getElementById('view-game').classList.contains('active')){
+      setTimeout(()=>mpSend('init',{quizData,players:players.map(p=>({name:p.name,score:p.score,jokers:p.jokers,eliminated:p.eliminated,qAnswered:p.qAnswered})),currentQIdx,timerDuration:millTimerDuration}),300);
+    }
+  });
+  mpSocket.on('player_left',({room})=>{mpRoom=room;lobbyRender();});
+  mpSocket.on('room_update',({room})=>{mpRoom=room;lobbyRender();});
+  mpSocket.on('game_started',({room,quizData:qd})=>{
+    if(room)mpRoom=room;
+    if(qd&&!mpIsHost)quizData=qd;
+    mpBeginGame();
+  });
+  mpSocket.on('game_action',({action,payload})=>mpOnAction(action,payload));
+  // Keep Railway server awake every 4 minutes
+  setInterval(()=>{if(mpRoom)fetch(SERVER_URL).catch(()=>{});},4*60*1000);
 }
 
 function lobbyRender(){
