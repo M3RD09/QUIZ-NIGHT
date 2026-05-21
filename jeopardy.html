@@ -1015,7 +1015,7 @@ function buildBoard(){
 function resetBoard(){
   if(!quizData)return;
   turnIdx=0;
-  teams[0].score=0;teams[1].score=0;
+  teams.forEach(t=>t.score=0);
   if(soloMode)soloScores=new Array(teams[0].players.length).fill(0);
   gameHistory=[];
   buildTurnOrder();
@@ -1085,7 +1085,7 @@ function renderHistoryList(){
     const ptsText=h.result==='correct'?'+'+h.points:h.result==='wrong'?'-'+h.points:'—';
     el.innerHTML='<div class="hi-avatar" style="background:'+color+'">'+escHtml(h.playerName.charAt(0).toUpperCase())+'</div>'
       +'<div class="hi-body">'
-        +'<div class="hi-team" style="color:'+(h.teamIdx===0?'var(--team1)':'var(--team2)')+'">'+escHtml((teams[h.teamIdx]||{name:'Team'}).name)+'</div>'
+        +'<div class="hi-team" style="color:'+(TEAM_COLORS[h.teamIdx]||TEAM_COLORS[0])+'">'+escHtml((teams[h.teamIdx]||{name:'Team'}).name)+'</div>'
         +'<div class="hi-player">'+escHtml(h.playerName)+'</div>'
         +'<div class="hi-cat">'+escHtml(h.category)+' · '+h.points+'</div>'
       +'</div>'
@@ -2140,8 +2140,8 @@ function adminSkipTurn(){
 function mpKick(name){
   if(!confirm('Spieler "'+name+'" kicken?'))return;
   mpSend('jep_kick_notify',{name});
+  if(soloMode){const ki=teams[0].players.indexOf(name);if(ki>=0)soloScores.splice(ki,1);}
   teams.forEach(t=>{t.players=t.players.filter(p=>p!==name);});
-  if(soloMode)soloScores=new Array(teams[0].players.length).fill(0);
   buildTurnOrder();updateTurnBanner();updateTeamsSidebar();updateScores();
   broadcastJepState();showToast('👢 '+name+' wurde gekickt.');closeAdminPanel();
 }
