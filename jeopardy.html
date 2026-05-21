@@ -982,6 +982,7 @@ function fixBoardHeight(){
 function buildBoard(){
   const board=document.getElementById('game-board');
   const cats=quizData.categories;
+  cats.forEach(cat=>cat.questions.sort((a,b)=>a.points-b.points));
   const maxQCount=Math.max(...cats.map(c=>c.questions.length));
   board.style.gridTemplateColumns='repeat('+cats.length+', minmax(0, 1fr))';
   board.style.gridTemplateRows='repeat('+(maxQCount+1)+', minmax(0, 1fr))';
