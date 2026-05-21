@@ -91,6 +91,11 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
   .board-scroll{flex:none;overflow-x:auto;padding:8px;}
   .board{width:max-content;height:auto;}
   .board-cell{width:80px;height:55px;}
+  .board-cat{height:72px;font-size:clamp(8px,2.2vw,11px);}
+}
+
+@media(min-width:601px){
+  #view-game.active{height:100vh;}
 }
 
 /* CURRENT TURN */
@@ -165,6 +170,7 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
   text-transform:uppercase;letter-spacing:.06em;line-height:1.3;
   box-shadow:0 0 18px rgba(58,142,246,.3), inset 0 1px 0 rgba(255,255,255,.08),0 2px 20px rgba(0,191,255,0.15);
   text-shadow:0 0 10px rgba(0,191,255,0.5);
+  word-break:break-word;overflow-wrap:anywhere;
 }
 
 /* Point cells */
