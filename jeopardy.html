@@ -974,6 +974,7 @@ function showBoardOverview(){
 
 // ── BOARD ──
 function fixBoardHeight(){
+  if(window.innerWidth<=600)return;
   const board=document.getElementById('game-board');
   if(!board)return;
   const h=board.parentElement.offsetHeight;
