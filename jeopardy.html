@@ -86,12 +86,11 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
 .game-sidebar{width:240px;flex-shrink:0;background:rgba(5,13,31,0.8);border-left:1px solid rgba(0,191,255,0.1);backdrop-filter:blur(10px);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 @media(max-width:600px){
-  .game-layout{flex-direction:column;height:auto;}
-  .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:300px;}
-  .board-scroll{flex:none;overflow-x:auto;padding:8px;}
-  .board{width:max-content;height:auto;}
-  .board-cell{width:80px;height:55px;}
-  .board-cat{height:auto;min-height:72px;font-size:10px;letter-spacing:0;overflow-wrap:break-word;padding:6px 4px;}
+  .game-layout{flex-direction:column;}
+  .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:min(200px,28vh);}
+  .board-scroll{padding:5px;}
+  .board-cat{font-size:clamp(6px,1.8vw,11px);letter-spacing:0;overflow-wrap:break-word;padding:3px 2px;line-height:1.2;}
+  .board-point{font-size:clamp(10px,3.5vw,18px);}
 }
 
 @media(min-width:601px){
@@ -974,7 +973,6 @@ function showBoardOverview(){
 
 // ── BOARD ──
 function fixBoardHeight(){
-  if(window.innerWidth<=600)return;
   const board=document.getElementById('game-board');
   if(!board)return;
   const h=board.parentElement.offsetHeight;
@@ -986,8 +984,10 @@ function buildBoard(){
   cats.forEach(cat=>{cat.questions=cat.questions||[];cat.questions.sort((a,b)=>a.points-b.points);});
   const maxQCount=Math.max(...cats.map(c=>c.questions.length));
   const isMobile=window.innerWidth<=600;
-  board.style.gridTemplateColumns='repeat('+cats.length+','+(isMobile?'80px':'minmax(0,1fr)')+')';
-  board.style.gridTemplateRows=isMobile?('auto '+Array(maxQCount).fill('55px').join(' ')):('repeat('+(maxQCount+1)+',minmax(0,1fr))');
+  board.style.gridTemplateColumns='repeat('+cats.length+',minmax(0,1fr))';
+  board.style.gridTemplateRows=isMobile
+    ?('auto '+Array(maxQCount).fill('1fr').join(' '))
+    :('repeat('+(maxQCount+1)+',minmax(0,1fr))');
   board.innerHTML='';
   cats.forEach(cat=>{
     const c=document.createElement('div');
