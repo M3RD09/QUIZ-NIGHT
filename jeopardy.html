@@ -979,10 +979,10 @@ function fixBoardHeight(){
   const pH=parent.offsetHeight;
   const pW=parent.offsetWidth;
   if(pH<=0||pW<=0)return;
+  const nCols=parseInt(board.dataset.ncols||1);
+  const nQRows=parseInt(board.dataset.nqrows||0);
+  if(!nCols||!nQRows)return;
   if(window.innerWidth<=600){
-    const nCols=parseInt(board.dataset.ncols||1);
-    const nQRows=parseInt(board.dataset.nqrows||0);
-    if(!nCols||!nQRows)return;
     const gap=8;
     const colW=Math.max(1,(pW-10-gap*(nCols-1))/nCols);
     // Zellhöhe max 1.4× Breite damit Felder nicht gestreckt wirken
@@ -994,6 +994,7 @@ function fixBoardHeight(){
     board.style.gridTemplateRows=catH+'px '+Array(nQRows).fill(cellH+'px').join(' ');
   }else{
     board.style.height=pH+'px';
+    board.style.gridTemplateRows='repeat('+(nQRows+1)+',minmax(0,1fr))';
   }
 }
 function buildBoard(){
