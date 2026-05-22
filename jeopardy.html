@@ -89,7 +89,7 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
   .game-layout{flex-direction:column;}
   .game-sidebar{width:100%;border-left:none;border-top:1px solid var(--border);max-height:min(200px,28vh);}
   .board-scroll{padding:5px;}
-  .board-cat{font-size:clamp(6px,1.8vw,11px);letter-spacing:0;overflow-wrap:break-word;padding:3px 2px;line-height:1.2;}
+  .board-cat{font-size:clamp(8px,2.2vw,12px);letter-spacing:0;overflow-wrap:break-word;padding:3px 2px;line-height:1.2;}
   .board-point{font-size:clamp(10px,3.5vw,18px);}
 }
 
@@ -975,8 +975,26 @@ function showBoardOverview(){
 function fixBoardHeight(){
   const board=document.getElementById('game-board');
   if(!board)return;
-  const h=board.parentElement.offsetHeight;
-  if(h>0)board.style.height=h+'px';
+  const parent=board.parentElement;
+  const pH=parent.offsetHeight;
+  const pW=parent.offsetWidth;
+  if(pH<=0||pW<=0)return;
+  if(window.innerWidth<=600){
+    const nCols=parseInt(board.dataset.ncols||1);
+    const nQRows=parseInt(board.dataset.nqrows||0);
+    if(!nCols||!nQRows)return;
+    const gap=8;
+    const colW=Math.max(1,(pW-10-gap*(nCols-1))/nCols);
+    // Zellhöhe max 1.4× Breite damit Felder nicht gestreckt wirken
+    let cellH=Math.floor(Math.min(colW*1.4,(pH-gap*nQRows)/(nQRows+1)));
+    let catH=Math.floor(Math.min(cellH*1.3,(pH-gap*nQRows)/(nQRows+1)));
+    let total=catH+nQRows*cellH+nQRows*gap;
+    if(total>pH){const s=pH/total;cellH=Math.floor(cellH*s);catH=Math.floor(catH*s);total=catH+nQRows*cellH+nQRows*gap;}
+    board.style.height=total+'px';
+    board.style.gridTemplateRows=catH+'px '+Array(nQRows).fill(cellH+'px').join(' ');
+  }else{
+    board.style.height=pH+'px';
+  }
 }
 function buildBoard(){
   const board=document.getElementById('game-board');
@@ -984,6 +1002,8 @@ function buildBoard(){
   cats.forEach(cat=>{cat.questions=cat.questions||[];cat.questions.sort((a,b)=>a.points-b.points);});
   const maxQCount=Math.max(...cats.map(c=>c.questions.length));
   const isMobile=window.innerWidth<=600;
+  board.dataset.ncols=cats.length;
+  board.dataset.nqrows=maxQCount;
   board.style.gridTemplateColumns='repeat('+cats.length+',minmax(0,1fr))';
   board.style.gridTemplateRows=isMobile
     ?('auto '+Array(maxQCount).fill('1fr').join(' '))
