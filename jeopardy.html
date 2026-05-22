@@ -91,7 +91,7 @@ pointer-events:none;z-index:0;animation:scanMove 8s linear infinite;}
   .board-scroll{flex:none;overflow-x:auto;padding:8px;}
   .board{width:max-content;height:auto;}
   .board-cell{width:80px;height:55px;}
-  .board-cat{height:72px;font-size:clamp(8px,2.2vw,11px);}
+  .board-cat{height:auto;min-height:72px;font-size:10px;letter-spacing:0;overflow-wrap:break-word;padding:6px 4px;}
 }
 
 @media(min-width:601px){
@@ -985,8 +985,9 @@ function buildBoard(){
   const cats=quizData.categories;
   cats.forEach(cat=>{cat.questions=cat.questions||[];cat.questions.sort((a,b)=>a.points-b.points);});
   const maxQCount=Math.max(...cats.map(c=>c.questions.length));
-  board.style.gridTemplateColumns='repeat('+cats.length+', minmax(0, 1fr))';
-  board.style.gridTemplateRows='repeat('+(maxQCount+1)+', minmax(0, 1fr))';
+  const isMobile=window.innerWidth<=600;
+  board.style.gridTemplateColumns='repeat('+cats.length+','+(isMobile?'80px':'minmax(0,1fr)')+')';
+  board.style.gridTemplateRows=isMobile?('auto '+Array(maxQCount).fill('55px').join(' ')):('repeat('+(maxQCount+1)+',minmax(0,1fr))');
   board.innerHTML='';
   cats.forEach(cat=>{
     const c=document.createElement('div');
