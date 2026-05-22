@@ -982,7 +982,7 @@ function fixBoardHeight(){
 function buildBoard(){
   const board=document.getElementById('game-board');
   const cats=quizData.categories;
-  cats.forEach(cat=>cat.questions.sort((a,b)=>a.points-b.points));
+  cats.forEach(cat=>{cat.questions=cat.questions||[];cat.questions.sort((a,b)=>a.points-b.points);});
   const maxQCount=Math.max(...cats.map(c=>c.questions.length));
   board.style.gridTemplateColumns='repeat('+cats.length+', minmax(0, 1fr))';
   board.style.gridTemplateRows='repeat('+(maxQCount+1)+', minmax(0, 1fr))';
@@ -1175,6 +1175,7 @@ function timeUp(){
 }
 
 function timeUpNext(){
+  if(!currentQ)return;
   turnIdx++;
   updateTurnBanner();updateTeamsSidebar();
   document.getElementById('q-overlay').classList.remove('open');
@@ -1194,6 +1195,7 @@ function revealAnswer(){
 }
 
 function verdict(correct){
+  if(!currentQ)return;
   stopTimer();
   const t=currentTurn();
   const q=quizData.categories[currentQ.ci].questions[currentQ.qi];
